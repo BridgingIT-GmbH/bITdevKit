@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class IncludeBuilderExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class IncludeBuilderExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Extension methods for IncludeBuilder to support collection navigation properties.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions" class="text-break">
+Class IncludeBuilderExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Extension methods for IncludeBuilder to support collection navigation properties.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class IncludeBuilderExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">IncludeBuilderExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddCustomFilter_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddCustomFilter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddCustomFilter__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__BridgingIT_DevKit_Common_FilterCustomType_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddCustomFilter``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},BridgingIT.DevKit.Common.FilterCustomType,System.Nullable{System.Boolean})">
+  AddCustomFilter&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, FilterCustomType, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a custom filter to the filter model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt;.CustomFilterBuilder AddCustomFilter&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, FilterCustomType customType, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>customType</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterCustomType.html">FilterCustomType</a></dt>
+    <dd><p>The type of the custom filter to add.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether the custom filter is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.CustomFilterBuilder.html">CustomFilterBuilder</a></dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.CustomFilterBuilder.html">FilterModelBuilder.Builder&lt;T&gt;.CustomFilterBuilder</a> for adding parameters.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddFilter_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddFilter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddFilter__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Linq_Expressions_Expression_System_Func___0_System_Object___BridgingIT_DevKit_Common_FilterOperator_System_Object_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddFilter``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},BridgingIT.DevKit.Common.FilterOperator,System.Object,System.Nullable{System.Boolean})">
+  AddFilter&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, FilterOperator, object, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a filter criteria to the filter model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; AddFilter&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, Expression&lt;Func&lt;TEntity, object&gt;&gt; propertySelector, FilterOperator filterOperator, object value, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>propertySelector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>An expression selecting the property to filter on.</p>
+</dd>
+    <dt><code>filterOperator</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterOperator.html">FilterOperator</a></dt>
+    <dd><p>The operator to use for filtering.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">object</span></dt>
+    <dd><p>The value to compare against.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this filter is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddFilter_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddFilter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddFilter__3_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Linq_Expressions_Expression_System_Func___0_System_Collections_Generic_IEnumerable___2____BridgingIT_DevKit_Common_FilterOperator_System_Action_BridgingIT_DevKit_Common_FilterModelBuilder_Builder___2___System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddFilter``3(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,System.Collections.Generic.IEnumerable{``2}}},BridgingIT.DevKit.Common.FilterOperator,System.Action{BridgingIT.DevKit.Common.FilterModelBuilder.Builder{``2}},System.Nullable{System.Boolean})">
+  AddFilter&lt;TEntity, TProperty, TCollection&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, Expression&lt;Func&lt;TEntity, IEnumerable&lt;TCollection&gt;&gt;&gt;, FilterOperator, Action&lt;Builder&lt;TCollection&gt;&gt;, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a collection filter to the filter model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; AddFilter&lt;TEntity, TProperty, TCollection&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, Expression&lt;Func&lt;TEntity, IEnumerable&lt;TCollection&gt;&gt;&gt; collectionSelector, FilterOperator filterOperator, Action&lt;FilterModelBuilder.Builder&lt;TCollection&gt;&gt; configure, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>collectionSelector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TCollection&gt;&gt;&gt;</dt>
+    <dd><p>An expression selecting the collection property.</p>
+</dd>
+    <dt><code>filterOperator</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterOperator.html">FilterOperator</a></dt>
+    <dd><p>The operator to use for filtering the collection.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TCollection&gt;&gt;</dt>
+    <dd><p>A configuration action to specify filters for the collection items.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this filter is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+    <dt><code>TCollection</code></dt>
+    <dd><p>The type of the collection items.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddInclude_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddInclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddInclude__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Linq_Expressions_Expression_System_Func___0_System_Object___System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddInclude``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Nullable{System.Boolean})">
+  AddInclude&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an include criterion to the filter model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; AddInclude&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeSelector, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>includeSelector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>An expression selecting the property to include.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this include is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddInclude_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddInclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddInclude__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_String_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddInclude``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.String,System.Nullable{System.Boolean})">
+  AddInclude&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, string, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an include criterion to the filter model using a string path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; AddInclude&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, string path, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The navigation property path to include in the query.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this include is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddInclude_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddInclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddInclude__3_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Linq_Expressions_Expression_System_Func___0___2___System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddInclude``3(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,``2}},System.Nullable{System.Boolean})">
+  AddInclude&lt;TEntity, TProperty, TNextProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, Expression&lt;Func&lt;TEntity, TNextProperty&gt;&gt;, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an include criterion with support for ThenInclude chaining.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.IncludeBuilder&lt;TEntity, TNextProperty&gt; AddInclude&lt;TEntity, TProperty, TNextProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, Expression&lt;Func&lt;TEntity, TNextProperty&gt;&gt; includeSelector, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>includeSelector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TNextProperty&gt;&gt;</dt>
+    <dd><p>An expression selecting the property to include.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this include is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TNextProperty&gt;</dt>
+    <dd><p>An <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt;</a> for chaining ThenInclude calls.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the current navigation property.</p>
+</dd>
+    <dt><code>TNextProperty</code></dt>
+    <dd><p>The type of the next navigation property to include.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddOrdering_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddOrdering*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_AddOrdering__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Linq_Expressions_Expression_System_Func___0_System_Object___BridgingIT_DevKit_Common_OrderDirection_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.AddOrdering``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},BridgingIT.DevKit.Common.OrderDirection,System.Nullable{System.Boolean})">
+  AddOrdering&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, OrderDirection, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an ordering criterion to the filter model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; AddOrdering&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, Expression&lt;Func&lt;TEntity, object&gt;&gt; orderBy, OrderDirection direction, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>orderBy</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>An expression selecting the property to order by.</p>
+</dd>
+    <dt><code>direction</code> <a class="xref" href="BridgingIT.DevKit.Common.OrderDirection.html">OrderDirection</a></dt>
+    <dd><p>The direction of the ordering.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this ordering is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_Build_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.Build*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_Build__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.Build``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1})">
+  Build&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds and returns the final <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a> instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModel Build&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a> containing the built filter criteria.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_SetNoTracking_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.SetNoTracking*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_SetNoTracking__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Boolean_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.SetNoTracking``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Boolean,System.Nullable{System.Boolean})">
+  SetNoTracking&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, bool, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures the query to disable entity tracking.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; SetNoTracking&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, bool value = true, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether entity tracking should be disabled.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether no-tracking is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_SetPaging_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.SetPaging*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_SetPaging__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Int32_BridgingIT_DevKit_Common_PageSize_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.SetPaging``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Int32,BridgingIT.DevKit.Common.PageSize,System.Nullable{System.Boolean})">
+  SetPaging&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, int, PageSize, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the paging options for the filter model using a standard page size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; SetPaging&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, int page, PageSize standardPageSize, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve.</p>
+</dd>
+    <dt><code>standardPageSize</code> <a class="xref" href="BridgingIT.DevKit.Common.PageSize.html">PageSize</a></dt>
+    <dd><p>The standard page size to use.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether paging is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_SetPaging_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.SetPaging*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_SetPaging__2_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0___1__System_Int32_System_Int32_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.SetPaging``2(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,``1},System.Int32,System.Int32,System.Nullable{System.Boolean})">
+  SetPaging&lt;TEntity, TProperty&gt;(IncludeBuilder&lt;TEntity, TProperty&gt;, int, int, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the paging options for the filter model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.Builder&lt;TEntity&gt; SetPaging&lt;TEntity, TProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt; source, int page, int pageSize, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of items per page.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether paging is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The parent <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance for method chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TProperty</code></dt>
+    <dd><p>The type of the navigation property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.ThenInclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude__3_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0_System_Collections_Generic_ICollection___1___System_Linq_Expressions_Expression_System_Func___1___2___System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.ThenInclude``3(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,System.Collections.Generic.ICollection{``1}},System.Linq.Expressions.Expression{System.Func{``1,``2}},System.Nullable{System.Boolean})">
+  ThenInclude&lt;TEntity, TElement, TNextProperty&gt;(IncludeBuilder&lt;TEntity, ICollection&lt;TElement&gt;&gt;, Expression&lt;Func&lt;TElement, TNextProperty&gt;&gt;, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Specifies additional related data to be further included based on a collection navigation property (ICollection).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.IncludeBuilder&lt;TEntity, TNextProperty&gt; ThenInclude&lt;TEntity, TElement, TNextProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, ICollection&lt;TElement&gt;&gt; source, Expression&lt;Func&lt;TElement, TNextProperty&gt;&gt; navigationPropertyPath, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, <span class="xref">ICollection</span>&lt;TElement&gt;&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>navigationPropertyPath</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TElement, TNextProperty&gt;&gt;</dt>
+    <dd><p>An expression representing the navigation property to be included.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this include is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TNextProperty&gt;</dt>
+    <dd><p>An <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt;</a> for further chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TElement</code></dt>
+    <dd><p>The element type of the collection.</p>
+</dd>
+    <dt><code>TNextProperty</code></dt>
+    <dd><p>The type of the next navigation property to include.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.ThenInclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude__3_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0_System_Collections_Generic_IEnumerable___1___System_Linq_Expressions_Expression_System_Func___1___2___System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.ThenInclude``3(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,System.Collections.Generic.IEnumerable{``1}},System.Linq.Expressions.Expression{System.Func{``1,``2}},System.Nullable{System.Boolean})">
+  ThenInclude&lt;TEntity, TElement, TNextProperty&gt;(IncludeBuilder&lt;TEntity, IEnumerable&lt;TElement&gt;&gt;, Expression&lt;Func&lt;TElement, TNextProperty&gt;&gt;, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Specifies additional related data to be further included based on a collection navigation property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.IncludeBuilder&lt;TEntity, TNextProperty&gt; ThenInclude&lt;TEntity, TElement, TNextProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, IEnumerable&lt;TElement&gt;&gt; source, Expression&lt;Func&lt;TElement, TNextProperty&gt;&gt; navigationPropertyPath, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TElement&gt;&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>navigationPropertyPath</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TElement, TNextProperty&gt;&gt;</dt>
+    <dd><p>An expression representing the navigation property to be included.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this include is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TNextProperty&gt;</dt>
+    <dd><p>An <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt;</a> for further chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TElement</code></dt>
+    <dd><p>The element type of the collection.</p>
+</dd>
+    <dt><code>TNextProperty</code></dt>
+    <dd><p>The type of the next navigation property to include.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude__3_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0_System_Collections_Generic_IEnumerable___1___System_Linq_Expressions_Expression_System_Func___1___2___System_Nullable_System_Boolean___examples">Examples</h4>
+  <p>builder.AddInclude(person =&gt; person.Addresses)
+.ThenInclude(address =&gt; address.City);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude_" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.ThenInclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IncludeBuilderExtensions_ThenInclude__3_BridgingIT_DevKit_Common_FilterModelBuilder_IncludeBuilder___0_System_Collections_Generic_IReadOnlyList___1___System_Linq_Expressions_Expression_System_Func___1___2___System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.IncludeBuilderExtensions.ThenInclude``3(BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder{``0,System.Collections.Generic.IReadOnlyList{``1}},System.Linq.Expressions.Expression{System.Func{``1,``2}},System.Nullable{System.Boolean})">
+  ThenInclude&lt;TEntity, TElement, TNextProperty&gt;(IncludeBuilder&lt;TEntity, IReadOnlyList&lt;TElement&gt;&gt;, Expression&lt;Func&lt;TElement, TNextProperty&gt;&gt;, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Specifies additional related data to be further included based on a collection navigation property (IReadOnlyList).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModelBuilder.IncludeBuilder&lt;TEntity, TNextProperty&gt; ThenInclude&lt;TEntity, TElement, TNextProperty&gt;(this FilterModelBuilder.IncludeBuilder&lt;TEntity, IReadOnlyList&lt;TElement&gt;&gt; source, Expression&lt;Func&lt;TElement, TNextProperty&gt;&gt; navigationPropertyPath, bool? condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, <span class="xref">IReadOnlyList</span>&lt;TElement&gt;&gt;</dt>
+    <dd><p>The source include builder.</p>
+</dd>
+    <dt><code>navigationPropertyPath</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TElement, TNextProperty&gt;&gt;</dt>
+    <dd><p>An expression representing the navigation property to be included.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional condition to control whether this include is applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">IncludeBuilder</a>&lt;TEntity, TNextProperty&gt;</dt>
+    <dd><p>An <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.IncludeBuilder-2.html">FilterModelBuilder.IncludeBuilder&lt;TEntity, TProperty&gt;</a> for further chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The root entity type.</p>
+</dd>
+    <dt><code>TElement</code></dt>
+    <dd><p>The element type of the collection.</p>
+</dd>
+    <dt><code>TNextProperty</code></dt>
+    <dd><p>The type of the next navigation property to include.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

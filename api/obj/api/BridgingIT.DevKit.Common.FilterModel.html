@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FilterModel | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FilterModel | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents a model for building filter criteria for data queries. Contains properties for pagination, ordering, filtering, and including related entities.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.FilterModel">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_FilterModel" data-uid="BridgingIT.DevKit.Common.FilterModel" class="text-break">
+Class FilterModel  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a model for building filter criteria for data queries.
+Contains properties for pagination, ordering, filtering, and including related entities.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class FilterModel</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">FilterModel</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_AddOrUpdateFilter_BridgingIT_DevKit_Common_FilterModel_System_String_BridgingIT_DevKit_Common_FilterOperator_System_Object_">FilterModelExtensions.AddOrUpdateFilter(FilterModel, string, FilterOperator, object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_Clear_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.Clear(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_Clear_BridgingIT_DevKit_Common_FilterModel_System_String_">FilterModelExtensions.Clear(FilterModel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_GetFilter_BridgingIT_DevKit_Common_FilterModel_System_String_BridgingIT_DevKit_Common_FilterOperator_">FilterModelExtensions.GetFilter(FilterModel, string, FilterOperator)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_GetFilters_BridgingIT_DevKit_Common_FilterModel_System_String_">FilterModelExtensions.GetFilters(FilterModel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_GetOrdering_BridgingIT_DevKit_Common_FilterModel_System_String_">FilterModelExtensions.GetOrdering(FilterModel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_HasFilters_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.HasFilters(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_HasFilters_BridgingIT_DevKit_Common_FilterModel_System_String_">FilterModelExtensions.HasFilters(FilterModel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_HasInclude_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.HasInclude(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_HasInclude_BridgingIT_DevKit_Common_FilterModel_System_String_">FilterModelExtensions.HasInclude(FilterModel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_HasOrdering_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.HasOrdering(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_HasOrdering_BridgingIT_DevKit_Common_FilterModel_System_String_">FilterModelExtensions.HasOrdering(FilterModel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_IsEmpty_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.IsEmpty(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_Merge_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Common_FilterModel___">FilterModelExtensions.Merge(FilterModel, params FilterModel[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_RemoveFilter_BridgingIT_DevKit_Common_FilterModel_System_String_BridgingIT_DevKit_Common_FilterOperator_">FilterModelExtensions.RemoveFilter(FilterModel, string, FilterOperator)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_ReplaceOrdering_BridgingIT_DevKit_Common_FilterModel_System_String_BridgingIT_DevKit_Common_OrderDirection_">FilterModelExtensions.ReplaceOrdering(FilterModel, string, OrderDirection)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_SetHierarchy_BridgingIT_DevKit_Common_FilterModel_System_String_System_Nullable_System_Int32__">FilterModelExtensions.SetHierarchy(FilterModel, string, int?)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_ToDictionary_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.ToDictionary(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_ToQueryString_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.ToQueryString(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_WithDefaultPaging_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.WithDefaultPaging(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_WithPaging_BridgingIT_DevKit_Common_FilterModel_System_Int32_System_Int32_">FilterModelExtensions.WithPaging(FilterModel, int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.FilterModelExtensions.html#BridgingIT_DevKit_Common_FilterModelExtensions_WithoutTracking_BridgingIT_DevKit_Common_FilterModel_">FilterModelExtensions.WithoutTracking(FilterModel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel__ctor_" data-uid="BridgingIT.DevKit.Common.FilterModel.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel__ctor" data-uid="BridgingIT.DevKit.Common.FilterModel.#ctor">
+  FilterModel()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FilterModel()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel__SpecificationGroupSchema" data-uid="BridgingIT.DevKit.Common.FilterModel._SpecificationGroupSchema">
+  _SpecificationGroupSchema
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SpecificationGroup _SpecificationGroupSchema</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.SpecificationGroup.html">SpecificationGroup</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel__SpecificationLeafSchema" data-uid="BridgingIT.DevKit.Common.FilterModel._SpecificationLeafSchema">
+  _SpecificationLeafSchema
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SpecificationLeaf _SpecificationLeafSchema</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.SpecificationLeaf.html">SpecificationLeaf</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_Filters_" data-uid="BridgingIT.DevKit.Common.FilterModel.Filters*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_Filters" data-uid="BridgingIT.DevKit.Common.FilterModel.Filters">
+  Filters
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the list of filter criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;FilterCriteria&gt; Filters { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_Hierarchy_" data-uid="BridgingIT.DevKit.Common.FilterModel.Hierarchy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_Hierarchy" data-uid="BridgingIT.DevKit.Common.FilterModel.Hierarchy">
+  Hierarchy
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the children to include in the query.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Hierarchy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_HierarchyMaxDepth_" data-uid="BridgingIT.DevKit.Common.FilterModel.HierarchyMaxDepth*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_HierarchyMaxDepth" data-uid="BridgingIT.DevKit.Common.FilterModel.HierarchyMaxDepth">
+  HierarchyMaxDepth
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum depth for including child entities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int HierarchyMaxDepth { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_Includes_" data-uid="BridgingIT.DevKit.Common.FilterModel.Includes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_Includes" data-uid="BridgingIT.DevKit.Common.FilterModel.Includes">
+  Includes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the list of related entities to include in the query.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;string&gt; Includes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_NoTracking_" data-uid="BridgingIT.DevKit.Common.FilterModel.NoTracking*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_NoTracking" data-uid="BridgingIT.DevKit.Common.FilterModel.NoTracking">
+  NoTracking
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether to disable change tracking for the query.
+Default value is <code>true</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool NoTracking { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_Orderings_" data-uid="BridgingIT.DevKit.Common.FilterModel.Orderings*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_Orderings" data-uid="BridgingIT.DevKit.Common.FilterModel.Orderings">
+  Orderings
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the list of ordering criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;FilterOrderCriteria&gt; Orderings { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FilterOrderCriteria.html">FilterOrderCriteria</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_Page_" data-uid="BridgingIT.DevKit.Common.FilterModel.Page*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_Page" data-uid="BridgingIT.DevKit.Common.FilterModel.Page">
+  Page
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the page number for pagination.
+Default value is 1.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Page { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_PageSize_" data-uid="BridgingIT.DevKit.Common.FilterModel.PageSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_PageSize" data-uid="BridgingIT.DevKit.Common.FilterModel.PageSize">
+  PageSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the number of items per page.
+Default value is 10.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int PageSize { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel__CompositeSpecificationSchema_" data-uid="BridgingIT.DevKit.Common.FilterModel._CompositeSpecificationSchema*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel__CompositeSpecificationSchema" data-uid="BridgingIT.DevKit.Common.FilterModel._CompositeSpecificationSchema">
+  _CompositeSpecificationSchema
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Internal property to ensure CompositeSpecification schema is generated (OpenApi generator).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CompositeSpecification _CompositeSpecificationSchema { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.CompositeSpecification.html">CompositeSpecification</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel__FilterCriteriaSchema_" data-uid="BridgingIT.DevKit.Common.FilterModel._FilterCriteriaSchema*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel__FilterCriteriaSchema" data-uid="BridgingIT.DevKit.Common.FilterModel._FilterCriteriaSchema">
+  _FilterCriteriaSchema
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Internal property to ensure FilterCriteria schema is generated (OpenApi generator).
+This is not used by the API but forces OpenAPI schema generation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FilterCriteria _FilterCriteriaSchema { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel__SpecificationNodeSchema_" data-uid="BridgingIT.DevKit.Common.FilterModel._SpecificationNodeSchema*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel__SpecificationNodeSchema" data-uid="BridgingIT.DevKit.Common.FilterModel._SpecificationNodeSchema">
+  _SpecificationNodeSchema
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Internal property to ensure SpecificationNode schema is generated (OpenApi generator).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SpecificationNode _SpecificationNodeSchema { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.SpecificationNode.html">SpecificationNode</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_ConfigureJson_" data-uid="BridgingIT.DevKit.Common.FilterModel.ConfigureJson*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_ConfigureJson_System_Text_Json_JsonSerializerOptions_" data-uid="BridgingIT.DevKit.Common.FilterModel.ConfigureJson(System.Text.Json.JsonSerializerOptions)">
+  ConfigureJson(JsonSerializerOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures the JSON serializer options used by <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html#BridgingIT_DevKit_Common_FilterModel_TryParse_System_String_System_IFormatProvider_BridgingIT_DevKit_Common_FilterModel__">TryParse(string, IFormatProvider, out FilterModel)</a>.
+Call this once at application startup from the hosting (web) project to inject your
+custom converters and settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ConfigureJson(JsonSerializerOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <span class="xref">JsonSerializerOptions</span></dt>
+    <dd><p>The <span class="xref">System.Text.Json.JsonSerializerOptions</span> to use for deserialization.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when <code class="paramref">options</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_FromQueryString_" data-uid="BridgingIT.DevKit.Common.FilterModel.FromQueryString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_FromQueryString_System_String_" data-uid="BridgingIT.DevKit.Common.FilterModel.FromQueryString(System.String)">
+  FromQueryString(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FilterModel FromQueryString(string queryString)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>queryString</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_ToString_" data-uid="BridgingIT.DevKit.Common.FilterModel.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_ToString" data-uid="BridgingIT.DevKit.Common.FilterModel.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a string that represents the current model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A string that represents the current <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a> instance, including page, page size,
+orderings, filters, and includes details.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_FilterModel_TryParse_" data-uid="BridgingIT.DevKit.Common.FilterModel.TryParse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_FilterModel_TryParse_System_String_System_IFormatProvider_BridgingIT_DevKit_Common_FilterModel__" data-uid="BridgingIT.DevKit.Common.FilterModel.TryParse(System.String,System.IFormatProvider,BridgingIT.DevKit.Common.FilterModel@)">
+  TryParse(string, IFormatProvider, out FilterModel)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to parse a <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a> from a JSON string.
+The value must be a JSON object/array (e.g., starts with '{' or '[').</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(string value, IFormatProvider provider, out FilterModel result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The JSON value (URL-decoded string from the query parameter).</p>
+</dd>
+    <dt><code>provider</code> <span class="xref">IFormatProvider</span></dt>
+    <dd><p>Unused.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The parsed model on success.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>true if JSON deserialization succeeded; otherwise false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

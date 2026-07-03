@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class SagaScope | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class SagaScope | bITdevKit API Reference ">
+      
+      <meta name="description" content="Generic saga scope implementation for coordinating distributed transactions using the compensating transaction pattern.  This class orchestrates multi-step workflows where each successful step registers a compensation function. If any step fails, all registered compensations are executed in reverse order (LIFO - Last In First Out) to undo previous changes. This implements the saga pattern for maintaining consistency across distributed operations without traditional two-phase commit.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.SagaScope">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_SagaScope" data-uid="BridgingIT.DevKit.Common.SagaScope" class="text-break">
+Class SagaScope  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Generic saga scope implementation for coordinating distributed transactions using the compensating transaction pattern.</p>
+<p>
+This class orchestrates multi-step workflows where each successful step registers a compensation function.
+If any step fails, all registered compensations are executed in reverse order (LIFO - Last In First Out)
+to undo previous changes. This implements the saga pattern for maintaining consistency across
+distributed operations without traditional two-phase commit.
+</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class SagaScope : IOperationScope</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">SagaScope</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IOperationScope.html">IOperationScope</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_SagaScope_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Create saga with optional logger
+var saga = new SagaOperationScope(logger);
+saga.Context.CorrelationId = correlationId;
+saga.Context.SetMetadata("UserId", userId);
+
+// Subscribe to compensation events
+saga.OnCompensationEvent += async (evt) =&gt;
+{
+    if (evt.EventType == CompensationEventType.Failed)
+    {
+        await alertService.NotifyAsync($"Compensation {evt.StepName} failed");
+    }
+};
+
+// Chain operations with named compensations
+var result = await Result&lt;TripBooking&gt;.Success(booking)
+    .StartOperation(saga)
+         .BindAsync(async (b, ct) =&gt;
+         {
+             var flight = await flightService.BookAsync(b.FlightDetails, ct);
+             // Register named compensation
+             saga.RegisterCompensation("FlightCancellation",
+                 async ct =&gt; await flightService.CancelAsync(flight.Id, ct));
+             b.FlightConfirmation = flight.ConfirmationNumber;
+             return Result&lt;TripBooking&gt;.Success(b);
+         }, CancellationToken.None)
+         .BindAsync(async (b, ct) =&gt;
+         {
+             var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
+             // Register conditional compensation (only if payment was captured)
+             saga.RegisterCompensation("HotelCancellation",
+                 async ct =&gt; await hotelService.CancelAsync(hotel.Id, ct),
+                 async ct =&gt; await paymentService.IsCapturedAsync(hotel.PaymentId, ct));
+             b.HotelConfirmation = hotel.ConfirmationNumber;
+             return Result&lt;TripBooking&gt;.Success(b);
+         }, CancellationToken.None)
+    .EndOperationAsync(CancellationToken.None);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_SagaScope_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>
+**Typical Usage Scenario:**
+When booking a trip, you might need to coordinate:
+1. Book a flight (register compensation to cancel it)
+2. Book a hotel (register compensation to cancel it)
+3. Rent a car (register compensation to cancel it)
+<p>If step 3 fails, compensations are executed in reverse: cancel car → cancel hotel → cancel flight.</p>
+
+<p>
+**Key Features:**
+- Lazy initialization: compensations are registered but not executed until needed
+- Resilient execution: if one compensation fails, others still execute
+- Order preservation: compensations execute in strict LIFO order
+- Error tracking: all compensation failures are recorded for diagnostics
+- Named steps: each compensation can be labeled for better logging and tracing
+- Conditional execution: compensations can have conditions that determine if they execute
+- Event hooks: subscribe to compensation lifecycle events for monitoring and alerting
+- Saga context: track correlation IDs and custom metadata across distributed operations
+- Integrated logging: optional ILogger for structured logging throughout saga execution
+</p>
+<p>
+**Implementation Pattern:**
+This class implements <a class="xref" href="BridgingIT.DevKit.Common.IOperationScope.html">IOperationScope</a>, making it compatible with the Result pattern's
+<a class="xref" href="BridgingIT.DevKit.Common.ResultOperationScope-2.html">ResultOperationScope&lt;T, TOperation&gt;</a> for clean, fluent operation chaining.
+</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope__ctor_" data-uid="BridgingIT.DevKit.Common.SagaScope.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope__ctor_Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Common.SagaScope.#ctor(Microsoft.Extensions.Logging.ILogger)">
+  SagaScope(ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.SagaScope.html">SagaScope</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SagaScope(ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>Optional logger for structured logging. If null, a null logger is used.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_CompensationCount_" data-uid="BridgingIT.DevKit.Common.SagaScope.CompensationCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_CompensationCount" data-uid="BridgingIT.DevKit.Common.SagaScope.CompensationCount">
+  CompensationCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the total number of compensations that were registered during the saga execution.
+This value is preserved even after commit (when compensations are cleared) for audit trails.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompensationCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_CompensationCount_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This count represents the peak number of registered compensations and is useful for:
+- Verifying all expected steps completed successfully
+- Auditing workflow depth
+- Testing compensation count expectations
+</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_CompensationErrors_" data-uid="BridgingIT.DevKit.Common.SagaScope.CompensationErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_CompensationErrors" data-uid="BridgingIT.DevKit.Common.SagaScope.CompensationErrors">
+  CompensationErrors
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a read-only list of exceptions that occurred during compensation execution.
+Each failed compensation adds an exception to this collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Exception&gt; CompensationErrors { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">Exception</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_CompensationErrors_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+Failed compensations do not prevent other compensations from executing.
+This "best-effort" rollback strategy ensures maximum cleanup even if some undo operations fail.
+</p>
+<p>
+Inspect this collection to determine which cleanup steps failed and may need manual intervention.
+</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_CompensationExecutedCount_" data-uid="BridgingIT.DevKit.Common.SagaScope.CompensationExecutedCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_CompensationExecutedCount" data-uid="BridgingIT.DevKit.Common.SagaScope.CompensationExecutedCount">
+  CompensationExecutedCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the number of compensations that were executed during rollback.
+Each execution attempt (success or failure) increments this counter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompensationExecutedCount { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_CompensationExecutedCount_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This counter increments for each compensation function invoked, regardless of outcome.
+Use <a class="xref" href="BridgingIT.DevKit.Common.SagaScope.html#BridgingIT_DevKit_Common_SagaScope_CompensationErrors">CompensationErrors</a> to determine which compensations failed.
+</p>
+<p>
+Example: If 3 compensations are registered and rollback occurs:
+- CompensationExecutedCount will be 3
+- CompensationErrors.Count may be 0-3 depending on which failed
+</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_Context_" data-uid="BridgingIT.DevKit.Common.SagaScope.Context*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_Context" data-uid="BridgingIT.DevKit.Common.SagaScope.Context">
+  Context
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the saga context containing correlation IDs, metadata, and tracing information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SagaContext Context { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.SagaContext.html">SagaContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_IsCommitted_" data-uid="BridgingIT.DevKit.Common.SagaScope.IsCommitted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_IsCommitted" data-uid="BridgingIT.DevKit.Common.SagaScope.IsCommitted">
+  IsCommitted
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the saga completed successfully and committed all changes.
+When true, all compensations have been cleared as they were not needed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsCommitted { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_IsCommitted_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is mutually exclusive with <a class="xref" href="BridgingIT.DevKit.Common.SagaScope.html#BridgingIT_DevKit_Common_SagaScope_IsRolledBack">IsRolledBack</a>.
+Both can be false if the saga has not yet completed.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_IsRolledBack_" data-uid="BridgingIT.DevKit.Common.SagaScope.IsRolledBack*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_IsRolledBack" data-uid="BridgingIT.DevKit.Common.SagaScope.IsRolledBack">
+  IsRolledBack
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the saga encountered a failure and rolled back all changes.
+When true, compensations have been executed to undo previous steps.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsRolledBack { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_IsRolledBack_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This is mutually exclusive with <a class="xref" href="BridgingIT.DevKit.Common.SagaScope.html#BridgingIT_DevKit_Common_SagaScope_IsCommitted">IsCommitted</a>.
+Both can be false if the saga has not yet completed.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_CommitAsync_" data-uid="BridgingIT.DevKit.Common.SagaScope.CommitAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_CommitAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.SagaScope.CommitAsync(System.Threading.CancellationToken)">
+  CommitAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Commits the saga, marking all changes as successful and clearing compensations.</p>
+<p>
+Called automatically by <a class="xref" href="BridgingIT.DevKit.Common.ResultOperationScope-2.html">ResultOperationScope&lt;T, TOperation&gt;</a> when all saga steps
+complete successfully. This signals that no rollback is needed.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CommitAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token that can be used to cancel the commit operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A completed task representing the commit operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_" data-uid="BridgingIT.DevKit.Common.SagaScope.RegisterCompensation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__" data-uid="BridgingIT.DevKit.Common.SagaScope.RegisterCompensation(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task})">
+  RegisterCompensation(Func&lt;CancellationToken, Task&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>
+Registers a compensation function to be executed if the saga fails.
+This is a backward-compatible overload that uses anonymous compensation.
+</p>
+<p>Compensations are executed in reverse order (LIFO - Last In First Out) during rollback.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterCompensation(Func&lt;CancellationToken, Task&gt; compensation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>compensation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>An async function that undoes a previous step.
+This function receives a <span class="xref">System.Threading.CancellationToken</span> and should be properly cancellable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method is maintained for backward compatibility. Consider using the overload with stepName for better diagnostics.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">compensation</code> is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_" data-uid="BridgingIT.DevKit.Common.SagaScope.RegisterCompensation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_System_String_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___" data-uid="BridgingIT.DevKit.Common.SagaScope.RegisterCompensation(System.String,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}})">
+  RegisterCompensation(string, Func&lt;CancellationToken, Task&gt;, Func&lt;CancellationToken, Task&lt;bool&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Registers a named compensation function to be executed if the saga fails.</p>
+<p>
+Compensations are executed in reverse order (LIFO - Last In First Out) during rollback,
+ensuring proper cleanup order. For example, if you book Flight then Hotel,
+the compensation will cancel Hotel then Flight.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RegisterCompensation(string stepName, Func&lt;CancellationToken, Task&gt; compensation, Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stepName</code> <span class="xref">string</span></dt>
+    <dd><p>A meaningful name for this compensation step.
+Used in logging, tracing, and error messages for better diagnostics.</p>
+</dd>
+    <dt><code>compensation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>An async function that undoes a previous step.
+This function receives a <span class="xref">System.Threading.CancellationToken</span> and should be properly cancellable.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>Optional condition that determines if this compensation should execute.
+If null, the compensation always executes during rollback.
+If provided and returns false, the compensation is skipped.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_System_String_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____examples">Examples</h4>
+  <pre><code class="lang-csharp">// Register named compensation
+saga.RegisterCompensation("FlightCancellation",
+    async ct =&gt; await flightService.CancelAsync(flightId, ct));
+
+// Register conditional compensation (only if payment was captured)
+saga.RegisterCompensation("PaymentReversal",
+    async ct =&gt; await paymentService.ReverseAsync(paymentId, ct),
+    async ct =&gt; await paymentService.IsCapturedAsync(paymentId, ct));</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_RegisterCompensation_System_String_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+**Thread Safety:** This method is not thread-safe. Ensure compensations are registered
+sequentially from a single thread during saga execution.
+</p>
+<p>
+**Timing:** Compensations should be registered immediately after a successful step completes.
+</p>
+<p>
+**Order Matters:** Registration order determines execution order (LIFO during rollback).
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">compensation</code> is null.</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown if <code class="paramref">stepName</code> is null or whitespace.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_SagaScope_RollbackAsync_" data-uid="BridgingIT.DevKit.Common.SagaScope.RollbackAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_RollbackAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.SagaScope.RollbackAsync(System.Threading.CancellationToken)">
+  RollbackAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Rolls back the saga by executing all registered compensations in reverse order (LIFO).</p>
+<p>
+Called automatically by <a class="xref" href="BridgingIT.DevKit.Common.ResultOperationScope-2.html">ResultOperationScope&lt;T, TOperation&gt;</a> when any saga step fails
+or an exception occurs. This method ensures best-effort cleanup of all previous steps,
+even if individual compensation operations fail.
+</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RollbackAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token that can be used to cancel the rollback operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the complete rollback operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_SagaScope_RollbackAsync_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+**Execution Strategy (Best-Effort):**
+1. Executes compensations in reverse registration order (LIFO)
+2. Checks conditions before executing each compensation
+3. If a compensation throws an exception, it is captured but does not stop other compensations
+4. All compensation attempts are counted in <a class="xref" href="BridgingIT.DevKit.Common.SagaScope.html#BridgingIT_DevKit_Common_SagaScope_CompensationExecutedCount">CompensationExecutedCount</a>
+5. Failed compensations are recorded in <a class="xref" href="BridgingIT.DevKit.Common.SagaScope.html#BridgingIT_DevKit_Common_SagaScope_CompensationErrors">CompensationErrors</a>
+</p>
+</div>
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_SagaScope_OnCompensationEvent" data-uid="BridgingIT.DevKit.Common.SagaScope.OnCompensationEvent">
+  OnCompensationEvent
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Occurs when a compensation event happens during saga execution.
+Subscribe to this event for monitoring, alerting, or custom handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event CompensationEventHandler OnCompensationEvent</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.CompensationEventHandler.html">CompensationEventHandler</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

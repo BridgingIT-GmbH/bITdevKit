@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class EnvironmentExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class EnvironmentExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides extension methods and helpers to detect the current hosting environment (local, cloud, containerized, etc.). Useful for conditional startup logic, diagnostics and environment-specific configuration.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions" class="text-break">
+Class EnvironmentExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides extension methods and helpers to detect the current hosting environment (local, cloud, containerized, etc.).
+Useful for conditional startup logic, diagnostics and environment-specific configuration.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class EnvironmentExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">EnvironmentExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzure_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzure" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzure">
+  IsAzure()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in Azure App Service (via <code>WEBSITE_SITE_NAME</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAzure()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzure_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzure_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzure(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsAzure(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in Azure App Service (via <code>WEBSITE_SITE_NAME</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAzure(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzureFunctions_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzureFunctions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzureFunctions" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzureFunctions">
+  IsAzureFunctions()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in Azure Functions (via <code>AZURE_FUNCTIONS_ENVIRONMENT</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAzureFunctions()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzureFunctions_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzureFunctions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsAzureFunctions_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzureFunctions(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsAzureFunctions(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in Azure Functions (via <code>AZURE_FUNCTIONS_ENVIRONMENT</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsAzureFunctions(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsBuildTimeOpenApiGeneration_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsBuildTimeOpenApiGeneration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsBuildTimeOpenApiGeneration" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsBuildTimeOpenApiGeneration">
+  IsBuildTimeOpenApiGeneration()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Detects when the app is running under <strong>OpenAPI build-time document generation</strong>
+(special case for Swagger in .NET 9, see official docs).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsBuildTimeOpenApiGeneration()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsBuildTimeOpenApiGeneration_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This checks whether the entry assembly name is <code>GetDocument.Insider</code>,
+which is used by the tooling when generating OpenAPI docs at build time.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsCloud_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsCloud*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsCloud" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsCloud">
+  IsCloud()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app runs in any cloud environment. Currently only checks for Azure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsCloud()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsCloud_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsCloud*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsCloud_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsCloud(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsCloud(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app runs in any cloud environment. Currently only checks for Azure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsCloud(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsContainerized_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsContainerized*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsContainerized" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsContainerized">
+  IsContainerized()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is containerized (Docker or Kubernetes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsContainerized()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsContainerized_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsContainerized*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsContainerized_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsContainerized(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsContainerized(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is containerized (Docker or Kubernetes).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsContainerized(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsDocker_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsDocker*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsDocker" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsDocker">
+  IsDocker()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in a Docker container (via <code>DOTNET_RUNNING_IN_CONTAINER</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsDocker()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsDocker_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsDocker*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsDocker_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsDocker(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsDocker(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in a Docker container (via <code>DOTNET_RUNNING_IN_CONTAINER</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsDocker(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsKubernetes_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsKubernetes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsKubernetes" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsKubernetes">
+  IsKubernetes()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in Kubernetes (via <code>KUBERNETES_SERVICE_HOST</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsKubernetes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsKubernetes_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsKubernetes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsKubernetes_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsKubernetes(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsKubernetes(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the app is currently running in Kubernetes (via <code>KUBERNETES_SERVICE_HOST</code> env var).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsKubernetes(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsLocalDevelopment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsLocalDevelopment*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsLocalDevelopment_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsLocalDevelopment(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsLocalDevelopment(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the host environment is local development.
+True if IHostEnvironment.IsDevelopment, not cloud, not containerized,
+or if the app is running under OpenAPI build-time doc generation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsLocalDevelopment(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsTesting_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsTesting*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_EnvironmentExtensions_IsTesting_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsTesting(Microsoft.Extensions.Hosting.IHostEnvironment)">
+  IsTesting(IHostEnvironment)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the environment represents a testing context.
+Matches &quot;Testing&quot;, &quot;Test&quot; or IHostEnvironment.IsStaging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsTesting(this IHostEnvironment env)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>env</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

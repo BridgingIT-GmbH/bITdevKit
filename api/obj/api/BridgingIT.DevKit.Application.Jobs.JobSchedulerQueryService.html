@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class JobSchedulerQueryService | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class JobSchedulerQueryService | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides provider-neutral Jobs query operations over active registrations and persisted scheduler state.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService" class="text-break">
+Class JobSchedulerQueryService  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Jobs.html">Jobs</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Jobs.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides provider-neutral Jobs query operations over active registrations and persisted scheduler state.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class JobSchedulerQueryService : IJobSchedulerQueryService</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">JobSchedulerQueryService</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryService.html">IJobSchedulerQueryService</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService__ctor_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService__ctor_BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_BridgingIT_DevKit_Application_Jobs_IJobStoreProvider_System_TimeProvider_BridgingIT_DevKit_Application_Jobs_IJobCronEngine_BridgingIT_DevKit_Application_Jobs_IJobCalendarEngine_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.#ctor(BridgingIT.DevKit.Application.Jobs.JobRegistrationStore,BridgingIT.DevKit.Application.Jobs.IJobStoreProvider,System.TimeProvider,BridgingIT.DevKit.Application.Jobs.IJobCronEngine,BridgingIT.DevKit.Application.Jobs.IJobCalendarEngine)">
+  JobSchedulerQueryService(JobRegistrationStore, IJobStoreProvider, TimeProvider, IJobCronEngine, IJobCalendarEngine)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides provider-neutral Jobs query operations over active registrations and persisted scheduler state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public JobSchedulerQueryService(JobRegistrationStore registrations, IJobStoreProvider stores, TimeProvider timeProvider, IJobCronEngine cronEngine, IJobCalendarEngine calendarEngine)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>registrations</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.html">JobRegistrationStore</a></dt>
+    <dd></dd>
+    <dt><code>stores</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobStoreProvider.html">IJobStoreProvider</a></dt>
+    <dd></dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+    <dt><code>cronEngine</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCronEngine.html">IJobCronEngine</a></dt>
+    <dd></dd>
+    <dt><code>calendarEngine</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCalendarEngine.html">IJobCalendarEngine</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardNavigationAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardNavigationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardNavigationAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardNavigationAsync(System.Threading.CancellationToken)">
+  GetDashboardNavigationAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;JobSchedulerDashboardNavigationModel&gt;&gt; GetDashboardNavigationAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardNavigationModel.html">JobSchedulerDashboardNavigationModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardOverviewAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardOverviewAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardOverviewAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardOverviewAsync(System.Threading.CancellationToken)">
+  GetDashboardOverviewAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;JobSchedulerDashboardOverviewModel&gt;&gt; GetDashboardOverviewAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardOverviewModel.html">JobSchedulerDashboardOverviewModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardSummaryAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardSummaryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardSummaryAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerDashboardSummaryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardSummaryAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardSummaryRequest,System.Threading.CancellationToken)">
+  GetDashboardSummaryAsync(JobSchedulerDashboardSummaryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;JobSchedulerDashboardSummaryModel&gt;&gt; GetDashboardSummaryAsync(JobSchedulerDashboardSummaryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardSummaryRequest.html">JobSchedulerDashboardSummaryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardSummaryModel.html">JobSchedulerDashboardSummaryModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardTimelineAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardTimelineAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetDashboardTimelineAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerTimelineRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetDashboardTimelineAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineRequest,System.Threading.CancellationToken)">
+  GetDashboardTimelineAsync(JobSchedulerTimelineRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;JobSchedulerTimelineModel&gt;&gt; GetDashboardTimelineAsync(JobSchedulerTimelineRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineRequest.html">JobSchedulerTimelineRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineModel.html">JobSchedulerTimelineModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetMetricsAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetMetricsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_GetMetricsAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerMetricsRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.GetMetricsAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerMetricsRequest,System.Threading.CancellationToken)">
+  GetMetricsAsync(JobSchedulerMetricsRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;JobSchedulerMetricsModel&gt;&gt; GetMetricsAsync(JobSchedulerMetricsRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerMetricsRequest.html">JobSchedulerMetricsRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerMetricsModel.html">JobSchedulerMetricsModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryBatchHistoryAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryBatchHistoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryBatchHistoryAsync_System_String_BridgingIT_DevKit_Application_Jobs_JobSchedulerBatchHistoryQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryBatchHistoryAsync(System.String,BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchHistoryQueryRequest,System.Threading.CancellationToken)">
+  QueryBatchHistoryAsync(string, JobSchedulerBatchHistoryQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerBatchHistoryModel&gt;&gt; QueryBatchHistoryAsync(string batchId, JobSchedulerBatchHistoryQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchHistoryQueryRequest.html">JobSchedulerBatchHistoryQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchHistoryModel.html">JobSchedulerBatchHistoryModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryBatchOccurrencesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryBatchOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryBatchOccurrencesAsync_System_String_BridgingIT_DevKit_Application_Jobs_JobSchedulerBatchOccurrenceQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryBatchOccurrencesAsync(System.String,BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchOccurrenceQueryRequest,System.Threading.CancellationToken)">
+  QueryBatchOccurrencesAsync(string, JobSchedulerBatchOccurrenceQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerBatchChildOccurrenceModel&gt;&gt; QueryBatchOccurrencesAsync(string batchId, JobSchedulerBatchOccurrenceQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchOccurrenceQueryRequest.html">JobSchedulerBatchOccurrenceQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchChildOccurrenceModel.html">JobSchedulerBatchChildOccurrenceModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryBatchesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryBatchesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryBatchesAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerBatchQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryBatchesAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchQueryRequest,System.Threading.CancellationToken)">
+  QueryBatchesAsync(JobSchedulerBatchQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerBatchModel&gt;&gt; QueryBatchesAsync(JobSchedulerBatchQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchQueryRequest.html">JobSchedulerBatchQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchModel.html">JobSchedulerBatchModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryDependenciesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryDependenciesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryDependenciesAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerDependencyQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryDependenciesAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerDependencyQueryRequest,System.Threading.CancellationToken)">
+  QueryDependenciesAsync(JobSchedulerDependencyQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerDependencyModel&gt;&gt; QueryDependenciesAsync(JobSchedulerDependencyQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDependencyQueryRequest.html">JobSchedulerDependencyQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDependencyModel.html">JobSchedulerDependencyModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryExecutionHistoryAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryExecutionHistoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryExecutionHistoryAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerExecutionHistoryQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryExecutionHistoryAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionHistoryQueryRequest,System.Threading.CancellationToken)">
+  QueryExecutionHistoryAsync(JobSchedulerExecutionHistoryQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerExecutionHistoryModel&gt;&gt; QueryExecutionHistoryAsync(JobSchedulerExecutionHistoryQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionHistoryQueryRequest.html">JobSchedulerExecutionHistoryQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionHistoryModel.html">JobSchedulerExecutionHistoryModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryExecutionsAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryExecutionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryExecutionsAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerExecutionQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryExecutionsAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionQueryRequest,System.Threading.CancellationToken)">
+  QueryExecutionsAsync(JobSchedulerExecutionQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerExecutionModel&gt;&gt; QueryExecutionsAsync(JobSchedulerExecutionQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionQueryRequest.html">JobSchedulerExecutionQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionModel.html">JobSchedulerExecutionModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryJobsAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryJobsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryJobsAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerJobQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryJobsAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerJobQueryRequest,System.Threading.CancellationToken)">
+  QueryJobsAsync(JobSchedulerJobQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerJobModel&gt;&gt; QueryJobsAsync(JobSchedulerJobQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerJobQueryRequest.html">JobSchedulerJobQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerJobModel.html">JobSchedulerJobModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryLeasesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryLeasesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryLeasesAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerLeaseQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryLeasesAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerLeaseQueryRequest,System.Threading.CancellationToken)">
+  QueryLeasesAsync(JobSchedulerLeaseQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerLeaseModel&gt;&gt; QueryLeasesAsync(JobSchedulerLeaseQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerLeaseQueryRequest.html">JobSchedulerLeaseQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerLeaseModel.html">JobSchedulerLeaseModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryOccurrencesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryOccurrencesAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerOccurrenceQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryOccurrencesAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceQueryRequest,System.Threading.CancellationToken)">
+  QueryOccurrencesAsync(JobSchedulerOccurrenceQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerOccurrenceModel&gt;&gt; QueryOccurrencesAsync(JobSchedulerOccurrenceQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceQueryRequest.html">JobSchedulerOccurrenceQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceModel.html">JobSchedulerOccurrenceModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryRecurringTriggersAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryRecurringTriggersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryRecurringTriggersAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerRecurringTriggerQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryRecurringTriggersAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerRecurringTriggerQueryRequest,System.Threading.CancellationToken)">
+  QueryRecurringTriggersAsync(JobSchedulerRecurringTriggerQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerRecurringTriggerModel&gt;&gt; QueryRecurringTriggersAsync(JobSchedulerRecurringTriggerQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRecurringTriggerQueryRequest.html">JobSchedulerRecurringTriggerQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRecurringTriggerModel.html">JobSchedulerRecurringTriggerModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryRetriesAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryRetriesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryRetriesAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerRetryQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryRetriesAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerRetryQueryRequest,System.Threading.CancellationToken)">
+  QueryRetriesAsync(JobSchedulerRetryQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerRetryModel&gt;&gt; QueryRetriesAsync(JobSchedulerRetryQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRetryQueryRequest.html">JobSchedulerRetryQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRetryModel.html">JobSchedulerRetryModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryServersAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryServersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryServersAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerServerQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryServersAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerServerQueryRequest,System.Threading.CancellationToken)">
+  QueryServersAsync(JobSchedulerServerQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerServerModel&gt;&gt; QueryServersAsync(JobSchedulerServerQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerServerQueryRequest.html">JobSchedulerServerQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerServerModel.html">JobSchedulerServerModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryTriggersAsync_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryTriggersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerQueryService_QueryTriggersAsync_BridgingIT_DevKit_Application_Jobs_JobSchedulerTriggerQueryRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.QueryTriggersAsync(BridgingIT.DevKit.Application.Jobs.JobSchedulerTriggerQueryRequest,System.Threading.CancellationToken)">
+  QueryTriggersAsync(JobSchedulerTriggerQueryRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ResultPaged&lt;JobSchedulerTriggerModel&gt;&gt; QueryTriggersAsync(JobSchedulerTriggerQueryRequest request = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTriggerQueryRequest.html">JobSchedulerTriggerQueryRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTriggerModel.html">JobSchedulerTriggerModel</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class HostFeatureEndpointCollection | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class HostFeatureEndpointCollection | bITdevKit API Reference ">
+      
+      <meta name="description" content="Contains host-advertised feature endpoint metadata keyed by feature name.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.HostFeatureEndpointCollection">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_HostFeatureEndpointCollection" data-uid="BridgingIT.DevKit.Common.HostFeatureEndpointCollection" class="text-break">
+Class HostFeatureEndpointCollection  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Contains host-advertised feature endpoint metadata keyed by feature name.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class HostFeatureEndpointCollection : Dictionary&lt;string, HostFeatureEndpointMetadata&gt;</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <a class="xref" href="BridgingIT.DevKit.Common.HostFeatureEndpointMetadata.html">HostFeatureEndpointMetadata</a>&gt;</div>
+      <div><span class="xref">HostFeatureEndpointCollection</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_Merge__2_System_Collections_Generic_Dictionary___0___1__System_Collections_Generic_Dictionary___0___1__">Extensions.Merge&lt;TKey, TValue&gt;(Dictionary&lt;TKey, TValue&gt;, Dictionary&lt;TKey, TValue&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfAll__1_System_Collections_Generic_ICollection___0____0_System_Func___0_System_Boolean____">ConditionalCollectionExtensions.AddIfAll&lt;T&gt;(ICollection&lt;T&gt;, T, params Func&lt;T, bool&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfAny__1_System_Collections_Generic_ICollection___0____0_System_Func___0_System_Boolean____">ConditionalCollectionExtensions.AddIfAny&lt;T&gt;(ICollection&lt;T&gt;, T, params Func&lt;T, bool&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfNotNull__1_System_Collections_Generic_ICollection___0____0_">ConditionalCollectionExtensions.AddIfNotNull&lt;T&gt;(ICollection&lt;T&gt;, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfUnique__1_System_Collections_Generic_ICollection___0____0_System_Collections_Generic_IEqualityComparer___0__">ConditionalCollectionExtensions.AddIfUnique&lt;T&gt;(ICollection&lt;T&gt;, T, IEqualityComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIf__1_System_Collections_Generic_ICollection___0____0_System_Boolean_">ConditionalCollectionExtensions.AddIf&lt;T&gt;(ICollection&lt;T&gt;, T, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIf__1_System_Collections_Generic_ICollection___0____0_System_Func___0_System_Boolean__">ConditionalCollectionExtensions.AddIf&lt;T&gt;(ICollection&lt;T&gt;, T, Func&lt;T, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalCollectionExtensions.html#BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddRangeIf__1_System_Collections_Generic_ICollection___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalCollectionExtensions.AddRangeIf&lt;T&gt;(ICollection&lt;T&gt;, IEnumerable&lt;T&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ForEachAsync__1_System_Collections_Generic_ICollection___0__System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">Extensions.ForEachAsync&lt;T&gt;(ICollection&lt;T&gt;, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ForEach__1_System_Collections_Generic_ICollection___0__System_Action___0__System_Threading_CancellationToken_">Extensions.ForEach&lt;T&gt;(ICollection&lt;T&gt;, Action&lt;T&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty__1_System_Collections_Generic_ICollection___0__">Extensions.IsNullOrEmpty&lt;TSource&gt;(ICollection&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeNull__1_System_Collections_Generic_ICollection___0__">Extensions.SafeNull&lt;TSource&gt;(ICollection&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeRemove__1_System_Collections_Generic_ICollection___0____0_">Extensions.SafeRemove&lt;T&gt;(ICollection&lt;T&gt;, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeWhere__1_System_Collections_Generic_ICollection___0__System_Func___0_System_Boolean__">Extensions.SafeWhere&lt;TSource&gt;(ICollection&lt;TSource&gt;, Func&lt;TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ListExtensions.html#BridgingIT_DevKit_Common_ListExtensions_AddOrUpdate__1_System_Collections_Generic_ICollection___0____0_">ListExtensions.AddOrUpdate&lt;T&gt;(ICollection&lt;T&gt;, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddIfAll__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Func___1_System_Boolean____">DictionaryExtensions.AddIfAll&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue, params Func&lt;TValue, bool&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddIfAny__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Func___1_System_Boolean____">DictionaryExtensions.AddIfAny&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue, params Func&lt;TValue, bool&gt;[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddIfNotNull__2_System_Collections_Generic_IDictionary___0___1____0___1_">DictionaryExtensions.AddIfNotNull&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddIfUnique__2_System_Collections_Generic_IDictionary___0___1____0___1_">DictionaryExtensions.AddIfUnique&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddIf__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Boolean_">DictionaryExtensions.AddIf&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddIf__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Func___1_System_Boolean__">DictionaryExtensions.AddIf&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue, Func&lt;TValue, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddOrUpdate__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IDictionary___0___1__">DictionaryExtensions.AddOrUpdate&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, IDictionary&lt;TKey, TValue&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddOrUpdate__2_System_Collections_Generic_IDictionary___0___1____0___1_">DictionaryExtensions.AddOrUpdate&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_AddRangeIf__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair___0___1___System_Boolean_">DictionaryExtensions.AddRangeIf&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_ContainsKeyIgnoreCase__1_System_Collections_Generic_IDictionary_System_String___0__System_String_">DictionaryExtensions.ContainsKeyIgnoreCase&lt;TValue&gt;(IDictionary&lt;string, TValue&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_GetValueOrDefault__2_System_Collections_Generic_IDictionary___0___1____0___1_">DictionaryExtensions.GetValueOrDefault&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey, TValue)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_GetValue__2_System_Collections_Generic_IDictionary___0___1____0_">DictionaryExtensions.GetValue&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ExcludeNull__2_System_Collections_Generic_IDictionary___0___1__">Extensions.ExcludeNull&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeNull__2_System_Collections_Generic_IDictionary___0___1__">Extensions.SafeNull&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeRemove__2_System_Collections_Generic_IDictionary___0___1____0_">Extensions.SafeRemove&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeWhere__2_System_Collections_Generic_IDictionary___0___1__System_Func_System_Collections_Generic_KeyValuePair___0___1__System_Boolean__">Extensions.SafeWhere&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, Func&lt;KeyValuePair&lt;TKey, TValue&gt;, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_AllIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.AllIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_AllIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.AllIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_AnyIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.AnyIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_AnyIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.AnyIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_AverageIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Func___0_System_Double__System_Boolean_">ConditionalLinqExtensions.AverageIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, Func&lt;TSource, double&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_AverageIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Boolean_">ConditionalLinqExtensions.AverageIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ConcatIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ConcatIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ConcatIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ConcatIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_CountIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.CountIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_CountIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.CountIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_DistinctIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__System_Collections_Generic_IEqualityComparer___0__System_Boolean_">ConditionalLinqExtensions.DistinctIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_DistinctIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.DistinctIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ElementAtOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_System_Boolean_">ConditionalLinqExtensions.ElementAtOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, int, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ElementAtOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Boolean_">ConditionalLinqExtensions.ElementAtOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ExceptIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ExceptIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ExceptIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ExceptIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_FirstOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.FirstOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_FirstOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.FirstOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIfElse__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___0___2__System_Func___1___2__System_Func___1___2__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Boolean_">ConditionalLinqExtensions.GroupJoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIf__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___1___2__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Boolean_">ConditionalLinqExtensions.GroupJoinIf&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_IntersectIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.IntersectIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_IntersectIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.IntersectIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIfElse__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___0___2__System_Func___1___2__System_Func___1___2__System_Func___0___1___3__System_Func___0___1___3__System_Boolean_">ConditionalLinqExtensions.JoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, TInner, TResult&gt;, Func&lt;TOuter, TInner, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIf__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___1___2__System_Func___0___1___3__System_Boolean_">ConditionalLinqExtensions.JoinIf&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, TInner, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_LastOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.LastOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_LastOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.LastOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_MaxIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.MaxIfElse&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, Func&lt;TSource, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_MaxIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.MaxIf&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_MinIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.MinIfElse&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, Func&lt;TSource, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_MinIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.MinIf&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByDescendingIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.OrderByDescendingIfElse&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByDescendingIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.OrderByDescendingIf&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.OrderByIfElse&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.OrderByIf&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ReverseIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ReverseIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SelectIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.SelectIfElse&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, Func&lt;TSource, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SelectIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_">ConditionalLinqExtensions.SelectIf&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SingleOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.SingleOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SingleOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.SingleOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SkipIfElse__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_System_Boolean_">ConditionalLinqExtensions.SkipIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, int, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SkipIf__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Boolean_">ConditionalLinqExtensions.SkipIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SumIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Func___0_System_Double__System_Boolean_">ConditionalLinqExtensions.SumIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, Func&lt;TSource, double&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_SumIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Boolean_">ConditionalLinqExtensions.SumIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_TakeIfElse__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_System_Boolean_">ConditionalLinqExtensions.TakeIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, int, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_TakeIf__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Boolean_">ConditionalLinqExtensions.TakeIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ToArrayIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ToArrayIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ToListIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.ToListIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_UnionIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.UnionIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_UnionIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_">ConditionalLinqExtensions.UnionIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_WhereIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.WhereIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_WhereIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_">ConditionalLinqExtensions.WhereIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIfElse__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__System_Func___0___1___2__System_Boolean_">ConditionalLinqExtensions.ZipIfElse&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;, Func&lt;TFirst, TSecond, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ConditionalLinqExtensions.html#BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIf__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__System_Boolean_">ConditionalLinqExtensions.ZipIf&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;, bool)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.EnumerableExtensions.html#BridgingIT_DevKit_Common_EnumerableExtensions_Add__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__">EnumerableExtensions.Add&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.EnumerableExtensions.html#BridgingIT_DevKit_Common_EnumerableExtensions_Add__1_System_Collections_Generic_IEnumerable___0____0_">EnumerableExtensions.Add&lt;T&gt;(IEnumerable&lt;T&gt;, T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.EnumerableExtensions.html#BridgingIT_DevKit_Common_EnumerableExtensions_InsertRange__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Int32_">EnumerableExtensions.InsertRange&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.EnumerableExtensions.html#BridgingIT_DevKit_Common_EnumerableExtensions_Insert__1_System_Collections_Generic_IEnumerable___0____0_System_Int32_">EnumerableExtensions.Insert&lt;T&gt;(IEnumerable&lt;T&gt;, T, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.EnumerableExtensions.html#BridgingIT_DevKit_Common_EnumerableExtensions_ToAsyncEnumerable__1_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_">EnumerableExtensions.ToAsyncEnumerable&lt;T&gt;(IEnumerable&lt;T&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_Batch__1_System_Collections_Generic_IEnumerable___0__System_Int32_">Extensions.Batch&lt;T&gt;(IEnumerable&lt;T&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__">Extensions.ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_DistinctIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Object__">Extensions.DistinctIf&lt;TProjection&gt;(IEnumerable&lt;TProjection&gt;, Func&lt;TProjection, object&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_EmptyToNull__1_System_Collections_Generic_IEnumerable___0__">Extensions.EmptyToNull&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">Extensions.ForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ForEachParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_System_Int32_">Extensions.ForEachParallelAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, int, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__System_Threading_CancellationToken_">Extensions.ForEach&lt;T&gt;(IEnumerable&lt;T&gt;, Action&lt;T&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Action___0__System_Threading_CancellationToken_">Extensions.ForEach&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, IEnumerable&lt;T&gt;&gt;, Action&lt;T&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__">Extensions.IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__">Extensions.Merge&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__">Extensions.ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_">Extensions.ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, int)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_System_Threading_CancellationToken_">Extensions.ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, int, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">Extensions.ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_Partition__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__">Extensions.Partition&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeAny__1_System_Collections_Generic_IEnumerable___0__">Extensions.SafeAny&lt;T&gt;(IEnumerable&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeAny__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__">Extensions.SafeAny&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeNull__1_System_Collections_Generic_IEnumerable___0__">Extensions.SafeNull&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_SafeWhere__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__">Extensions.SafeWhere&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToHierarchy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0_System_Nullable___1___">Extensions.ToHierarchy&lt;T, TKey&gt;(IEnumerable&lt;T&gt;, Func&lt;T, TKey&gt;, Func&lt;T, TKey?&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToString__1_System_Collections_Generic_IEnumerable___0__System_Char_">Extensions.ToString&lt;T&gt;(IEnumerable&lt;T&gt;, char)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToString__1_System_Collections_Generic_IEnumerable___0__System_String_">Extensions.ToString&lt;T&gt;(IEnumerable&lt;T&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_FindValueAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Threading_CancellationToken_">LinqFluentExtensions.FindValueAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_FindValueAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task_System_Boolean___System_Threading_CancellationToken_">LinqFluentExtensions.FindValueAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&lt;bool&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_FindValue__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__">LinqFluentExtensions.FindValue&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, bool&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DictionaryExtensions.html#BridgingIT_DevKit_Common_DictionaryExtensions_GetValue__2_System_Collections_Generic_IReadOnlyDictionary___0___1____0_">DictionaryExtensions.GetValue&lt;TKey, TValue&gt;(IReadOnlyDictionary&lt;TKey, TValue&gt;, TKey)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_HostFeatureEndpointCollection_examples">Examples</h2>
+  <pre><code class="lang-csharp">var features = new HostFeatureEndpointCollection { ["consoleCommands"] = endpoint };</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_HostFeatureEndpointCollection__ctor_" data-uid="BridgingIT.DevKit.Common.HostFeatureEndpointCollection.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_HostFeatureEndpointCollection__ctor" data-uid="BridgingIT.DevKit.Common.HostFeatureEndpointCollection.#ctor">
+  HostFeatureEndpointCollection()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.HostFeatureEndpointCollection.html">HostFeatureEndpointCollection</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public HostFeatureEndpointCollection()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

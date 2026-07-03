@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CosmosSqlGenericRepository&lt;TEntity, TDatabaseEntity&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CosmosSqlGenericRepository&lt;TEntity, TDatabaseEntity&gt; | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2" class="text-break">
+Class CosmosSqlGenericRepository&lt;TEntity, TDatabaseEntity&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.html">Azure</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.Azure.Cosmos.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CosmosSqlGenericRepository&lt;TEntity, TDatabaseEntity&gt; : IGenericRepository&lt;TEntity&gt;, IGenericReadOnlyRepository&lt;TEntity&gt;, IRepository where TEntity : class, IEntity where TDatabaseEntity : class</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+    <dt><code>TDatabaseEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CosmosSqlGenericRepository&lt;TEntity, TDatabaseEntity&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericRepository-1.html">IGenericRepository</a>&lt;TEntity&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IRepository.html">IRepository</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryWrapper-3.html">CosmosSqlRepositoryWrapper&lt;TEntity, TProvider, TDatabaseEntity&gt;</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2__ctor_BridgingIT_DevKit_Common_Builder_BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlRepositoryOptionsBuilder__0__1__BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlRepositoryOptions__0__1___" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.#ctor(BridgingIT.DevKit.Common.Builder{BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptionsBuilder{`0,`1},BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptions{`0,`1}})">
+  CosmosSqlGenericRepository(Builder&lt;CosmosSqlRepositoryOptionsBuilder&lt;TEntity, TDatabaseEntity&gt;, CosmosSqlRepositoryOptions&lt;TEntity, TDatabaseEntity&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CosmosSqlGenericRepository(Builder&lt;CosmosSqlRepositoryOptionsBuilder&lt;TEntity, TDatabaseEntity&gt;, CosmosSqlRepositoryOptions&lt;TEntity, TDatabaseEntity&gt;&gt; optionsBuilder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>optionsBuilder</code> <a class="xref" href="BridgingIT.DevKit.Common.Builder-2.html">Builder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptionsBuilder-2.html">CosmosSqlRepositoryOptionsBuilder</a>&lt;TEntity, TDatabaseEntity&gt;, <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptions-2.html">CosmosSqlRepositoryOptions</a>&lt;TEntity, TDatabaseEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2__ctor_BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlRepositoryOptions__0__1__" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.#ctor(BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptions{`0,`1})">
+  CosmosSqlGenericRepository(CosmosSqlRepositoryOptions&lt;TEntity, TDatabaseEntity&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CosmosSqlGenericRepository(CosmosSqlRepositoryOptions&lt;TEntity, TDatabaseEntity&gt; options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptions-2.html">CosmosSqlRepositoryOptions</a>&lt;TEntity, TDatabaseEntity&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2__ctor_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider__1__BridgingIT_DevKit_Domain_Repositories_IEntityMapper_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider{`1},BridgingIT.DevKit.Domain.Repositories.IEntityMapper)">
+  CosmosSqlGenericRepository(ILoggerFactory, ICosmosSqlProvider&lt;TDatabaseEntity&gt;, IEntityMapper)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CosmosSqlGenericRepository(ILoggerFactory loggerFactory, ICosmosSqlProvider&lt;TDatabaseEntity&gt; provider, IEntityMapper mapper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd></dd>
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider-1.html">ICosmosSqlProvider</a>&lt;TDatabaseEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>mapper</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityMapper.html">IEntityMapper</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_Logger_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.Logger*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_Logger" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.Logger">
+  Logger
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ILogger&lt;CosmosSqlGenericRepository&lt;TEntity, TDatabaseEntity&gt;&gt; Logger { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository-2.html">CosmosSqlGenericRepository</a>&lt;TEntity, TDatabaseEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_Options_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.Options*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_Options" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.Options">
+  Options
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected CosmosSqlRepositoryOptions&lt;TEntity, TDatabaseEntity&gt; Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlRepositoryOptions-2.html">CosmosSqlRepositoryOptions</a>&lt;TEntity, TDatabaseEntity&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_Provider_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.Provider*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_Provider" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.Provider">
+  Provider
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ICosmosSqlProvider&lt;TDatabaseEntity&gt; Provider { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider-1.html">ICosmosSqlProvider</a>&lt;TDatabaseEntity&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_CountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.CountAsync(BridgingIT.DevKit.Domain.ISpecification{`0},System.Threading.CancellationToken)">
+  CountAsync(ISpecification&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the specified criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; CountAsync(ISpecification&lt;TEntity&gt; specification, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The criteria that entities must satisfy to be counted.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the count of entities that satisfy
+the specified criteria.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_CountAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.CountAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Threading.CancellationToken)">
+  CountAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the provided specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; CountAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_CountAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.CountAsync(System.Threading.CancellationToken)">
+  CountAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the total number of entities of type TEntity in the repository.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; CountAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous count operation. The task result contains the total count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteAsync_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteAsync(System.Object,System.Threading.CancellationToken)">
+  DeleteAsync(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the entity for the provided id.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;RepositoryActionResult&gt; DeleteAsync(object id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd><p>The entity id to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteAsync(`0,System.Threading.CancellationToken)">
+  DeleteAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the provided entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;RepositoryActionResult&gt; DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to delete.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteSetAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteSetAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  DeleteSetAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes all entities matching the specified specification in a single set-based operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; DeleteSetAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification used to filter the entities that should be deleted.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options used to shape the delete operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the number of affected entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteSetAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteSetAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  DeleteSetAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes all entities in the repository in a single set-based operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; DeleteSetAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options used to shape the delete operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the number of affected entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_DeleteSetAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.DeleteSetAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  DeleteSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes all entities matching the specified specifications in a single set-based operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; DeleteSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications used to filter the entities that should be deleted.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options used to shape the delete operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the number of affected entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ExistsAsync_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ExistsAsync(System.Object,System.Threading.CancellationToken)">
+  ExistsAsync(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if an entity with the specified identifier exists in the repository.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;bool&gt; ExistsAsync(object id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd><p>The identifier of the entity to check for existence.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a boolean value indicating whether
+the entity exists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindAllAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindAllAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities that match the specified criteria asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TEntity&gt;&gt; FindAllAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options for querying the entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable of entities that
+match the specification.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindAllAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves all entities of type <code class="typeparamref">TEntity</code> based on the specified find options
+and cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TEntity&gt;&gt; FindAllAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>An optional set of criteria to filter and sort the results.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable collection of
+entities of type <code class="typeparamref">TEntity</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindAllAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindAllAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities that match the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TEntity&gt;&gt; FindAllAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to apply additional query customization.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a collection of entities that
+match the given specifications.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindOneAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a single entity that matches the specified criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; FindOneAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification that defines the criteria for the entity to be found.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the search behavior.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd><p>A task that represents the asynchronous find operation. The task result contains the found entity, or null if
+no entity matches the criteria.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindOneAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a single entity of type <code class="typeparamref">TEntity</code> based on the specified
+specifications and find options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; FindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of criteria used to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to modify query behavior, such as sorting. If null, default options are
+used.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a single entity of type
+<code class="typeparamref">TEntity</code> if found; otherwise, null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_FindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.FindOneAsync(System.Object,BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(object, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds a single entity by its identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; FindOneAsync(object id, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd><p>The identifier of the entity.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options for finding the entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd><p>A Task that represents the asynchronous operation. The task result contains the found entity,
+or null if no entity with the given identifier is found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_InsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.InsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_InsertAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.InsertAsync(`0,System.Threading.CancellationToken)">
+  InsertAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inserts the provided entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; InsertAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to insert.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ProjectAllAsync``1(BridgingIT.DevKit.Domain.ISpecification{`0},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects all entities of type <code class="typeparamref">TEntity</code> to a specified projection type based
+on the given specification, projection expression, options, and cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TProjection&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt; specification, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification that entities must satisfy.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection of entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional criteria for filtering and sorting results.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable collection of
+projected entities of type <code class="typeparamref">TProjection</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to which the entities will be projected.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ProjectAllAsync``1(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities that match the given specifications to a new form as specified by the projection expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TProjection&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of specifications that entities must satisfy.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>An expression that defines the projection from the entity to the new form.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize query behavior.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a collection of projected
+entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project each entity to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_ProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.ProjectAllAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities of type <code class="typeparamref">TEntity</code> to a collection of type
+<code class="typeparamref">TProjection</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TProjection&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>Expression defining the projection of <code class="typeparamref">TEntity</code> to
+<code class="typeparamref">TProjection</code>.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional parameters for customizing the find operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation, containing the projected collection of type
+<code class="typeparamref">TProjection</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to which entities should be projected.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateAsync(`0,System.Threading.CancellationToken)">
+  UpdateAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the provided entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateSetAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateSetAsync(BridgingIT.DevKit.Domain.ISpecification{`0},System.Action{BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  UpdateSetAsync(ISpecification&lt;TEntity&gt;, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates all entities matching the specified specification by applying the specified property assignments in a set-based operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; UpdateSetAsync(ISpecification&lt;TEntity&gt; specification, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt; set, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification used to filter the entities that should be updated.</p>
+</dd>
+    <dt><code>set</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet-1.html">IEntityUpdateSet</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The builder action that defines which properties are updated and how their values are assigned.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options used to shape the update operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the number of affected entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateSetAsync_System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateSetAsync(System.Action{BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  UpdateSetAsync(Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates all entities in the repository by applying the specified property assignments in a set-based operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; UpdateSetAsync(Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt; set, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>set</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet-1.html">IEntityUpdateSet</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The builder action that defines which properties are updated and how their values are assigned.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options used to shape the update operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the number of affected entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateSetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpdateSetAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Action_BridgingIT_DevKit_Domain_Repositories_IEntityUpdateSet__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpdateSetAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Action{BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  UpdateSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates all entities matching the specified specifications by applying the specified property assignments in a set-based operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; UpdateSetAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Action&lt;IEntityUpdateSet&lt;TEntity&gt;&gt; set, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications used to filter the entities that should be updated.</p>
+</dd>
+    <dt><code>set</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityUpdateSet-1.html">IEntityUpdateSet</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The builder action that defines which properties are updated and how their values are assigned.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional query options used to shape the update operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the number of affected entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_2_UpsertAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepository`2.UpsertAsync(`0,System.Threading.CancellationToken)">
+  UpsertAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Insert or updates the provided entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;(TEntity entity, RepositoryActionResult action)&gt; UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity to insert or update.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;(TEntity <span class="xref">entity</span>, <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a> <span class="xref">action</span>)&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

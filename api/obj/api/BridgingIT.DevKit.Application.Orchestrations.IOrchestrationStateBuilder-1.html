@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IOrchestrationStateBuilder&lt;TData&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IOrchestrationStateBuilder&lt;TData&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides the fluent authoring surface for a single orchestration state.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1" class="text-break">
+Interface IOrchestrationStateBuilder&lt;TData&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.html">Orchestrations</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Orchestrations.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides the fluent authoring surface for a single orchestration state.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IOrchestrationStateBuilder&lt;TData&gt; where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_ApprovalActivity__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationApprovalActivityBuilder___0___System_String_">OrchestrationWorkflowExtensions.ApprovalActivity&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationApprovalActivityBuilder&lt;TData&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_CommandActivity__3_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationRequestActivityBuilder___0___1___2___System_String_">OrchestrationWorkflowExtensions.CommandActivity&lt;TData, TRequest, TValue&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationRequestActivityBuilder&lt;TData, TRequest, TValue&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_DecisionActivity__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Func_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0__BridgingIT_DevKit_Application_Orchestrations_OrchestrationOutcome__System_String_">OrchestrationWorkflowExtensions.DecisionActivity&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Func&lt;OrchestrationContext&lt;TData&gt;, OrchestrationOutcome&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_ExecutePipelineActivity__2_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationPipelineActivityBuilder___0___1___System_String_">OrchestrationWorkflowExtensions.ExecutePipelineActivity&lt;TData, TPipelineContext&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_ExecutePipelineActivity__3_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationPipelineActivityBuilder___0___2___System_String_">OrchestrationWorkflowExtensions.ExecutePipelineActivity&lt;TData, TPipelineDefinition, TPipelineContext&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_HumanTaskActivity__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationHumanTaskActivityBuilder___0___System_String_">OrchestrationWorkflowExtensions.HumanTaskActivity&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationHumanTaskActivityBuilder&lt;TData&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_LogActivity__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Func_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0__System_String__Microsoft_Extensions_Logging_LogLevel_System_String_">OrchestrationWorkflowExtensions.LogActivity&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Func&lt;OrchestrationContext&lt;TData&gt;, string&gt;, LogLevel, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_Loop__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_String_System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationLoopBuilder___0___">OrchestrationWorkflowExtensions.Loop&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, string, Action&lt;IOrchestrationLoopBuilder&lt;TData&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_Parallel__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationParallelBuilder___0___System_String_">OrchestrationWorkflowExtensions.Parallel&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationParallelBuilder&lt;TData&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_PublishMessageActivity__2_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationMessageActivityBuilder___0___1___System_String_">OrchestrationWorkflowExtensions.PublishMessageActivity&lt;TData, TMessage&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationMessageActivityBuilder&lt;TData, TMessage&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_PublishNotificationActivity__2_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationNotificationActivityBuilder___0___1___System_String_">OrchestrationWorkflowExtensions.PublishNotificationActivity&lt;TData, TNotification&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationNotificationActivityBuilder&lt;TData, TNotification&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_QueryActivity__3_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationRequestActivityBuilder___0___1___2___System_String_">OrchestrationWorkflowExtensions.QueryActivity&lt;TData, TRequest, TValue&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationRequestActivityBuilder&lt;TData, TRequest, TValue&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_SendQueueMessageActivity__2_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationQueueActivityBuilder___0___1___System_String_">OrchestrationWorkflowExtensions.SendQueueMessageActivity&lt;TData, TMessage&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationQueueActivityBuilder&lt;TData, TMessage&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_SendRequestActivity__3_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationRequestActivityBuilder___0___1___2___System_String_">OrchestrationWorkflowExtensions.SendRequestActivity&lt;TData, TRequest, TValue&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationRequestActivityBuilder&lt;TData, TRequest, TValue&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_StartChildOrchestrationActivity__3_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStartChildActivityBuilder___0___2___System_String_">OrchestrationWorkflowExtensions.StartChildOrchestrationActivity&lt;TData, TChildOrchestration, TChildData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;IOrchestrationStartChildActivityBuilder&lt;TData, TChildData&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_TransformActivity__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Action_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0___System_String_">OrchestrationWorkflowExtensions.TransformActivity&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, Action&lt;OrchestrationContext&lt;TData&gt;&gt;, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationWorkflowExtensions_WaitActivity__1_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder___0__System_Nullable_System_TimeSpan__System_String_System_String_">OrchestrationWorkflowExtensions.WaitActivity&lt;TData&gt;(IOrchestrationStateBuilder&lt;TData&gt;, TimeSpan?, string, string)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity_System_Func_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext__0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Application_Orchestrations_OrchestrationOutcome___System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationActivityBuilder__0___System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity(System.Func{BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{`0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcome}},System.Action{BridgingIT.DevKit.Application.Orchestrations.IOrchestrationActivityBuilder{`0}},System.String)">
+  Activity(Func&lt;OrchestrationContext&lt;TData&gt;, CancellationToken, Task&lt;OrchestrationOutcome&gt;&gt;, Action&lt;IOrchestrationActivityBuilder&lt;TData&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures an inline activity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Activity(Func&lt;OrchestrationContext&lt;TData&gt;, CancellationToken, Task&lt;OrchestrationOutcome&gt;&gt; executeAsync, Action&lt;IOrchestrationActivityBuilder&lt;TData&gt;&gt; configure, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>executeAsync</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcome.html">OrchestrationOutcome</a>&gt;&gt;</dt>
+    <dd><p>The inline activity delegate.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationActivityBuilder-1.html">IOrchestrationActivityBuilder</a>&lt;TData&gt;&gt;</dt>
+    <dd><p>The activity configuration callback.</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional activity name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity_System_Func_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext__0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Application_Orchestrations_OrchestrationOutcome___System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity(System.Func{BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{`0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcome}},System.String)">
+  Activity(Func&lt;OrchestrationContext&lt;TData&gt;, CancellationToken, Task&lt;OrchestrationOutcome&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an inline activity to the state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Activity(Func&lt;OrchestrationContext&lt;TData&gt;, CancellationToken, Task&lt;OrchestrationOutcome&gt;&gt; executeAsync, string name = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>executeAsync</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcome.html">OrchestrationOutcome</a>&gt;&gt;</dt>
+    <dd><p>The inline activity delegate.</p>
+</dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>An optional activity name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity__1" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity``1">
+  Activity&lt;TActivity&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a class-based activity to the state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Activity&lt;TActivity&gt;() where TActivity : class, IOrchestrationActivity&lt;TData&gt;</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TActivity</code></dt>
+    <dd><p>The activity type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Activity__1_System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationActivityBuilder__0___" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Activity``1(System.Action{BridgingIT.DevKit.Application.Orchestrations.IOrchestrationActivityBuilder{`0}})">
+  Activity&lt;TActivity&gt;(Action&lt;IOrchestrationActivityBuilder&lt;TData&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures a class-based activity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Activity&lt;TActivity&gt;(Action&lt;IOrchestrationActivityBuilder&lt;TData&gt;&gt; configure) where TActivity : class, IOrchestrationActivity&lt;TData&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationActivityBuilder-1.html">IOrchestrationActivityBuilder</a>&lt;TData&gt;&gt;</dt>
+    <dd><p>The activity configuration callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TActivity</code></dt>
+    <dd><p>The activity type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Cancel_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Cancel*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Cancel_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Cancel(System.String)">
+  Cancel(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks the state as a cancelled terminal state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Cancel(string reason = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>An optional cancellation reason.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Complete_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Complete*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Complete_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Complete(System.String)">
+  Complete(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks the state as a successful terminal state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Complete(string reason = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>An optional completion reason.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Terminate_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Terminate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Terminate_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Terminate(System.String)">
+  Terminate(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks the state as a terminated terminal state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Terminate(string reason = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>An optional termination reason.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_TimeoutAfter_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.TimeoutAfter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_TimeoutAfter_System_TimeSpan_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.TimeoutAfter(System.TimeSpan)">
+  TimeoutAfter(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a durable timeout for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationTimerBuilder&lt;TData&gt; TimeoutAfter(TimeSpan delay)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>delay</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The timeout delay.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerBuilder-1.html">IOrchestrationTimerBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The timer builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_TransitionTo_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.TransitionTo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_TransitionTo_System_String_System_Func_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext__0__System_Boolean__" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.TransitionTo(System.String,System.Func{BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{`0},System.Boolean})">
+  TransitionTo(string, Func&lt;OrchestrationContext&lt;TData&gt;, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an explicit transition to another state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; TransitionTo(string targetState, Func&lt;OrchestrationContext&lt;TData&gt;, bool&gt; condition = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>targetState</code> <span class="xref">string</span></dt>
+    <dd><p>The target state name.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>An optional transition condition. When omitted, the transition is unconditional.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Wait_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Wait*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_Wait_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.Wait(System.String)">
+  Wait(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks the state as a waiting state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; Wait(string reason = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>An optional waiting reason.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal(System.String)">
+  WaitForSignal(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a declarative signal wait for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationSignalBuilder&lt;TData&gt; WaitForSignal(string signalName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-1.html">IOrchestrationSignalBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The signal builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal_System_String_System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationSignalBuilder__0___" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal(System.String,System.Action{BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder{`0}})">
+  WaitForSignal(string, Action&lt;IOrchestrationSignalBuilder&lt;TData&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures a declarative signal wait for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; WaitForSignal(string signalName, Action&lt;IOrchestrationSignalBuilder&lt;TData&gt;&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-1.html">IOrchestrationSignalBuilder</a>&lt;TData&gt;&gt;</dt>
+    <dd><p>The signal configuration callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal__1_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal``1(System.String)">
+  WaitForSignal&lt;TPayload&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a typed declarative signal wait for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationSignalBuilder&lt;TData, TPayload&gt; WaitForSignal&lt;TPayload&gt;(string signalName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-2.html">IOrchestrationSignalBuilder</a>&lt;TData, TPayload&gt;</dt>
+    <dd><p>The signal builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPayload</code></dt>
+    <dd><p>The signal payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WaitForSignal__1_System_String_System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationSignalBuilder__0___0___" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WaitForSignal``1(System.String,System.Action{BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder{`0,``0}})">
+  WaitForSignal&lt;TPayload&gt;(string, Action&lt;IOrchestrationSignalBuilder&lt;TData, TPayload&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures a typed declarative signal wait for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; WaitForSignal&lt;TPayload&gt;(string signalName, Action&lt;IOrchestrationSignalBuilder&lt;TData, TPayload&gt;&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-2.html">IOrchestrationSignalBuilder</a>&lt;TData, TPayload&gt;&gt;</dt>
+    <dd><p>The signal configuration callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPayload</code></dt>
+    <dd><p>The signal payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal(System.String)">
+  WhenSignal(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a signal-driven behavior for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationSignalBuilder&lt;TData&gt; WhenSignal(string signalName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-1.html">IOrchestrationSignalBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The signal builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal_System_String_System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationSignalBuilder__0___" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal(System.String,System.Action{BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder{`0}})">
+  WhenSignal(string, Action&lt;IOrchestrationSignalBuilder&lt;TData&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures a signal-driven behavior for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; WhenSignal(string signalName, Action&lt;IOrchestrationSignalBuilder&lt;TData&gt;&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-1.html">IOrchestrationSignalBuilder</a>&lt;TData&gt;&gt;</dt>
+    <dd><p>The signal configuration callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal__1_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal``1(System.String)">
+  WhenSignal&lt;TPayload&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a typed signal-driven behavior for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationSignalBuilder&lt;TData, TPayload&gt; WhenSignal&lt;TPayload&gt;(string signalName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-2.html">IOrchestrationSignalBuilder</a>&lt;TData, TPayload&gt;</dt>
+    <dd><p>The signal builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPayload</code></dt>
+    <dd><p>The signal payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal_" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_IOrchestrationStateBuilder_1_WhenSignal__1_System_String_System_Action_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationSignalBuilder__0___0___" data-uid="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder`1.WhenSignal``1(System.String,System.Action{BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder{`0,``0}})">
+  WhenSignal&lt;TPayload&gt;(string, Action&lt;IOrchestrationSignalBuilder&lt;TData, TPayload&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures a typed signal-driven behavior for the current state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IOrchestrationStateBuilder&lt;TData&gt; WhenSignal&lt;TPayload&gt;(string signalName, Action&lt;IOrchestrationSignalBuilder&lt;TData, TPayload&gt;&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-2.html">IOrchestrationSignalBuilder</a>&lt;TData, TPayload&gt;&gt;</dt>
+    <dd><p>The signal configuration callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder</a>&lt;TData&gt;</dt>
+    <dd><p>The current state builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPayload</code></dt>
+    <dd><p>The signal payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class EntityFrameworkMessageBrokerOptionsBuilder | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class EntityFrameworkMessageBrokerOptionsBuilder | bITdevKit API Reference ">
+      
+      <meta name="description" content="Builds  instances for the Entity Framework broker.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder" class="text-break">
+Class EntityFrameworkMessageBrokerOptionsBuilder  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.html">Messaging</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Builds <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptions.html">EntityFrameworkMessageBrokerOptions</a> instances for the Entity Framework broker.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class EntityFrameworkMessageBrokerOptionsBuilder : OptionsBuilderBase&lt;EntityFrameworkMessageBrokerOptions, EntityFrameworkMessageBrokerOptionsBuilder&gt;, IOptionsBuilder&lt;EntityFrameworkMessageBrokerOptions&gt;, IOptionsBuilder</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilder-1.html">OptionsBuilder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptions.html">EntityFrameworkMessageBrokerOptions</a>&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilderBase-2.html">OptionsBuilderBase</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptions.html">EntityFrameworkMessageBrokerOptions</a>, <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a>&gt;</div>
+      <div><span class="xref">EntityFrameworkMessageBrokerOptionsBuilder</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IOptionsBuilder-1.html">IOptionsBuilder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptions.html">EntityFrameworkMessageBrokerOptions</a>&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IOptionsBuilder.html">IOptionsBuilder</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilderBase-2.html#BridgingIT_DevKit_Common_OptionsBuilderBase_2_LoggerFactory_Microsoft_Extensions_Logging_ILoggerFactory_">OptionsBuilderBase&lt;EntityFrameworkMessageBrokerOptions, EntityFrameworkMessageBrokerOptionsBuilder&gt;.LoggerFactory(ILoggerFactory)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilder-1.html#BridgingIT_DevKit_Common_OptionsBuilder_1_Build">OptionsBuilder&lt;EntityFrameworkMessageBrokerOptions&gt;.Build()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilder-1.html#BridgingIT_DevKit_Common_OptionsBuilder_1_Target">OptionsBuilder&lt;EntityFrameworkMessageBrokerOptions&gt;.Target</a>
+    </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_examples">Examples</h2>
+  <pre><code class="lang-csharp">var options = new EntityFrameworkMessageBrokerOptionsBuilder()
+    .Serializer(new SystemTextJsonSerializer())
+    .MaxDeliveryAttempts(5)
+    .LeaseDuration(TimeSpan.FromSeconds(30))
+    .Build();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder__ctor" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.#ctor">
+  EntityFrameworkMessageBrokerOptionsBuilder()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_AutoArchiveAfter_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.AutoArchiveAfter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_AutoArchiveAfter_System_Nullable_System_TimeSpan__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.AutoArchiveAfter(System.Nullable{System.TimeSpan})">
+  AutoArchiveAfter(TimeSpan?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the age after which terminal messages may be archived automatically.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder AutoArchiveAfter(TimeSpan? value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span>?</dt>
+    <dd><p>The archive age threshold.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_AutoArchiveStatuses_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.AutoArchiveStatuses*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_AutoArchiveStatuses_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Messaging_BrokerMessageStatus__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.AutoArchiveStatuses(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus})">
+  AutoArchiveStatuses(IEnumerable&lt;BrokerMessageStatus&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the aggregate statuses eligible for automatic archiving.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder AutoArchiveStatuses(IEnumerable&lt;BrokerMessageStatus&gt; values)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>values</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.BrokerMessageStatus.html">BrokerMessageStatus</a>&gt;</dt>
+    <dd><p>The statuses to archive automatically.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_AutoSave_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.AutoSave*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_AutoSave_System_Boolean_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.AutoSave(System.Boolean)">
+  AutoSave(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures whether publish operations save broker rows immediately.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder AutoSave(bool value = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd><p>True to save immediately; otherwise false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Behaviors_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Behaviors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Behaviors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Messaging_IMessageHandlerBehavior__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Behaviors(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Messaging.IMessageHandlerBehavior})">
+  Behaviors(IEnumerable&lt;IMessageHandlerBehavior&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the handler behaviors used by the broker.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder Behaviors(IEnumerable&lt;IMessageHandlerBehavior&gt; behaviors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>behaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.IMessageHandlerBehavior.html">IMessageHandlerBehavior</a>&gt;</dt>
+    <dd><p>The behaviors to execute around handler processing.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Behaviors_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Behaviors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Behaviors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Messaging_IMessagePublisherBehavior__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Behaviors(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Messaging.IMessagePublisherBehavior})">
+  Behaviors(IEnumerable&lt;IMessagePublisherBehavior&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the publisher behaviors used by the broker.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder Behaviors(IEnumerable&lt;IMessagePublisherBehavior&gt; behaviors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>behaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Messaging.IMessagePublisherBehavior.html">IMessagePublisherBehavior</a>&gt;</dt>
+    <dd><p>The behaviors to execute around publish operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Enabled_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Enabled*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Enabled_System_Boolean_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Enabled(System.Boolean)">
+  Enabled(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables or disables the broker runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder Enabled(bool value = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd><p>True to enable the broker; otherwise false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_HandlerFactory_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.HandlerFactory*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_HandlerFactory_BridgingIT_DevKit_Application_Messaging_IMessageHandlerFactory_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.HandlerFactory(BridgingIT.DevKit.Application.Messaging.IMessageHandlerFactory)">
+  HandlerFactory(IMessageHandlerFactory)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the handler factory used to resolve subscribed message handlers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder HandlerFactory(IMessageHandlerFactory handlerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handlerFactory</code> <a class="xref" href="BridgingIT.DevKit.Application.Messaging.IMessageHandlerFactory.html">IMessageHandlerFactory</a></dt>
+    <dd><p>The handler factory.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_LeaseDuration_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.LeaseDuration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_LeaseDuration_System_TimeSpan_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.LeaseDuration(System.TimeSpan)">
+  LeaseDuration(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the duration of a worker lease on a broker message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder LeaseDuration(TimeSpan value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The lease duration.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_LeaseRenewalInterval_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.LeaseRenewalInterval*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_LeaseRenewalInterval_System_TimeSpan_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.LeaseRenewalInterval(System.TimeSpan)">
+  LeaseRenewalInterval(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the interval used to renew active leases.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder LeaseRenewalInterval(TimeSpan value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The lease renewal interval.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_MaxDeliveryAttempts_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.MaxDeliveryAttempts*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_MaxDeliveryAttempts_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.MaxDeliveryAttempts(System.Int32)">
+  MaxDeliveryAttempts(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the maximum number of delivery attempts per handler entry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder MaxDeliveryAttempts(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum delivery attempts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_MessageExpiration_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.MessageExpiration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_MessageExpiration_System_Nullable_System_TimeSpan__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.MessageExpiration(System.Nullable{System.TimeSpan})">
+  MessageExpiration(TimeSpan?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the default expiration applied to published messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder MessageExpiration(TimeSpan? value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span>?</dt>
+    <dd><p>The expiration window.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_ProcessingCount_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.ProcessingCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_ProcessingCount_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.ProcessingCount(System.Int32)">
+  ProcessingCount(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the maximum number of messages processed in one cycle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder ProcessingCount(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_ProcessingDelay_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.ProcessingDelay*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_ProcessingDelay_System_TimeSpan_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.ProcessingDelay(System.TimeSpan)">
+  ProcessingDelay(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets an optional delay applied before each worker cycle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder ProcessingDelay(TimeSpan value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The processing delay.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_ProcessingInterval_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.ProcessingInterval*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_ProcessingInterval_System_TimeSpan_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.ProcessingInterval(System.TimeSpan)">
+  ProcessingInterval(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the interval between worker processing cycles.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder ProcessingInterval(TimeSpan value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The processing interval.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Serializer_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Serializer*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_Serializer_BridgingIT_DevKit_Common_ISerializer_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.Serializer(BridgingIT.DevKit.Common.ISerializer)">
+  Serializer(ISerializer)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the serializer used for persisted broker messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder Serializer(ISerializer serializer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd><p>The serializer to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_StartupDelay_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.StartupDelay*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_EntityFrameworkMessageBrokerOptionsBuilder_StartupDelay_System_TimeSpan_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.StartupDelay(System.TimeSpan)">
+  StartupDelay(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the startup delay before worker processing begins.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkMessageBrokerOptionsBuilder StartupDelay(TimeSpan value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The startup delay.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.EntityFrameworkMessageBrokerOptionsBuilder.html">EntityFrameworkMessageBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

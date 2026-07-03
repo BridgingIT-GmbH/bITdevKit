@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct DomainPolicyResult&lt;T&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct DomainPolicyResult&lt;T&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents the result of a domain policy execution, providing information on whether the policy was successful or not, along with any associated messages and errors.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1" class="text-break">
+Struct DomainPolicyResult&lt;T&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents the result of a domain policy execution, providing information on whether the policy was successful or not,
+along with any associated messages and errors.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public struct DomainPolicyResult&lt;T&gt; : IResult&lt;T&gt;, IResult</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the value contained in the result.</p>
+</dd>
+  </dl>
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;T&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ResultExtensions.html#BridgingIT_DevKit_Domain_ResultExtensions_GetValue_BridgingIT_DevKit_Common_IResult_">ResultExtensions.GetValue(IResult)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Errors_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Errors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Errors" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Errors">
+  Errors
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a read-only list of errors that were encountered during the execution of the policy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;IResultError&gt; Errors { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Errors_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code>Errors</code> property provides access to the collection of errors that occurred while applying one or more
+policies. This list can be used to understand what went wrong and to inspect individual <code>IResultError</code>
+instances for more details.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_IsFailure_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.IsFailure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_IsFailure" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.IsFailure">
+  IsFailure
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the policy result is a failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFailure { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_IsFailure_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code>IsFailure</code> property returns <code>true</code> if the policy execution did not succeed.
+This can be utilized to check the overall status of the applied policies, particularly
+when determining whether subsequent policy executions or actions should proceed.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_IsSuccess_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.IsSuccess*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_IsSuccess" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.IsSuccess">
+  IsSuccess
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the domain policy execution was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSuccess { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_IsSuccess_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code>IsSuccess</code> property returns <code>true</code> if all the applied policies executed without
+errors; otherwise, it returns <code>false</code>. This property is useful to determine the overall
+success of the policy execution process.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Messages_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Messages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Messages" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Messages">
+  Messages
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a read-only list of messages generated during the execution of policies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; Messages { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Messages_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code>Messages</code> property holds any informational messages that were produced
+as a result of policy execution. This allows for inspection of what occurred
+during the process.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_PolicyResults_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.PolicyResults*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_PolicyResults" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.PolicyResults">
+  PolicyResults
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the outcomes from the execution of various domain policies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DomainPolicyResults&lt;T&gt; PolicyResults { readonly get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResults-1.html">DomainPolicyResults</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_PolicyResults_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code>PolicyResults</code> property aggregates the results from applying multiple policies to a domain context,
+providing a means to access and analyze each policy's specific outcome.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Value_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Value*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Value" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Value">
+  Value
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value of the result if the operation was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Value_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The <code>Value</code> property holds the result of an operation when it is successful. Attempts to access this
+property when the operation has failed will result in an <span class="xref">System.InvalidOperationException</span>.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Failure_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Failure" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Failure">
+  Failure()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed DomainPolicyResult for a policy execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DomainPolicyResult&lt;T&gt; Failure()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>A failed instance of DomainPolicyResult.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_GetError_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.GetError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_GetError__1" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.GetError``1">
+  GetError&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the first error of the specified type from the current instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TError GetError&lt;TError&gt;() where TError : class, IResultError</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TError</span></dt>
+    <dd><p>The first error of the specified type if found; otherwise, null.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of the error to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_GetErrors_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.GetErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_GetErrors__1" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.GetErrors``1">
+  GetErrors&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all errors of a specified type contained in the DomainPolicyResult instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;TError&gt; GetErrors&lt;TError&gt;() where TError : class, IResultError</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TError&gt;</dt>
+    <dd><p>An IEnumerable of errors that match the specified type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of errors to be retrieved.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_HasError_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.HasError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_HasError" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.HasError">
+  HasError()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if there are any errors present in the current result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasError()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if there are errors, otherwise false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_HasError_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.HasError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_HasError__1" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.HasError``1">
+  HasError&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the current DomainPolicyResult instance contains an error of the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasError&lt;TError&gt;() where TError : class, IResultError</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if an error of the specified type is present; otherwise, false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to check for, which must implement IResultError.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Success_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Success" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Success">
+  Success()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful DomainPolicyResult instance with a default value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DomainPolicyResult&lt;T&gt; Success()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>A successful DomainPolicyResult instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Success_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_Success__0_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.Success(`0)">
+  Success(T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful DomainPolicyResult instance with the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DomainPolicyResult&lt;T&gt; Success(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be associated with the successful result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>A DomainPolicyResult instance indicating success.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_TryGetError_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.TryGetError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_TryGetError__1___0__" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.TryGetError``1(``0@)">
+  TryGetError&lt;TError&gt;(out TError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the first error of the specified type from the current DomainPolicyResult instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetError&lt;TError&gt;(out TError error) where TError : class, IResultError</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <span class="xref">TError</span></dt>
+    <dd><p>When this method returns, contains the error of the specified type if found; otherwise, the default value of the type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> if an error of the specified type is found; otherwise, <code>false</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_TryGetErrors_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.TryGetErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_TryGetErrors__1_System_Collections_Generic_IEnumerable___0___" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.TryGetErrors``1(System.Collections.Generic.IEnumerable{``0}@)">
+  TryGetErrors&lt;TError&gt;(out IEnumerable&lt;TError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve errors of a specified type from the current DomainPolicyResult.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetErrors&lt;TError&gt;(out IEnumerable&lt;TError&gt; errors) where TError : class, IResultError</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;TError&gt;</dt>
+    <dd><p>An output parameter that will contain the errors of the specified type, if any are found.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if errors of the specified type are found; otherwise, false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of errors to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithError_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithError_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithError(BridgingIT.DevKit.Common.IResultError)">
+  WithError(IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds the specified error to the current DomainPolicyResult instance and marks the result as unsuccessful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DomainPolicyResult&lt;T&gt; WithError(IResultError error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>The IResultError to be added.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>The updated DomainPolicyResult instance with the added error.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithErrors_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithErrors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithErrors(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  WithErrors(IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds the provided errors to the current DomainPolicyResult instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DomainPolicyResult&lt;T&gt; WithErrors(IEnumerable&lt;IResultError&gt; errors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>The list of errors to be added.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>The updated DomainPolicyResult instance with the added errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithMessage_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithMessage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithMessage_System_String_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithMessage(System.String)">
+  WithMessage(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a message to the current DomainPolicyResult instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DomainPolicyResult&lt;T&gt; WithMessage(string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The message to be added to the result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>The current DomainPolicyResult instance with the specified message added.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithMessages_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithMessages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithMessages_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithMessages(System.Collections.Generic.IEnumerable{System.String})">
+  WithMessages(IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds the specified messages to the current DomainPolicyResult instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DomainPolicyResult&lt;T&gt; WithMessages(IEnumerable&lt;string&gt; messages)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>The messages to be added.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>The current DomainPolicyResult instance with the specified messages added.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithPolicyResults_" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithPolicyResults*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_DomainPolicyResult_1_WithPolicyResults_BridgingIT_DevKit_Domain_DomainPolicyResults__0__" data-uid="BridgingIT.DevKit.Domain.DomainPolicyResult`1.WithPolicyResults(BridgingIT.DevKit.Domain.DomainPolicyResults{`0})">
+  WithPolicyResults(DomainPolicyResults&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Associates the given policy results with the current DomainPolicyResult instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DomainPolicyResult&lt;T&gt; WithPolicyResults(DomainPolicyResults&lt;T&gt; results)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>results</code> <a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResults-1.html">DomainPolicyResults</a>&lt;T&gt;</dt>
+    <dd><p>The DomainPolicyResults to be associated.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.DomainPolicyResult-1.html">DomainPolicyResult</a>&lt;T&gt;</dt>
+    <dd><p>The current DomainPolicyResult instance with the specified policy results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

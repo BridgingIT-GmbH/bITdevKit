@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ResultLinqExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ResultLinqExtensions | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ResultLinqExtensions" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions" class="text-break">
+Class ResultLinqExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ResultLinqExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ResultLinqExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Collections_Generic_ICollection_BridgingIT_DevKit_Common_Result___1___System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync``2(System.Collections.Generic.ICollection{BridgingIT.DevKit.Common.Result{``1}},System.Func{``1,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}})">
+  BindAsync&lt;T, TVal&gt;(ICollection&lt;Result&lt;TVal&gt;&gt;, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds each Result in a collection to an async function that returns a Result.
+Preserves messages and errors from previous Results in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ICollection&lt;Result&lt;T&gt;&gt;&gt; BindAsync&lt;T, TVal&gt;(this ICollection&lt;Result&lt;TVal&gt;&gt; results, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>results</code> <span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TVal&gt;&gt;</dt>
+    <dd><p>The collection of Results to bind.</p>
+</dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;TVal, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The async function to apply to each successful Result's value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A task containing a collection of Results from each operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TVal</code></dt>
+    <dd><p>The type of items in the input Results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Collections_Generic_ICollection_BridgingIT_DevKit_Common_Result___1___System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = await customers
+    .ToResult()
+    .BindAsync(async customer =&gt; await ValidateCustomerAsync(customer))
+    .BindAsync(async customer =&gt; await SaveCustomerAsync(customer))
+    .FlattenAsync();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___1___System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync``2(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.Result{``1}},System.Func{``1,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}})">
+  BindAsync&lt;T, TVal&gt;(IEnumerable&lt;Result&lt;TVal&gt;&gt;, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds each Result in an enumerable to an async function that returns a Result.
+Preserves messages and errors from previous Results in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;IEnumerable&lt;Result&lt;T&gt;&gt;&gt; BindAsync&lt;T, TVal&gt;(this IEnumerable&lt;Result&lt;TVal&gt;&gt; results, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>results</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TVal&gt;&gt;</dt>
+    <dd><p>The enumerable of Results to bind.</p>
+</dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;TVal, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The async function to apply to each successful Result's value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A task containing an enumerable of Results from each operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TVal</code></dt>
+    <dd><p>The type of items in the input Results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___1___System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = await fileNames
+    .ToResult()
+    .BindAsync(async file =&gt; await ProcessFileAsync(file))
+    .FlattenAsync();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Threading_Tasks_Task_System_Collections_Generic_ICollection_BridgingIT_DevKit_Common_Result___1____System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync``2(System.Threading.Tasks.Task{System.Collections.Generic.ICollection{BridgingIT.DevKit.Common.Result{``1}}},System.Func{``1,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}})">
+  BindAsync&lt;T, TVal&gt;(Task&lt;ICollection&lt;Result&lt;TVal&gt;&gt;&gt;, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds each Result in a collection to an async function that returns a Result.
+Preserves messages and errors from previous Results in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ICollection&lt;Result&lt;T&gt;&gt;&gt; BindAsync&lt;T, TVal&gt;(this Task&lt;ICollection&lt;Result&lt;TVal&gt;&gt;&gt; resultTask, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TVal&gt;&gt;&gt;</dt>
+    <dd><p>A task containing the collection of Results to bind.</p>
+</dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;TVal, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The async function to apply to each successful Result's value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A task containing a collection of Results from each operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TVal</code></dt>
+    <dd><p>The type of items in the input Results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Threading_Tasks_Task_System_Collections_Generic_ICollection_BridgingIT_DevKit_Common_Result___1____System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = await GetCustomersAsync()
+    .BindAsync(async customer =&gt; await ValidateCustomerAsync(customer))
+    .FlattenAsync();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Threading_Tasks_Task_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___1____System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.BindAsync``2(System.Threading.Tasks.Task{System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.Result{``1}}},System.Func{``1,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}})">
+  BindAsync&lt;T, TVal&gt;(Task&lt;IEnumerable&lt;Result&lt;TVal&gt;&gt;&gt;, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds each Result in an enumerable to an async function that returns a Result.
+Preserves messages and errors from previous Results in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;IEnumerable&lt;Result&lt;T&gt;&gt;&gt; BindAsync&lt;T, TVal&gt;(this Task&lt;IEnumerable&lt;Result&lt;TVal&gt;&gt;&gt; resultTask, Func&lt;TVal, Task&lt;Result&lt;T&gt;&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TVal&gt;&gt;&gt;</dt>
+    <dd><p>A task containing the enumerable of Results to bind.</p>
+</dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;TVal, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The async function to apply to each successful Result's value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A task containing an enumerable of Results from each operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TVal</code></dt>
+    <dd><p>The type of items in the input Results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_BindAsync__2_System_Threading_Tasks_Task_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___1____System_Func___1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = await GetUserIdsAsync()
+    .BindAsync(async id =&gt; await FetchUserAsync(id))
+    .FlattenAsync();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_Bind_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.Bind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_Bind__2_System_Collections_Generic_ICollection_BridgingIT_DevKit_Common_Result___1___System_Func___1_BridgingIT_DevKit_Common_Result___0___" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.Bind``2(System.Collections.Generic.ICollection{BridgingIT.DevKit.Common.Result{``1}},System.Func{``1,BridgingIT.DevKit.Common.Result{``0}})">
+  Bind&lt;T, TVal&gt;(ICollection&lt;Result&lt;TVal&gt;&gt;, Func&lt;TVal, Result&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds each Result in a collection to a function that returns a Result.
+Preserves messages and errors from previous Results in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ICollection&lt;Result&lt;T&gt;&gt; Bind&lt;T, TVal&gt;(this ICollection&lt;Result&lt;TVal&gt;&gt; results, Func&lt;TVal, Result&lt;T&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>results</code> <span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TVal&gt;&gt;</dt>
+    <dd><p>The collection of Results to bind.</p>
+</dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;TVal, <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The function to apply to each successful Result's value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A collection of Results from each operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TVal</code></dt>
+    <dd><p>The type of items in the input Results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_Bind__2_System_Collections_Generic_ICollection_BridgingIT_DevKit_Common_Result___1___System_Func___1_BridgingIT_DevKit_Common_Result___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = customers
+    .ToResult()
+    .Bind(customer =&gt; ValidateCustomer(customer))
+    .Bind(customer =&gt; SaveCustomer(customer))
+    .Flatten();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_Bind_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.Bind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_Bind__2_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___1___System_Func___1_BridgingIT_DevKit_Common_Result___0___" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.Bind``2(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.Result{``1}},System.Func{``1,BridgingIT.DevKit.Common.Result{``0}})">
+  Bind&lt;T, TVal&gt;(IEnumerable&lt;Result&lt;TVal&gt;&gt;, Func&lt;TVal, Result&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds each Result in an enumerable to a function that returns a Result.
+Preserves messages and errors from previous Results in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Result&lt;T&gt;&gt; Bind&lt;T, TVal&gt;(this IEnumerable&lt;Result&lt;TVal&gt;&gt; results, Func&lt;TVal, Result&lt;T&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>results</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TVal&gt;&gt;</dt>
+    <dd><p>The enumerable of Results to bind.</p>
+</dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;TVal, <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The function to apply to each successful Result's value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>An enumerable of Results from each operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TVal</code></dt>
+    <dd><p>The type of items in the input Results.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_Bind__2_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___1___System_Func___1_BridgingIT_DevKit_Common_Result___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = GetUserIds()
+    .ToResult()
+    .Bind(id =&gt; FetchUser(id))
+    .Bind(user =&gt; EnrichUser(user))
+    .Flatten();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.ToResults*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults__1_System_Collections_Generic_ICollection___0__" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.ToResults``1(System.Collections.Generic.ICollection{``0})">
+  ToResults&lt;T&gt;(ICollection&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a collection to a collection of successful Results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Result&lt;T&gt;&gt; ToResults&lt;T&gt;(this ICollection&lt;T&gt; items)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
+    <dd><p>The collection to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>An enumerable of successful Results, one for each item.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of items in the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults__1_System_Collections_Generic_ICollection___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = customers
+    .ToResult()
+    .Bind(customer =&gt; ValidateCustomer(customer))
+    .Flatten();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.ToResults*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.ToResults``1(System.Collections.Generic.IEnumerable{``0})">
+  ToResults&lt;T&gt;(IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an enumerable to a collection of successful Results.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Result&lt;T&gt;&gt; ToResults&lt;T&gt;(this IEnumerable&lt;T&gt; items)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>The enumerable to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>An enumerable of successful Results, one for each item.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of items in the enumerable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults__1_System_Collections_Generic_IEnumerable___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = GetUserIds()
+    .ToResult()
+    .Bind(id =&gt; FetchUser(id))
+    .Flatten();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults_" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.ToResults*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults__2_System_Collections_Generic_IDictionary___0___1__" data-uid="BridgingIT.DevKit.Common.ResultLinqExtensions.ToResults``2(System.Collections.Generic.IDictionary{``0,``1})">
+  ToResults&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a dictionary to a collection of successful Results containing key-value pairs.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Result&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;&gt; ToResults&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; items)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The dictionary to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">KeyValuePair</span>&lt;TKey, TValue&gt;&gt;&gt;</dt>
+    <dd><p>An enumerable of successful Results, one for each key-value pair.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of the dictionary keys.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the dictionary values.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultLinqExtensions_ToResults__2_System_Collections_Generic_IDictionary___0___1___examples">Examples</h4>
+  <pre><code class="lang-csharp">var results = settings
+    .ToResult()
+    .Bind(kvp =&gt; ValidateSetting(kvp.Key, kvp.Value))
+    .Flatten();</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

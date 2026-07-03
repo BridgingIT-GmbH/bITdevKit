@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Metrics | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Metrics | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides shared naming and recording helpers for runtime metrics.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Metrics">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Metrics" data-uid="BridgingIT.DevKit.Common.Metrics" class="text-break">
+Class Metrics  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides shared naming and recording helpers for runtime metrics.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Metrics</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Metrics</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_Metrics_examples">Examples</h2>
+  <pre><code class="lang-csharp">var series = DevKitMetrics.Series("requester_send", DevKitMetrics.NormalizeTypeName(typeof(CreateOrderCommand)));
+var started = DevKitMetrics.StartTimestamp();
+DevKitMetrics.Increment(meterFactory, series);
+DevKitMetrics.ChangeCurrent(meterFactory, DevKitMetrics.CurrentSeries(series), 1);
+DevKitMetrics.RecordDuration(meterFactory, DevKitMetrics.DurationSeries(series), started);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_MeterName" data-uid="BridgingIT.DevKit.Common.Metrics.MeterName">
+  MeterName
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MeterName = &quot;bdk&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_ChangeCurrent_" data-uid="BridgingIT.DevKit.Common.Metrics.ChangeCurrent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_ChangeCurrent_System_Diagnostics_Metrics_IMeterFactory_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Common.Metrics.ChangeCurrent(System.Diagnostics.Metrics.IMeterFactory,System.String,System.Int32)">
+  ChangeCurrent(IMeterFactory, string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adjusts the specified current live-view series using an up/down counter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ChangeCurrent(IMeterFactory meterFactory, string series, int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
+    <dd><p>The meter factory used to create the up/down counter.</p>
+</dd>
+    <dt><code>series</code> <span class="xref">string</span></dt>
+    <dd><p>The current series name.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The delta to apply. Positive values increment and negative values decrement.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_CurrentSeries_" data-uid="BridgingIT.DevKit.Common.Metrics.CurrentSeries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_CurrentSeries_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.CurrentSeries(System.String)">
+  CurrentSeries(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the current live-view series name for a base metric series.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string CurrentSeries(string series)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>series</code> <span class="xref">string</span></dt>
+    <dd><p>The base metric series.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The current live-view series name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_DurationSeries_" data-uid="BridgingIT.DevKit.Common.Metrics.DurationSeries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_DurationSeries_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.DurationSeries(System.String)">
+  DurationSeries(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the duration series name for a base metric series.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string DurationSeries(string series)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>series</code> <span class="xref">string</span></dt>
+    <dd><p>The base metric series.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The duration histogram series name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_FailureSeries_" data-uid="BridgingIT.DevKit.Common.Metrics.FailureSeries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_FailureSeries_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.FailureSeries(System.String)">
+  FailureSeries(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the failure series name for a base metric series.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string FailureSeries(string series)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>series</code> <span class="xref">string</span></dt>
+    <dd><p>The base metric series.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The failure series name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_Increment_" data-uid="BridgingIT.DevKit.Common.Metrics.Increment*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_Increment_System_Diagnostics_Metrics_IMeterFactory_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.Increment(System.Diagnostics.Metrics.IMeterFactory,System.String)">
+  Increment(IMeterFactory, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Increments the specified cumulative counter series by one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Increment(IMeterFactory meterFactory, string series)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
+    <dd><p>The meter factory used to create the counter.</p>
+</dd>
+    <dt><code>series</code> <span class="xref">string</span></dt>
+    <dd><p>The counter series name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_NormalizePart_" data-uid="BridgingIT.DevKit.Common.Metrics.NormalizePart*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_NormalizePart_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.NormalizePart(System.String)">
+  NormalizePart(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Normalizes a free-form value into a metric-safe token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string NormalizePart(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The value to normalize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A normalized lower-case token using underscores as separators.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_NormalizeTypeName_" data-uid="BridgingIT.DevKit.Common.Metrics.NormalizeTypeName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_NormalizeTypeName_System_Type_" data-uid="BridgingIT.DevKit.Common.Metrics.NormalizeTypeName(System.Type)">
+  NormalizeTypeName(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Normalizes a CLR type name into a stable metric-safe token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string NormalizeTypeName(Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The CLR type to normalize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A normalized token derived from the supplied type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_RecordDuration_" data-uid="BridgingIT.DevKit.Common.Metrics.RecordDuration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_RecordDuration_System_Diagnostics_Metrics_IMeterFactory_System_String_System_Int64_" data-uid="BridgingIT.DevKit.Common.Metrics.RecordDuration(System.Diagnostics.Metrics.IMeterFactory,System.String,System.Int64)">
+  RecordDuration(IMeterFactory, string, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records the elapsed duration since the supplied start timestamp in milliseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void RecordDuration(IMeterFactory meterFactory, string series, long startedTimestamp)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
+    <dd><p>The meter factory used to create the histogram.</p>
+</dd>
+    <dt><code>series</code> <span class="xref">string</span></dt>
+    <dd><p>The histogram series name.</p>
+</dd>
+    <dt><code>startedTimestamp</code> <span class="xref">long</span></dt>
+    <dd><p>The timestamp captured earlier via <a class="xref" href="BridgingIT.DevKit.Common.Metrics.html#BridgingIT_DevKit_Common_Metrics_StartTimestamp">StartTimestamp()</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_Series_" data-uid="BridgingIT.DevKit.Common.Metrics.Series*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_Series_System_String_System_String___" data-uid="BridgingIT.DevKit.Common.Metrics.Series(System.String,System.String[])">
+  Series(string, params string[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds a metric series name from a family name and optional dynamic parts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Series(string family, params string[] parts)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>family</code> <span class="xref">string</span></dt>
+    <dd><p>The base metric family.</p>
+</dd>
+    <dt><code>parts</code> <span class="xref">string</span>[]</dt>
+    <dd><p>Optional parts appended to the family.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A normalized metric series name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Metrics_StartTimestamp_" data-uid="BridgingIT.DevKit.Common.Metrics.StartTimestamp*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Metrics_StartTimestamp" data-uid="BridgingIT.DevKit.Common.Metrics.StartTimestamp">
+  StartTimestamp()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures a high-resolution timestamp for subsequent duration measurement.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long StartTimestamp()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The current stopwatch timestamp.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

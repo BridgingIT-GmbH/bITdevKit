@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ResultMapExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ResultMapExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Extension methods for mapping Result objects to HTTP responses.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions" class="text-break">
+Class ResultMapExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Extension methods for mapping Result objects to HTTP responses.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ResultMapExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ResultMapExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpAccepted_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpAccepted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpAccepted_BridgingIT_DevKit_Common_Result_System_String_Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpAccepted(BridgingIT.DevKit.Common.Result,System.String,Microsoft.Extensions.Logging.ILogger)">
+  MapHttpAccepted(Result, string, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to HTTP 202 Accepted response for long-running operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpAccepted(this Result result, string location, ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to map.</p>
+</dd>
+    <dt><code>location</code> <span class="xref">string</span></dt>
+    <dd><p>The location URI where the status of the operation can be monitored.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Accepted</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpAccepted_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpAccepted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpAccepted__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_String__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpAccepted``1(BridgingIT.DevKit.Common.Result{``0},System.Func{``0,System.String},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpAccepted&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, string&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP 202 Accepted response with a body value for long-running operations,
+using a function to generate the location URI.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Accepted&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpAccepted&lt;T&gt;(this Result&lt;T&gt; result, Func&lt;T, string&gt; locationFactory, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>locationFactory</code> <span class="xref">Func</span>&lt;T, <span class="xref">string</span>&gt;</dt>
+    <dd><p>A function that generates the location URI based on the result value.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Accepted</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Accepted&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value, constrained to reference types (class).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpAccepted_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpAccepted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpAccepted__1_BridgingIT_DevKit_Common_Result___0__System_String_Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpAccepted``1(BridgingIT.DevKit.Common.Result{``0},System.String,Microsoft.Extensions.Logging.ILogger)">
+  MapHttpAccepted&lt;T&gt;(Result&lt;T&gt;, string, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP 202 Accepted response with a body value for long-running operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Accepted&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpAccepted&lt;T&gt;(this Result&lt;T&gt; result, string location, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>location</code> <span class="xref">string</span></dt>
+    <dd><p>The location URI where the status of the operation can be monitored.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Accepted</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Accepted&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value, constrained to reference types (class).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpCreated_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpCreated*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpCreated__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_String__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpCreated``1(BridgingIT.DevKit.Common.Result{``0},System.Func{``0,System.String},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpCreated&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, string&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a generic <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for create operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Created&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpCreated&lt;T&gt;(this Result&lt;T&gt; result, Func&lt;T, string&gt; uriFactory, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>uriFactory</code> <span class="xref">Func</span>&lt;T, <span class="xref">string</span>&gt;</dt>
+    <dd><p>A function that generates the URI based on the result value.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Created</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Created&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value, constrained to reference types (class).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpCreated_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpCreated*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpCreated__1_BridgingIT_DevKit_Common_Result___0__System_String_Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpCreated``1(BridgingIT.DevKit.Common.Result{``0},System.String,Microsoft.Extensions.Logging.ILogger)">
+  MapHttpCreated&lt;T&gt;(Result&lt;T&gt;, string, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a generic <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for create operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Created&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpCreated&lt;T&gt;(this Result&lt;T&gt; result, string uri, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>uri</code> <span class="xref">string</span></dt>
+    <dd><p>The URI of the newly created resource, used in the Created response.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Created</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Created&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value, constrained to reference types (class).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpFile_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpFile_BridgingIT_DevKit_Common_Result_BridgingIT_DevKit_Common_FileContent__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpFile(BridgingIT.DevKit.Common.Result{BridgingIT.DevKit.Common.FileContent},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpFile(Result&lt;FileContent&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for file download operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;FileContentHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpFile(this Result&lt;FileContent&gt; result, ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FileContent.html">FileContent</a>&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">FileContentHttpResult</span>, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4, TResult5&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpFile_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpFile*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpFile_BridgingIT_DevKit_Common_Result_BridgingIT_DevKit_Common_FileContent__System_Func_BridgingIT_DevKit_Common_FileContent_System_String__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpFile(BridgingIT.DevKit.Common.Result{BridgingIT.DevKit.Common.FileContent},System.Func{BridgingIT.DevKit.Common.FileContent,System.String},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpFile(Result&lt;FileContent&gt;, Func&lt;FileContent, string&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Extension method to generate a file download result with a function that creates the file name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;FileContentHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpFile(this Result&lt;FileContent&gt; result, Func&lt;FileContent, string&gt; fileNameFactory, ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FileContent.html">FileContent</a>&gt;</dt>
+    <dd><p>The Result containing file content information.</p>
+</dd>
+    <dt><code>fileNameFactory</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FileContent.html">FileContent</a>, <span class="xref">string</span>&gt;</dt>
+    <dd><p>A function that generates a filename based on the file content.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>Optional logger for error cases.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">FileContentHttpResult</span>, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>HTTP result for file download.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpNoContent_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpNoContent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpNoContent_BridgingIT_DevKit_Common_Result_Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpNoContent(BridgingIT.DevKit.Common.Result,Microsoft.Extensions.Logging.ILogger)">
+  MapHttpNoContent(Result, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a non-generic <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to HTTP results for operations returning no content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpNoContent(this Result result, ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to map.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">NoContent</span>, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4, TResult5&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpNoContent_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpNoContent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpNoContent__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpNoContent``1(BridgingIT.DevKit.Common.Result{``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpNoContent&lt;T&gt;(Result&lt;T&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpNoContent&lt;T&gt;(this Result&lt;T&gt; result, ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">NoContent</span>, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOk_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOk*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOk_BridgingIT_DevKit_Common_Result_Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOk(BridgingIT.DevKit.Common.Result,Microsoft.Extensions.Logging.ILogger)">
+  MapHttpOk(Result, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a non-generic <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to HTTP results for operations returning data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpOk(this Result result, ILogger logger = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to map.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4, TResult5&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOkAll_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOkAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOkAll__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOkAll``1(BridgingIT.DevKit.Common.Result{``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpOkAll&lt;T&gt;(Result&lt;T&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a generic <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for operations returning data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Ok&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpOkAll&lt;T&gt;(this Result&lt;T&gt; result, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Ok&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value, constrained to reference types (class).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOkPaged_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOkPaged*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOkPaged__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOkPaged``1(BridgingIT.DevKit.Common.ResultPaged{``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpOkPaged&lt;T&gt;(ResultPaged&lt;T&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> to HTTP results for operations returning paginated data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Ok&lt;PagedResponse&lt;T&gt;&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpOkPaged&lt;T&gt;(this ResultPaged&lt;T&gt; result, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.PagedResponse-1.html">PagedResponse</a>&lt;T&gt;&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Ok&lt;PagedResponse&lt;T&gt;&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of items in the paged collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOk_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOk*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttpOk__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttpOk``1(BridgingIT.DevKit.Common.Result{``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttpOk&lt;T&gt;(Result&lt;T&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a generic <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for operations returning data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;Ok&lt;T&gt;, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; MapHttpOk&lt;T&gt;(this Result&lt;T&gt; result, ILogger logger = null) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>&lt;T&gt;, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
+    <dd><p>A Results&lt;Ok&lt;T&gt;, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value, constrained to reference types (class).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttp_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttp*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttp__5_BridgingIT_DevKit_Common_Result_System_Func___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttp``5(BridgingIT.DevKit.Common.Result,System.Func{``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttp&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem&gt;(Result, Func&lt;TSuccess&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a non-generic <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to HTTP results for operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem&gt; MapHttp&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem&gt;(this Result result, Func&lt;TSuccess&gt; successFunc, ILogger logger = null) where TSuccess : IResult where TNotFound : IResult where TUnauthorized : IResult where TBadRequest : IResult where TProblem : IResult</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> to map.</p>
+</dd>
+    <dt><code>successFunc</code> <span class="xref">Func</span>&lt;TSuccess&gt;</dt>
+    <dd><p>A function to generate the success HTTP result when the operation succeeds.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4, TResult5&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSuccess</code></dt>
+    <dd><p>The type of the successful HTTP result.</p>
+</dd>
+    <dt><code>TNotFound</code></dt>
+    <dd><p>The type of the not found HTTP result.</p>
+</dd>
+    <dt><code>TUnauthorized</code></dt>
+    <dd><p>The type of the unauthorized HTTP result.</p>
+</dd>
+    <dt><code>TBadRequest</code></dt>
+    <dd><p>The type of the bad request HTTP result.</p>
+</dd>
+    <dt><code>TProblem</code></dt>
+    <dd><p>The type of the problem HTTP result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttp_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttp*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttp__5_BridgingIT_DevKit_Common_Result___4__System_Func___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttp``5(BridgingIT.DevKit.Common.Result{``4},System.Func{``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttp&lt;TSuccess, TUnauthorized, TBadRequest, TProblem, TValue&gt;(Result&lt;TValue&gt;, Func&lt;TSuccess&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a generic <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;TSuccess, TUnauthorized, TBadRequest, TProblem&gt; MapHttp&lt;TSuccess, TUnauthorized, TBadRequest, TProblem, TValue&gt;(this Result&lt;TValue&gt; result, Func&lt;TSuccess&gt; successFunc, ILogger logger = null) where TSuccess : IResult where TUnauthorized : IResult where TBadRequest : IResult where TProblem : IResult where TValue : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>successFunc</code> <span class="xref">Func</span>&lt;TSuccess&gt;</dt>
+    <dd><p>A function to generate the success HTTP result when the operation succeeds.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;TSuccess, TUnauthorized, TBadRequest, TProblem&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4, TResult5&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSuccess</code></dt>
+    <dd><p>The type of the successful HTTP result.</p>
+</dd>
+    <dt><code>TUnauthorized</code></dt>
+    <dd><p>The type of the unauthorized HTTP result.</p>
+</dd>
+    <dt><code>TBadRequest</code></dt>
+    <dd><p>The type of the bad request HTTP result.</p>
+</dd>
+    <dt><code>TProblem</code></dt>
+    <dd><p>The type of the problem HTTP result.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttp_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttp*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ResultMapExtensions_MapHttp__6_BridgingIT_DevKit_Common_Result___5__System_Func___5___0__Microsoft_Extensions_Logging_ILogger_" data-uid="BridgingIT.DevKit.Presentation.Web.ResultMapExtensions.MapHttp``6(BridgingIT.DevKit.Common.Result{``5},System.Func{``5,``0},Microsoft.Extensions.Logging.ILogger)">
+  MapHttp&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem, TValue&gt;(Result&lt;TValue&gt;, Func&lt;TValue, TSuccess&gt;, ILogger)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a generic <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to HTTP results for operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Results&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem&gt; MapHttp&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem, TValue&gt;(this Result&lt;TValue&gt; result, Func&lt;TValue, TSuccess&gt; successFunc, ILogger logger = null) where TSuccess : IResult where TNotFound : IResult where TUnauthorized : IResult where TBadRequest : IResult where TProblem : IResult where TValue : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;</dt>
+    <dd><p>The <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> to map.</p>
+</dd>
+    <dt><code>successFunc</code> <span class="xref">Func</span>&lt;TValue, TSuccess&gt;</dt>
+    <dd><p>A function to generate the success HTTP result when the operation succeeds.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>An optional logger for logging failure cases. If null, no logging occurs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Results</span>&lt;TSuccess, TNotFound, TUnauthorized, TBadRequest, TProblem&gt;</dt>
+    <dd><p>A <span class="xref">Microsoft.AspNetCore.Http.HttpResults.Results&lt;TResult1, TResult2, TResult3, TResult4, TResult5&gt;</span> representing the HTTP response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSuccess</code></dt>
+    <dd><p>The type of the successful HTTP result.</p>
+</dd>
+    <dt><code>TNotFound</code></dt>
+    <dd><p>The type of the not found HTTP result.</p>
+</dd>
+    <dt><code>TUnauthorized</code></dt>
+    <dd><p>The type of the unauthorized HTTP result.</p>
+</dd>
+    <dt><code>TBadRequest</code></dt>
+    <dd><p>The type of the bad request HTTP result.</p>
+</dd>
+    <dt><code>TProblem</code></dt>
+    <dd><p>The type of the problem HTTP result.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

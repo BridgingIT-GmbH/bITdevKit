@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ServiceBusQueueBrokerOptionsBuilder | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ServiceBusQueueBrokerOptionsBuilder | bITdevKit API Reference ">
+      
+      <meta name="description" content="Builds  instances.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder" class="text-break">
+Class ServiceBusQueueBrokerOptionsBuilder  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.html">Azure</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.Azure.ServiceBus.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Builds <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptions.html">ServiceBusQueueBrokerOptions</a> instances.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ServiceBusQueueBrokerOptionsBuilder : OptionsBuilderBase&lt;ServiceBusQueueBrokerOptions, ServiceBusQueueBrokerOptionsBuilder&gt;, IOptionsBuilder&lt;ServiceBusQueueBrokerOptions&gt;, IOptionsBuilder</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilder-1.html">OptionsBuilder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptions.html">ServiceBusQueueBrokerOptions</a>&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilderBase-2.html">OptionsBuilderBase</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptions.html">ServiceBusQueueBrokerOptions</a>, <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a>&gt;</div>
+      <div><span class="xref">ServiceBusQueueBrokerOptionsBuilder</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IOptionsBuilder-1.html">IOptionsBuilder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptions.html">ServiceBusQueueBrokerOptions</a>&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IOptionsBuilder.html">IOptionsBuilder</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilderBase-2.html#BridgingIT_DevKit_Common_OptionsBuilderBase_2_LoggerFactory_Microsoft_Extensions_Logging_ILoggerFactory_">OptionsBuilderBase&lt;ServiceBusQueueBrokerOptions, ServiceBusQueueBrokerOptionsBuilder&gt;.LoggerFactory(ILoggerFactory)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilder-1.html#BridgingIT_DevKit_Common_OptionsBuilder_1_Build">OptionsBuilder&lt;ServiceBusQueueBrokerOptions&gt;.Build()</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.OptionsBuilder-1.html#BridgingIT_DevKit_Common_OptionsBuilder_1_Target">OptionsBuilder&lt;ServiceBusQueueBrokerOptions&gt;.Target</a>
+    </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder__ctor" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.#ctor">
+  ServiceBusQueueBrokerOptionsBuilder()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_AutoCreateQueue_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.AutoCreateQueue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_AutoCreateQueue_System_Boolean_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.AutoCreateQueue(System.Boolean)">
+  AutoCreateQueue(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets whether queues should be created automatically at runtime.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder AutoCreateQueue(bool value = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd><p>The auto-create value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_Behaviors_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.Behaviors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_Behaviors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Queueing_IQueueEnqueuerBehavior__" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.Behaviors(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Queueing.IQueueEnqueuerBehavior})">
+  Behaviors(IEnumerable&lt;IQueueEnqueuerBehavior&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the enqueue behaviors executed when messages are enqueued.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder Behaviors(IEnumerable&lt;IQueueEnqueuerBehavior&gt; behaviors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>behaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueEnqueuerBehavior.html">IQueueEnqueuerBehavior</a>&gt;</dt>
+    <dd><p>The enqueuer behaviors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_Behaviors_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.Behaviors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_Behaviors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Queueing_IQueueHandlerBehavior__" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.Behaviors(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Queueing.IQueueHandlerBehavior})">
+  Behaviors(IEnumerable&lt;IQueueHandlerBehavior&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the handler behaviors executed when messages are processed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder Behaviors(IEnumerable&lt;IQueueHandlerBehavior&gt; behaviors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>behaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueHandlerBehavior.html">IQueueHandlerBehavior</a>&gt;</dt>
+    <dd><p>The handler behaviors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_ConnectionString_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.ConnectionString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_ConnectionString_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.ConnectionString(System.String)">
+  ConnectionString(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the Azure Service Bus connection string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder ConnectionString(string connectionString)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>connectionString</code> <span class="xref">string</span></dt>
+    <dd><p>The connection string.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_HandlerFactory_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.HandlerFactory*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_HandlerFactory_BridgingIT_DevKit_Application_Queueing_IQueueMessageHandlerFactory_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.HandlerFactory(BridgingIT.DevKit.Application.Queueing.IQueueMessageHandlerFactory)">
+  HandlerFactory(IQueueMessageHandlerFactory)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the factory used to resolve queue handlers.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder HandlerFactory(IQueueMessageHandlerFactory handlerFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handlerFactory</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueMessageHandlerFactory.html">IQueueMessageHandlerFactory</a></dt>
+    <dd><p>The handler factory.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_MaxConcurrentCalls_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.MaxConcurrentCalls*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_MaxConcurrentCalls_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.MaxConcurrentCalls(System.Int32)">
+  MaxConcurrentCalls(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the maximum number of concurrent processing calls.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder MaxConcurrentCalls(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum concurrent calls.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_MaxDeliveryAttempts_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.MaxDeliveryAttempts*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_MaxDeliveryAttempts_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.MaxDeliveryAttempts(System.Int32)">
+  MaxDeliveryAttempts(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the maximum number of delivery attempts before dead-lettering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder MaxDeliveryAttempts(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum delivery attempts.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_MessageExpiration_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.MessageExpiration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_MessageExpiration_System_Nullable_System_TimeSpan__" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.MessageExpiration(System.Nullable{System.TimeSpan})">
+  MessageExpiration(TimeSpan?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the default message expiration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder MessageExpiration(TimeSpan? value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeSpan</span>?</dt>
+    <dd><p>The message expiration.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_PrefetchCount_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.PrefetchCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_PrefetchCount_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.PrefetchCount(System.Int32)">
+  PrefetchCount(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the prefetch count for the processor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder PrefetchCount(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The prefetch count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_ProcessDelay_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.ProcessDelay*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_ProcessDelay_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.ProcessDelay(System.Int32)">
+  ProcessDelay(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the processing delay in milliseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder ProcessDelay(int milliseconds)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>milliseconds</code> <span class="xref">int</span></dt>
+    <dd><p>The delay in milliseconds.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_QueueNamePrefix_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.QueueNamePrefix*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_QueueNamePrefix_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.QueueNamePrefix(System.String)">
+  QueueNamePrefix(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the queue name prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder QueueNamePrefix(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The queue name prefix.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_QueueNameSuffix_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.QueueNameSuffix*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_QueueNameSuffix_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.QueueNameSuffix(System.String)">
+  QueueNameSuffix(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the queue name suffix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder QueueNameSuffix(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The queue name suffix.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_Serializer_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.Serializer*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_Serializer_BridgingIT_DevKit_Common_ISerializer_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.Serializer(BridgingIT.DevKit.Common.ISerializer)">
+  Serializer(ISerializer)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the serializer used for queue message payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceBusQueueBrokerOptionsBuilder Serializer(ISerializer serializer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd><p>The serializer.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

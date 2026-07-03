@@ -1,0 +1,2857 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct Result&lt;T&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct Result&lt;T&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents a result of an operation that can either succeed or fail, containing a value of type T. This struct provides value semantics and is optimized for reference type values.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Result`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Result_1" data-uid="BridgingIT.DevKit.Common.Result`1" class="text-break">
+Struct Result&lt;T&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a result of an operation that can either succeed or fail, containing a value of type T.
+This struct provides value semantics and is optimized for reference type values.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct Result&lt;T&gt; : IResult&lt;T&gt;, IResult</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value. Typically a reference type.</p>
+</dd>
+  </dl>
+
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;T&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThenAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.AndThenAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_AndThen__1_BridgingIT_DevKit_Common_Result___0__System_Action___0__">ResultTExtensions.AndThen&lt;T&gt;(Result&lt;T&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_BiMap__2_BridgingIT_DevKit_Common_Result___0__System_Func___0___1__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError___">ResultTExtensions.BiMap&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, TNew&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, IEnumerable&lt;IResultError&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_BindAsync__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___1____System_Threading_CancellationToken_">ResultTExtensions.BindAsync&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;Result&lt;TNew&gt;&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_BindResult__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_BridgingIT_DevKit_Common_Result___1___System_Func___0___1___0__">ResultTExtensions.BindResult&lt;T, TInner&gt;(Result&lt;T&gt;, Func&lt;T, Result&lt;TInner&gt;&gt;, Func&lt;T, TInner, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Bind__1_BridgingIT_DevKit_Common_Result___0__System_Func___0___0__">ResultTExtensions.Bind&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Bind__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_BridgingIT_DevKit_Common_Result___1___">ResultTExtensions.Bind&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, Result&lt;TNew&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_ChooseAsync__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultChooseOption___1____System_Threading_CancellationToken_">ResultTExtensions.ChooseAsync&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;ResultChooseOption&lt;TNew&gt;&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Choose__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_BridgingIT_DevKit_Common_ResultChooseOption___1___">ResultTExtensions.Choose&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, ResultChooseOption&lt;TNew&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_DoAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.DoAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Do__1_BridgingIT_DevKit_Common_Result___0__System_Action_">ResultTExtensions.Do&lt;T&gt;(Result&lt;T&gt;, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_EnsureAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken_">ResultTExtensions.EnsureAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, IResultError, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Ensure__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__BridgingIT_DevKit_Common_IResultError_">ResultTExtensions.Ensure&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, IResultError)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_FilterAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken_">ResultTExtensions.FilterAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, IResultError, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Filter__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__BridgingIT_DevKit_Common_IResultError_">ResultTExtensions.Filter&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, IResultError)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_HandleAsync__1_BridgingIT_DevKit_Common_Result___0__System_Action___0__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.HandleAsync&lt;T&gt;(Result&lt;T&gt;, Action&lt;T&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_HandleAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError___System_Threading_CancellationToken_">ResultTExtensions.HandleAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&gt;, Action&lt;IReadOnlyList&lt;IResultError&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_HandleAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.HandleAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Handle__1_BridgingIT_DevKit_Common_Result___0__System_Action___0__System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError___">ResultTExtensions.Handle&lt;T&gt;(Result&lt;T&gt;, Action&lt;T&gt;, Action&lt;IReadOnlyList&lt;IResultError&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Log__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_System_String_Microsoft_Extensions_Logging_LogLevel_Microsoft_Extensions_Logging_LogLevel_System_Object___">ResultTExtensions.Log&lt;T&gt;(Result&lt;T&gt;, ILogger, string, LogLevel, LogLevel, params object[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Log__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Func_BridgingIT_DevKit_Common_Result___0__System_Object____">ResultTExtensions.Log&lt;T&gt;(Result&lt;T&gt;, ILogger, string, Func&lt;Result&lt;T&gt;, object[]&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Log__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Func_BridgingIT_DevKit_Common_Result___0__System_Object____Microsoft_Extensions_Logging_LogLevel_Microsoft_Extensions_Logging_LogLevel_">ResultTExtensions.Log&lt;T&gt;(Result&lt;T&gt;, ILogger, string, Func&lt;Result&lt;T&gt;, object[]&gt;, LogLevel, LogLevel)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Log__1_BridgingIT_DevKit_Common_Result___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Object___">ResultTExtensions.Log&lt;T&gt;(Result&lt;T&gt;, ILogger, string, params object[])</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_MapAsync__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">ResultTExtensions.MapAsync&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;TNew&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Map__2_BridgingIT_DevKit_Common_Result___0__System_Func___0___1__">ResultTExtensions.Map&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, TNew&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_MatchAsync__2_BridgingIT_DevKit_Common_Result___1__System_Func___1_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">ResultTExtensions.MatchAsync&lt;TResult, T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_MatchAsync__2_BridgingIT_DevKit_Common_Result___1__System_Func___1_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____0__System_Threading_CancellationToken_">ResultTExtensions.MatchAsync&lt;TResult, T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, TResult&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_MatchAsync__2_BridgingIT_DevKit_Common_Result___1__System_Func___1___0__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">ResultTExtensions.MatchAsync&lt;TResult, T&gt;(Result&lt;T&gt;, Func&lt;T, TResult&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Match__2_BridgingIT_DevKit_Common_Result___1__System_Func___1___0__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____0__">ResultTExtensions.Match&lt;TResult, T&gt;(Result&lt;T&gt;, Func&lt;T, TResult&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Match__2_BridgingIT_DevKit_Common_Result___1____0___0_">ResultTExtensions.Match&lt;TResult, T&gt;(Result&lt;T&gt;, TResult, TResult)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_OrElseAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">ResultTExtensions.OrElseAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_OrElse__1_BridgingIT_DevKit_Common_Result___0__System_Func___0__">ResultTExtensions.OrElse&lt;T&gt;(Result&lt;T&gt;, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_StartOperation__2_BridgingIT_DevKit_Common_Result___0__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___">ResultTExtensions.StartOperation&lt;T, TOperation&gt;(Result&lt;T&gt;, Func&lt;CancellationToken, Task&lt;TOperation&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_StartOperation__2_BridgingIT_DevKit_Common_Result___0____1_">ResultTExtensions.StartOperation&lt;T, TOperation&gt;(Result&lt;T&gt;, TOperation)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_SwitchAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.SwitchAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Switch__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__System_Action___0__">ResultTExtensions.Switch&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_TapAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.TapAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Tap__1_BridgingIT_DevKit_Common_Result___0__System_Action___0__">ResultTExtensions.Tap&lt;T&gt;(Result&lt;T&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_TeeMapAsync__2_BridgingIT_DevKit_Common_Result___0__System_Func___0___1__System_Func___1_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">ResultTExtensions.TeeMapAsync&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, TNew&gt;, Func&lt;TNew, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_TeeMap__2_BridgingIT_DevKit_Common_Result___0__System_Func___0___1__System_Action___1__">ResultTExtensions.TeeMap&lt;T, TNew&gt;(Result&lt;T&gt;, Func&lt;T, TNew&gt;, Action&lt;TNew&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_ThrowIfFailed__1_BridgingIT_DevKit_Common_Result___0__">ResultTExtensions.ThrowIfFailed&lt;T&gt;(Result&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_ThrowIfFailed__2_BridgingIT_DevKit_Common_Result___0__">ResultTExtensions.ThrowIfFailed&lt;T, TException&gt;(Result&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_UnlessAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___System_Threading_CancellationToken_">ResultTExtensions.UnlessAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;Result&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_UnlessAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken_">ResultTExtensions.UnlessAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, IResultError, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Unless__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_BridgingIT_DevKit_Common_Result__">ResultTExtensions.Unless&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, Result&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Unless__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__BridgingIT_DevKit_Common_IResultError_">ResultTExtensions.Unless&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, IResultError)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_ValidateAsync__1_BridgingIT_DevKit_Common_Result___0__FluentValidation_IValidator___0__System_Action_FluentValidation_Internal_ValidationStrategy___0___System_Threading_CancellationToken_">ResultTExtensions.ValidateAsync&lt;T&gt;(Result&lt;T&gt;, IValidator&lt;T&gt;, Action&lt;ValidationStrategy&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_Validate__1_BridgingIT_DevKit_Common_Result___0__FluentValidation_IValidator___0__System_Action_FluentValidation_Internal_ValidationStrategy___0___">ResultTExtensions.Validate&lt;T&gt;(Result&lt;T&gt;, IValidator&lt;T&gt;, Action&lt;ValidationStrategy&lt;T&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_WhenAsync__1_BridgingIT_DevKit_Common_Result___0__System_Boolean_System_Func_BridgingIT_DevKit_Common_Result___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____System_Threading_CancellationToken_">ResultTExtensions.WhenAsync&lt;T&gt;(Result&lt;T&gt;, bool, Func&lt;Result&lt;T&gt;, CancellationToken, Task&lt;Result&lt;T&gt;&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_WhenAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__System_Func_BridgingIT_DevKit_Common_Result___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____System_Threading_CancellationToken_">ResultTExtensions.WhenAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, Func&lt;Result&lt;T&gt;, CancellationToken, Task&lt;Result&lt;T&gt;&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_When__1_BridgingIT_DevKit_Common_Result___0__System_Boolean_System_Func_BridgingIT_DevKit_Common_Result___0__BridgingIT_DevKit_Common_Result___0___">ResultTExtensions.When&lt;T&gt;(Result&lt;T&gt;, bool, Func&lt;Result&lt;T&gt;, Result&lt;T&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTExtensions.html#BridgingIT_DevKit_Common_ResultTExtensions_When__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Boolean__System_Func_BridgingIT_DevKit_Common_Result___0__BridgingIT_DevKit_Common_Result___0___">ResultTExtensions.When&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, bool&gt;, Func&lt;Result&lt;T&gt;, Result&lt;T&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTTaskExtensions.html#BridgingIT_DevKit_Common_ResultTTaskExtensions_BindAsync__1_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_Tasks_Task___0___">ResultTTaskExtensions.BindAsync&lt;T&gt;(Result&lt;T&gt;, Func&lt;T, Task&lt;T&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTTaskExtensions.html#BridgingIT_DevKit_Common_ResultTTaskExtensions_BindResultAsync__2_BridgingIT_DevKit_Common_Result___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___1____System_Func___0___1___0__System_Threading_CancellationToken_">ResultTTaskExtensions.BindResultAsync&lt;T, TInner&gt;(Result&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;Result&lt;TInner&gt;&gt;&gt;, Func&lt;T, TInner, T&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTTaskExtensions.html#BridgingIT_DevKit_Common_ResultTTaskExtensions_ValidateAsync__2_BridgingIT_DevKit_Common_Result___0__FluentValidation_IValidator___1__System_Action_FluentValidation_Internal_ValidationStrategy___1___System_Threading_CancellationToken_">ResultTTaskExtensions.ValidateAsync&lt;TList, TItem&gt;(Result&lt;TList&gt;, IValidator&lt;TItem&gt;, Action&lt;ValidationStrategy&lt;TItem&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultTTaskExtensions.html#BridgingIT_DevKit_Common_ResultTTaskExtensions_Validate__2_BridgingIT_DevKit_Common_Result___0__FluentValidation_IValidator___1__System_Action_FluentValidation_Internal_ValidationStrategy___1___">ResultTTaskExtensions.Validate&lt;TList, TValue&gt;(Result&lt;TList&gt;, IValidator&lt;TValue&gt;, Action&lt;ValidationStrategy&lt;TValue&gt;&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_EnsureValid__1_BridgingIT_DevKit_Common_Result___0__FluentValidation_IValidator___0__">ResultValidationExtensions.EnsureValid&lt;T&gt;(Result&lt;T&gt;, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_Result_1_examples">Examples</h2>
+  <p>Basic usage:</p>
+<pre><code class="lang-csharp">// Create successful result
+var user = new User { Id = 1, Name = "John" };
+var success = Result{User}.Success(user);
+
+// Check success and access value
+if (success.IsSuccess)
+{
+    Console.WriteLine($"User: {success.Value.Name}");
+}
+
+// Create failure with error
+var failure = Result{User}.Failure()
+    .WithError(new ValidationError("Invalid user data"));
+
+// Pattern matching on result
+var message = success.Match(
+    user =&gt; $"Found user: {user.Name}",
+    errors =&gt; "User not found"
+);</code></pre>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Errors_" data-uid="BridgingIT.DevKit.Common.Result`1.Errors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Errors" data-uid="BridgingIT.DevKit.Common.Result`1.Errors">
+  Errors
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a read-only list of errors associated with the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;IResultError&gt; Errors { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Errors_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure()
+    .WithError(new ValidationError("Invalid email"))
+    .WithError(new ValidationError("Invalid password"));
+
+foreach(var error in result.Errors)
+{
+    Console.WriteLine(error.Message);
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_IsFailure_" data-uid="BridgingIT.DevKit.Common.Result`1.IsFailure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_IsFailure" data-uid="BridgingIT.DevKit.Common.Result`1.IsFailure">
+  IsFailure
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the operation failed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFailure { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_IsFailure_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure()
+    .WithError(new ValidationError("Invalid data"));
+if (result.IsFailure)
+{
+    Console.WriteLine("Operation failed");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_IsSuccess_" data-uid="BridgingIT.DevKit.Common.Result`1.IsSuccess*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_IsSuccess" data-uid="BridgingIT.DevKit.Common.Result`1.IsSuccess">
+  IsSuccess
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the operation was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSuccess { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_IsSuccess_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user);
+if (result.IsSuccess)
+{
+    Console.WriteLine($"User {result.Value.Name} retrieved successfully");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Messages_" data-uid="BridgingIT.DevKit.Common.Result`1.Messages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Messages" data-uid="BridgingIT.DevKit.Common.Result`1.Messages">
+  Messages
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a read-only list of messages associated with the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; Messages { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Messages_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user)
+    .WithMessage("User retrieved")
+    .WithMessage("Cache updated");
+
+foreach(var message in result.Messages)
+{
+    Console.WriteLine(message);
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Value_" data-uid="BridgingIT.DevKit.Common.Result`1.Value*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Value" data-uid="BridgingIT.DevKit.Common.Result`1.Value">
+  Value
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the value if the result is successful. Throws if accessing a failed result's value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Value { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Value_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user);
+try
+{
+    var name = result.Value.Name; // Safe if IsSuccess is true
+}
+catch (InvalidOperationException)
+{
+    Console.WriteLine("Cannot access value of failed result");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when attempting to access the Value property of a failed result.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Bind_" data-uid="BridgingIT.DevKit.Common.Result`1.Bind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Bind_System_Func__0__" data-uid="BridgingIT.DevKit.Common.Result`1.Bind(System.Func{`0})">
+  Bind(Func&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result from an operation, handling any exceptions that occur.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Bind(Func&lt;T&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A Result representing the outcome of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Bind_System_Func__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result.Bind(() =&gt; {
+    userRepository.DeleteAll();
+});</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_BindAsync_" data-uid="BridgingIT.DevKit.Common.Result`1.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_BindAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Result`1.BindAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{`0}},System.Threading.CancellationToken)">
+  BindAsync(Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result from an async operation, handling any exceptions that occur.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; BindAsync(Func&lt;CancellationToken, Task&lt;T&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The async operation to execute.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A Result representing the outcome of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_BindAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__0___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await Result.BindAsync(
+    async ct =&gt; await DeleteAllUsersAsync(ct),
+    cancellationToken
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_BindAsync_" data-uid="BridgingIT.DevKit.Common.Result`1.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_BindAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Result`1.BindAsync``1(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+  BindAsync&lt;TNew&gt;(Func&lt;CancellationToken, Task&lt;TNew&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TNew&gt;&gt; BindAsync&lt;TNew&gt;(Func&lt;CancellationToken, Task&lt;TNew&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Bind_" data-uid="BridgingIT.DevKit.Common.Result`1.Bind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Bind__1_System_Func___0__" data-uid="BridgingIT.DevKit.Common.Result`1.Bind``1(System.Func{``0})">
+  Bind&lt;TNew&gt;(Func&lt;TNew&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;TNew&gt; Bind&lt;TNew&gt;(Func&lt;TNew&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;TNew&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TNew&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure" data-uid="BridgingIT.DevKit.Common.Result`1.Failure">
+  Failure()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with no value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T}.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure();
+Console.WriteLine($"Failed: {result.IsFailure}"); // True</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure_BridgingIT_DevKit_Common_IResult_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(BridgingIT.DevKit.Common.IResult)">
+  Failure(IResult)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} based on an existing IResult, copying its messages and errors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(IResult result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd><p>The existing IResult to copy messages and errors from.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the messages and errors from the existing IResult.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(BridgingIT.DevKit.Common.IResultError)">
+  Failure(IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a specific error instance.7</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(IResultError error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  Failure(IEnumerable&lt;string&gt;, IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with multiple messages and optional errors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(IEnumerable&lt;string&gt; messages, IEnumerable&lt;IResultError&gt; errors = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>Collection of messages describing the failure.</p>
+</dd>
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>Optional collection of errors providing additional details.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the specified messages and errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError___examples">Examples</h4>
+  <pre><code class="lang-csharp">var messages = new[] { "Validation failed", "Database update failed" };
+var errors = new IResultError[]
+{
+    new ValidationError("Invalid email"),
+    new DbError("Connection failed")
+};
+var result = Result{User}.Failure(messages, errors);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure(string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a message and optional error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(string message, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Message describing the failure.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>Optional error providing additional failure details.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the specified message and error.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure_System_String_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure(
+    "User creation failed",
+    new ValidationError("Invalid email format")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure__0_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(`0)">
+  Failure(T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be contained in the failed result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} containing the specified value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var invalidUser = new User(); // Invalid user state
+var result = Result{User}.Failure(invalidUser)
+    .WithError(new ValidationError("Invalid user data"));</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure__0_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(`0,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  Failure(T, IEnumerable&lt;string&gt;, IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a value and multiple messages and errors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(T value, IEnumerable&lt;string&gt; messages, IEnumerable&lt;IResultError&gt; errors = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be contained in the failed result.</p>
+</dd>
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>Collection of messages describing the failure.</p>
+</dd>
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>Optional collection of errors providing additional details.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the specified value, messages, and errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure__0_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError___examples">Examples</h4>
+  <pre><code class="lang-csharp">var invalidUser = new User();
+var messages = new[] { "Validation failed", "Cannot save user" };
+var errors = new IResultError[]
+{
+    new ValidationError("Invalid email"),
+    new ValidationError("Invalid password")
+};
+var result = Result{User}.Failure(invalidUser, messages, errors);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure__0_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure(`0,System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure(T, string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a value, message, and optional error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure(T value, string message, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be contained in the failed result.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Message describing the failure.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>Optional error providing additional failure details.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the specified value, message, and error.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure__0_System_String_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var invalidUser = new User();
+var result = Result{User}.Failure(
+    invalidUser,
+    "Validation failed",
+    new ValidationError("Required fields missing")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_FailureIf_" data-uid="BridgingIT.DevKit.Common.Result`1.FailureIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_FailureIf_System_Boolean__0_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.FailureIf(System.Boolean,`0,BridgingIT.DevKit.Common.IResultError)">
+  FailureIf(bool, T, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result based on a failure condition and value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; FailureIf(bool isFailure, T value, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isFailure</code> <span class="xref">bool</span></dt>
+    <dd><p>Condition determining failure or success.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to include in the Result.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>Optional error to include if condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A failure Result with the error if condition is true; otherwise, a successful Result with the value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_FailureIf_System_Boolean__0_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { IsBlocked = false };
+var result = Result{User}.FailureIf(
+    user.IsBlocked,
+    user,
+    new ValidationError("User account is blocked")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_FailureIf_" data-uid="BridgingIT.DevKit.Common.Result`1.FailureIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_FailureIf_System_Func__0_System_Boolean___0_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.FailureIf(System.Func{`0,System.Boolean},`0,BridgingIT.DevKit.Common.IResultError)">
+  FailureIf(Func&lt;T, bool&gt;, T, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; FailureIf(Func&lt;T, bool&gt; predicate, T value, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure__1" data-uid="BridgingIT.DevKit.Common.Result`1.Failure``1">
+  Failure&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a specific error type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure&lt;TError&gt;() where TError : IResultError, new()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the specified error type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to create.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure{ValidationError}();
+if (result.HasError{ValidationError}())
+{
+    Console.WriteLine("Validation failed");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Failure_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Failure__1_System_String_" data-uid="BridgingIT.DevKit.Common.Result`1.Failure``1(System.String)">
+  Failure&lt;TError&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed Result{T} with a specific error type and message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Failure&lt;TError&gt;(string message) where TError : IResultError, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Message describing the failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new failed Result{T} with the specified error type and message.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to create.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Failure__1_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure{ValidationError}("Invalid user data");
+var error = result.GetError{ValidationError}();
+Console.WriteLine(error.Message);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_GetError_" data-uid="BridgingIT.DevKit.Common.Result`1.GetError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_GetError__1" data-uid="BridgingIT.DevKit.Common.Result`1.GetError``1">
+  GetError&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the first error of a specific type from the Result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TError GetError&lt;TError&gt;() where TError : class, IResultError</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TError</span></dt>
+    <dd><p>The first error of type TError if found; otherwise, null.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_GetError__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = result.GetError{ValidationError}();
+if (error != null)
+{
+    Console.WriteLine($"First validation error: {error.Message}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_GetErrors_" data-uid="BridgingIT.DevKit.Common.Result`1.GetErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_GetErrors__1" data-uid="BridgingIT.DevKit.Common.Result`1.GetErrors``1">
+  GetErrors&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets all errors of a specific type from the Result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;TError&gt; GetErrors&lt;TError&gt;() where TError : class, IResultError</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TError&gt;</dt>
+    <dd><p>All errors of type TError. Empty enumerable if none found.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of errors to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_GetErrors__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">foreach(var error in result.GetErrors{ValidationError}())
+{
+    Console.WriteLine($"Validation error: {error.Message}");
+}
+
+// Using with LINQ
+var errorMessages = result.GetErrors{ValidationError}()
+    .Select(e =&gt; e.Message)
+    .ToList();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_HasError_" data-uid="BridgingIT.DevKit.Common.Result`1.HasError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_HasError" data-uid="BridgingIT.DevKit.Common.Result`1.HasError">
+  HasError()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if the Result contains any errors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasError()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if the Result contains any errors; otherwise, false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_HasError_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user);
+if (!result.HasError())
+{
+    Console.WriteLine("Operation completed without errors");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_HasError_" data-uid="BridgingIT.DevKit.Common.Result`1.HasError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_HasError__1" data-uid="BridgingIT.DevKit.Common.Result`1.HasError``1">
+  HasError&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if the Result contains an error of a specific type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasError&lt;TError&gt;() where TError : class, IResultError</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if the Result contains at least one error of type TError; otherwise, false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to check for.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_HasError__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Failure()
+    .WithError(new ValidationError("Invalid email"));
+
+if (result.HasError{ValidationError}())
+{
+    var error = result.GetError{ValidationError}();
+    Console.WriteLine($"Validation failed: {error.Message}");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Merge_" data-uid="BridgingIT.DevKit.Common.Result`1.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Merge_BridgingIT_DevKit_Common_Result__0____" data-uid="BridgingIT.DevKit.Common.Result`1.Merge(BridgingIT.DevKit.Common.Result{`0}[])">
+  Merge(params Result&lt;T&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Combines multiple Results into a single Result.
+The combined Result is successful only if all Results are successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Merge(params Result&lt;T&gt;[] results)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>results</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Merge_BridgingIT_DevKit_Common_Result__0_____examples">Examples</h4>
+  <p>var result1 = Result.Success(&quot;First operation&quot;);
+var result2 = Result.Success(&quot;Second operation&quot;);
+var result3 = Result.Failure(&quot;Third operation failed&quot;);</p>
+<p>var combined = Result.Combine(result1, result2, result3);
+// combined.IsFailure == true
+// combined.Messages contains all three messages</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Success_" data-uid="BridgingIT.DevKit.Common.Result`1.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Success" data-uid="BridgingIT.DevKit.Common.Result`1.Success">
+  Success()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful Result{T} with no value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Success()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new successful Result{T} containing the default value of T.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Success_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success();
+Console.WriteLine($"Success: {result.IsSuccess}"); // True</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Success_" data-uid="BridgingIT.DevKit.Common.Result`1.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Success__0_" data-uid="BridgingIT.DevKit.Common.Result`1.Success(`0)">
+  Success(T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful Result{T} with a specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Success(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be contained in the successful result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new successful Result{T} containing the specified value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Success__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { Id = 1, Name = "John" };
+var result = Result{User}.Success(user);
+Console.WriteLine($"Created user: {result.Value.Name}"); // Safe to access Value</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Success_" data-uid="BridgingIT.DevKit.Common.Result`1.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Success__0_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Common.Result`1.Success(`0,System.Collections.Generic.IEnumerable{System.String})">
+  Success(T, IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful Result{T} with a value and multiple messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Success(T value, IEnumerable&lt;string&gt; messages)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be contained in the successful result.</p>
+</dd>
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>Collection of messages describing the successful operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new successful Result{T} containing the value and messages.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Success__0_System_Collections_Generic_IEnumerable_System_String___examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { Id = 1, Name = "John" };
+var messages = new[] { "User created", "Welcome email sent" };
+var result = Result{User}.Success(user, messages);
+foreach(var msg in result.Messages)
+{
+    Console.WriteLine(msg);
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Success_" data-uid="BridgingIT.DevKit.Common.Result`1.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Success__0_System_String_" data-uid="BridgingIT.DevKit.Common.Result`1.Success(`0,System.String)">
+  Success(T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful Result{T} with a value and a message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Success(T value, string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to be contained in the successful result.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>A message describing the successful operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new successful Result{T} containing the value and message.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Success__0_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { Id = 1, Name = "John" };
+var result = Result{User}.Success(user, "User created successfully");
+Console.WriteLine(result.Messages.First()); // "User created successfully"</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_SuccessIf_" data-uid="BridgingIT.DevKit.Common.Result`1.SuccessIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_SuccessIf_System_Boolean__0_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.SuccessIf(System.Boolean,`0,BridgingIT.DevKit.Common.IResultError)">
+  SuccessIf(bool, T, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result based on a condition and value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; SuccessIf(bool isSuccess, T value, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>isSuccess</code> <span class="xref">bool</span></dt>
+    <dd><p>Condition determining success or failure.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to include in the Result.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>Optional error to include if condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A successful Result with the value if condition is true; otherwise, a failure Result with the error.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_SuccessIf_System_Boolean__0_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { Age = 25 };
+var result = Result{User}.SuccessIf(
+    user.Age &gt;= 18,
+    user,
+    new ValidationError("User must be 18 or older")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_SuccessIf_" data-uid="BridgingIT.DevKit.Common.Result`1.SuccessIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_SuccessIf_System_Func__0_System_Boolean___0_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.SuccessIf(System.Func{`0,System.Boolean},`0,BridgingIT.DevKit.Common.IResultError)">
+  SuccessIf(Func&lt;T, bool&gt;, T, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result based on a predicate function evaluating the value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; SuccessIf(Func&lt;T, bool&gt; predicate, T value, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>Function to evaluate the value.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to evaluate and include in the Result.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>Optional error to include if predicate returns false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A successful Result if predicate returns true; otherwise, a failure Result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_SuccessIf_System_Func__0_System_Boolean___0_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { Email = "test@example.com" };
+var result = Result{User}.SuccessIf(
+    u =&gt; u.Email.Contains("@"),
+    user,
+    new ValidationError("Invalid email format")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_ToString_" data-uid="BridgingIT.DevKit.Common.Result`1.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_ToString" data-uid="BridgingIT.DevKit.Common.Result`1.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns a compact, single-line string representation of this result,
+including distinct messages and errors when present.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_ToString_examples">Examples</h4>
+  <p>var result = Result.Failure()
+.WithMessage(&quot;Operation completed with warnings&quot;)
+.WithMessage(&quot;First step ok&quot;)
+.WithMessage(&quot;First step ok&quot;) // duplicate, will be removed
+.WithError(new ValidationError(&quot;Invalid input&quot;))
+.WithError(new ExceptionError(new InvalidOperationException(&quot;Invalid op&quot;)));</p>
+<p>Console.WriteLine(result.ToString());
+// Output (single line):
+// Result failed ✗ | messages: Operation completed with warnings; First step ok | errors: [ValidationError] Invalid input; [InvalidOperationException] Invalid op</p>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_ToString_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><ul>
+<li>No newlines are included.</li>
+<li>Messages are deduplicated (ordinal).</li>
+<li>Errors are formatted as &quot;[Type] Message&quot; and deduplicated.</li>
+<li>Sections &quot;messages&quot; and &quot;errors&quot; appear only if non-empty.</li>
+</ul>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_ToString_" data-uid="BridgingIT.DevKit.Common.Result`1.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_ToString_System_String_" data-uid="BridgingIT.DevKit.Common.Result`1.ToString(System.String)">
+  ToString(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds a single-line, dense summary of this result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>An optional message to include. If non-empty, it is merged with the
+result's own messages. Duplicates are removed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A compact, single-line string that starts with the success/failure marker,
+followed by distinct messages and errors (if present).
+Example:
+Result failed ✗ | messages: First step ok; Cleanup done | errors: [ValidationError] Email is required</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_ToString_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><ul>
+<li>No newlines are included in the output.</li>
+<li>Messages are deduplicated (case-sensitive, ordinal comparison).</li>
+<li>Errors are rendered as &quot;[Type] Message&quot; and deduplicated.</li>
+<li>Sections &quot;messages&quot; and &quot;errors&quot; are included only when non-empty.</li>
+</ul>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Try_" data-uid="BridgingIT.DevKit.Common.Result`1.Try*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Try_System_Func__0__" data-uid="BridgingIT.DevKit.Common.Result`1.Try(System.Func{`0})">
+  Try(Func&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result from an operation, handling any exceptions that occur.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result&lt;T&gt; Try(Func&lt;T&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;T&gt;</dt>
+    <dd><p>The operation to execute.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A Result representing the outcome of the operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Try_System_Func__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{int}.Try(() =&gt; int.Parse("42")); // Success(42)</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_TryAsync_" data-uid="BridgingIT.DevKit.Common.Result`1.TryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_TryAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Result`1.TryAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{`0}},System.Threading.CancellationToken)">
+  TryAsync(Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a Result from an async operation, handling any exceptions that occur.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; TryAsync(Func&lt;CancellationToken, Task&lt;T&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The async operation to execute.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A Result representing the outcome of the async operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_TryAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__0___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await Result{User}.TryAsync(
+    async ct =&gt; await repository.GetUserAsync(userId, ct),
+    cancellationToken
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_TryGetError_" data-uid="BridgingIT.DevKit.Common.Result`1.TryGetError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_TryGetError__1___0__" data-uid="BridgingIT.DevKit.Common.Result`1.TryGetError``1(``0@)">
+  TryGetError&lt;TError&gt;(out TError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tries to get the first error of a specific type from the Result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetError&lt;TError&gt;(out TError error) where TError : class, IResultError</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <span class="xref">TError</span></dt>
+    <dd><p>When this method returns, contains the first error of type TError if found; otherwise, default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if an error of type TError was found; otherwise, false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_TryGetError__1___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">if (result.TryGetError{ValidationError}(out var validationError))
+{
+    Console.WriteLine($"Validation failed: {validationError.Message}");
+}
+else
+{
+    Console.WriteLine("No validation error found");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_TryGetErrors_" data-uid="BridgingIT.DevKit.Common.Result`1.TryGetErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_TryGetErrors__1_System_Collections_Generic_IEnumerable___0___" data-uid="BridgingIT.DevKit.Common.Result`1.TryGetErrors``1(System.Collections.Generic.IEnumerable{``0}@)">
+  TryGetErrors&lt;TError&gt;(out IEnumerable&lt;TError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tries to get all errors of a specific type from the Result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetErrors&lt;TError&gt;(out IEnumerable&lt;TError&gt; errors) where TError : class, IResultError</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;TError&gt;</dt>
+    <dd><p>When this method returns, contains all errors of type TError if any were found; otherwise, empty.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if any errors of type TError were found; otherwise, false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of errors to retrieve.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_TryGetErrors__1_System_Collections_Generic_IEnumerable___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">if (result.TryGetErrors{ValidationError}(out var validationErrors))
+{
+    foreach(var error in validationErrors)
+    {
+        Console.WriteLine($"Validation error: {error.Message}");
+    }
+}
+else
+{
+    Console.WriteLine("No validation errors found");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Unwrap_" data-uid="BridgingIT.DevKit.Common.Result`1.Unwrap*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Unwrap" data-uid="BridgingIT.DevKit.Common.Result`1.Unwrap">
+  Unwrap()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a generic Result{T} to a non-generic Result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result Unwrap()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A non-generic Result with the same success state, messages, and errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Unwrap_examples">Examples</h4>
+  <pre><code class="lang-csharp">var userResult = Result{User}.Success(user)
+    .WithMessage("User created");
+
+Result result = userResult.ToResult(); // Converts to non-generic Result
+Console.WriteLine(result.IsSuccess); // Still maintains success state</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithError_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithError_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError(BridgingIT.DevKit.Common.IResultError)">
+  WithError(IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an error to the Result and marks it as failed while maintaining immutability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithError(IResultError error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>The error to add. If null, the Result is returned unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new Result{T} marked as failed with the added error.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_WithError_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user)
+    .WithError(new ValidationError("Email is invalid"))
+    .WithError(new ValidationError("Password is too short"));
+
+if (result.HasError{ValidationError}())
+{
+    var errors = result.GetErrors{ValidationError}();
+    foreach(var error in errors)
+    {
+        Console.WriteLine(error.Message);
+    }
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithError_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithError_System_Exception_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError(System.Exception)">
+  WithError(Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an exception to the Result and marks it as failed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithError(Exception ex)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_WithError_System_Exception__examples">Examples</h4>
+  <p>var result = Result.Success()
+.WithError(exception);
+if (result.HasError{ExceptionError}())
+{
+Console.WriteLine(result.GetError{ExceptionError}().Message);
+}</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithError_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithError_System_String_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError(System.String)">
+  WithError(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithError(string errorMessage)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errorMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithError_" data-uid="BridgingIT.DevKit.Common.Result`1.WithError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithError__1" data-uid="BridgingIT.DevKit.Common.Result`1.WithError``1">
+  WithError&lt;TError&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a strongly-typed error to the Result and marks it as failed while maintaining immutability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithError&lt;TError&gt;() where TError : IResultError, new()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new Result{T} marked as failed with the added error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of error to add. Must implement IResultError and have a parameterless constructor.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_WithError__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">// Define custom error type
+public class UserNotFoundError : IResultError
+{
+    public string Message =&gt; "User not found in database";
+}
+
+// Use in Result
+var result = Result{User}.Success(user)
+    .WithError{UserNotFoundError}();
+
+if (result.HasError{UserNotFoundError}())
+{
+    var error = result.GetError{UserNotFoundError}();
+    Console.WriteLine(error.Message);
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithErrors_" data-uid="BridgingIT.DevKit.Common.Result`1.WithErrors*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithErrors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Common.Result`1.WithErrors(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  WithErrors(IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple errors to the Result and marks it as failed while maintaining immutability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithErrors(IEnumerable&lt;IResultError&gt; errors)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>Collection of errors to add. If null, the Result is returned unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new Result{T} marked as failed with the added errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_WithErrors_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError___examples">Examples</h4>
+  <pre><code class="lang-csharp">var validationErrors = new IResultError[]
+{
+    new ValidationError("Invalid email format"),
+    new ValidationError("Password too weak"),
+    new ValidationError("Username taken")
+};
+
+var result = Result{User}.Success(user)
+    .WithErrors(validationErrors);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithMessage_" data-uid="BridgingIT.DevKit.Common.Result`1.WithMessage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithMessage_System_String_" data-uid="BridgingIT.DevKit.Common.Result`1.WithMessage(System.String)">
+  WithMessage(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a message to the Result while maintaining immutability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithMessage(string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The message to add. If null or whitespace, the Result is returned unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new Result{T} with the added message.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_WithMessage_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user)
+    .WithMessage("User created successfully")
+    .WithMessage("Welcome email scheduled");
+
+foreach(var msg in result.Messages)
+{
+    Console.WriteLine(msg);
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_WithMessages_" data-uid="BridgingIT.DevKit.Common.Result`1.WithMessages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_WithMessages_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Common.Result`1.WithMessages(System.Collections.Generic.IEnumerable{System.String})">
+  WithMessages(IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple messages to the Result while maintaining immutability.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;T&gt; WithMessages(IEnumerable&lt;string&gt; messages)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>Collection of messages to add. If null, the Result is returned unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A new Result{T} with the added messages.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_WithMessages_System_Collections_Generic_IEnumerable_System_String___examples">Examples</h4>
+  <pre><code class="lang-csharp">var messages = new[]
+{
+    "User profile created",
+    "Verification email sent",
+    "Welcome notification queued"
+};
+
+var result = Result{User}.Success(user)
+    .WithMessages(messages);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Wrap_" data-uid="BridgingIT.DevKit.Common.Result`1.Wrap*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Wrap__1" data-uid="BridgingIT.DevKit.Common.Result`1.Wrap``1">
+  Wrap&lt;TOutput&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new Result{TOutput} from this Result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;TOutput&gt; Wrap&lt;TOutput&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;</dt>
+    <dd><p>A new Result{TOutput} with the same success state, messages, and errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOutput</code></dt>
+    <dd><p>The type for the new Result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Wrap__1_examples">Examples</h4>
+  <pre><code class="lang-csharp">var userResult = Result{User}.Success(user)
+    .WithMessage("User validated");
+
+// Convert to different type
+Result{UserDto} dtoResult = userResult.ToResult{UserDto}();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_Wrap_" data-uid="BridgingIT.DevKit.Common.Result`1.Wrap*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_Wrap__1___0_" data-uid="BridgingIT.DevKit.Common.Result`1.Wrap``1(``0)">
+  Wrap&lt;TOutput&gt;(TOutput)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new Result{TOutput} from this Result with a specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;TOutput&gt; Wrap&lt;TOutput&gt;(TOutput value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TOutput</span></dt>
+    <dd><p>The value for the new Result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;</dt>
+    <dd><p>A new Result{TOutput} with the same success state, messages, and errors, containing the specified value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOutput</code></dt>
+    <dd><p>The type for the new Result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_Wrap__1___0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var userResult = Result{User}.Success(user)
+    .WithMessage("User validated");
+
+var dto = new UserDto { Id = user.Id, Name = user.Name };
+var dtoResult = userResult.ToResult(dto); // Creates Result{UserDto}
+
+// Also useful for type conversion in chains
+var result = await GetUserAsync()
+    .Map(user =&gt; new UserDto(user))
+    .To(dto =&gt; new ApiResponse(dto));</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_op_Implicit_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Common_Result__0_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit(BridgingIT.DevKit.Common.Result)~BridgingIT.DevKit.Common.Result{`0}">
+  implicit operator Result&lt;T&gt;(Result)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a non-generic Result to a Result{T}.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Result&lt;T&gt;(Result result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The Result to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A Result{T} with the same success state, messages, and errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_op_Implicit_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Common_Result__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result.Success()
+    .WithMessage("Operation completed");
+Result{User} userResult = result; // Converts to generic result</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_op_Implicit_BridgingIT_DevKit_Common_Result__0___BridgingIT_DevKit_Common_Result" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit(BridgingIT.DevKit.Common.Result{`0})~BridgingIT.DevKit.Common.Result">
+  implicit operator Result(Result&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a Result{T} to a non-generic Result.
+Note: The value is not preserved in the conversion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Result(Result&lt;T&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The Result{T} to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A Result with the same success state, messages, and errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_op_Implicit_BridgingIT_DevKit_Common_Result__0___BridgingIT_DevKit_Common_Result_examples">Examples</h4>
+  <pre><code class="lang-csharp">var userResult = Result{User}.Success(user)
+    .WithMessage("User created");
+Result result = userResult; // Converts but loses the User value</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_op_Implicit_BridgingIT_DevKit_Common_Result__0___System_Boolean" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit(BridgingIT.DevKit.Common.Result{`0})~System.Boolean">
+  implicit operator bool(Result&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a Result{T} to a boolean based on its success state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator bool(Result&lt;T&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>The Result{T} to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if the result is successful; otherwise, false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_op_Implicit_BridgingIT_DevKit_Common_Result__0___System_Boolean_examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Result{User}.Success(user);
+if (result) // Implicitly converts to true
+{
+    Console.WriteLine("Operation succeeded");
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_op_Implicit_System_Threading_Tasks_Task__0___BridgingIT_DevKit_Common_Result__0_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit(System.Threading.Tasks.Task{`0})~BridgingIT.DevKit.Common.Result{`0}">
+  implicit operator Result&lt;T&gt;(Task&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts an async Task{T} to Result{T}.
+Note: This operator will block synchronously - use with caution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Result&lt;T&gt;(Task&lt;T&gt; task)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>task</code> <span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>The task to convert to a Result{T}.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A Result{T} based on the task's outcome.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_op_Implicit_System_Threading_Tasks_Task__0___BridgingIT_DevKit_Common_Result__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">public async Task{User} GetUserAsync() =&gt; await _repository.GetUserAsync();
+
+// Direct conversion (not recommended due to blocking)
+Result{User} result = GetUserAsync();
+
+// Preferred async approach
+Result{User} result = await GetUserAsync();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Result_1_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Result_1_op_Implicit__0__BridgingIT_DevKit_Common_Result__0_" data-uid="BridgingIT.DevKit.Common.Result`1.op_Implicit(`0)~BridgingIT.DevKit.Common.Result{`0}">
+  implicit operator Result&lt;T&gt;(T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a value to a successful Result{T}.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Result&lt;T&gt;(T value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd><p>The value to convert to a Result{T}.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd><p>A successful Result{T} containing the value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_op_Implicit__0__BridgingIT_DevKit_Common_Result__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Direct assignment creates a successful result
+var user = new User { Id = 1, Name = "John" };
+Result{User} result = user;
+
+// Method return value automatically converts
+public User GetUser() =&gt; new User { Id = 1 };
+Result{User} userResult = GetUser();</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

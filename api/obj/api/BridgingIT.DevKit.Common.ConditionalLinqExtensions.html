@@ -1,0 +1,2860 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ConditionalLinqExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ConditionalLinqExtensions | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions" class="text-break">
+Class ConditionalLinqExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ConditionalLinqExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ConditionalLinqExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AllIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AllIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AllIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AllIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  AllIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool AllIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AllIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AllIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AllIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AllIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  AllIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool AllIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AnyIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AnyIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AnyIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AnyIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  AnyIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool AnyIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AnyIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AnyIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AnyIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AnyIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  AnyIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool AnyIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AverageIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AverageIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AverageIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Func___0_System_Double__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AverageIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double},System.Func{``0,System.Double},System.Boolean)">
+  AverageIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, Func&lt;TSource, double&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double AverageIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, double&gt; selectorIf, Func&lt;TSource, double&gt; selectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">double</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">double</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">double</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AverageIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AverageIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_AverageIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.AverageIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double},System.Boolean)">
+  AverageIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double AverageIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, double&gt; selector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selector</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">double</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">double</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ConcatIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ConcatIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ConcatIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ConcatIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ConcatIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ConcatIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondElse</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ConcatIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ConcatIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ConcatIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ConcatIf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ConcatIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ConcatIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_CountIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.CountIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_CountIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.CountIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  CountIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int CountIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_CountIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.CountIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_CountIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.CountIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  CountIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int CountIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_DistinctIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.DistinctIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_DistinctIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__System_Collections_Generic_IEqualityComparer___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.DistinctIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0},System.Collections.Generic.IEqualityComparer{``0},System.Boolean)">
+  DistinctIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;, IEqualityComparer&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; DistinctIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEqualityComparer&lt;TSource&gt; comparerIf, IEqualityComparer&lt;TSource&gt; comparerElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>comparerIf</code> <span class="xref">IEqualityComparer</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>comparerElse</code> <span class="xref">IEqualityComparer</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_DistinctIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.DistinctIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_DistinctIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.DistinctIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  DistinctIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; DistinctIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ElementAtOrDefaultIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ElementAtOrDefaultIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ElementAtOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ElementAtOrDefaultIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Boolean)">
+  ElementAtOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource ElementAtOrDefaultIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int indexIf, int indexElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>indexIf</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>indexElse</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ElementAtOrDefaultIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ElementAtOrDefaultIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ElementAtOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ElementAtOrDefaultIf``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Boolean)">
+  ElementAtOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource ElementAtOrDefaultIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int index, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>index</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ExceptIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ExceptIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ExceptIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ExceptIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ExceptIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ExceptIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondElse</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ExceptIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ExceptIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ExceptIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ExceptIf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ExceptIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ExceptIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_FirstOrDefaultIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.FirstOrDefaultIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_FirstOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.FirstOrDefaultIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  FirstOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource FirstOrDefaultIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_FirstOrDefaultIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.FirstOrDefaultIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_FirstOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.FirstOrDefaultIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  FirstOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource FirstOrDefaultIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIfElse__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___0___2__System_Func___1___2__System_Func___1___2__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIfElse``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``0,``2},System.Func{``1,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Boolean)">
+  GroupJoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; GroupJoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; innerIf, IEnumerable&lt;TInner&gt; innerElse, Func&lt;TOuter, TKey&gt; outerKeySelectorIf, Func&lt;TOuter, TKey&gt; outerKeySelectorElse, Func&lt;TInner, TKey&gt; innerKeySelectorIf, Func&lt;TInner, TKey&gt; innerKeySelectorElse, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelectorIf, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dd></dd>
+    <dt><code>innerIf</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
+    <dd></dd>
+    <dt><code>innerElse</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
+    <dd></dd>
+    <dt><code>outerKeySelectorIf</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>outerKeySelectorElse</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>innerKeySelectorIf</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>innerKeySelectorElse</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TOuter, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TOuter, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOuter</code></dt>
+    <dd></dd>
+    <dt><code>TInner</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIf__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___1___2__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIf``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Boolean)">
+  GroupJoinIf&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; GroupJoinIf&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; inner, Func&lt;TOuter, TKey&gt; outerKeySelector, Func&lt;TInner, TKey&gt; innerKeySelector, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dd></dd>
+    <dt><code>inner</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
+    <dd></dd>
+    <dt><code>outerKeySelector</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>innerKeySelector</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TOuter, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOuter</code></dt>
+    <dd></dd>
+    <dt><code>TInner</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_IntersectIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.IntersectIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_IntersectIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.IntersectIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  IntersectIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; IntersectIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondElse</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_IntersectIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.IntersectIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_IntersectIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.IntersectIf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  IntersectIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; IntersectIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIfElse__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___0___2__System_Func___1___2__System_Func___1___2__System_Func___0___1___3__System_Func___0___1___3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIfElse``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``0,``2},System.Func{``1,``2},System.Func{``1,``2},System.Func{``0,``1,``3},System.Func{``0,``1,``3},System.Boolean)">
+  JoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, TInner, TResult&gt;, Func&lt;TOuter, TInner, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; JoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; innerIf, IEnumerable&lt;TInner&gt; innerElse, Func&lt;TOuter, TKey&gt; outerKeySelectorIf, Func&lt;TOuter, TKey&gt; outerKeySelectorElse, Func&lt;TInner, TKey&gt; innerKeySelectorIf, Func&lt;TInner, TKey&gt; innerKeySelectorElse, Func&lt;TOuter, TInner, TResult&gt; resultSelectorIf, Func&lt;TOuter, TInner, TResult&gt; resultSelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dd></dd>
+    <dt><code>innerIf</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
+    <dd></dd>
+    <dt><code>innerElse</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
+    <dd></dd>
+    <dt><code>outerKeySelectorIf</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>outerKeySelectorElse</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>innerKeySelectorIf</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>innerKeySelectorElse</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TOuter, TInner, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TOuter, TInner, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOuter</code></dt>
+    <dd></dd>
+    <dt><code>TInner</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIf__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___1___2__System_Func___0___1___3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIf``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,``1,``3},System.Boolean)">
+  JoinIf&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, TInner, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; JoinIf&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; inner, Func&lt;TOuter, TKey&gt; outerKeySelector, Func&lt;TInner, TKey&gt; innerKeySelector, Func&lt;TOuter, TInner, TResult&gt; resultSelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dd></dd>
+    <dt><code>inner</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
+    <dd></dd>
+    <dt><code>outerKeySelector</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>innerKeySelector</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TOuter, TInner, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOuter</code></dt>
+    <dd></dd>
+    <dt><code>TInner</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_LastOrDefaultIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.LastOrDefaultIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_LastOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.LastOrDefaultIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  LastOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource LastOrDefaultIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_LastOrDefaultIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.LastOrDefaultIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_LastOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.LastOrDefaultIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  LastOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource LastOrDefaultIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MaxIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MaxIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MaxIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MaxIfElse``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  MaxIfElse&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, Func&lt;TSource, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TResult MaxIfElse&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TResult&gt; selectorIf, Func&lt;TSource, TResult&gt; selectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorIf</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorElse</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MaxIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MaxIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MaxIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MaxIf``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  MaxIf&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TResult MaxIf&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TResult&gt; selector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selector</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MinIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MinIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MinIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MinIfElse``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  MinIfElse&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, Func&lt;TSource, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TResult MinIfElse&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TResult&gt; selectorIf, Func&lt;TSource, TResult&gt; selectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorIf</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorElse</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MinIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MinIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_MinIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.MinIf``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  MinIf&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TResult MinIf&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TResult&gt; selector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selector</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByDescendingIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByDescendingIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByDescendingIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByDescendingIfElse``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  OrderByDescendingIfElse&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; OrderByDescendingIfElse&lt;TSource, TKey&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelectorIf, Func&lt;TSource, TKey&gt; keySelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorIf</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorElse</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByDescendingIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByDescendingIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByDescendingIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByDescendingIf``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  OrderByDescendingIf&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; OrderByDescendingIf&lt;TSource, TKey&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelector</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByIfElse``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  OrderByIfElse&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; OrderByIfElse&lt;TSource, TKey&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelectorIf, Func&lt;TSource, TKey&gt; keySelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorIf</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorElse</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_OrderByIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.OrderByIf``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  OrderByIf&lt;TSource, TKey&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; OrderByIf&lt;TSource, TKey&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelector</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ReverseIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ReverseIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ReverseIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ReverseIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ReverseIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ReverseIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SelectIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SelectIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SelectIfElse__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SelectIfElse``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  SelectIfElse&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, Func&lt;TSource, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; SelectIfElse&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TResult&gt; selectorIf, Func&lt;TSource, TResult&gt; selectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorIf</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorElse</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SelectIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SelectIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SelectIf__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SelectIf``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  SelectIf&lt;TSource, TResult&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; SelectIf&lt;TSource, TResult&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, TResult&gt; selector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selector</code> <span class="xref">Func</span>&lt;TSource, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SingleOrDefaultIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SingleOrDefaultIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SingleOrDefaultIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SingleOrDefaultIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  SingleOrDefaultIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource SingleOrDefaultIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SingleOrDefaultIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SingleOrDefaultIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SingleOrDefaultIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SingleOrDefaultIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  SingleOrDefaultIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource SingleOrDefaultIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSource</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SkipIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SkipIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SkipIfElse__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SkipIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Boolean)">
+  SkipIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; SkipIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int countIf, int countElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>countIf</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>countElse</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SkipIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SkipIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SkipIf__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SkipIf``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Boolean)">
+  SkipIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; SkipIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int count, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SumIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SumIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SumIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Func___0_System_Double__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SumIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double},System.Func{``0,System.Double},System.Boolean)">
+  SumIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, Func&lt;TSource, double&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double SumIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, double&gt; selectorIf, Func&lt;TSource, double&gt; selectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">double</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>selectorElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">double</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">double</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SumIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SumIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_SumIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Double__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.SumIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double},System.Boolean)">
+  SumIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, double&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double SumIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, double&gt; selector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>selector</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">double</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">double</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_TakeIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.TakeIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_TakeIfElse__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.TakeIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Boolean)">
+  TakeIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; TakeIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int countIf, int countElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>countIf</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>countElse</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_TakeIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.TakeIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_TakeIf__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.TakeIf``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Boolean)">
+  TakeIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, int, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; TakeIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, int count, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByDescendingIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByDescendingIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByDescendingIfElse__2_System_Linq_IOrderedEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByDescendingIfElse``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  ThenByDescendingIfElse&lt;TSource, TKey&gt;(IOrderedEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; ThenByDescendingIfElse&lt;TSource, TKey&gt;(this IOrderedEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelectorIf, Func&lt;TSource, TKey&gt; keySelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorIf</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorElse</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByDescendingIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByDescendingIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByDescendingIf__2_System_Linq_IOrderedEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByDescendingIf``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  ThenByDescendingIf&lt;TSource, TKey&gt;(IOrderedEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; ThenByDescendingIf&lt;TSource, TKey&gt;(this IOrderedEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelector</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByIfElse__2_System_Linq_IOrderedEnumerable___0__System_Func___0___1__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByIfElse``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Func{``0,``1},System.Boolean)">
+  ThenByIfElse&lt;TSource, TKey&gt;(IOrderedEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; ThenByIfElse&lt;TSource, TKey&gt;(this IOrderedEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelectorIf, Func&lt;TSource, TKey&gt; keySelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorIf</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelectorElse</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ThenByIf__2_System_Linq_IOrderedEnumerable___0__System_Func___0___1__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ThenByIf``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Boolean)">
+  ThenByIf&lt;TSource, TKey&gt;(IOrderedEnumerable&lt;TSource&gt;, Func&lt;TSource, TKey&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IOrderedEnumerable&lt;TSource&gt; ThenByIf&lt;TSource, TKey&gt;(this IOrderedEnumerable&lt;TSource&gt; source, Func&lt;TSource, TKey&gt; keySelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>keySelector</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IOrderedEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ToArrayIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ToArrayIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ToArrayIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ToArrayIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ToArrayIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TSource[] ToArrayIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>TSource[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ToListIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ToListIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ToListIf__1_System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ToListIf``1(System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  ToListIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;TSource&gt; ToListIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_UnionIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.UnionIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_UnionIfElse__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.UnionIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  UnionIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; UnionIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>secondElse</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_UnionIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.UnionIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_UnionIf__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.UnionIf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Boolean)">
+  UnionIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSource&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; UnionIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_WhereIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.WhereIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_WhereIfElse__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.WhereIfElse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean},System.Boolean)">
+  WhereIfElse&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; WhereIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicateIf, Func&lt;TSource, bool&gt; predicateElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>predicateElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_WhereIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.WhereIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_WhereIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.WhereIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+  WhereIf&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; WhereIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIfElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIfElse__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__System_Func___0___1___2__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIfElse``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2},System.Func{``0,``1,``2},System.Boolean)">
+  ZipIfElse&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;, Func&lt;TFirst, TSecond, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipIfElse&lt;TFirst, TSecond, TResult&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; secondIf, IEnumerable&lt;TSecond&gt; secondElse, Func&lt;TFirst, TSecond, TResult&gt; resultSelectorIf, Func&lt;TFirst, TSecond, TResult&gt; resultSelectorElse, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TFirst&gt;</dt>
+    <dd></dd>
+    <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSecond&gt;</dt>
+    <dd></dd>
+    <dt><code>secondElse</code> <span class="xref">IEnumerable</span>&lt;TSecond&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TFirst, TSecond, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TFirst, TSecond, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TFirst</code></dt>
+    <dd></dd>
+    <dt><code>TSecond</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIf__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIf``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2},System.Boolean)">
+  ZipIf&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipIf&lt;TFirst, TSecond, TResult&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; second, Func&lt;TFirst, TSecond, TResult&gt; resultSelector, bool condition)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TFirst&gt;</dt>
+    <dd></dd>
+    <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSecond&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TFirst, TSecond, TResult&gt;</dt>
+    <dd></dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TFirst</code></dt>
+    <dd></dd>
+    <dt><code>TSecond</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

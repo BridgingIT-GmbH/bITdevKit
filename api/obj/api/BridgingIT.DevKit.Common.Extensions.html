@@ -1,0 +1,3581 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Extensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Extensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides extension methods for merging various collection types.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Extensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Extensions" data-uid="BridgingIT.DevKit.Common.Extensions" class="text-break">
+Class Extensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides extension methods for merging various collection types.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Extensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Extensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Batch_" data-uid="BridgingIT.DevKit.Common.Extensions.Batch*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Batch__1_System_Collections_Generic_IEnumerable___0__System_Int32_" data-uid="BridgingIT.DevKit.Common.Extensions.Batch``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+  Batch&lt;T&gt;(IEnumerable&lt;T&gt;, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Splits a collection into batches of a specified size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;IEnumerable&lt;T&gt;&gt; Batch&lt;T&gt;(this IEnumerable&lt;T&gt; source, int batchSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>The source collection.</p>
+</dd>
+    <dt><code>batchSize</code> <span class="xref">int</span></dt>
+    <dd><p>Size of each batch.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
+    <dd><p>A collection of batches.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_Batch__1_System_Collections_Generic_IEnumerable___0__System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var numbers = new[] { 1, 2, 3, 4, 5, 6, 7 };
+var batches = numbers.Batch(3);
+// Result: [[1,2,3], [4,5,6], [7]]</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ConcatArgs_" data-uid="BridgingIT.DevKit.Common.Extensions.ConcatArgs*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ConcatArgs_System_Object___System_Object___" data-uid="BridgingIT.DevKit.Common.Extensions.ConcatArgs(System.Object[],System.Object[])">
+  ConcatArgs(object[], object[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object[] ConcatArgs(this object[] args0, object[] args1)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>args0</code> <span class="xref">object</span>[]</dt>
+    <dd></dd>
+    <dt><code>args1</code> <span class="xref">object</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">object</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ContainsAny_" data-uid="BridgingIT.DevKit.Common.Extensions.ContainsAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ContainsAny_System_String_System_String___System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.ContainsAny(System.String,System.String[],System.StringComparison)">
+  ContainsAny(string, string[], StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the specified string contains any of the items.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool ContainsAny(this string source, string[] items, StringComparison comp = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>items</code> <span class="xref">string</span>[]</dt>
+    <dd></dd>
+    <dt><code>comp</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ContainsAny_" data-uid="BridgingIT.DevKit.Common.Extensions.ContainsAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ContainsAny__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEqualityComparer___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ContainsAny``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+  ContainsAny&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;, IEqualityComparer&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether the source contains any of the specified items using the provided equality comparer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool ContainsAny&lt;T&gt;(this IEnumerable&lt;T&gt; source, IEnumerable&lt;T&gt; items, IEqualityComparer&lt;T&gt; comparer = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_DistinctIf_" data-uid="BridgingIT.DevKit.Common.Extensions.DistinctIf*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_DistinctIf__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Object__" data-uid="BridgingIT.DevKit.Common.Extensions.DistinctIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Object})">
+  DistinctIf&lt;TProjection&gt;(IEnumerable&lt;TProjection&gt;, Func&lt;TProjection, object&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TProjection&gt; DistinctIf&lt;TProjection&gt;(this IEnumerable&lt;TProjection&gt; source, Func&lt;TProjection, object&gt; distinct)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TProjection&gt;</dt>
+    <dd></dd>
+    <dt><code>distinct</code> <span class="xref">Func</span>&lt;TProjection, <span class="xref">object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TProjection&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_EmptyToNull_" data-uid="BridgingIT.DevKit.Common.Extensions.EmptyToNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_EmptyToNull_System_String_" data-uid="BridgingIT.DevKit.Common.Extensions.EmptyToNull(System.String)">
+  EmptyToNull(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string EmptyToNull(this string source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_EmptyToNull_" data-uid="BridgingIT.DevKit.Common.Extensions.EmptyToNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_EmptyToNull__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.EmptyToNull``1(System.Collections.Generic.IEnumerable{``0})">
+  EmptyToNull&lt;T&gt;(IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; EmptyToNull&lt;T&gt;(this IEnumerable&lt;T&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNullAsList_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNullAsList*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNullAsList__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNullAsList``1(System.Collections.Generic.IEnumerable{``0})">
+  ExcludeNullAsList&lt;T&gt;(IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values and returns a new List.
+Returns empty list if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;T&gt; ExcludeNullAsList&lt;T&gt;(this IEnumerable&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_Concurrent_ConcurrentBag___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.Concurrent.ConcurrentBag{``0})">
+  ExcludeNull&lt;T&gt;(ConcurrentBag&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from a ConcurrentBag and returns a new ConcurrentBag.
+Returns empty concurrent bag if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConcurrentBag&lt;T&gt; ExcludeNull&lt;T&gt;(this ConcurrentBag&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ConcurrentBag</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ConcurrentBag</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_Generic_HashSet___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.Generic.HashSet{``0})">
+  ExcludeNull&lt;T&gt;(HashSet&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from a HashSet and returns a new HashSet.
+Returns empty hash set if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HashSet&lt;T&gt; ExcludeNull&lt;T&gt;(this HashSet&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">HashSet</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">HashSet</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_Generic_IEnumerable_System_Nullable___0___" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.Generic.IEnumerable{System.Nullable{``0}})">
+  ExcludeNull&lt;T&gt;(IEnumerable&lt;T?&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from any collection of nullable value types.
+Returns empty enumerable if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; ExcludeNull&lt;T&gt;(this IEnumerable&lt;T?&gt; source) where T : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T?&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.Generic.IEnumerable{``0})">
+  ExcludeNull&lt;T&gt;(IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from any collection implementing IEnumerable and returns non-nullable type.
+Returns empty enumerable if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; ExcludeNull&lt;T&gt;(this IEnumerable&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_Generic_LinkedList___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.Generic.LinkedList{``0})">
+  ExcludeNull&lt;T&gt;(LinkedList&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from a LinkedList and returns a new LinkedList.
+Returns empty linked list if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static LinkedList&lt;T&gt; ExcludeNull&lt;T&gt;(this LinkedList&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">LinkedList</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">LinkedList</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_Generic_SortedSet___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.Generic.SortedSet{``0})">
+  ExcludeNull&lt;T&gt;(SortedSet&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from a SortedSet and returns a new SortedSet.
+Returns empty sorted set if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SortedSet&lt;T&gt; ExcludeNull&lt;T&gt;(this SortedSet&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">SortedSet</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SortedSet</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1_System_Collections_ObjectModel_ObservableCollection___0__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(System.Collections.ObjectModel.ObservableCollection{``0})">
+  ExcludeNull&lt;T&gt;(ObservableCollection&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from an ObservableCollection and returns a new ObservableCollection.
+Returns empty observable collection if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ObservableCollection&lt;T&gt; ExcludeNull&lt;T&gt;(this ObservableCollection&lt;T&gt; source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ObservableCollection</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ObservableCollection</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__1___0___" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``1(``0[])">
+  ExcludeNull&lt;T&gt;(T[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes null values from an array and returns a new array.
+Returns empty array if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T[] ExcludeNull&lt;T&gt;(this T[] source) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> T[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>T[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ExcludeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ExcludeNull__2_System_Collections_Generic_IDictionary___0___1__" data-uid="BridgingIT.DevKit.Common.Extensions.ExcludeNull``2(System.Collections.Generic.IDictionary{``0,``1})">
+  ExcludeNull&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Removes entries with null values from a dictionary and returns a new dictionary.
+Returns empty dictionary if source is null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; ExcludeNull&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source) where TKey : notnull where TValue : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TValue</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ForEachAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ForEachAsync__1_System_Collections_Generic_ICollection___0__System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEachAsync``1(System.Collections.Generic.ICollection{``0},System.Func{``0,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  ForEachAsync&lt;T&gt;(ICollection&lt;T&gt;, Func&lt;T, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ICollection&lt;T&gt;&gt; ForEachAsync&lt;T&gt;(this ICollection&lt;T&gt; source, Func&lt;T, Task&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">ICollection</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ForEachAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  ForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;IEnumerable&lt;T&gt;&gt; ForEachAsync&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ForEachParallelAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEachParallelAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ForEachParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEachParallelAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task},System.Int32,System.Int32)">
+  ForEachParallelAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes an action for each batch of items in parallel.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task ForEachParallelAsync&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; action, int maxDegreeOfParallelism = 5, int batchSize = 100)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>maxDegreeOfParallelism</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>batchSize</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ForEachParallelAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var items = Enumerable.Range(1, 1000);
+await items.ParallelForEachAsync(
+    async number =&gt; {
+        await ProcessItemAsync(number);
+    },
+    maxDegreeOfParallelism: 5,
+    batchSize: 100
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ForEach_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEach*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ForEach__1_System_Collections_Generic_ICollection___0__System_Action___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEach``1(System.Collections.Generic.ICollection{``0},System.Action{``0},System.Threading.CancellationToken)">
+  ForEach&lt;T&gt;(ICollection&lt;T&gt;, Action&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ICollection&lt;T&gt; ForEach&lt;T&gt;(this ICollection&lt;T&gt; source, Action&lt;T&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Action</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ForEach_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEach*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Action___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Threading.CancellationToken)">
+  ForEach&lt;T&gt;(IEnumerable&lt;T&gt;, Action&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Performs an action on each value of the enumerable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; ForEach&lt;T&gt;(this IEnumerable&lt;T&gt; source, Action&lt;T&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>The items.</p>
+</dd>
+    <dt><code>action</code> <span class="xref">Action</span>&lt;T&gt;</dt>
+    <dd><p>Action to perform on every item.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>the source with the actions applied.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>Element type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ForEach_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEach*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ForEach__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Collections_Generic_IEnumerable___0___System_Action___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``0}},System.Action{``0},System.Threading.CancellationToken)">
+  ForEach&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, IEnumerable&lt;T&gt;&gt;, Action&lt;T&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; ForEach&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, IEnumerable&lt;T&gt;&gt; childSelector, Action&lt;T&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>childSelector</code> <span class="xref">Func</span>&lt;T, <span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Action</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_IsEmpty_" data-uid="BridgingIT.DevKit.Common.Extensions.IsEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_IsEmpty_System_Guid_" data-uid="BridgingIT.DevKit.Common.Extensions.IsEmpty(System.Guid)">
+  IsEmpty(Guid)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsEmpty(this Guid source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty_" data-uid="BridgingIT.DevKit.Common.Extensions.IsNullOrEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty_System_IO_Stream_" data-uid="BridgingIT.DevKit.Common.Extensions.IsNullOrEmpty(System.IO.Stream)">
+  IsNullOrEmpty(Stream)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNullOrEmpty(this Stream source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty_" data-uid="BridgingIT.DevKit.Common.Extensions.IsNullOrEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty__1_System_Collections_Generic_ICollection___0__" data-uid="BridgingIT.DevKit.Common.Extensions.IsNullOrEmpty``1(System.Collections.Generic.ICollection{``0})">
+  IsNullOrEmpty&lt;TSource&gt;(ICollection&lt;TSource&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNullOrEmpty&lt;TSource&gt;(this ICollection&lt;TSource&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ICollection</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty_" data-uid="BridgingIT.DevKit.Common.Extensions.IsNullOrEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.IsNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+  IsNullOrEmpty&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsNullOrEmpty&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Match_" data-uid="BridgingIT.DevKit.Common.Extensions.Match*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Match_System_String_System_String_System_Boolean_" data-uid="BridgingIT.DevKit.Common.Extensions.Match(System.String,System.String,System.Boolean)">
+  Match(string, string, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares string with usage of pattern *.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool Match(this string source, string pattern, bool ignoreCase = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>the source string.</p>
+</dd>
+    <dt><code>pattern</code> <span class="xref">string</span></dt>
+    <dd><p>the value string to compare to.</p>
+</dd>
+    <dt><code>ignoreCase</code> <span class="xref">bool</span></dt>
+    <dd><p>Ignore case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>true if equal, otherwhise false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_MatchAny_" data-uid="BridgingIT.DevKit.Common.Extensions.MatchAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_MatchAny_System_String_System_Collections_Generic_IEnumerable_System_String__System_Boolean_" data-uid="BridgingIT.DevKit.Common.Extensions.MatchAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+  MatchAny(string, IEnumerable&lt;string&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares string with usage of pattern *.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool MatchAny(this string source, IEnumerable&lt;string&gt; patterns, bool ignoreCase = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>the source string.</p>
+</dd>
+    <dt><code>patterns</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>the value strings to compare to.</p>
+</dd>
+    <dt><code>ignoreCase</code> <span class="xref">bool</span></dt>
+    <dd><p>Ignore case.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>true if equal, otherwhise false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_HashSet___0__System_Collections_Generic_HashSet___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.HashSet{``0},System.Collections.Generic.HashSet{``0})">
+  Merge&lt;T&gt;(HashSet&lt;T&gt;, HashSet&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two hash sets into a new hash set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HashSet&lt;T&gt; Merge&lt;T&gt;(this HashSet&lt;T&gt; primary, HashSet&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">HashSet</span>&lt;T&gt;</dt>
+    <dd><p>The primary hash set.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">HashSet</span>&lt;T&gt;</dt>
+    <dd><p>The secondary hash set.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">HashSet</span>&lt;T&gt;</dt>
+    <dd><p>A new hash set containing unique elements from both sets.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the hash sets.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+  Merge&lt;T&gt;(IEnumerable&lt;T&gt;, IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two enumerable collections into a new collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;T&gt; Merge&lt;T&gt;(this IEnumerable&lt;T&gt; primary, IEnumerable&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>The primary collection.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>The secondary collection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd><p>A new collection containing elements from both collections.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the collections.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_LinkedList___0__System_Collections_Generic_LinkedList___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.LinkedList{``0},System.Collections.Generic.LinkedList{``0})">
+  Merge&lt;T&gt;(LinkedList&lt;T&gt;, LinkedList&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two linked lists into a new linked list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static LinkedList&lt;T&gt; Merge&lt;T&gt;(this LinkedList&lt;T&gt; primary, LinkedList&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">LinkedList</span>&lt;T&gt;</dt>
+    <dd><p>The primary linked list.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">LinkedList</span>&lt;T&gt;</dt>
+    <dd><p>The secondary linked list.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">LinkedList</span>&lt;T&gt;</dt>
+    <dd><p>A new linked list containing elements from both lists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the linked lists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_List___0__System_Collections_Generic_List___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
+  Merge&lt;T&gt;(List&lt;T&gt;, List&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two lists into a new list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static List&lt;T&gt; Merge&lt;T&gt;(this List&lt;T&gt; primary, List&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">List</span>&lt;T&gt;</dt>
+    <dd><p>The primary list.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">List</span>&lt;T&gt;</dt>
+    <dd><p>The secondary list.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">List</span>&lt;T&gt;</dt>
+    <dd><p>A new list containing elements from both lists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the lists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_Queue___0__System_Collections_Generic_Queue___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.Queue{``0},System.Collections.Generic.Queue{``0})">
+  Merge&lt;T&gt;(Queue&lt;T&gt;, Queue&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two queues into a new queue.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Queue&lt;T&gt; Merge&lt;T&gt;(this Queue&lt;T&gt; primary, Queue&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">Queue</span>&lt;T&gt;</dt>
+    <dd><p>The primary queue.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">Queue</span>&lt;T&gt;</dt>
+    <dd><p>The secondary queue.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Queue</span>&lt;T&gt;</dt>
+    <dd><p>A new queue containing elements from both queues.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the queues.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_SortedSet___0__System_Collections_Generic_SortedSet___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.SortedSet{``0},System.Collections.Generic.SortedSet{``0})">
+  Merge&lt;T&gt;(SortedSet&lt;T&gt;, SortedSet&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two sorted sets into a new sorted set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SortedSet&lt;T&gt; Merge&lt;T&gt;(this SortedSet&lt;T&gt; primary, SortedSet&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">SortedSet</span>&lt;T&gt;</dt>
+    <dd><p>The primary sorted set.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">SortedSet</span>&lt;T&gt;</dt>
+    <dd><p>The secondary sorted set.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SortedSet</span>&lt;T&gt;</dt>
+    <dd><p>A new sorted set containing unique elements from both sets.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the sorted sets.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__1_System_Collections_Generic_Stack___0__System_Collections_Generic_Stack___0__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``1(System.Collections.Generic.Stack{``0},System.Collections.Generic.Stack{``0})">
+  Merge&lt;T&gt;(Stack&lt;T&gt;, Stack&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two stacks into a new stack.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stack&lt;T&gt; Merge&lt;T&gt;(this Stack&lt;T&gt; primary, Stack&lt;T&gt; secondary)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">Stack</span>&lt;T&gt;</dt>
+    <dd><p>The primary stack.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">Stack</span>&lt;T&gt;</dt>
+    <dd><p>The secondary stack.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stack</span>&lt;T&gt;</dt>
+    <dd><p>A new stack containing elements from both stacks.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of elements in the stacks.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__2_System_Collections_Concurrent_ConcurrentDictionary___0___1__System_Collections_Concurrent_ConcurrentDictionary___0___1__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``2(System.Collections.Concurrent.ConcurrentDictionary{``0,``1},System.Collections.Concurrent.ConcurrentDictionary{``0,``1})">
+  Merge&lt;TKey, TValue&gt;(ConcurrentDictionary&lt;TKey, TValue&gt;, ConcurrentDictionary&lt;TKey, TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two concurrent dictionaries into a new concurrent dictionary, with primary values taking precedence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ConcurrentDictionary&lt;TKey, TValue&gt; Merge&lt;TKey, TValue&gt;(this ConcurrentDictionary&lt;TKey, TValue&gt; primary, ConcurrentDictionary&lt;TKey, TValue&gt; secondary) where TKey : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">ConcurrentDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The primary concurrent dictionary.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">ConcurrentDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The secondary concurrent dictionary.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ConcurrentDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>A new concurrent dictionary containing merged key-value pairs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of keys in the dictionaries.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of values in the dictionaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__2_System_Collections_Generic_Dictionary___0___1__System_Collections_Generic_Dictionary___0___1__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``2(System.Collections.Generic.Dictionary{``0,``1},System.Collections.Generic.Dictionary{``0,``1})">
+  Merge&lt;TKey, TValue&gt;(Dictionary&lt;TKey, TValue&gt;, Dictionary&lt;TKey, TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two dictionaries into a new dictionary, with primary values taking precedence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Dictionary&lt;TKey, TValue&gt; Merge&lt;TKey, TValue&gt;(this Dictionary&lt;TKey, TValue&gt; primary, Dictionary&lt;TKey, TValue&gt; secondary) where TKey : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">Dictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The primary dictionary.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">Dictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The secondary dictionary.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>A new dictionary containing merged key-value pairs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of keys in the dictionaries.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of values in the dictionaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Merge_" data-uid="BridgingIT.DevKit.Common.Extensions.Merge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Merge__2_System_Collections_Generic_SortedDictionary___0___1__System_Collections_Generic_SortedDictionary___0___1__" data-uid="BridgingIT.DevKit.Common.Extensions.Merge``2(System.Collections.Generic.SortedDictionary{``0,``1},System.Collections.Generic.SortedDictionary{``0,``1})">
+  Merge&lt;TKey, TValue&gt;(SortedDictionary&lt;TKey, TValue&gt;, SortedDictionary&lt;TKey, TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Merges two sorted dictionaries into a new sorted dictionary, with primary values taking precedence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SortedDictionary&lt;TKey, TValue&gt; Merge&lt;TKey, TValue&gt;(this SortedDictionary&lt;TKey, TValue&gt; primary, SortedDictionary&lt;TKey, TValue&gt; secondary) where TKey : notnull</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>primary</code> <span class="xref">SortedDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The primary sorted dictionary.</p>
+</dd>
+    <dt><code>secondary</code> <span class="xref">SortedDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The secondary sorted dictionary.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SortedDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>A new sorted dictionary containing merged key-value pairs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of keys in the dictionaries.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of values in the dictionaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task})">
+  ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task ParallelForEachAsync&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; action)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task},System.Int32)">
+  ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task ParallelForEachAsync&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; action, int degreeOfParallelism)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>degreeOfParallelism</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task},System.Int32,System.Threading.CancellationToken)">
+  ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task ParallelForEachAsync&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; action, int degreeOfParallelism, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>degreeOfParallelism</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ParallelForEachAsync__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Extensions.ParallelForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  ParallelForEachAsync&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task ParallelForEachAsync&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, Task&gt; action, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Partition_" data-uid="BridgingIT.DevKit.Common.Extensions.Partition*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Partition__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__" data-uid="BridgingIT.DevKit.Common.Extensions.Partition``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+  Partition&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Partitions a collection into two groups based on a predicate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static (IEnumerable&lt;T&gt; Matches, IEnumerable&lt;T&gt; NonMatches) Partition&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>(<span class="xref">IEnumerable</span>&lt;T&gt; <span class="xref">Matches</span>, <span class="xref">IEnumerable</span>&lt;T&gt; <span class="xref">NonMatches</span>)</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_Partition__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean___examples">Examples</h4>
+  <pre><code class="lang-csharp">var numbers = new[] { 1, 2, 3, 4, 5, 6 };
+var (evens, odds) = numbers.Partition(n =&gt; n % 2 == 0);
+// evens: [2, 4, 6]
+// odds:  [1, 3, 5]
+
+var strings = new[] { "a", "b", "", "c", "" };
+var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
+// nonEmpty: ["a", "b", "c"]
+// empty:    ["", ""]</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeAny_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeAny__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeAny``1(System.Collections.Generic.IEnumerable{``0})">
+  SafeAny&lt;T&gt;(IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool SafeAny&lt;T&gt;(this IEnumerable&lt;T&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeAny_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeAny__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeAny``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+  SafeAny&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool SafeAny&lt;T&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeEquals_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeEquals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeEquals_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeEquals(System.String,System.String,System.StringComparison)">
+  SafeEquals(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safely compares the source to the value string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool SafeEquals(this string source, string value, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>the source string.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>the value string to compare to.</p>
+</dd>
+    <dt><code>comparisonType</code> <span class="xref">StringComparison</span></dt>
+    <dd><p>the comparison type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>true if equal, otherwhise false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeNull_System_String_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull(System.String)">
+  SafeNull(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string SafeNull(this string source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeNull__1_System_Collections_Generic_ICollection___0__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull``1(System.Collections.Generic.ICollection{``0})">
+  SafeNull&lt;TSource&gt;(ICollection&lt;TSource&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an null list to an empty list. Also clears out possible 'null' items
+Avoids null ref exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ICollection&lt;TSource&gt; SafeNull&lt;TSource&gt;(this ICollection&lt;TSource&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ICollection</span>&lt;TSource&gt;</dt>
+    <dd><p>the source collection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;TSource&gt;</dt>
+    <dd><p>collection of sources.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd><p>the source.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeNull__1_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull``1(System.Collections.Generic.IEnumerable{``0})">
+  SafeNull&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a null list to an empty list. Also clears out possible 'null' items
+Avoids null ref exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; SafeNull&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd><p>the source collection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd><p>collection of sources.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd><p>the source.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeNull_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeNull__2_System_Collections_Generic_IDictionary___0___1__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeNull``2(System.Collections.Generic.IDictionary{``0,``1})">
+  SafeNull&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an null dictionary to an empty dictionary. avoids null ref exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; SafeNull&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>the source collection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>collection of sources.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>the source key type.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>the source value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeRemove_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeRemove*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeRemove__1_System_Collections_Generic_ICollection___0____0_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeRemove``1(System.Collections.Generic.ICollection{``0},``0)">
+  SafeRemove&lt;T&gt;(ICollection&lt;T&gt;, T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safely removes the item from the collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool SafeRemove&lt;T&gt;(this ICollection&lt;T&gt; source, T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeRemove_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeRemove*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeRemove__1_System_Collections_Generic_IList___0____0_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeRemove``1(System.Collections.Generic.IList{``0},``0)">
+  SafeRemove&lt;T&gt;(IList&lt;T&gt;, T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safely removes the item from the list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool SafeRemove&lt;T&gt;(this IList&lt;T&gt; source, T item)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IList</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>item</code> <span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeRemove_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeRemove*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeRemove__2_System_Collections_Generic_IDictionary___0___1____0_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeRemove``2(System.Collections.Generic.IDictionary{``0,``1},``0)">
+  SafeRemove&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, TKey)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds or updates the entry in the dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; SafeRemove&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The source.</p>
+</dd>
+    <dt><code>key</code> <span class="xref">TKey</span></dt>
+    <dd><p>The key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The key type.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeWhere_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeWhere*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeWhere__1_System_Collections_Generic_ICollection___0__System_Func___0_System_Boolean__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeWhere``1(System.Collections.Generic.ICollection{``0},System.Func{``0,System.Boolean})">
+  SafeWhere&lt;TSource&gt;(ICollection&lt;TSource&gt;, Func&lt;TSource, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a predicate to a collection, handling null collections by returning an empty collection.
+Avoids null reference exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ICollection&lt;TSource&gt; SafeWhere&lt;TSource&gt;(this ICollection&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">ICollection</span>&lt;TSource&gt;</dt>
+    <dd><p>The source collection.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>The predicate to apply to each element.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;TSource&gt;</dt>
+    <dd><p>A collection of elements that satisfy the predicate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd><p>The type of elements in the source collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeWhere_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeWhere*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeWhere__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeWhere``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+  SafeWhere&lt;TSource&gt;(IEnumerable&lt;TSource&gt;, Func&lt;TSource, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a predicate to a list, handling null lists by returning an empty list.
+Avoids null reference exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; SafeWhere&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, Func&lt;TSource, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd><p>The source collection.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>The predicate to apply to each element.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dd><p>A collection of elements that satisfy the predicate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TSource</code></dt>
+    <dd><p>The type of elements in the source collection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SafeWhere_" data-uid="BridgingIT.DevKit.Common.Extensions.SafeWhere*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SafeWhere__2_System_Collections_Generic_IDictionary___0___1__System_Func_System_Collections_Generic_KeyValuePair___0___1__System_Boolean__" data-uid="BridgingIT.DevKit.Common.Extensions.SafeWhere``2(System.Collections.Generic.IDictionary{``0,``1},System.Func{System.Collections.Generic.KeyValuePair{``0,``1},System.Boolean})">
+  SafeWhere&lt;TKey, TValue&gt;(IDictionary&lt;TKey, TValue&gt;, Func&lt;KeyValuePair&lt;TKey, TValue&gt;, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a predicate to a dictionary, handling null dictionaries by returning an empty dictionary.
+Avoids null reference exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; SafeWhere&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, Func&lt;KeyValuePair&lt;TKey, TValue&gt;, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>The source dictionary.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">KeyValuePair</span>&lt;TKey, TValue&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>The predicate to apply to each element.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd><p>A dictionary of elements that satisfy the predicate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of keys in the source dictionary.</p>
+</dd>
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of values in the source dictionary.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Slice_" data-uid="BridgingIT.DevKit.Common.Extensions.Slice*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Slice_System_String_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.Extensions.Slice(System.String,System.Int32,System.Int32)">
+  Slice(string, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Slice(this string source, int start, int end)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>start</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>end</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_Slice_" data-uid="BridgingIT.DevKit.Common.Extensions.Slice*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_Slice_System_String_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.Slice(System.String,System.String,System.String,System.StringComparison)">
+  Slice(string, string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string Slice(this string source, string start, string end, StringComparison comparison = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>start</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>end</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SliceFrom_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceFrom*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SliceFrom_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceFrom(System.String,System.String,System.StringComparison)">
+  SliceFrom(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string SliceFrom(this string source, string from, StringComparison comparison = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>from</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SliceFromLast_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceFromLast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SliceFromLast_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceFromLast(System.String,System.String,System.StringComparison)">
+  SliceFromLast(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string SliceFromLast(this string source, string from, StringComparison comparison = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>from</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SliceTill_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceTill*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SliceTill_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceTill(System.String,System.String,System.StringComparison)">
+  SliceTill(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string SliceTill(this string source, string till, StringComparison comparison = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>till</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_SliceTillLast_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceTillLast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_SliceTillLast_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.SliceTillLast(System.String,System.String,System.StringComparison)">
+  SliceTillLast(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string SliceTillLast(this string source, string till, StringComparison comparison = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>till</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_StartsWithAny_" data-uid="BridgingIT.DevKit.Common.Extensions.StartsWithAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_StartsWithAny_System_String_System_Collections_Generic_IEnumerable_System_String__System_StringComparison_" data-uid="BridgingIT.DevKit.Common.Extensions.StartsWithAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.StringComparison)">
+  StartsWithAny(string, IEnumerable&lt;string&gt;, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool StartsWithAny(this string source, IEnumerable&lt;string&gt; items, StringComparison comp = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>comp</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_To_" data-uid="BridgingIT.DevKit.Common.Extensions.To*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_" data-uid="BridgingIT.DevKit.Common.Extensions.To(System.Object,System.Type,System.Boolean,System.Object,System.Globalization.CultureInfo)">
+  To(object, Type, bool, object, CultureInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object To(this object source, Type targetType, bool throws = false, object defaultValue = null, CultureInfo cultureInfo = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>targetType</code> <span class="xref">Type</span></dt>
+    <dd></dd>
+    <dt><code>throws</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>defaultValue</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ToFlatten_" data-uid="BridgingIT.DevKit.Common.Extensions.ToFlatten*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ToFlatten__3_BridgingIT_DevKit_Common_HierarchyNode___0__System_Func___0___1__System_Func___0_System_Nullable___1____2__" data-uid="BridgingIT.DevKit.Common.Extensions.ToFlatten``3(BridgingIT.DevKit.Common.HierarchyNode{``0},System.Func{``0,``1},System.Func{``0,System.Nullable{``1},``2})">
+  ToFlatten&lt;T, TKey, TResult&gt;(HierarchyNode&lt;T&gt;, Func&lt;T, TKey&gt;, Func&lt;T, TKey?, TResult&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Flattens a hierarchical structure into a flat collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ToFlatten&lt;T, TKey, TResult&gt;(this HierarchyNode&lt;T&gt; root, Func&lt;T, TKey&gt; idSelector, Func&lt;T, TKey?, TResult&gt; resultSelector) where TKey : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>root</code> <a class="xref" href="BridgingIT.DevKit.Common.HierarchyNode-1.html">HierarchyNode</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>idSelector</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;T, TKey?, TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ToFlatten__3_BridgingIT_DevKit_Common_HierarchyNode___0__System_Func___0___1__System_Func___0_System_Nullable___1____2___examples">Examples</h4>
+  <pre><code class="lang-csharp">var tree = new HierarchyNode&lt;Item&gt; {
+    Item = new Item { Id = 1, Name = "Root" },
+    Children = new[] {
+        new HierarchyNode&lt;Item&gt; {
+            Item = new Item { Id = 2, Name = "Child1" },
+            Children = new[] {
+                new HierarchyNode&lt;Item&gt; {
+                    Item = new Item { Id = 4, Name = "Grandchild" }
+                }
+            }
+        },
+        new HierarchyNode&lt;Item&gt; {
+            Item = new Item { Id = 3, Name = "Child2" }
+        }
+    }
+};
+
+var flatItems = tree.ToFlatten(
+    node =&gt; node.Item.Id,
+    (item, parentId) =&gt; item with { ParentId = parentId }
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ToFlatten_" data-uid="BridgingIT.DevKit.Common.Extensions.ToFlatten*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ToFlatten__3_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_HierarchyNode___0___System_Func___0___1__System_Func___0_System_Nullable___1____2__" data-uid="BridgingIT.DevKit.Common.Extensions.ToFlatten``3(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.HierarchyNode{``0}},System.Func{``0,``1},System.Func{``0,System.Nullable{``1},``2})">
+  ToFlatten&lt;T, TKey, TResult&gt;(IEnumerable&lt;HierarchyNode&lt;T&gt;&gt;, Func&lt;T, TKey&gt;, Func&lt;T, TKey?, TResult&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Flattens a collection of hierarchical nodes into a flat collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ToFlatten&lt;T, TKey, TResult&gt;(this IEnumerable&lt;HierarchyNode&lt;T&gt;&gt; roots, Func&lt;T, TKey&gt; idSelector, Func&lt;T, TKey?, TResult&gt; resultSelector) where TKey : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>roots</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.HierarchyNode-1.html">HierarchyNode</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>idSelector</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;T, TKey?, TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ToHierarchy_" data-uid="BridgingIT.DevKit.Common.Extensions.ToHierarchy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ToHierarchy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0_System_Nullable___1___" data-uid="BridgingIT.DevKit.Common.Extensions.ToHierarchy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,System.Nullable{``1}})">
+  ToHierarchy&lt;T, TKey&gt;(IEnumerable&lt;T&gt;, Func&lt;T, TKey&gt;, Func&lt;T, TKey?&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a hierarchical structure from a flat collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;HierarchyNode&lt;T&gt;&gt; ToHierarchy&lt;T, TKey&gt;(this IEnumerable&lt;T&gt; source, Func&lt;T, TKey&gt; idSelector, Func&lt;T, TKey?&gt; parentIdSelector) where TKey : struct</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>idSelector</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
+    <dd></dd>
+    <dt><code>parentIdSelector</code> <span class="xref">Func</span>&lt;T, TKey?&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.HierarchyNode-1.html">HierarchyNode</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TKey</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ToHierarchy__2_System_Collections_Generic_IEnumerable___0__System_Func___0___1__System_Func___0_System_Nullable___1____examples">Examples</h4>
+  <pre><code class="lang-csharp">var items = new[] {
+    new { Id = 1, ParentId = (int?)null, Name = "Root" },
+    new { Id = 2, ParentId = 1, Name = "Child1" },
+    new { Id = 3, ParentId = 1, Name = "Child2" },
+    new { Id = 4, ParentId = 2, Name = "Grandchild" }
+};
+
+var tree = items.ToHierarchy(
+    i =&gt; i.Id,
+    i =&gt; i.ParentId
+);
+// Creates a tree structure:
+// Root
+// ├── Child1
+// │   └── Grandchild
+// └── Child2</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ToString_" data-uid="BridgingIT.DevKit.Common.Extensions.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ToString__1_System_Collections_Generic_IEnumerable___0__System_Char_" data-uid="BridgingIT.DevKit.Common.Extensions.ToString``1(System.Collections.Generic.IEnumerable{``0},System.Char)">
+  ToString&lt;T&gt;(IEnumerable&lt;T&gt;, char)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToString&lt;T&gt;(this IEnumerable&lt;T&gt; source, char seperator)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>seperator</code> <span class="xref">char</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ToString_" data-uid="BridgingIT.DevKit.Common.Extensions.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ToString__1_System_Collections_Generic_IEnumerable___0__System_String_" data-uid="BridgingIT.DevKit.Common.Extensions.ToString``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+  ToString&lt;T&gt;(IEnumerable&lt;T&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ToString&lt;T&gt;(this IEnumerable&lt;T&gt; source, string separator)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>separator</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_ToType_" data-uid="BridgingIT.DevKit.Common.Extensions.ToType*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_" data-uid="BridgingIT.DevKit.Common.Extensions.ToType``1(System.Object)">
+  ToType&lt;T&gt;(object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T ToType&lt;T&gt;(this object value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_To_" data-uid="BridgingIT.DevKit.Common.Extensions.To*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_" data-uid="BridgingIT.DevKit.Common.Extensions.To``1(System.Object,System.Boolean,``0,System.Globalization.CultureInfo)">
+  To&lt;TValue&gt;(object, bool, TValue, CultureInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TValue To&lt;TValue&gt;(this object source, bool throws = false, TValue defaultValue = default, CultureInfo cultureInfo = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>throws</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>defaultValue</code> <span class="xref">TValue</span></dt>
+    <dd></dd>
+    <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TValue</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_TruncateLeft_" data-uid="BridgingIT.DevKit.Common.Extensions.TruncateLeft*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_TruncateLeft_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Common.Extensions.TruncateLeft(System.String,System.Int32)">
+  TruncateLeft(string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string TruncateLeft(this string source, int length)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>length</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_TruncateRight_" data-uid="BridgingIT.DevKit.Common.Extensions.TruncateRight*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_TruncateRight_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Common.Extensions.TruncateRight(System.String,System.Int32)">
+  TruncateRight(string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string TruncateRight(this string source, int length)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>length</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_TryTo_" data-uid="BridgingIT.DevKit.Common.Extensions.TryTo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_" data-uid="BridgingIT.DevKit.Common.Extensions.TryTo(System.Object,System.Type,System.Object@,System.Globalization.CultureInfo)">
+  TryTo(object, Type, out object, CultureInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryTo(this object source, Type targetType, out object result, CultureInfo cultureInfo = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>targetType</code> <span class="xref">Type</span></dt>
+    <dd></dd>
+    <dt><code>result</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Extensions_TryTo_" data-uid="BridgingIT.DevKit.Common.Extensions.TryTo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_" data-uid="BridgingIT.DevKit.Common.Extensions.TryTo``1(System.Object,``0@,System.Globalization.CultureInfo)">
+  TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryTo&lt;TValue&gt;(this object source, out TValue result, CultureInfo cultureInfo = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>result</code> <span class="xref">TValue</span></dt>
+    <dd></dd>
+    <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

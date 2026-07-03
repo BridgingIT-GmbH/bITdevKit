@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CronExpressions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CronExpressions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Common cron expressions for the Jobs feature.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Jobs_CronExpressions" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions" class="text-break">
+Class CronExpressions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Jobs.html">Jobs</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Jobs.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Common cron expressions for the Jobs feature.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CronExpressions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CronExpressions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_examples">Examples</h2>
+  <pre><code class="lang-csharp">trigger.Cron(CronExpressions.Every30Minutes);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt10AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt10AM">
+  DailyAt10AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 10 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt10AM = &quot;0 10 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt10PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt10PM">
+  DailyAt10PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 10 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt10PM = &quot;0 22 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt11AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt11AM">
+  DailyAt11AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 11 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt11AM = &quot;0 11 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt11PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt11PM">
+  DailyAt11PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 11 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt11PM = &quot;0 23 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt1AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt1AM">
+  DailyAt1AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 1 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt1AM = &quot;0 1 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt1PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt1PM">
+  DailyAt1PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 1 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt1PM = &quot;0 13 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt2AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt2AM">
+  DailyAt2AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 2 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt2AM = &quot;0 2 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt2PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt2PM">
+  DailyAt2PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 2 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt2PM = &quot;0 14 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt3AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt3AM">
+  DailyAt3AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 3 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt3AM = &quot;0 3 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt3PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt3PM">
+  DailyAt3PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 3 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt3PM = &quot;0 15 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt4AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt4AM">
+  DailyAt4AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 4 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt4AM = &quot;0 4 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt4PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt4PM">
+  DailyAt4PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 4 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt4PM = &quot;0 16 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt5AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt5AM">
+  DailyAt5AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 5 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt5AM = &quot;0 5 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt5PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt5PM">
+  DailyAt5PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 5 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt5PM = &quot;0 17 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt6AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt6AM">
+  DailyAt6AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 6 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt6AM = &quot;0 6 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt6PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt6PM">
+  DailyAt6PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 6 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt6PM = &quot;0 18 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt7AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt7AM">
+  DailyAt7AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 7 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt7AM = &quot;0 7 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt7PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt7PM">
+  DailyAt7PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 7 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt7PM = &quot;0 19 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt8AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt8AM">
+  DailyAt8AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 8 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt8AM = &quot;0 8 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt8PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt8PM">
+  DailyAt8PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 8 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt8PM = &quot;0 20 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt9AM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt9AM">
+  DailyAt9AM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 9 AM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt9AM = &quot;0 9 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAt9PM" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAt9PM">
+  DailyAt9PM
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at 9 PM.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAt9PM = &quot;0 21 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAtMidnight">
+  DailyAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAtMidnight = &quot;0 0 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAtMidnightAndNoon" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAtMidnightAndNoon">
+  DailyAtMidnightAndNoon
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at midnight and noon.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAtMidnightAndNoon = &quot;0 0,12 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_DailyAtNoon" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.DailyAtNoon">
+  DailyAtNoon
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs daily at noon.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DailyAtNoon = &quot;0 12 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every10Minutes" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every10Minutes">
+  Every10Minutes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every ten minutes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every10Minutes = &quot;*/10 * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every10Seconds" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every10Seconds">
+  Every10Seconds
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every ten seconds. Uses the Jobs six-field seconds format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every10Seconds = &quot;*/10 * * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every15Minutes" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every15Minutes">
+  Every15Minutes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every fifteen minutes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every15Minutes = &quot;*/15 * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every15Seconds" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every15Seconds">
+  Every15Seconds
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every fifteen seconds. Uses the Jobs six-field seconds format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every15Seconds = &quot;*/15 * * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every30Minutes" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every30Minutes">
+  Every30Minutes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every thirty minutes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every30Minutes = &quot;*/30 * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every30Seconds" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every30Seconds">
+  Every30Seconds
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every thirty seconds. Uses the Jobs six-field seconds format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every30Seconds = &quot;*/30 * * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every5Minutes" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every5Minutes">
+  Every5Minutes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every five minutes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every5Minutes = &quot;*/5 * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Every5Seconds" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Every5Seconds">
+  Every5Seconds
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every five seconds. Uses the Jobs six-field seconds format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Every5Seconds = &quot;*/5 * * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EveryHour" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EveryHour">
+  EveryHour
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every hour.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EveryHour = &quot;0 * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EveryMinute" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EveryMinute">
+  EveryMinute
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every minute.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EveryMinute = &quot;* * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EveryNineHours" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EveryNineHours">
+  EveryNineHours
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every nine hours.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EveryNineHours = &quot;0 */9 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EverySecond" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EverySecond">
+  EverySecond
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every second. Uses the Jobs six-field seconds format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EverySecond = &quot;*/1 * * * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EverySixHours" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EverySixHours">
+  EverySixHours
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every six hours.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EverySixHours = &quot;0 */6 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EveryTwelveHours" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EveryTwelveHours">
+  EveryTwelveHours
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every twelve hours.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EveryTwelveHours = &quot;0 */12 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_EveryTwoHours" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.EveryTwoHours">
+  EveryTwoHours
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs every two hours.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EveryTwoHours = &quot;0 */2 * * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_MonthlyAtMidnightOnFirstDay" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.MonthlyAtMidnightOnFirstDay">
+  MonthlyAtMidnightOnFirstDay
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs monthly at midnight on the first day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MonthlyAtMidnightOnFirstDay = &quot;0 0 1 * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_MonthlyAtMidnightOnLastDay" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.MonthlyAtMidnightOnLastDay">
+  MonthlyAtMidnightOnLastDay
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs monthly at midnight on the last day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string MonthlyAtMidnightOnLastDay = &quot;0 0 L * *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_Never" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.Never">
+  Never
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A cron expression that never produces an occurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Never = &quot;0 0 31 2 *&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnFridayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnFridayAtMidnight">
+  WeeklyOnFridayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Friday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnFridayAtMidnight = &quot;0 0 * * FRI&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnMondayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnMondayAtMidnight">
+  WeeklyOnMondayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Monday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnMondayAtMidnight = &quot;0 0 * * MON&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnSaturdayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnSaturdayAtMidnight">
+  WeeklyOnSaturdayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Saturday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnSaturdayAtMidnight = &quot;0 0 * * SAT&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnSundayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnSundayAtMidnight">
+  WeeklyOnSundayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Sunday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnSundayAtMidnight = &quot;0 0 * * SUN&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnThursdayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnThursdayAtMidnight">
+  WeeklyOnThursdayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Thursday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnThursdayAtMidnight = &quot;0 0 * * THU&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnTuesdayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnTuesdayAtMidnight">
+  WeeklyOnTuesdayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Tuesday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnTuesdayAtMidnight = &quot;0 0 * * TUE&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressions_WeeklyOnWednesdayAtMidnight" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressions.WeeklyOnWednesdayAtMidnight">
+  WeeklyOnWednesdayAtMidnight
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs weekly on Wednesday at midnight.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string WeeklyOnWednesdayAtMidnight = &quot;0 0 * * WED&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

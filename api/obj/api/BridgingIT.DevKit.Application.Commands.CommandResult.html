@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CommandResult | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CommandResult | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides factory methods to create command responses based on the Result type.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Commands.CommandResult">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Commands_CommandResult" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult" class="text-break">
+Class CommandResult  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Commands.html">Commands</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Commands.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides factory methods to create command responses based on the Result type.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class CommandResult</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CommandResult</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure">
+  Failure()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a failure response.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Failure()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A CommandResponse containing a failure result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  Failure(IEnumerable&lt;string&gt;, IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a failure response with the specified messages and errors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Failure(IEnumerable&lt;string&gt; messages, IEnumerable&lt;IResultError&gt; errors = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A collection of strings describing the failure reasons.</p>
+</dd>
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>A collection of error objects providing additional failure details (optional).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A CommandResponse object containing a failure result with the provided messages and errors.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure(System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure(string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> indicating failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Failure(string message, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The failure message to be conveyed.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>An optional object implementing <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a> which provides additional error information.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> object encapsulating the failure result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__1_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``1(System.Collections.Generic.IEnumerable{System.String})">
+  Failure&lt;TError&gt;(IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a command response indicating a failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Failure&lt;TError&gt;(IEnumerable&lt;string&gt; messages) where TError : IResultError, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A collection of error messages explaining the failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> instance representing the failure response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd><p>The type of the error information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__1_System_String_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``1(System.String)">
+  Failure&lt;TError&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a failure response with a specific error type.
+This method creates a CommandResponse object that contains a Result indicating failure and an optional error message.</p>
+<param name="message">An optional error message describing the failure. Default is null. <typeparam name="TError">The type of the error implementing the IResultError interface.</typeparam> <return>A CommandResponse object containing the failure Result.</return>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Failure&lt;TError&gt;(string message = null) where TError : IResultError, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__1_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``1(System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure&lt;TValue&gt;(string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a CommandResponse&lt;Result&lt;TValue&gt;&gt; indicating a failure with an optional message and error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(string message = null, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>An optional failure message to include in the response.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>An optional error object implementing <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse&lt;Result&lt;TValue&gt;&gt; indicating a failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value for the response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__1___0_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``1(``0)">
+  Failure&lt;TValue&gt;(TValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failure CommandResponse with a specified value.</p>
+<param name="value">The value to be associated with the failure result.
+<typeparam name="TValue">The type of the value to be included in the failure result.</typeparam>
+<return>A CommandResponse containing a Result with the provided value.</return>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__1___0_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``1(``0,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  Failure&lt;TValue&gt;(TValue, IEnumerable&lt;string&gt;, IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failure command response with the specified value, messages, and errors.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(TValue value, IEnumerable&lt;string&gt; messages, IEnumerable&lt;IResultError&gt; errors = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value associated with the failure result.</p>
+</dd>
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>The collection of failure messages.</p>
+</dd>
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>The collection of errors associated with the failure result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> containing the failure result, messages, and errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__1___0_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``1(``0,System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure&lt;TValue&gt;(TValue, string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a command response wrapping a failure result with a specified value, message, and optional error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(TValue value, string message, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value associated with the result.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The failure message.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>An optional error instance implementing the IResultError interface.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A command response containing a failure result with the specified value, message, and error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value associated with the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Failure__2___0_System_String_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Failure``2(``0,System.String)">
+  Failure&lt;TValue, TError&gt;(TValue, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failed command response with the given value and optional error message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue, TError&gt;(TValue value = default, string message = null) where TError : IResultError, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value of the result.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>An optional error message.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse with a Result containing the failure, value, and error message.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value.</p>
+</dd>
+    <dt><code>TError</code></dt>
+    <dd><p>The type of the error, which must implement IResultError and have a parameterless constructor.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_For_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_For" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For">
+  For()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a command response with a success result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; For()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A command response containing a success result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_For_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_For_BridgingIT_DevKit_Common_Result_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For(BridgingIT.DevKit.Common.Result)">
+  For(Result)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a command response for the given result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; For(Result result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The result to be used in the command response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A command response containing the given result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_For_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_For__1" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For``1">
+  For&lt;TValue&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new CommandResponse containing a default success result of type Result&lt;TValue&gt;.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse containing a success Result of type Result&lt;TValue&gt;.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value contained in the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_For_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_For__1_BridgingIT_DevKit_Common_Result___0__" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For``1(BridgingIT.DevKit.Common.Result{``0})">
+  For&lt;TValue&gt;(Result&lt;TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> with the specified result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;(Result&lt;TValue&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;</dt>
+    <dd><p>The result to initialize the command response with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> initialized with the specified result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of value held by the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_For_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_For__1___0_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For``1(``0)">
+  For&lt;TValue&gt;(TValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a CommandResponse containing a successful Result of the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be included in the successful Result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse containing a successful Result of the specified value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_For_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_For__2_BridgingIT_DevKit_Common_Result___0____1_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.For``2(BridgingIT.DevKit.Common.Result{``0},``1)">
+  For&lt;TValue, TOuput&gt;(Result&lt;TValue&gt;, TOuput)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a command response for a given result and output value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TOuput&gt;&gt; For&lt;TValue, TOuput&gt;(Result&lt;TValue&gt; result, TOuput value = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;</dt>
+    <dd><p>The result object to create the response for.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">TOuput</span></dt>
+    <dd><p>The output value for the response, default is used if not provided.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOuput&gt;&gt;</dt>
+    <dd><p>A command response containing the mapped result with the specified output value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the input result value.</p>
+</dd>
+    <dt><code>TOuput</code></dt>
+    <dd><p>The type of the output value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success">
+  Success()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Success()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success(System.Collections.Generic.IEnumerable{System.String})">
+  Success(IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a success response containing the provided messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Success(IEnumerable&lt;string&gt; messages)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A collection of success messages to be included in the response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A CommandResponse object containing a Result with the success messages.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_System_String_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success(System.String)">
+  Success(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful command response with the specified message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&gt; Success(string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The success message to include in the response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A command response indicating success, containing the provided message.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success__1" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success``1">
+  Success&lt;TValue&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful CommandResponse with a default value of type TResult.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse object with a successful result of type TValue.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success__1___0_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success``1(``0)">
+  Success&lt;TValue&gt;(TValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a successful CommandResponse containing the specified value wrapped in a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be wrapped in a Result object and included in the CommandResponse.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse containing a Result object that encapsulates the specified value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value being wrapped and returned.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success__1___0_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success``1(``0,System.Collections.Generic.IEnumerable{System.String})">
+  Success&lt;TValue&gt;(TValue, IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a success command response with messages for a specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;(TValue value, IEnumerable&lt;string&gt; messages)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value for the success result.</p>
+</dd>
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>Associated success messages.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse with Result containing the specified value and messages.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the returned value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Commands_CommandResult_Success_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Commands_CommandResult_Success__1___0_System_String_" data-uid="BridgingIT.DevKit.Application.Commands.CommandResult.Success``1(``0,System.String)">
+  Success&lt;TValue&gt;(TValue, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a successful command response containing both a value and a message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CommandResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;(TValue value, string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be included in the command response.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The message to be included in the command response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A CommandResponse&lt;Result&lt;TValue&gt;&gt; instance representing the successful command response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value to be included in the command response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

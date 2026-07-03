@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IFileMonitoringService | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IFileMonitoringService | bITdevKit API Reference ">
+      
+      <meta name="description" content="Defines the contract for the FileMonitoringService, which orchestrates file monitoring across multiple locations. Provides methods for starting, stopping, scanning, and managing the monitoring process, along with events for external integration.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService" class="text-break">
+Interface IFileMonitoringService  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the contract for the FileMonitoringService, which orchestrates file monitoring across multiple locations.
+Provides methods for starting, stopping, scanning, and managing the monitoring process, along with events for external integration.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IFileMonitoringService</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_DisableProcessorAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.DisableProcessorAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_DisableProcessorAsync_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.DisableProcessorAsync(System.String,System.String)">
+  DisableProcessorAsync(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Disables a specific processor for a location asynchronously.
+Allows runtime deactivation of a processor in the chain without removing it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task DisableProcessorAsync(string locationName, string processorName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location (e.g., &quot;Docs&quot;).</p>
+</dd>
+    <dt><code>processorName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the processor to disable.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous disable operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_EnableProcessorAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.EnableProcessorAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_EnableProcessorAsync_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.EnableProcessorAsync(System.String,System.String)">
+  EnableProcessorAsync(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables a specific processor for a location asynchronously.
+Allows runtime activation of a processor in the chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task EnableProcessorAsync(string locationName, string processorName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location (e.g., &quot;Docs&quot;).</p>
+</dd>
+    <dt><code>processorName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the processor to enable.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous enable operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetActiveProcessorsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetActiveProcessorsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetActiveProcessorsAsync_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetActiveProcessorsAsync(System.String)">
+  GetActiveProcessorsAsync(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the names of active processors for a specific location asynchronously.
+Returns processors that are currently enabled in the processing chain.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IEnumerable&lt;string&gt;&gt; GetActiveProcessorsAsync(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to query (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A list of active processor names.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetAllLocationStatusAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetAllLocationStatusAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetAllLocationStatusAsync" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetAllLocationStatusAsync">
+  GetAllLocationStatusAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the status of all configured locations asynchronously.
+Returns a dictionary mapping location names to their current states.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Dictionary&lt;string, LocationStatus&gt;&gt; GetAllLocationStatusAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationStatus.html">LocationStatus</a>&gt;&gt;</dt>
+    <dd><p>A dictionary of location names and their LocationStatus objects.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetLocation_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetLocation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetLocation_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetLocation(System.String)">
+  GetLocation(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves an instance that handles location-related operations based on the specified name.
+The handler provides methods to manage and interact with the location like the StorageProvider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ILocationHandler GetLocation(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location for which the handler is being requested.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ILocationHandler.html">ILocationHandler</a></dt>
+    <dd><p>An object that provides methods to manage and interact with the specified location.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetLocationStatusAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetLocationStatusAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetLocationStatusAsync_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetLocationStatusAsync(System.String)">
+  GetLocationStatusAsync(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the current status of a specific location asynchronously.
+Provides details such as whether it's active, paused, or the queue size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;LocationStatus&gt; GetLocationStatusAsync(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to query (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationStatus.html">LocationStatus</a>&gt;</dt>
+    <dd><p>A LocationStatus object with the location's current state.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetQueueSize_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetQueueSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_GetQueueSize_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.GetQueueSize(System.String)">
+  GetQueueSize(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current size of the event queue for a specific location.
+Useful for monitoring backlog and performance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">int GetQueueSize(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to query (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>The number of pending events in the queue.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_IsHealthyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.IsHealthyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_IsHealthyAsync" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.IsHealthyAsync">
+  IsHealthyAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks the overall health of the FileMonitoringService asynchronously.
+Verifies accessibility of storage providers and internal state consistency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; IsHealthyAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the service is healthy; false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_IsLocationActiveAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.IsLocationActiveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_IsLocationActiveAsync_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.IsLocationActiveAsync(System.String)">
+  IsLocationActiveAsync(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a specific location is currently active (monitoring and processing events) asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; IsLocationActiveAsync(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to check (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the location is active; false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_IsQueueEmptyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.IsQueueEmptyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_IsQueueEmptyAsync_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.IsQueueEmptyAsync(System.String)">
+  IsQueueEmptyAsync(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if the event queue for a specific location is empty asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; IsQueueEmptyAsync(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to check (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the queue is empty; false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_PauseLocationAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.PauseLocationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_PauseLocationAsync_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.PauseLocationAsync(System.String)">
+  PauseLocationAsync(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pauses monitoring for a specific location asynchronously.
+Temporarily halts event processing and real-time watching without stopping the service entirely.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task PauseLocationAsync(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to pause (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous pause operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_RestartLocationAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.RestartLocationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_RestartLocationAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.RestartLocationAsync(System.String,System.Threading.CancellationToken)">
+  RestartLocationAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Restarts monitoring for a specific location asynchronously.
+Stops and then restarts the location's monitoring process, optionally performing an initial scan.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RestartLocationAsync(string locationName, CancellationToken token = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to restart (e.g., &quot;Docs&quot;).</p>
+</dd>
+    <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token to stop the restart if needed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous restart operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_ResumeLocationAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.ResumeLocationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_ResumeLocationAsync_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.ResumeLocationAsync(System.String)">
+  ResumeLocationAsync(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes monitoring for a specific location asynchronously.
+Restarts event processing and real-time watching for a previously paused location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task ResumeLocationAsync(string locationName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to resume (e.g., &quot;Docs&quot;).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous resume operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_ScanLocationAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.ScanLocationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_ScanLocationAsync_System_String_BridgingIT_DevKit_Application_Storage_FileScanOptions_System_IProgress_BridgingIT_DevKit_Application_Storage_FileScanProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.ScanLocationAsync(System.String,BridgingIT.DevKit.Application.Storage.FileScanOptions,System.IProgress{BridgingIT.DevKit.Application.Storage.FileScanProgress},System.Threading.CancellationToken)">
+  ScanLocationAsync(string, FileScanOptions, IProgress&lt;FileScanProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Triggers an on-demand scan for a specific location asynchronously.
+Compares the current state with historical data to detect changes and enqueue events.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;FileScanContext&gt; ScanLocationAsync(string locationName, FileScanOptions options = null, IProgress&lt;FileScanProgress&gt; progress = null, CancellationToken token = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>Specifies the name of the location to be scanned.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanOptions.html">FileScanOptions</a></dt>
+    <dd><p>Provides additional settings that modify the scan behavior.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanProgress.html">FileScanProgress</a>&gt;</dt>
+    <dd><p>Reports the progress of the scan operation.</p>
+</dd>
+    <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Allows for cancellation of the scan operation if needed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanContext.html">FileScanContext</a>&gt;</dt>
+    <dd><p>Returns a task that resolves to the scan context for the specified location.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_StartAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.StartAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_StartAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.StartAsync(System.Threading.CancellationToken)">
+  StartAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Starts monitoring all configured locations asynchronously.
+Initiates real-time watching (if enabled) and event processing for each location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task StartAsync(CancellationToken token = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token to stop the operation if needed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous start operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_StopAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.StopAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_StopAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.StopAsync(System.Threading.CancellationToken)">
+  StopAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stops monitoring all locations asynchronously.
+Halts real-time watching and event processing, cleaning up resources as necessary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task StopAsync(CancellationToken token = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token to stop the operation if needed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous stop operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_WaitForQueueEmptyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.WaitForQueueEmptyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_WaitForQueueEmptyAsync_System_String_System_TimeSpan_" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.WaitForQueueEmptyAsync(System.String,System.TimeSpan)">
+  WaitForQueueEmptyAsync(string, TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Waits until the event queue for a specific location is empty or a timeout occurs asynchronously.
+Useful for ensuring all events are processed before proceeding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task WaitForQueueEmptyAsync(string locationName, TimeSpan timeout)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the location to wait for (e.g., &quot;Docs&quot;).</p>
+</dd>
+    <dt><code>timeout</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The maximum time to wait before timing out.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes when the queue is empty or the timeout is reached.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="events">Events
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_FileEventReceived" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.FileEventReceived">
+  FileEventReceived
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Event raised when a FileEvent is received from a location (either real-time or scan).
+Allows external subscribers to react to new events.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler&lt;FileEventReceivedEventArgs&gt; FileEventReceived</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><span class="xref">EventHandler</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileEventReceivedEventArgs.html">FileEventReceivedEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IFileMonitoringService_ProcessingError" data-uid="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.ProcessingError">
+  ProcessingError
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Event raised when an error occurs during event processing.
+Provides details for external error handling or logging.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event EventHandler&lt;ProcessingErrorEventArgs&gt; ProcessingError</code></pre>
+  </div>
+
+
+
+
+
+
+  <h4 class="section">Event Type</h4>
+  <dl class="parameters">
+    <dt><span class="xref">EventHandler</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessingErrorEventArgs.html">ProcessingErrorEventArgs</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LocalFileStorageProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LocalFileStorageProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider" class="text-break">
+Class LocalFileStorageProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class LocalFileStorageProvider : BaseFileStorageProvider, IFileStorageProvider</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html">BaseFileStorageProvider</a></div>
+      <div><span class="xref">LocalFileStorageProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.Windows.Storage.NetworkFileStorageProvider.html">NetworkFileStorageProvider</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_CopyFilesAsync_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BaseFileStorageProvider.CopyFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_DeleteFilesAsync_System_Collections_Generic_IEnumerable_System_String__System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BaseFileStorageProvider.DeleteFilesAsync(IEnumerable&lt;string&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_MoveFilesAsync_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BaseFileStorageProvider.MoveFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_ReportProgress_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_String_System_Int64_System_Int64_System_Int64_">BaseFileStorageProvider.ReportProgress(IProgress&lt;FileProgress&gt;, string, long, long, long)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html#BridgingIT_DevKit_Application_Storage_BaseFileStorageProvider_LocationName">BaseFileStorageProvider.LocationName</a>
+    </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCompressionExtensions_CompressAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__BridgingIT_DevKit_Application_Storage_FileCompressionOptions_System_Threading_CancellationToken_">FileStorageProviderCompressionExtensions.CompressAsync(IFileStorageProvider, string, string, IProgress&lt;FileProgress&gt;, FileCompressionOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCompressionExtensions_ListCompressedFilesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__BridgingIT_DevKit_Application_Storage_FileCompressionOptions_System_Threading_CancellationToken_">FileStorageProviderCompressionExtensions.ListCompressedFilesAsync(IFileStorageProvider, string, string, IProgress&lt;FileProgress&gt;, FileCompressionOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCompressionExtensions_ReadCompressedFile_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__BridgingIT_DevKit_Application_Storage_FileCompressionOptions_System_Threading_CancellationToken_">FileStorageProviderCompressionExtensions.ReadCompressedFile(IFileStorageProvider, string, string, IProgress&lt;FileProgress&gt;, FileCompressionOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCompressionExtensions_UncompressAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__BridgingIT_DevKit_Application_Storage_FileCompressionOptions_System_Threading_CancellationToken_">FileStorageProviderCompressionExtensions.UncompressAsync(IFileStorageProvider, string, string, string, string, IProgress&lt;FileProgress&gt;, FileCompressionOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCompressionExtensions_UncompressToStreamAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__BridgingIT_DevKit_Application_Storage_FileCompressionOptions_System_Threading_CancellationToken_">FileStorageProviderCompressionExtensions.UncompressToStreamAsync(IFileStorageProvider, string, string, string, IProgress&lt;FileProgress&gt;, FileCompressionOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCompressionExtensions_WriteCompressedFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_IO_Stream_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__BridgingIT_DevKit_Application_Storage_FileCompressionOptions_System_Threading_CancellationToken_">FileStorageProviderCompressionExtensions.WriteCompressedFileAsync(IFileStorageProvider, string, Stream, IProgress&lt;FileProgress&gt;, FileCompressionOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCrossExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCrossExtensions_CopyFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderCrossExtensions.CopyFileAsync(IFileStorageProvider, IFileStorageProvider, string, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCrossExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCrossExtensions_CopyFilesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderCrossExtensions.CopyFilesAsync(IFileStorageProvider, IFileStorageProvider, IEnumerable&lt;(string SourcePath, string DestinationPath)&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCrossExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCrossExtensions_DeepCopyAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_Boolean_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderCrossExtensions.DeepCopyAsync(IFileStorageProvider, IFileStorageProvider, string, string, bool, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCrossExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCrossExtensions_MoveFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderCrossExtensions.MoveFileAsync(IFileStorageProvider, IFileStorageProvider, string, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCrossExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderCrossExtensions_MoveFilesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_Collections_Generic_IEnumerable_System_ValueTuple_System_String_System_String___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderCrossExtensions.MoveFilesAsync(IFileStorageProvider, IFileStorageProvider, IEnumerable&lt;(string SourcePath, string DestinationPath)&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_DeepCopyAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_Boolean_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.DeepCopyAsync(IFileStorageProvider, string, string, bool, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadBytesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.ReadBytesAsync(IFileStorageProvider, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadEncryptedFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.ReadEncryptedFileAsync(IFileStorageProvider, string, string, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadFileAsync__1_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_BridgingIT_DevKit_Common_ISerializer_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.ReadFileAsync&lt;T&gt;(IFileStorageProvider, string, ISerializer, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadTextFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_Text_Encoding_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.ReadTextFileAsync(IFileStorageProvider, string, Encoding, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_TraverseFilesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_Func_System_String_System_IO_Stream_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.TraverseFilesAsync(IFileStorageProvider, string, Func&lt;string, Stream, CancellationToken, Task&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteBytesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_Byte___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.WriteBytesAsync(IFileStorageProvider, string, byte[], IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteEncryptedFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_IO_Stream_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.WriteEncryptedFileAsync(IFileStorageProvider, string, Stream, string, string, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteFileAsync__1_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String___0_BridgingIT_DevKit_Common_ISerializer_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.WriteFileAsync&lt;T&gt;(IFileStorageProvider, string, T, ISerializer, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteTextFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_Text_Encoding_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderExtensions.WriteTextFileAsync(IFileStorageProvider, string, string, Encoding, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderTreeExtensions.html#BridgingIT_DevKit_Application_Storage_FileStorageProviderTreeExtensions_RenderDirectoryAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_BridgingIT_DevKit_Application_Storage_IFileStorageTreeRenderer_System_String_System_Boolean_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">FileStorageProviderTreeExtensions.RenderDirectoryAsync(IFileStorageProvider, IFileStorageTreeRenderer, string, bool, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider__ctor_System_String_System_String_System_Boolean_System_Nullable_System_TimeSpan__" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.#ctor(System.String,System.String,System.Boolean,System.Nullable{System.TimeSpan})">
+  LocalFileStorageProvider(string, string, bool, TimeSpan?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LocalFileStorageProvider(string locationName, string rootPath, bool ensureRoot = true, TimeSpan? lockTimeout = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>locationName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>rootPath</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>ensureRoot</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>lockTimeout</code> <span class="xref">TimeSpan</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_Description_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.Description*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_Description" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.Description">
+  Description
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a brief description of the storage provider (e.g., &quot;Azure Blob Storage&quot;) and possible location details</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string Description { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RootPath_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.RootPath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RootPath" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.RootPath">
+  RootPath
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string RootPath { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_SupportsNotifications_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.SupportsNotifications*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_SupportsNotifications" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.SupportsNotifications">
+  SupportsNotifications
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the provider supports notifications for changes (e.g., via FileSystemWatcher or cloud event subscriptions).
+Used in monitoring for real-time change detection; for broader use, this may indicate notification capabilities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool SupportsNotifications { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_CheckHealthAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.CheckHealthAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_CheckHealthAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.CheckHealthAsync(System.Threading.CancellationToken)">
+  CheckHealthAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks connectivity and basic access to the storage location, returning a Result with success or errors.
+Returns false if the location is unreachable or permissions are insufficient, triggering a health alert.
+Example: <code>var result = await provider.CheckHealthAsync(CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Storage is healthy&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; CheckHealthAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., ConnectionError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_CopyFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.CopyFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_CopyFileAsync_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.CopyFileAsync(System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  CopyFileAsync(string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies a file or blob from the source path to the destination path, returning a Result with success or errors.
+Example: <code>var result = await provider.CopyFileAsync(&quot;folder/source.txt&quot;, &quot;folder/dest.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File copied&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; CopyFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The source path to copy from (e.g., &quot;folder/source.txt&quot;).</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path to copy to (e.g., &quot;folder/destination.txt&quot;).</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_CreateDirectoryAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.CreateDirectoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_CreateDirectoryAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.CreateDirectoryAsync(System.String,System.Threading.CancellationToken)">
+  CreateDirectoryAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a directory (or virtual folder) at the specified path, returning a Result with success or errors.
+Example: <code>var result = await provider.CreateDirectoryAsync(&quot;folder/subfolder&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Directory created&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to create (e.g., &quot;folder/subfolder&quot;).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., DirectoryExistsError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_DeleteDirectoryAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.DeleteDirectoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_DeleteDirectoryAsync_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.DeleteDirectoryAsync(System.String,System.Boolean,System.Threading.CancellationToken)">
+  DeleteDirectoryAsync(string, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the directory (or virtual folder) at the specified path, returning a Result with success or errors.
+Example: <code>var result = await provider.DeleteDirectoryAsync(&quot;folder/subfolder&quot;, true, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Directory deleted&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to delete (e.g., &quot;folder/subfolder&quot;).</p>
+</dd>
+    <dt><code>recursive</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to delete contents recursively.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., DirectoryNotEmptyError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_DeleteFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.DeleteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_DeleteFileAsync_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.DeleteFileAsync(System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  DeleteFileAsync(string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes the file or blob at the specified path, returning a Result with success or errors.
+Example: <code>var result = await provider.DeleteFileAsync(&quot;folder/file.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File deleted&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; DeleteFileAsync(string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to delete (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_DirectoryExistsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.DirectoryExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_DirectoryExistsAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.DirectoryExistsAsync(System.String,System.Threading.CancellationToken)">
+  DirectoryExistsAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines if the specified path represents a directory (virtual or actual), returning a Result with success or errors.
+Example: <code>var result = await provider.IsDirectoryAsync(&quot;folder/subfolder&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Is a directory&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to check (e.g., &quot;folder/subfolder&quot;).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., PathNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_Dispose_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.Dispose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_Dispose" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.Dispose">
+  Dispose()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_Dispose_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.Dispose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_Dispose_System_Boolean_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.Dispose(System.Boolean)">
+  Dispose(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void Dispose(bool disposing)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>disposing</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_FileExistsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.FileExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_FileExistsAsync_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.FileExistsAsync(System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  FileExistsAsync(string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a file or blob exists at the specified path, returning a Result with success or failure and errors.
+Example: <code>var result = await provider.ExistsAsync(&quot;folder/file.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File exists&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; FileExistsAsync(string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to check (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., FileSystemError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_GetChecksumAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.GetChecksumAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_GetChecksumAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.GetChecksumAsync(System.String,System.Threading.CancellationToken)">
+  GetChecksumAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes and returns a checksum (e.g., hash) for the file or blob at the specified path, returning a Result with the checksum or errors.
+Example: <code>var result = await provider.GetChecksumAsync(&quot;folder/file.txt&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine($&quot;Checksum: {result.Value}&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;string&gt;&gt; GetChecksumAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A Result containing the checksum on success or failure with typed errors (e.g., FileSystemError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_GetFileMetadataAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.GetFileMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_GetFileMetadataAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.GetFileMetadataAsync(System.String,System.Threading.CancellationToken)">
+  GetFileMetadataAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves metadata for the file or blob at the specified path, returning a Result with the metadata or errors.
+Example: <code>var result = await provider.GetFileInfoAsync(&quot;folder/file.txt&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine($&quot;Size: {result.Value.Length}&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;FileMetadata&gt;&gt; GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;</dt>
+    <dd><p>A Result containing the metadata on success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_ListDirectoriesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.ListDirectoriesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_ListDirectoriesAsync_System_String_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.ListDirectoriesAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+  ListDirectoriesAsync(string, string, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists directories matching the search pattern under the specified path, returning a Result with the directory list or errors.
+Example: <code>var result = await provider.ListDirectoriesAsync(&quot;folder/&quot;, &quot;*sub*&quot;, true, CancellationToken.None); if (result.IsSuccess) foreach (var dir in result.Value) Console.WriteLine(dir);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;IEnumerable&lt;string&gt;&gt;&gt; ListDirectoriesAsync(string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The base path (e.g., directory or container prefix).</p>
+</dd>
+    <dt><code>searchPattern</code> <span class="xref">string</span></dt>
+    <dd><p>Pattern to filter directories (e.g., &quot;<em>sub</em>&quot;).</p>
+</dd>
+    <dt><code>recursive</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to include subdirectories.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing the directory list on success or failure with typed errors (e.g., AccessDeniedError, FileSystemError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_ListFilesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.ListFilesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_ListFilesAsync_System_String_System_String_System_Boolean_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.ListFilesAsync(System.String,System.String,System.Boolean,System.String,System.Threading.CancellationToken)">
+  ListFilesAsync(string, string, bool, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;(IEnumerable&lt;string&gt; Files, string NextContinuationToken)&gt;&gt; ListFilesAsync(string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>searchPattern</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>recursive</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;(<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt; <span class="xref">Files</span>, <span class="xref">string</span> <span class="xref">NextContinuationToken</span>)&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_MoveFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.MoveFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_MoveFileAsync_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.MoveFileAsync(System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  MoveFileAsync(string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Moves a file or blob from the source path to the destination path, returning a Result with success or errors.
+Example: <code>var result = await provider.MoveFileAsync(&quot;folder/source.txt&quot;, &quot;folder/dest.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File moved&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; MoveFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The source path to move from (e.g., &quot;folder/source.txt&quot;).</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path to move to (e.g., &quot;folder/destination.txt&quot;).</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_OpenWriteFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.OpenWriteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_OpenWriteFileAsync_System_String_System_Boolean_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.OpenWriteFileAsync(System.String,System.Boolean,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  OpenWriteFileAsync(string, bool, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a writable stream for the file or blob at the specified path, returning a Result with the stream or errors.
+Opening failures are returned in the result; write, flush, and dispose failures surface from the returned stream.
+Example: <code>var result = await provider.OpenWriteFileAsync(&quot;folder/file.txt&quot;, false, null, CancellationToken.None); if (result.IsSuccess) await using (var stream = result.Value) { /* Write to stream */ }</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;Stream&gt;&gt; OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to write to (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>useTemporaryWrite</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether the provider should stage writes in a temporary file/blob and publish on successful close.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
+    <dd><p>A Result containing the writable stream on success or failure with typed errors (e.g., DiskFullError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_ReadFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.ReadFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_ReadFileAsync_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.ReadFileAsync(System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  ReadFileAsync(string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens a readable stream for the file or blob at the specified path, returning a Result with the stream or errors.
+Example: <code>var result = await provider.ReadFileAsync(&quot;folder/file.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) using (var stream = result.Value) { /* Read stream */ }</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;Stream&gt;&gt; ReadFileAsync(string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
+    <dd><p>A Result containing the stream on success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RenameDirectoryAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.RenameDirectoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RenameDirectoryAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.RenameDirectoryAsync(System.String,System.String,System.Threading.CancellationToken)">
+  RenameDirectoryAsync(string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renames a directory from the specified source path to the destination path asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The full path of the directory to be renamed. Cannot be null or empty.</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The new full path for the directory. Cannot be null or empty.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> object indicating the success or failure of the operation. The result contains details
+about any errors encountered during the renaming process.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RenameDirectoryAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method performs the renaming operation asynchronously and does not block the calling
+thread. Ensure that both <code class="paramref">path</code> and <code class="paramref">destinationPath</code> are valid and accessible
+paths.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RenameFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.RenameFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_RenameFileAsync_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.RenameFileAsync(System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  RenameFileAsync(string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renames a file or blob from the old path to the new path, returning a Result with success or errors.
+Example: <code>var result = await provider.RenameFileAsync(&quot;folder/old.txt&quot;, &quot;folder/new.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File renamed&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; RenameFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The current path of the file (e.g., &quot;folder/old.txt&quot;).</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The new path for the file (e.g., &quot;folder/new.txt&quot;).</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_SetFileMetadataAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.SetFileMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_SetFileMetadataAsync_System_String_BridgingIT_DevKit_Application_Storage_FileMetadata_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.SetFileMetadataAsync(System.String,BridgingIT.DevKit.Application.Storage.FileMetadata,System.Threading.CancellationToken)">
+  SetFileMetadataAsync(string, FileMetadata, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets metadata for the file or blob at the specified path, returning a Result with success or errors.
+Example: <code>var metadata = new FileMetadata(); await provider.SetFileMetadataAsync(&quot;folder/file.txt&quot;, metadata, CancellationToken.None);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a></dt>
+    <dd><p>The metadata to set.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., InvalidMetadataError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_UpdateFileMetadataAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.UpdateFileMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_UpdateFileMetadataAsync_System_String_System_Func_BridgingIT_DevKit_Application_Storage_FileMetadata_BridgingIT_DevKit_Application_Storage_FileMetadata__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.UpdateFileMetadataAsync(System.String,System.Func{BridgingIT.DevKit.Application.Storage.FileMetadata,BridgingIT.DevKit.Application.Storage.FileMetadata},System.Threading.CancellationToken)">
+  UpdateFileMetadataAsync(string, Func&lt;FileMetadata, FileMetadata&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates specific fields in the metadata for the file or blob at the specified path, returning a Result with the updated metadata or errors.
+Example: <code>var result = await provider.UpdateFileMetadataAsync(&quot;folder/file.txt&quot;, m =&gt; m.WithLength(1024), CancellationToken.None); if (result.IsSuccess) Console.WriteLine($&quot;Updated metadata: {result.Value.Length}&quot;);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&lt;FileMetadata&gt;&gt; UpdateFileMetadataAsync(string path, Func&lt;FileMetadata, FileMetadata&gt; metadataUpdate, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>metadataUpdate</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>, <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;</dt>
+    <dd><p>A function that updates the existing metadata.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;</dt>
+    <dd><p>A Result containing the updated metadata on success or failure with typed errors (e.g., InvalidMetadataError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_WriteFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.WriteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_LocalFileStorageProvider_WriteFileAsync_System_String_System_IO_Stream_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.WriteFileAsync(System.String,System.IO.Stream,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  WriteFileAsync(string, Stream, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes the provided stream to the file or blob at the specified path, returning a Result with success or errors.
+Example: <code>using (var stream = new MemoryStream()) await provider.WriteFileAsync(&quot;folder/file.txt&quot;, stream, null, CancellationToken.None);</code></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; WriteFileAsync(string path, Stream content, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The path to write to (e.g., &quot;folder/file.txt&quot;).</p>
+</dd>
+    <dt><code>content</code> <span class="xref">Stream</span></dt>
+    <dd><p>The stream containing the data to write.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token to abort the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Result indicating success or failure with typed errors (e.g., DiskFullError, PermissionError).</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

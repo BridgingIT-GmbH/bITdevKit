@@ -1,0 +1,2596 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class EntityFrameworkJobStoreProvider&lt;TContext&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class EntityFrameworkJobStoreProvider&lt;TContext&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides an Entity Framework backed jobs persistence implementation.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1" class="text-break">
+Class EntityFrameworkJobStoreProvider&lt;TContext&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.html">Jobs</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides an Entity Framework backed jobs persistence implementation.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class EntityFrameworkJobStoreProvider&lt;TContext&gt; : IJobStoreProvider, IJobRuntimeStateStore, IJobTriggerRuntimeStateStore, IJobOccurrenceStore, IJobExecutionStore, IJobOccurrenceDependencyStore, IJobBatchStore, IJobLeaseStore, IJobExecutionHistoryStore, IJobBatchHistoryStore, IJobAcceptedEventStore, IJobPreviousExecutionStore, IJobSchedulerQueryStore where TContext : DbContext, IJobsContext</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TContext</code></dt>
+    <dd><p>The database context type that implements <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.IJobsContext.html">IJobsContext</a>.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">EntityFrameworkJobStoreProvider&lt;TContext&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobStoreProvider.html">IJobStoreProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobRuntimeStateStore.html">IJobRuntimeStateStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobTriggerRuntimeStateStore.html">IJobTriggerRuntimeStateStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobOccurrenceStore.html">IJobOccurrenceStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobExecutionStore.html">IJobExecutionStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobOccurrenceDependencyStore.html">IJobOccurrenceDependencyStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBatchStore.html">IJobBatchStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobLeaseStore.html">IJobLeaseStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobExecutionHistoryStore.html">IJobExecutionHistoryStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBatchHistoryStore.html">IJobBatchHistoryStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobAcceptedEventStore.html">IJobAcceptedEventStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobPreviousExecutionStore.html">IJobPreviousExecutionStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryStore.html">IJobSchedulerQueryStore</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1__ctor_System_IServiceProvider_BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobsOptions_System_TimeProvider_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.#ctor(System.IServiceProvider,BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobsOptions,System.TimeProvider,Microsoft.Extensions.Logging.ILoggerFactory)">
+  EntityFrameworkJobStoreProvider(IServiceProvider, EntityFrameworkJobsOptions, TimeProvider, ILoggerFactory)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider-1.html">EntityFrameworkJobStoreProvider&lt;TContext&gt;</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkJobStoreProvider(IServiceProvider serviceProvider, EntityFrameworkJobsOptions options, TimeProvider timeProvider = null, ILoggerFactory loggerFactory = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serviceProvider</code> <span class="xref">IServiceProvider</span></dt>
+    <dd><p>The root service provider.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobsOptions.html">EntityFrameworkJobsOptions</a></dt>
+    <dd><p>The provider options.</p>
+</dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+    <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd><p>The optional logger factory.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AcceptedEvents_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AcceptedEvents*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AcceptedEvents" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AcceptedEvents">
+  AcceptedEvents
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the accepted-event store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobAcceptedEventStore AcceptedEvents { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobAcceptedEventStore.html">IJobAcceptedEventStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_BatchHistory_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.BatchHistory*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_BatchHistory" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.BatchHistory">
+  BatchHistory
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the batch history store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobBatchHistoryStore BatchHistory { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBatchHistoryStore.html">IJobBatchHistoryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Batches_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Batches*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Batches" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Batches">
+  Batches
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the batch store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobBatchStore Batches { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBatchStore.html">IJobBatchStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Dependencies_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Dependencies*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Dependencies" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Dependencies">
+  Dependencies
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the dependency store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobOccurrenceDependencyStore Dependencies { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobOccurrenceDependencyStore.html">IJobOccurrenceDependencyStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ExecutionHistory_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ExecutionHistory*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ExecutionHistory" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ExecutionHistory">
+  ExecutionHistory
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the execution history store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobExecutionHistoryStore ExecutionHistory { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobExecutionHistoryStore.html">IJobExecutionHistoryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Executions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Executions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Executions" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Executions">
+  Executions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the execution store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobExecutionStore Executions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobExecutionStore.html">IJobExecutionStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Leases_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Leases*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Leases" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Leases">
+  Leases
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the lease store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobLeaseStore Leases { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobLeaseStore.html">IJobLeaseStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Occurrences_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Occurrences*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Occurrences" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Occurrences">
+  Occurrences
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the occurrence store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobOccurrenceStore Occurrences { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobOccurrenceStore.html">IJobOccurrenceStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Options_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Options*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Options" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Options">
+  Options
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkJobsOptions Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobsOptions.html">EntityFrameworkJobsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_PreviousExecutions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.PreviousExecutions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_PreviousExecutions" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.PreviousExecutions">
+  PreviousExecutions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the previous execution lookup store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobPreviousExecutionStore PreviousExecutions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobPreviousExecutionStore.html">IJobPreviousExecutionStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Queries_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Queries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_Queries" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.Queries">
+  Queries
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider-neutral query store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobSchedulerQueryStore Queries { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryStore.html">IJobSchedulerQueryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RuntimeStates_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RuntimeStates*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RuntimeStates" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RuntimeStates">
+  RuntimeStates
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the job runtime state store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobRuntimeStateStore RuntimeStates { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobRuntimeStateStore.html">IJobRuntimeStateStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TriggerRuntimeStates_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TriggerRuntimeStates*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TriggerRuntimeStates" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TriggerRuntimeStates">
+  TriggerRuntimeStates
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the trigger runtime state store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IJobTriggerRuntimeStateStore TriggerRuntimeStates { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobTriggerRuntimeStateStore.html">IJobTriggerRuntimeStateStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AddAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AddAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AddAsync_BridgingIT_DevKit_Application_Jobs_JobOccurrenceDependency_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AddAsync(BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency,System.Threading.CancellationToken)">
+  AddAsync(JobOccurrenceDependency, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AddAsync(JobOccurrenceDependency dependency, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dependency</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AppendAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AppendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AppendAsync_BridgingIT_DevKit_Application_Jobs_JobBatchHistoryEntry_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AppendAsync(BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry,System.Threading.CancellationToken)">
+  AppendAsync(JobBatchHistoryEntry, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AppendAsync(JobBatchHistoryEntry entry, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AppendAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AppendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AppendAsync_BridgingIT_DevKit_Application_Jobs_JobExecutionHistoryEntry_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AppendAsync(BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry,System.Threading.CancellationToken)">
+  AppendAsync(JobExecutionHistoryEntry, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AppendAsync(JobExecutionHistoryEntry entry, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AttachAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AttachAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_AttachAsync_System_Guid_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobBatchOccurrence__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.AttachAsync(System.Guid,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence},System.Threading.CancellationToken)">
+  AttachAsync(Guid, IReadOnlyList&lt;JobBatchOccurrence&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AttachAsync(Guid batchId, IReadOnlyList&lt;JobBatchOccurrence&gt; occurrences, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_CreateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.CreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_CreateAsync_BridgingIT_DevKit_Application_Jobs_JobExecution_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.CreateAsync(BridgingIT.DevKit.Application.Jobs.JobExecution,System.Threading.CancellationToken)">
+  CreateAsync(JobExecution, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CreateAsync(JobExecution execution, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>execution</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetAsync(System.String,System.String,System.Threading.CancellationToken)">
+  GetAsync(string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobTriggerRuntimeState&gt; GetAsync(string jobName, string triggerName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>triggerName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerRuntimeState.html">JobTriggerRuntimeState</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetAsync(System.String,System.Threading.CancellationToken)">
+  GetAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobRuntimeState&gt; GetAsync(string jobName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRuntimeState.html">JobRuntimeState</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetByKeyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetByKeyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetByKeyAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetByKeyAsync(System.String,System.Threading.CancellationToken)">
+  GetByKeyAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobOccurrence&gt; GetByKeyAsync(string occurrenceKey, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetPreviousExecutionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetPreviousExecutionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetPreviousExecutionAsync_System_Guid_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetPreviousExecutionAsync(System.Guid,System.Guid,System.Threading.CancellationToken)">
+  GetPreviousExecutionAsync(Guid, Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobExecution&gt; GetPreviousExecutionAsync(Guid occurrenceId, Guid currentExecutionId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>currentExecutionId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetPreviousSuccessfulExecutionAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetPreviousSuccessfulExecutionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_GetPreviousSuccessfulExecutionAsync_System_String_System_String_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.GetPreviousSuccessfulExecutionAsync(System.String,System.String,System.DateTimeOffset,System.Threading.CancellationToken)">
+  GetPreviousSuccessfulExecutionAsync(string, string, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobExecution&gt; GetPreviousSuccessfulExecutionAsync(string jobName, string triggerName, DateTimeOffset beforeUtc, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>triggerName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>beforeUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListAsync(System.Guid,System.Threading.CancellationToken)">
+  ListAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobExecutionHistoryEntry&gt;&gt; ListAsync(Guid occurrenceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListBatchHistoryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListBatchHistoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListBatchHistoryAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListBatchHistoryAsync(System.Threading.CancellationToken)">
+  ListBatchHistoryAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobBatchHistoryEntry&gt;&gt; ListBatchHistoryAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListBatchOccurrencesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListBatchOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListBatchOccurrencesAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListBatchOccurrencesAsync(System.Threading.CancellationToken)">
+  ListBatchOccurrencesAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobBatchOccurrence&gt;&gt; ListBatchOccurrencesAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListBatchesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListBatchesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListBatchesAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListBatchesAsync(System.Threading.CancellationToken)">
+  ListBatchesAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobBatch&gt;&gt; ListBatchesAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListByDependentAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListByDependentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListByDependentAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListByDependentAsync(System.Guid,System.Threading.CancellationToken)">
+  ListByDependentAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobOccurrenceDependency&gt;&gt; ListByDependentAsync(Guid dependentOccurrenceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dependentOccurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListByOccurrenceAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListByOccurrenceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListByOccurrenceAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListByOccurrenceAsync(System.Guid,System.Threading.CancellationToken)">
+  ListByOccurrenceAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobExecution&gt;&gt; ListByOccurrenceAsync(Guid occurrenceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListByPrerequisiteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListByPrerequisiteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListByPrerequisiteAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListByPrerequisiteAsync(System.Guid,System.Threading.CancellationToken)">
+  ListByPrerequisiteAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobOccurrenceDependency&gt;&gt; ListByPrerequisiteAsync(Guid prerequisiteOccurrenceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>prerequisiteOccurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListDependenciesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListDependenciesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListDependenciesAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListDependenciesAsync(System.Threading.CancellationToken)">
+  ListDependenciesAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobOccurrenceDependency&gt;&gt; ListDependenciesAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListExecutionHistoryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListExecutionHistoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListExecutionHistoryAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListExecutionHistoryAsync(System.Threading.CancellationToken)">
+  ListExecutionHistoryAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobExecutionHistoryEntry&gt;&gt; ListExecutionHistoryAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListExecutionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListExecutionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListExecutionsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListExecutionsAsync(System.Threading.CancellationToken)">
+  ListExecutionsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobExecution&gt;&gt; ListExecutionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListExpiredAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListExpiredAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListExpiredAsync_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListExpiredAsync(System.DateTimeOffset,System.Threading.CancellationToken)">
+  ListExpiredAsync(DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobLeaseRecord&gt;&gt; ListExpiredAsync(DateTimeOffset asOfUtc, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>asOfUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListLeasesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListLeasesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListLeasesAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListLeasesAsync(System.Threading.CancellationToken)">
+  ListLeasesAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobLeaseRecord&gt;&gt; ListLeasesAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListOccurrencesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListOccurrencesAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListOccurrencesAsync(System.Guid,System.Threading.CancellationToken)">
+  ListOccurrencesAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobBatchOccurrence&gt;&gt; ListOccurrencesAsync(Guid batchId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListOccurrencesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListOccurrencesAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListOccurrencesAsync(System.Threading.CancellationToken)">
+  ListOccurrencesAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobOccurrence&gt;&gt; ListOccurrencesAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListPendingAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListPendingAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ListPendingAsync_System_String_System_Type_System_Nullable_System_DateTimeOffset__System_Nullable_System_Guid__System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ListPendingAsync(System.String,System.Type,System.Nullable{System.DateTimeOffset},System.Nullable{System.Guid},System.Int32,System.Threading.CancellationToken)">
+  ListPendingAsync(string, Type, DateTimeOffset?, Guid?, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyList&lt;JobAcceptedEvent&gt;&gt; ListPendingAsync(string source, Type eventDataType, DateTimeOffset? afterAcceptedUtc, Guid? afterAcceptedEventId, int take, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>eventDataType</code> <span class="xref">Type</span></dt>
+    <dd></dd>
+    <dt><code>afterAcceptedUtc</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+    <dt><code>afterAcceptedEventId</code> <span class="xref">Guid</span>?</dt>
+    <dd></dd>
+    <dt><code>take</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_PurgeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.PurgeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_PurgeAsync_System_DateTimeOffset_System_Collections_Generic_IReadOnlyCollection_System_Guid__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.PurgeAsync(System.DateTimeOffset,System.Collections.Generic.IReadOnlyCollection{System.Guid},System.Threading.CancellationToken)">
+  PurgeAsync(DateTimeOffset, IReadOnlyCollection&lt;Guid&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;int&gt; PurgeAsync(DateTimeOffset olderThanUtc, IReadOnlyCollection&lt;Guid&gt; historyIds, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>olderThanUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>historyIds</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">Guid</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ReleaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ReleaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ReleaseAsync_System_Guid_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ReleaseAsync(System.Guid,System.String,System.String,System.Threading.CancellationToken)">
+  ReleaseAsync(Guid, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; ReleaseAsync(Guid occurrenceId, string schedulerInstanceId, string ownershipToken, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveAsync(System.Guid,System.Threading.CancellationToken)">
+  RemoveAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RemoveAsync(Guid occurrenceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveAsync(System.String,System.String,System.Threading.CancellationToken)">
+  RemoveAsync(string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RemoveAsync(string jobName, string triggerName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>triggerName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveAsync(System.String,System.Threading.CancellationToken)">
+  RemoveAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RemoveAsync(string jobName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveOccurrencesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RemoveOccurrencesAsync_System_Collections_Generic_IReadOnlyCollection_System_Guid__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RemoveOccurrencesAsync(System.Collections.Generic.IReadOnlyCollection{System.Guid},System.Threading.CancellationToken)">
+  RemoveOccurrencesAsync(IReadOnlyCollection&lt;Guid&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;int&gt; RemoveOccurrencesAsync(IReadOnlyCollection&lt;Guid&gt; occurrenceIds, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceIds</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">Guid</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RenewAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RenewAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_RenewAsync_System_Guid_System_String_System_String_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.RenewAsync(System.Guid,System.String,System.String,System.TimeSpan,System.Threading.CancellationToken)">
+  RenewAsync(Guid, string, string, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobLeaseRecord&gt; RenewAsync(Guid occurrenceId, string schedulerInstanceId, string ownershipToken, TimeSpan duration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ReplaceOccurrencesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ReplaceOccurrencesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_ReplaceOccurrencesAsync_System_Guid_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobBatchOccurrence__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.ReplaceOccurrencesAsync(System.Guid,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence},System.Threading.CancellationToken)">
+  ReplaceOccurrencesAsync(Guid, IReadOnlyList&lt;JobBatchOccurrence&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReplaceOccurrencesAsync(Guid batchId, IReadOnlyList&lt;JobBatchOccurrence&gt; occurrences, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryAcceptAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryAcceptAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryAcceptAsync_BridgingIT_DevKit_Application_Jobs_JobAcceptedEvent_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryAcceptAsync(BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent,System.Threading.CancellationToken)">
+  TryAcceptAsync(JobAcceptedEvent, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; TryAcceptAsync(JobAcceptedEvent acceptedEvent, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>acceptedEvent</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryAcquireAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryAcquireAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryAcquireAsync_System_Guid_System_String_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryAcquireAsync(System.Guid,System.String,System.TimeSpan,System.Threading.CancellationToken)">
+  TryAcquireAsync(Guid, string, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;JobLeaseRecord&gt; TryAcquireAsync(Guid occurrenceId, string schedulerInstanceId, TimeSpan duration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryAttachChildrenAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryAttachChildrenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryAttachChildrenAsync_System_Guid_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobOccurrence__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobBatchOccurrence__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryAttachChildrenAsync(System.Guid,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobOccurrence},System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence},System.Threading.CancellationToken)">
+  TryAttachChildrenAsync(Guid, IReadOnlyList&lt;JobOccurrence&gt;, IReadOnlyList&lt;JobBatchOccurrence&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; TryAttachChildrenAsync(Guid batchId, IReadOnlyList&lt;JobOccurrence&gt; childOccurrences, IReadOnlyList&lt;JobBatchOccurrence&gt; memberships, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batchId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>childOccurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>memberships</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryCreateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryCreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryCreateAsync_BridgingIT_DevKit_Application_Jobs_JobBatch_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobBatchOccurrence__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryCreateAsync(BridgingIT.DevKit.Application.Jobs.JobBatch,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence},System.Threading.CancellationToken)">
+  TryCreateAsync(JobBatch, IReadOnlyList&lt;JobBatchOccurrence&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; TryCreateAsync(JobBatch batch, IReadOnlyList&lt;JobBatchOccurrence&gt; occurrences, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
+    <dd></dd>
+    <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryCreateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryCreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryCreateAsync_BridgingIT_DevKit_Application_Jobs_JobOccurrence_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryCreateAsync(BridgingIT.DevKit.Application.Jobs.JobOccurrence,System.Threading.CancellationToken)">
+  TryCreateAsync(JobOccurrence, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; TryCreateAsync(JobOccurrence occurrence, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrence</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryCreateWithChildrenAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryCreateWithChildrenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_TryCreateWithChildrenAsync_BridgingIT_DevKit_Application_Jobs_JobBatch_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobOccurrence__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Application_Jobs_JobBatchOccurrence__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.TryCreateWithChildrenAsync(BridgingIT.DevKit.Application.Jobs.JobBatch,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobOccurrence},System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence},System.Threading.CancellationToken)">
+  TryCreateWithChildrenAsync(JobBatch, IReadOnlyList&lt;JobOccurrence&gt;, IReadOnlyList&lt;JobBatchOccurrence&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; TryCreateWithChildrenAsync(JobBatch batch, IReadOnlyList&lt;JobOccurrence&gt; childOccurrences, IReadOnlyList&lt;JobBatchOccurrence&gt; memberships, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
+    <dd></dd>
+    <dt><code>childOccurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>memberships</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_BridgingIT_DevKit_Application_Jobs_JobBatch_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync(BridgingIT.DevKit.Application.Jobs.JobBatch,System.Threading.CancellationToken)">
+  UpdateAsync(JobBatch, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpdateAsync(JobBatch batch, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_BridgingIT_DevKit_Application_Jobs_JobExecution_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync(BridgingIT.DevKit.Application.Jobs.JobExecution,System.Threading.CancellationToken)">
+  UpdateAsync(JobExecution, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpdateAsync(JobExecution execution, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>execution</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_BridgingIT_DevKit_Application_Jobs_JobOccurrence_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync(BridgingIT.DevKit.Application.Jobs.JobOccurrence,System.Threading.CancellationToken)">
+  UpdateAsync(JobOccurrence, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpdateAsync(JobOccurrence occurrence, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrence</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpdateAsync_BridgingIT_DevKit_Application_Jobs_JobOccurrenceDependency_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpdateAsync(BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency,System.Threading.CancellationToken)">
+  UpdateAsync(JobOccurrenceDependency, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpdateAsync(JobOccurrenceDependency dependency, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dependency</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpsertAsync_BridgingIT_DevKit_Application_Jobs_JobLeaseRecord_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpsertAsync(BridgingIT.DevKit.Application.Jobs.JobLeaseRecord,System.Threading.CancellationToken)">
+  UpsertAsync(JobLeaseRecord, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpsertAsync(JobLeaseRecord lease, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>lease</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpsertAsync_BridgingIT_DevKit_Application_Jobs_JobRuntimeState_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpsertAsync(BridgingIT.DevKit.Application.Jobs.JobRuntimeState,System.Threading.CancellationToken)">
+  UpsertAsync(JobRuntimeState, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpsertAsync(JobRuntimeState state, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>state</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRuntimeState.html">JobRuntimeState</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_UpsertAsync_System_String_System_String_BridgingIT_DevKit_Application_Jobs_JobTriggerRuntimeState_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.UpsertAsync(System.String,System.String,BridgingIT.DevKit.Application.Jobs.JobTriggerRuntimeState,System.Threading.CancellationToken)">
+  UpsertAsync(string, string, JobTriggerRuntimeState, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task UpsertAsync(string jobName, string triggerName, JobTriggerRuntimeState state, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>triggerName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>state</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerRuntimeState.html">JobTriggerRuntimeState</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_VerifyOwnershipAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.VerifyOwnershipAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Jobs_EntityFrameworkJobStoreProvider_1_VerifyOwnershipAsync_System_Guid_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs.EntityFrameworkJobStoreProvider`1.VerifyOwnershipAsync(System.Guid,System.String,System.String,System.Threading.CancellationToken)">
+  VerifyOwnershipAsync(Guid, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; VerifyOwnershipAsync(Guid occurrenceId, string schedulerInstanceId, string ownershipToken, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

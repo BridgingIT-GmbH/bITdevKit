@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ShouldBeResultExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ShouldBeResultExtensions | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions" class="text-break">
+Class ShouldBeResultExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.Xunit.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ShouldBeResultExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ShouldBeResultExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldBeFailure_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldBeFailure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldBeFailure_BridgingIT_DevKit_Common_IResult_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldBeFailure(BridgingIT.DevKit.Common.IResult,System.String)">
+  ShouldBeFailure(IResult, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldBeFailure(this IResult actual, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldBeSuccess_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldBeSuccess*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldBeSuccess_BridgingIT_DevKit_Common_IResult_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldBeSuccess(BridgingIT.DevKit.Common.IResult,System.String)">
+  ShouldBeSuccess(IResult, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldBeSuccess(this IResult actual, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldBeValue_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldBeValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldBeValue__1_BridgingIT_DevKit_Common_Result___0____0_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldBeValue``1(BridgingIT.DevKit.Common.Result{``0},``0,System.String)">
+  ShouldBeValue&lt;T&gt;(Result&lt;T&gt;, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldBeValue&lt;T&gt;(this Result&lt;T&gt; actual, T expected, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>expected</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldContainError_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldContainError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldContainError__1_BridgingIT_DevKit_Common_IResult_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldContainError``1(BridgingIT.DevKit.Common.IResult,System.String)">
+  ShouldContainError&lt;TError&gt;(IResult, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldContainError&lt;TError&gt;(this IResult actual, string customMessage = null) where TError : class, IResultError</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldContainMessage_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldContainMessage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldContainMessage_BridgingIT_DevKit_Common_IResult_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldContainMessage(BridgingIT.DevKit.Common.IResult,System.String,System.String)">
+  ShouldContainMessage(IResult, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldContainMessage(this IResult actual, string expected, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>expected</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldContainMessages_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldContainMessages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldContainMessages_BridgingIT_DevKit_Common_IResult_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldContainMessages(BridgingIT.DevKit.Common.IResult,System.String)">
+  ShouldContainMessages(IResult, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldContainMessages(this IResult actual, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotBeValue_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotBeValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotBeValue__1_BridgingIT_DevKit_Common_Result___0____0_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotBeValue``1(BridgingIT.DevKit.Common.Result{``0},``0,System.String)">
+  ShouldNotBeValue&lt;T&gt;(Result&lt;T&gt;, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldNotBeValue&lt;T&gt;(this Result&lt;T&gt; actual, T expected, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>expected</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotContainError_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotContainError*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotContainError__1_BridgingIT_DevKit_Common_IResult_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotContainError``1(BridgingIT.DevKit.Common.IResult,System.String)">
+  ShouldNotContainError&lt;TError&gt;(IResult, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldNotContainError&lt;TError&gt;(this IResult actual, string customMessage = null) where TError : class, IResultError</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TError</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotContainMessage_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotContainMessage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotContainMessage_BridgingIT_DevKit_Common_IResult_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotContainMessage(BridgingIT.DevKit.Common.IResult,System.String,System.String)">
+  ShouldNotContainMessage(IResult, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldNotContainMessage(this IResult actual, string expected, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>expected</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotContainMessages_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotContainMessages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ShouldBeResultExtensions_ShouldNotContainMessages_BridgingIT_DevKit_Common_IResult_System_String_" data-uid="BridgingIT.DevKit.Common.ShouldBeResultExtensions.ShouldNotContainMessages(BridgingIT.DevKit.Common.IResult,System.String)">
+  ShouldNotContainMessages(IResult, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void ShouldNotContainMessages(this IResult actual, string customMessage = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>actual</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+    <dt><code>customMessage</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

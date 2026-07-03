@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Application.Jobs | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Application.Jobs | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Jobs">
+
+  <h1 id="BridgingIT_DevKit_Application_Jobs" data-uid="BridgingIT.DevKit.Application.Jobs" class="text-break">Namespace BridgingIT.DevKit.Application.Jobs</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.AliveJob.html">AliveJob</a></dt>
+      <dd><p>Executes the built-in jobs alive probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.AliveJobData.html">AliveJobData</a></dt>
+      <dd><p>Represents the input for the built-in jobs alive probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.ChaosExceptionJobBehavior.html">ChaosExceptionJobBehavior</a></dt>
+      <dd><p>Injects chaos exceptions into job execution for failure-path testing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.ChaosExceptionJobBehaviorOptions.html">ChaosExceptionJobBehaviorOptions</a></dt>
+      <dd><p>Configures chaos exception injection for a job behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+      <dd><p>Fluent builder for Jobs cron expressions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressions.html">CronExpressions</a></dt>
+      <dd><p>Common cron expressions for the Jobs feature.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronosJobCronEngine.html">CronosJobCronEngine</a></dt>
+      <dd><p>Provides the default Cronos-backed implementation of <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCronEngine.html">IJobCronEngine</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.DefaultJobCalendarEngine.html">DefaultJobCalendarEngine</a></dt>
+      <dd><p>Provides the default BCL-backed implementation of <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCalendarEngine.html">IJobCalendarEngine</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.EchoJob.html">EchoJob</a></dt>
+      <dd><p>Provides a small reusable test job that echoes typed input into the execution context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.EchoJobData.html">EchoJobData</a></dt>
+      <dd><p>Represents the typed payload for <a class="xref" href="BridgingIT.DevKit.Application.Jobs.EchoJob.html">EchoJob</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.InMemoryJobStoreProvider.html">InMemoryJobStoreProvider</a></dt>
+      <dd><p>Provides the default in-memory Jobs persistence implementation for tests and local development.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.InlineJobDefinitionBuilder.html">InlineJobDefinitionBuilder</a></dt>
+      <dd><p>Builds a lightweight inline job definition backed by a delegate.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a></dt>
+      <dd><p>Represents one durably accepted event waiting to be materialized into scheduler occurrences.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEventOptions.html">JobAcceptedEventOptions</a></dt>
+      <dd><p>Configures how an external event is accepted into the scheduler event-trigger pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAliveOptions.html">JobAliveOptions</a></dt>
+      <dd><p>Stores runtime availability for the built-in jobs alive probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobArchiveOccurrencesJobData.html">JobArchiveOccurrencesJobData</a></dt>
+      <dd><p>Configures completed-occurrence archive behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBase.html">JobBase</a></dt>
+      <dd><p>Provides a base class for jobs that do not require input data.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBase-1.html">JobBase&lt;TData&gt;</a></dt>
+      <dd><p>Provides a typed base class for jobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
+      <dd><p>Represents a persisted batch grouping for child occurrences.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchCreateRequest.html">JobBatchCreateRequest</a></dt>
+      <dd><p>Represents a request to create a durable batch record.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchDispatchItem.html">JobBatchDispatchItem</a></dt>
+      <dd><p>Represents one child occurrence request inside a batch dispatch or attach operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchDispatchRequest.html">JobBatchDispatchRequest</a></dt>
+      <dd><p>Represents a request to create or attach batch child occurrences.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchDispatchResult.html">JobBatchDispatchResult</a></dt>
+      <dd><p>Represents the accepted result of a batch create, dispatch, or attach operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a></dt>
+      <dd><p>Represents an append-only audit event for a batch-level operation or roll-up change.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a></dt>
+      <dd><p>Represents one persisted batch membership link.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBehaviorContext.html">JobBehaviorContext</a></dt>
+      <dd><p>Provides runtime information to a job behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBuilderContext.html">JobBuilderContext</a></dt>
+      <dd><p>Provides the shared builder context for jobs registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBulkOperationFailureModel.html">JobBulkOperationFailureModel</a></dt>
+      <dd><p>Represents one child failure returned by a bulk scheduler operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBulkOperationResult.html">JobBulkOperationResult</a></dt>
+      <dd><p>Represents the outcome of a bulk operation over occurrences or a batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobCalendarDefinition.html">JobCalendarDefinition</a></dt>
+      <dd><p>Represents scheduler-owned calendar rules for recurring trigger materialization.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobCalendarDefinitionBuilder.html">JobCalendarDefinitionBuilder</a></dt>
+      <dd><p>Builds scheduler-owned calendar rules for calendar triggers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobChainDefinition.html">JobChainDefinition</a></dt>
+      <dd><p>Represents a code-first chained successor template.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobChainDefinitionBuilder.html">JobChainDefinitionBuilder</a></dt>
+      <dd><p>Builds a chained successor occurrence template.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobConcurrencyOptions.html">JobConcurrencyOptions</a></dt>
+      <dd><p>Represents concurrency settings for a job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobConfiguration.html">JobConfiguration</a></dt>
+      <dd><p>Represents appsettings overrides for code-registered jobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobConfigurationOverride.html">JobConfigurationOverride</a></dt>
+      <dd><p>Represents appsettings overrides for a single code-registered job.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDefinition.html">JobDefinition</a></dt>
+      <dd><p>Represents a resolved code-first job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDefinitionBuilder-1.html">JobDefinitionBuilder&lt;TJob&gt;</a></dt>
+      <dd><p>Builds a code-first job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDetectOrphanedRuntimeStateJobData.html">JobDetectOrphanedRuntimeStateJobData</a></dt>
+      <dd><p>Configures orphaned runtime-state detection behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDispatchOptions.html">JobDispatchOptions</a></dt>
+      <dd><p>Represents dispatch options for manual inline job execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDispatchResult.html">JobDispatchResult</a></dt>
+      <dd><p>Represents the accepted dispatch details for one occurrence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobEventContextPropertyNames.html">JobEventContextPropertyNames</a></dt>
+      <dd><p>Defines common context-property keys used by event-source adapters.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobEventIngress.html">JobEventIngress</a></dt>
+      <dd><p>Provides the default event acceptance implementation for provider-neutral event triggers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobEventSourceNames.html">JobEventSourceNames</a></dt>
+      <dd><p>Provides the built-in logical event-source names.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobEventSourceRegistry.html">JobEventSourceRegistry</a></dt>
+      <dd><p>Tracks which event-source adapters are connected to the scheduler.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a></dt>
+      <dd><p>Represents one persisted execution attempt for an occurrence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionContextAssertionExtensions.html">JobExecutionContextAssertionExtensions</a></dt>
+      <dd><p>Provides simple assertion-style helpers for synthetic execution contexts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionContextBuilder-1.html">JobExecutionContextBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds a synthetic <a class="xref" href="BridgingIT.DevKit.Common.IJobExecutionContext-1.html">IJobExecutionContext&lt;TData&gt;</a> for direct job tests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionContextSnapshotBuilder.html">JobExecutionContextSnapshotBuilder</a></dt>
+      <dd><p>Builds a previous-execution snapshot for synthetic job contexts and harnesses.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a></dt>
+      <dd><p>Represents one append-oriented persisted lifecycle record.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionResult.html">JobExecutionResult</a></dt>
+      <dd><p>Represents the terminal result of one inline execution attempt flow.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a></dt>
+      <dd><p>Represents persisted lease properties for an occurrence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceOptions.html">JobMaintenanceOptions</a></dt>
+      <dd><p>Provides common maintenance-job options.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a></dt>
+      <dd><p>Describes one maintenance execution result.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMetricsBehavior.html">JobMetricsBehavior</a></dt>
+      <dd><p>Emits execution telemetry around the job behavior pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobNamingConventions.html">JobNamingConventions</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobNotifierDefinitionBuilder-2.html">JobNotifierDefinitionBuilder&lt;TData, TNotification&gt;</a></dt>
+      <dd><p>Builds a Notifier-backed outbound job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a></dt>
+      <dd><p>Represents a persisted scheduled unit of work created by trigger materialization or dispatch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a></dt>
+      <dd><p>Represents one persisted occurrence dependency link.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceMaterialization.html">JobOccurrenceMaterialization</a></dt>
+      <dd><p>Represents one occurrence created by trigger evaluation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOutboundIntegrationDefinitionBuilderBase-3.html">JobOutboundIntegrationDefinitionBuilderBase&lt;TBuilder, TJob, TData&gt;</a></dt>
+      <dd><p>Provides common job-definition configuration for outbound integration jobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobPipelineExecuteDefinitionBuilder-3.html">JobPipelineExecuteDefinitionBuilder&lt;TData, TPipelineDefinition, TPipelineContext&gt;</a></dt>
+      <dd><p>Builds a Pipeline-backed outbound job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobPurgeHistoryJobData.html">JobPurgeHistoryJobData</a></dt>
+      <dd><p>Configures archived execution-history purge behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobPurgeOccurrencesRequest.html">JobPurgeOccurrencesRequest</a></dt>
+      <dd><p>Configures retained occurrence purge behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRecoverStuckOccurrencesJobData.html">JobRecoverStuckOccurrencesJobData</a></dt>
+      <dd><p>Configures stuck-occurrence recovery behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRegistrationStore.html">JobRegistrationStore</a></dt>
+      <dd><p>Stores code-registered job definitions and applies appsettings overrides.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobReleaseExpiredLeasesJobData.html">JobReleaseExpiredLeasesJobData</a></dt>
+      <dd><p>Configures expired-lease release behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRequesterDefinitionBuilder-3.html">JobRequesterDefinitionBuilder&lt;TData, TRequest, TValue&gt;</a></dt>
+      <dd><p>Builds a Requester-backed outbound job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRetryPolicy.html">JobRetryPolicy</a></dt>
+      <dd><p>Represents retry configuration for a job or trigger.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRetryPolicyBuilder.html">JobRetryPolicyBuilder</a></dt>
+      <dd><p>Builds retry policy definitions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRuntimeState.html">JobRuntimeState</a></dt>
+      <dd><p>Represents persisted runtime state for a registered job.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBackgroundService.html">JobSchedulerBackgroundService</a></dt>
+      <dd><p>Runs trigger materialization and due-occurrence execution in the background over the in-memory provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchChildOccurrenceModel.html">JobSchedulerBatchChildOccurrenceModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchHistoryModel.html">JobSchedulerBatchHistoryModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchHistoryQueryRequest.html">JobSchedulerBatchHistoryQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchModel.html">JobSchedulerBatchModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchOccurrenceQueryRequest.html">JobSchedulerBatchOccurrenceQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerBatchQueryRequest.html">JobSchedulerBatchQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardNavigationLinkModel.html">JobSchedulerDashboardNavigationLinkModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardNavigationModel.html">JobSchedulerDashboardNavigationModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardOverviewModel.html">JobSchedulerDashboardOverviewModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardSummaryModel.html">JobSchedulerDashboardSummaryModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDashboardSummaryRequest.html">JobSchedulerDashboardSummaryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDependencyModel.html">JobSchedulerDependencyModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerDependencyQueryRequest.html">JobSchedulerDependencyQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerEnvironmentContext.html">JobSchedulerEnvironmentContext</a></dt>
+      <dd><p>Exposes environment values used by scheduler-wide builder callbacks.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExceptionContext.html">JobSchedulerExceptionContext</a></dt>
+      <dd><p>Describes an unhandled scheduler exception.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionHistoryModel.html">JobSchedulerExecutionHistoryModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionHistoryQueryRequest.html">JobSchedulerExecutionHistoryQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionModel.html">JobSchedulerExecutionModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExecutionQueryRequest.html">JobSchedulerExecutionQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerHostedOptions.html">JobSchedulerHostedOptions</a></dt>
+      <dd><p>Configures hosted background scheduler execution over the active Jobs runtime.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerInstanceIdContext.html">JobSchedulerInstanceIdContext</a></dt>
+      <dd><p>Supplies environment details when composing a scheduler instance identifier.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerJobFacetCountsModel.html">JobSchedulerJobFacetCountsModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerJobModel.html">JobSchedulerJobModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerJobQueryRequest.html">JobSchedulerJobQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerLeaseModel.html">JobSchedulerLeaseModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerLeaseQueryRequest.html">JobSchedulerLeaseQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerMaintenanceService.html">JobSchedulerMaintenanceService</a></dt>
+      <dd><p>Provides the default provider-neutral maintenance implementation for scheduler state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerMetricsModel.html">JobSchedulerMetricsModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerMetricsRequest.html">JobSchedulerMetricsRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerNotifierAcceptedEventBehavior-2.html">JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;</a></dt>
+      <dd><p>Accepts published notifications into the scheduler event-trigger pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceModel.html">JobSchedulerOccurrenceModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerOccurrenceQueryRequest.html">JobSchedulerOccurrenceQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerPagedQueryRequest.html">JobSchedulerPagedQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryCapabilities.html">JobSchedulerQueryCapabilities</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerQueryService.html">JobSchedulerQueryService</a></dt>
+      <dd><p>Provides provider-neutral Jobs query operations over active registrations and persisted scheduler state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRecurringTriggerModel.html">JobSchedulerRecurringTriggerModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRecurringTriggerQueryRequest.html">JobSchedulerRecurringTriggerQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRetryModel.html">JobSchedulerRetryModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerRetryQueryRequest.html">JobSchedulerRetryQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerServerModel.html">JobSchedulerServerModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerServerQueryRequest.html">JobSchedulerServerQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerService.html">JobSchedulerService</a></dt>
+      <dd><p>Provides the in-memory inline job runtime implementation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTestHarness.html">JobSchedulerTestHarness</a></dt>
+      <dd><p>Provides an in-memory scheduler test harness with a controllable clock.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTestHarnessBuilder.html">JobSchedulerTestHarnessBuilder</a></dt>
+      <dd><p>Builds a <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTestHarness.html">JobSchedulerTestHarness</a> instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineBucketModel.html">JobSchedulerTimelineBucketModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineModel.html">JobSchedulerTimelineModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineRequest.html">JobSchedulerTimelineRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTriggerModel.html">JobSchedulerTriggerModel</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTriggerQueryRequest.html">JobSchedulerTriggerQueryRequest</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerWorkerPoolBuilder.html">JobSchedulerWorkerPoolBuilder</a></dt>
+      <dd><p>Provides fluent worker-pool configuration for the scheduler builder.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTestHarness.html">JobTestHarness</a></dt>
+      <dd><p>Provides a low-friction direct-job test harness for ordinary xUnit tests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTestHarnessBuilder.html">JobTestHarnessBuilder</a></dt>
+      <dd><p>Builds a <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTestHarness.html">JobTestHarness</a> instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerConfigurationOverride.html">JobTriggerConfigurationOverride</a></dt>
+      <dd><p>Represents appsettings overrides for a single code-registered trigger.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerDefinition.html">JobTriggerDefinition</a></dt>
+      <dd><p>Represents a resolved code-first trigger definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerDefinitionBuilder.html">JobTriggerDefinitionBuilder</a></dt>
+      <dd><p>Builds a code-first trigger definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerEvaluationContext.html">JobTriggerEvaluationContext</a></dt>
+      <dd><p>Represents the context passed to custom trigger providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerEvaluationRequest.html">JobTriggerEvaluationRequest</a></dt>
+      <dd><p>Represents a trigger evaluation request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerEvaluationResult.html">JobTriggerEvaluationResult</a></dt>
+      <dd><p>Represents the result of evaluating one trigger.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerEvaluator.html">JobTriggerEvaluator</a></dt>
+      <dd><p>Provides the default runtime-neutral trigger evaluation implementation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerRuntimeState.html">JobTriggerRuntimeState</a></dt>
+      <dd><p>Represents mutable runtime state required to calculate trigger materialization deterministically.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobsArchiveOccurrencesJob.html">JobsArchiveOccurrencesJob</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobsDetectOrphanedRuntimeStateJob.html">JobsDetectOrphanedRuntimeStateJob</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobsPurgeHistoryJob.html">JobsPurgeHistoryJob</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobsRecoverStuckOccurrencesJob.html">JobsRecoverStuckOccurrencesJob</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobsReleaseExpiredLeasesJob.html">JobsReleaseExpiredLeasesJob</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.ModuleScopeBehavior.html">ModuleScopeBehavior</a></dt>
+      <dd><p>Captures module scope around a job execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.NotifierJob-2.html">NotifierJob&lt;TData, TNotification&gt;</a></dt>
+      <dd><p>Executes a Notifier-backed outbound job registered through JobSchedulerIntegrationExtensions.WithNotifierJob&lt;TData, TNotification&gt;(Microsoft.Extensions.DependencyInjection.JobSchedulerBuilderContext, string, Action&lt;JobNotifierDefinitionBuilder&lt;TData, TNotification&gt;&gt;).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.PipelineExecuteJob-3.html">PipelineExecuteJob&lt;TData, TPipelineDefinition, TPipelineContext&gt;</a></dt>
+      <dd><p>Executes a Pipeline-backed outbound job registered through Microsoft.Extensions.DependencyInjection.JobSchedulerPipelineIntegrationExtensions.WithPipelineExecuteJob&lt;TData, TPipelineDefinition, TPipelineContext&gt;(Microsoft.Extensions.DependencyInjection.JobBuilderContext, string, Action&lt;JobPipelineExecuteDefinitionBuilder&lt;TData, TPipelineDefinition, TPipelineContext&gt;&gt;).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.RequesterJob-3.html">RequesterJob&lt;TData, TRequest, TValue&gt;</a></dt>
+      <dd><p>Executes a Requester-backed outbound job registered through JobSchedulerIntegrationExtensions.WithRequesterJob&lt;TData, TRequest, TValue&gt;(Microsoft.Extensions.DependencyInjection.JobSchedulerBuilderContext, string, Action&lt;JobRequesterDefinitionBuilder&lt;TData, TRequest, TValue&gt;&gt;).</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.WithBehaviorAttribute.html">WithBehaviorAttribute</a></dt>
+      <dd><p>Declares a job behavior on a concrete job type.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.Constants.html">Constants</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IChaosExceptionJob.html">IChaosExceptionJob</a></dt>
+      <dd><p>Marks a job for chaos exception injection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobAcceptedEventStore.html">IJobAcceptedEventStore</a></dt>
+      <dd><p>Persists durably accepted event-trigger input records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBatchHistoryStore.html">IJobBatchHistoryStore</a></dt>
+      <dd><p>Persists append-oriented batch history.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBatchStore.html">IJobBatchStore</a></dt>
+      <dd><p>Persists batch records and membership links.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobBehavior.html">IJobBehavior</a></dt>
+      <dd><p>Decorates job execution with cross-cutting behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCalendarEngine.html">IJobCalendarEngine</a></dt>
+      <dd><p>Calculates occurrences for scheduler-owned calendar trigger rules.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCronEngine.html">IJobCronEngine</a></dt>
+      <dd><p>Provides cron parsing, validation and occurrence calculation for the Jobs feature.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobCustomTriggerProvider.html">IJobCustomTriggerProvider</a></dt>
+      <dd><p>Provides custom trigger evaluation behavior without leaking provider-specific types into the scheduler core.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobEventIngress.html">IJobEventIngress</a></dt>
+      <dd><p>Accepts external events into the provider-neutral event-trigger pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobExecutionHistoryStore.html">IJobExecutionHistoryStore</a></dt>
+      <dd><p>Persists append-oriented execution history.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobExecutionStore.html">IJobExecutionStore</a></dt>
+      <dd><p>Persists execution attempts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobLeaseStore.html">IJobLeaseStore</a></dt>
+      <dd><p>Persists lease properties.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobOccurrenceDependencyStore.html">IJobOccurrenceDependencyStore</a></dt>
+      <dd><p>Persists occurrence dependencies.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobOccurrenceStore.html">IJobOccurrenceStore</a></dt>
+      <dd><p>Persists materialized occurrences.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobPreviousExecutionStore.html">IJobPreviousExecutionStore</a></dt>
+      <dd><p>Resolves previous execution attempts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobRegistrationStore.html">IJobRegistrationStore</a></dt>
+      <dd><p>Represents the minimal job-definition registration contract shared with feature integrations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobRuntimeStateStore.html">IJobRuntimeStateStore</a></dt>
+      <dd><p>Persists runtime state for registered jobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerExceptionHandler.html">IJobSchedulerExceptionHandler</a></dt>
+      <dd><p>Handles unhandled scheduler exceptions in a centralized way.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerMaintenanceService.html">IJobSchedulerMaintenanceService</a></dt>
+      <dd><p>Provides provider-neutral maintenance operations over scheduler state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryService.html">IJobSchedulerQueryService</a></dt>
+      <dd><p>Defines the public persisted-state query surface for Jobs dashboards, APIs, and support tooling.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerQueryStore.html">IJobSchedulerQueryStore</a></dt>
+      <dd><p>Exposes provider-neutral query access to persisted Jobs runtime records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerService.html">IJobSchedulerService</a></dt>
+      <dd><p>Defines the core runtime dispatch and control surface for jobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobStoreProvider.html">IJobStoreProvider</a></dt>
+      <dd><p>Aggregates the provider-neutral Jobs persistence stores.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobTriggerEvaluator.html">IJobTriggerEvaluator</a></dt>
+      <dd><p>Evaluates trigger definitions and creates occurrences without executing them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobTriggerRuntimeStateStore.html">IJobTriggerRuntimeStateStore</a></dt>
+      <dd><p>Persists runtime state for registered triggers.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronDayOfWeek.html">CronDayOfWeek</a></dt>
+      <dd><p>Days of week for <a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronMonth.html">CronMonth</a></dt>
+      <dd><p>Months for <a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchCompletionPolicy.html">JobBatchCompletionPolicy</a></dt>
+      <dd><p>Represents the roll-up rule applied to a batch as child occurrences finish.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchStatus.html">JobBatchStatus</a></dt>
+      <dd><p>Represents the persisted roll-up status of a job batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDependencyFailurePolicy.html">JobDependencyFailurePolicy</a></dt>
+      <dd><p>Represents the action to apply when a prerequisite occurrence does not reach the required terminal outcome.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDependencyStatus.html">JobDependencyStatus</a></dt>
+      <dd><p>Represents the persisted status of an occurrence dependency.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMissedOccurrencePolicy.html">JobMissedOccurrencePolicy</a></dt>
+      <dd><p>Represents the catch-up behavior to apply when time-based trigger work was missed while the scheduler was inactive.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerExceptionSource.html">JobSchedulerExceptionSource</a></dt>
+      <dd><p>Identifies the scheduler component that raised an unhandled exception.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerLeaseStatus.html">JobSchedulerLeaseStatus</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerServerStatus.html">JobSchedulerServerStatus</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobSchedulerTimelineMode.html">JobSchedulerTimelineMode</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="delegates">
+Delegates
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBehaviorDelegate.html">JobBehaviorDelegate</a></dt>
+      <dd><p>Represents the next delegate in the job behavior pipeline.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

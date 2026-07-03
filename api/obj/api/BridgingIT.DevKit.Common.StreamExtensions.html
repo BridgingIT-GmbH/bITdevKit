@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class StreamExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class StreamExtensions | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.StreamExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_StreamExtensions" data-uid="BridgingIT.DevKit.Common.StreamExtensions" class="text-break">
+Class StreamExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class StreamExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">StreamExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ReadToEnd_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ReadToEnd*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ReadToEnd_System_IO_Stream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ReadToEnd(System.IO.Stream)">
+  ReadToEnd(Stream)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Read the contents of a stream as a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static byte[] ReadToEnd(this Stream source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ReadToEndAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ReadToEndAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ReadToEndAsync_System_IO_Stream_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Threading.CancellationToken)">
+  ReadToEndAsync(Stream, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Read the contents of a stream as a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;byte[]&gt; ReadToEndAsync(this Stream source, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">byte</span>[]&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToMemoryStreamAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToMemoryStreamAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToMemoryStreamAsync_System_IO_Stream_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToMemoryStreamAsync(System.IO.Stream,System.Threading.CancellationToken)">
+  ToMemoryStreamAsync(Stream, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;MemoryStream&gt; ToMemoryStreamAsync(this Stream source, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">MemoryStream</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_System_Byte___" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream(System.Byte[])">
+  ToStream(byte[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a byte array to a stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stream ToStream(this byte[] source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">byte</span>[]</dt>
+    <dd><p>The source byte array to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stream</span></dt>
+    <dd><p>A memory stream containing the byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_System_IO_Stream_System_Int32_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream(System.IO.Stream,System.Int32)">
+  ToStream(Stream, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a stream to a memory stream with optional buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stream ToStream(this Stream source, int bufferSize = 81920)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd><p>The source stream to convert.</p>
+</dd>
+    <dt><code>bufferSize</code> <span class="xref">int</span></dt>
+    <dd><p>The size of the buffer for copying.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stream</span></dt>
+    <dd><p>A memory stream containing the copied data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p>Thrown when bufferSize is negative or zero.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_System_String_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream(System.String)">
+  ToStream(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a string to a UTF-8 encoded stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stream ToStream(this string source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>The source string to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stream</span></dt>
+    <dd><p>A memory stream containing the UTF-8 encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_System_String_System_Text_Encoding_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream(System.String,System.Text.Encoding)">
+  ToStream(string, Encoding)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a string to a stream using the specified encoding.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stream ToStream(this string source, Encoding encoding)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>The source string to convert.</p>
+</dd>
+    <dt><code>encoding</code> <span class="xref">Encoding</span></dt>
+    <dd><p>The encoding to use for conversion.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stream</span></dt>
+    <dd><p>A memory stream containing the encoded string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source or encoding is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync_System_Byte___" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync(System.Byte[])">
+  ToStreamAsync(byte[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously converts a byte array to a stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Stream&gt; ToStreamAsync(this byte[] source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">byte</span>[]</dt>
+    <dd><p>The source byte array to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">Stream</span>&gt;</dt>
+    <dd><p>A task representing the asynchronous operation that returns a memory stream containing the byte array.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+  ToStreamAsync(Stream, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously converts a stream to a memory stream with optional buffer size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Stream&gt; ToStreamAsync(this Stream source, int bufferSize = 81920, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd><p>The source stream to convert.</p>
+</dd>
+    <dt><code>bufferSize</code> <span class="xref">int</span></dt>
+    <dd><p>The size of the buffer for copying.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">Stream</span>&gt;</dt>
+    <dd><p>A task representing the asynchronous operation that returns a memory stream containing the copied data.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p>Thrown when bufferSize is negative or zero.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown when the operation is canceled.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync``1(``0)">
+  ToStreamAsync&lt;T&gt;(T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously converts an object to a JSON stream using default serialization options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Stream&gt; ToStreamAsync&lt;T&gt;(this T source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The source object to serialize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">Stream</span>&gt;</dt>
+    <dd><p>A task representing the asynchronous operation that returns a memory stream containing the serialized JSON.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of object to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStreamAsync``1(``0,System.Text.Json.JsonSerializerOptions)">
+  ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously converts an object to a JSON stream using specified serialization options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Stream&gt; ToStreamAsync&lt;T&gt;(this T source, JsonSerializerOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The source object to serialize.</p>
+</dd>
+    <dt><code>options</code> <span class="xref">JsonSerializerOptions</span></dt>
+    <dd><p>The JSON serialization options to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">Stream</span>&gt;</dt>
+    <dd><p>A task representing the asynchronous operation that returns a memory stream containing the serialized JSON.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of object to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source or options is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream``1(``0)">
+  ToStream&lt;T&gt;(T)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an object to a JSON stream using default serialization options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stream ToStream&lt;T&gt;(this T source)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The source object to serialize.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stream</span></dt>
+    <dd><p>A memory stream containing the serialized JSON.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of object to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_ToStream_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.ToStream``1(``0,System.Text.Json.JsonSerializerOptions)">
+  ToStream&lt;T&gt;(T, JsonSerializerOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an object to a JSON stream using specified serialization options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Stream ToStream&lt;T&gt;(this T source, JsonSerializerOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">T</span></dt>
+    <dd><p>The source object to serialize.</p>
+</dd>
+    <dt><code>options</code> <span class="xref">JsonSerializerOptions</span></dt>
+    <dd><p>The JSON serialization options to use.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Stream</span></dt>
+    <dd><p>A memory stream containing the serialized JSON.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of object to serialize.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when source or options is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAll_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAll_System_IO_Stream_System_Byte___System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAll(System.IO.Stream,System.Byte[],System.Int32,System.Int32)">
+  TryReadAll(Stream, byte[], int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Read the contents of a stream into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int TryReadAll(this Stream source, byte[] buffer, int offset, int count)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>buffer</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>offset</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAll_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAll_System_IO_Stream_System_Span_System_Byte__" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAll(System.IO.Stream,System.Span{System.Byte})">
+  TryReadAll(Stream, Span&lt;byte&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static int TryReadAll(this Stream stream, Span&lt;byte&gt; buffer)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>buffer</code> <span class="xref">Span</span>&lt;<span class="xref">byte</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAllAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAllAsync_System_IO_Stream_System_Byte___System_Int32_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAllAsync(System.IO.Stream,System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+  TryReadAllAsync(Stream, byte[], int, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Read the contents of a stream into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;int&gt; TryReadAllAsync(this Stream source, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>buffer</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>offset</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAllAsync_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StreamExtensions_TryReadAllAsync_System_IO_Stream_System_Memory_System_Byte__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.StreamExtensions.TryReadAllAsync(System.IO.Stream,System.Memory{System.Byte},System.Threading.CancellationToken)">
+  TryReadAllAsync(Stream, Memory&lt;byte&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Read the contents of a stream into a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;int&gt; TryReadAllAsync(this Stream source, Memory&lt;byte&gt; buffer, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>buffer</code> <span class="xref">Memory</span>&lt;<span class="xref">byte</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class QueryResult | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class QueryResult | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides factory methods for creating Result-based query responses.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Queries.QueryResult">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Queries_QueryResult" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult" class="text-break">
+Class QueryResult  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Queries.html">Queries</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Queries.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides factory methods for creating Result-based query responses.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class QueryResult</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">QueryResult</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1">
+  Failure&lt;TValue&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a QueryResponse object with a failure Result of the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse object containing a failure Result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value contained in the Result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  Failure&lt;TValue&gt;(IEnumerable&lt;string&gt;, IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a query response with a failed result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(IEnumerable&lt;string&gt; messages, IEnumerable&lt;IResultError&gt; errors = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A collection of messages describing the failure.</p>
+</dd>
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>A collection of errors associated with the failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing the failure result and associated metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1_System_String_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1(System.String)">
+  Failure&lt;TValue&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a query response indicating a failure, with a specified error message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The error message associated with the failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing a failure result with the specified error message.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1(System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure&lt;TValue&gt;(string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a failed query response containing a message and an error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(string message = null, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The failure message to include in the response.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>An optional error object associated with the failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing the failed result with the specified message and error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value associated with the failed result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1___0_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1(``0)">
+  Failure&lt;TValue&gt;(TValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failure query response containing the specified value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be included in the result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing a failure result with the specified value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value to be included in the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1___0_System_Collections_Generic_IEnumerable_System_String__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1(``0,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError})">
+  Failure&lt;TValue&gt;(TValue, IEnumerable&lt;string&gt;, IEnumerable&lt;IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an instance of <a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse&lt;TValue&gt;</a> containing a failure result
+with the provided value, error messages, and error details.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(TValue value, IEnumerable&lt;string&gt; messages, IEnumerable&lt;IResultError&gt; errors = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value associated with the failure result.</p>
+</dd>
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A collection of error messages providing details about the failure.</p>
+</dd>
+    <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd><p>A collection of <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a> instances providing additional error details. Defaults to null.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse&lt;TValue&gt;</a> containing a failure result with the specified value, messages, and errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__1___0_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``1(``0,System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure&lt;TValue&gt;(TValue, string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a failure query response with the specified value, message, and error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue&gt;(TValue value, string message, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value associated with the failure.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The failure message.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>The error information associated with the failure, if any.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing the failure result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Failure__2___0_System_String_BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Failure``2(``0,System.String,BridgingIT.DevKit.Common.IResultError)">
+  Failure&lt;TValue, TError&gt;(TValue, string, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a query response indicating a failure with a specified value, message, and error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Failure&lt;TValue, TError&gt;(TValue value = default, string message = null, IResultError error = null) where TError : IResultError, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be associated with the result.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>An optional message describing the failure.</p>
+</dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd><p>An optional error instance providing additional failure details.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse&lt;Result&lt;TValue&gt;&gt; indicating failure with the provided value, message, and error.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>Type of the value associated with the result.</p>
+</dd>
+    <dt><code>TError</code></dt>
+    <dd><p>Type of the error associated with the result, implementing IResultError.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For">
+  For()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a successful <a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse&lt;TValue&gt;</a> object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&gt; For()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse&lt;TValue&gt;</a> instance with a success result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For__1" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For``1">
+  For&lt;TValue&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a QueryResponse containing a successful Result object with the specified generic type value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse containing a successful Result object of type TValue.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value for the Result object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For__1_BridgingIT_DevKit_Common_Result_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For``1(BridgingIT.DevKit.Common.Result)">
+  For&lt;TValue&gt;(Result)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a query response containing the given result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;(Result result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>The result to include in the query response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse object containing the given result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value contained in the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For__1_BridgingIT_DevKit_Common_ResultPaged___0__" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For``1(BridgingIT.DevKit.Common.ResultPaged{``0})">
+  For&lt;TValue&gt;(ResultPaged&lt;TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a QueryResponse&lt;Result&lt;TValue&gt;&gt; from a given <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;ResultPaged&lt;TValue&gt;&gt; For&lt;TValue&gt;(ResultPaged&lt;TValue&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TValue&gt;</dt>
+    <dd><p>The result to wrap in a QueryResponse&lt;Result&lt;TValue&gt;&gt;.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse&lt;Result&lt;TValue&gt;&gt; containing the given result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value contained in the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For__1_BridgingIT_DevKit_Common_Result___0__" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For``1(BridgingIT.DevKit.Common.Result{``0})">
+  For&lt;TValue&gt;(Result&lt;TValue&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a QueryResponse&lt;Result&lt;TValue&gt;&gt; from a given <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;(Result&lt;TValue&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;</dt>
+    <dd><p>The result to wrap in a QueryResponse&lt;Result&lt;TValue&gt;&gt;.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse&lt;Result&lt;TValue&gt;&gt; containing the given result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value contained in the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For__1___0_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For``1(``0)">
+  For&lt;TValue&gt;(TValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new QueryResponse object encapsulating a successful Result object with the given value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; For&lt;TValue&gt;(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be encapsulated in the Result object.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse object containing a successful Result object with the provided value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value to be encapsulated in the Result object.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_For_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_For__2_BridgingIT_DevKit_Common_Result___0____1_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.For``2(BridgingIT.DevKit.Common.Result{``0},``1)">
+  For&lt;TValue, TOuput&gt;(Result&lt;TValue&gt;, TOuput)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a QueryResponse with a Result containing a new output value mapped from the provided Result and TValue.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TOuput&gt;&gt; For&lt;TValue, TOuput&gt;(Result&lt;TValue&gt; result, TOuput value = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;</dt>
+    <dd><p>The original Result containing a TValue.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">TOuput</span></dt>
+    <dd><p>The output value to map from the Result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOuput&gt;&gt;</dt>
+    <dd><p>A QueryResponse containing a Result with the new output value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the original result value.</p>
+</dd>
+    <dt><code>TOuput</code></dt>
+    <dd><p>The type of the output value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Success_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Success__1" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success``1">
+  Success&lt;TValue&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful query response with a result of type <code class="typeparamref">TValue</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A successful <a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse&lt;TValue&gt;</a> with a result of type <code class="typeparamref">TValue</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Success_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Success__1___0_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success``1(``0)">
+  Success&lt;TValue&gt;(TValue)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful query response containing the provided value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;(TValue value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to be included in the result of the query response.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing a success result with the provided value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value being returned.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Success_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Success__1___0_System_Collections_Generic_IEnumerable_System_String__" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success``1(``0,System.Collections.Generic.IEnumerable{System.String})">
+  Success&lt;TValue&gt;(TValue, IEnumerable&lt;string&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a successful query response containing the specified value and a collection of messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;(TValue value, IEnumerable&lt;string&gt; messages)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to include in the result.</p>
+</dd>
+    <dt><code>messages</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A collection of messages detailing information about the result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A query response containing a successful result with the specified value and messages.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of value contained in the query response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Queries_QueryResult_Success_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Queries_QueryResult_Success__1___0_System_String_" data-uid="BridgingIT.DevKit.Application.Queries.QueryResult.Success``1(``0,System.String)">
+  Success&lt;TValue&gt;(TValue, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a successful query response containing the given value and a message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static QueryResponse&lt;Result&lt;TValue&gt;&gt; Success&lt;TValue&gt;(TValue value, string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TValue</span></dt>
+    <dd><p>The value to include in the query response.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>A message describing the successful result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queries.QueryResponse-1.html">QueryResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A QueryResponse containing a Result with the provided value and message.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the value in the query response.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

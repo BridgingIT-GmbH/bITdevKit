@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Retry | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Retry | bITdevKit API Reference ">
+      
+      <meta name="description" content="A utility class which provides retry logic for actions and delegates.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Retry">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Retry" data-uid="BridgingIT.DevKit.Common.Retry" class="text-break">
+Class Retry  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>A utility class which provides retry logic for actions and delegates.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Retry</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Retry</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_On_" data-uid="BridgingIT.DevKit.Common.Retry.On*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_On_System_Func_System_Threading_Tasks_Task__System_Func_System_Exception_System_Boolean__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.On(System.Func{System.Threading.Tasks.Task},System.Func{System.Exception,System.Boolean},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  On(Func&lt;Task&gt;, Func&lt;Exception, bool&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+the <code class="paramref">exceptionPredicate</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task On(Func&lt;Task&gt; func, Func&lt;Exception, bool&gt; exceptionPredicate, ILogger logger = null, params TimeSpan[] delays)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>exceptionPredicate</code> <span class="xref">Func</span>&lt;<span class="xref">Exception</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_On_" data-uid="BridgingIT.DevKit.Common.Retry.On*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_On_System_Func_System_Threading_Tasks_Task__System_Func_System_Exception_System_Boolean__System_Func_System_Int32_System_TimeSpan__Microsoft_Extensions_Logging_ILogger_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Retry.On(System.Func{System.Threading.Tasks.Task},System.Func{System.Exception,System.Boolean},System.Func{System.Int32,System.TimeSpan},Microsoft.Extensions.Logging.ILogger,System.Threading.CancellationToken)">
+  On(Func&lt;Task&gt;, Func&lt;Exception, bool&gt;, Func&lt;int, TimeSpan&gt;, ILogger, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+the <code class="paramref">exceptionPredicate</code>.</p>
+<param name="func">The factory for the task to be retried.
+<param name="exceptionPredicate">The predicate indicating which exception to retry on.
+<param name="delayFactory">The factory for returning delay period between retries.
+<param name="cancellationToken">The cancellation token for canceling the retries.
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task On(Func&lt;Task&gt; func, Func&lt;Exception, bool&gt; exceptionPredicate, Func&lt;int, TimeSpan&gt; delayFactory, ILogger logger = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>exceptionPredicate</code> <span class="xref">Func</span>&lt;<span class="xref">Exception</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>delayFactory</code> <span class="xref">Func</span>&lt;<span class="xref">int</span>, <span class="xref">TimeSpan</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__2_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``2(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code> and <code class="typeparamref">TEx2</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task OnAny&lt;TEx1, TEx2&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__3_System_Func_System_Threading_Tasks_Task___2___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``3(System.Func{System.Threading.Tasks.Task{``2}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code> and <code class="typeparamref">TEx2</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; OnAny&lt;TEx1, TEx2, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__3_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``3(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code> and <code class="typeparamref">TEx3</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task OnAny&lt;TEx1, TEx2, TEx3&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__4_System_Func_System_Threading_Tasks_Task___3___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``4(System.Func{System.Threading.Tasks.Task{``3}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code> and <code class="typeparamref">TEx3</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; OnAny&lt;TEx1, TEx2, TEx3, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__4_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``4(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code> and
+<code class="typeparamref">TEx4</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task OnAny&lt;TEx1, TEx2, TEx3, TEx4&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__5_System_Func_System_Threading_Tasks_Task___4___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``5(System.Func{System.Threading.Tasks.Task{``4}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>
+and <code class="typeparamref">TEx4</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; OnAny&lt;TEx1, TEx2, TEx3, TEx4, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__5_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``5(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>,
+<code class="typeparamref">TEx4</code> and <code class="typeparamref">TEx5</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TEx5</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__6_System_Func_System_Threading_Tasks_Task___5___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``6(System.Func{System.Threading.Tasks.Task{``5}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>,
+<code class="typeparamref">TEx4</code> and <code class="typeparamref">TEx5</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TEx5</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__6_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``6(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>,
+<code class="typeparamref">TEx4</code>, <code class="typeparamref">TEx5</code> and <code class="typeparamref">TEx6</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TEx5</code></dt>
+    <dd></dd>
+    <dt><code>TEx6</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__7_System_Func_System_Threading_Tasks_Task___6___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``7(System.Func{System.Threading.Tasks.Task{``6}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>,
+<code class="typeparamref">TEx4</code>, <code class="typeparamref">TEx5</code> and <code class="typeparamref">TEx6</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TEx5</code></dt>
+    <dd></dd>
+    <dt><code>TEx6</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__7_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``7(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TEx7&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>,
+<code class="typeparamref">TEx4</code>, <code class="typeparamref">TEx5</code>, <code class="typeparamref">TEx6</code>
+and <code class="typeparamref">TEx7</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TEx7&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception where TEx7 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TEx5</code></dt>
+    <dd></dd>
+    <dt><code>TEx6</code></dt>
+    <dd></dd>
+    <dt><code>TEx7</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_OnAny_" data-uid="BridgingIT.DevKit.Common.Retry.OnAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_OnAny__8_System_Func_System_Threading_Tasks_Task___7___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.OnAny``8(System.Func{System.Threading.Tasks.Task{``7}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TEx7, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+<code class="typeparamref">TEx1</code>, <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>,
+<code class="typeparamref">TEx4</code>, <code class="typeparamref">TEx5</code>, <code class="typeparamref">TEx6</code>
+and <code class="typeparamref">TEx7</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; OnAny&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TEx7, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception where TEx7 : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx1</code></dt>
+    <dd></dd>
+    <dt><code>TEx2</code></dt>
+    <dd></dd>
+    <dt><code>TEx3</code></dt>
+    <dd></dd>
+    <dt><code>TEx4</code></dt>
+    <dd></dd>
+    <dt><code>TEx5</code></dt>
+    <dd></dd>
+    <dt><code>TEx6</code></dt>
+    <dd></dd>
+    <dt><code>TEx7</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_On_" data-uid="BridgingIT.DevKit.Common.Retry.On*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_On__1_System_Func_System_Threading_Tasks_Task___0___System_Func_System_Exception_System_Boolean__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.On``1(System.Func{System.Threading.Tasks.Task{``0}},System.Func{System.Exception,System.Boolean},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  On&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;Exception, bool&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+the <code class="paramref">exceptionPredicate</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; On&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, Func&lt;Exception, bool&gt; exceptionPredicate, ILogger logger = null, params TimeSpan[] delays)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>exceptionPredicate</code> <span class="xref">Func</span>&lt;<span class="xref">Exception</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_On_" data-uid="BridgingIT.DevKit.Common.Retry.On*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_On__1_System_Func_System_Threading_Tasks_Task___0___System_Func_System_Exception_System_Boolean__System_Func_System_Int32_System_TimeSpan__Microsoft_Extensions_Logging_ILogger_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Retry.On``1(System.Func{System.Threading.Tasks.Task{``0}},System.Func{System.Exception,System.Boolean},System.Func{System.Int32,System.TimeSpan},Microsoft.Extensions.Logging.ILogger,System.Threading.CancellationToken)">
+  On&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;Exception, bool&gt;, Func&lt;int, TimeSpan&gt;, ILogger, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of any of the given exceptions specified by
+the <code class="paramref">exceptionPredicate</code>.</p>
+<param name="func">The factory for the task to be retried.
+<param name="exceptionPredicate">The predicate indicating which exception to retry on.
+<param name="delayFactory">The factory for returning delay period between retries.
+<param name="cancellationToken">The cancellation token for canceling the retries.
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; On&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, Func&lt;Exception, bool&gt; exceptionPredicate, Func&lt;int, TimeSpan&gt; delayFactory, ILogger logger = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>exceptionPredicate</code> <span class="xref">Func</span>&lt;<span class="xref">Exception</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>delayFactory</code> <span class="xref">Func</span>&lt;<span class="xref">int</span>, <span class="xref">TimeSpan</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_On_" data-uid="BridgingIT.DevKit.Common.Retry.On*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_On__1_System_Func_System_Threading_Tasks_Task__Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.On``1(System.Func{System.Threading.Tasks.Task},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  On&lt;TEx&gt;(Func&lt;Task&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of an exception of
+type <code class="typeparamref">TEx</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task On&lt;TEx&gt;(Func&lt;Task&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Retry_On_" data-uid="BridgingIT.DevKit.Common.Retry.On*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Retry_On__2_System_Func_System_Threading_Tasks_Task___1___Microsoft_Extensions_Logging_ILogger_System_TimeSpan___" data-uid="BridgingIT.DevKit.Common.Retry.On``2(System.Func{System.Threading.Tasks.Task{``1}},Microsoft.Extensions.Logging.ILogger,System.TimeSpan[])">
+  On&lt;TEx, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, ILogger, params TimeSpan[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retries the given <code class="paramref">func</code> in case of an exception of
+type <code class="typeparamref">TEx</code>.
+<remarks>
+If the given <code class="paramref">delays</code> is not supplied then the given
+<code class="paramref">func</code> will be retried once.
+</remarks></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; On&lt;TEx, TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; func, ILogger logger = null, params TimeSpan[] delays) where TEx : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>delays</code> <span class="xref">TimeSpan</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEx</code></dt>
+    <dd></dd>
+    <dt><code>TResult</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

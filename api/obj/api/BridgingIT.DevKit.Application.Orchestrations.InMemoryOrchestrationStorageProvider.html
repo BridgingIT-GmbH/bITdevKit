@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class InMemoryOrchestrationStorageProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class InMemoryOrchestrationStorageProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides an in-memory orchestration persistence implementation for runtime and unit-test scenarios.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider" class="text-break">
+Class InMemoryOrchestrationStorageProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.html">Orchestrations</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Orchestrations.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides an in-memory orchestration persistence implementation for runtime and unit-test scenarios.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class InMemoryOrchestrationStorageProvider : IOrchestrationStorageProvider, IOrchestrationInstanceStore, IOrchestrationLeaseStore, IOrchestrationHistoryStore, IOrchestrationSignalStore, IOrchestrationTimerStore, IOrchestrationQueryStore, IOrchestrationAdministrationStore</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">InMemoryOrchestrationStorageProvider</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStorageProvider.html">IOrchestrationStorageProvider</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationInstanceStore.html">IOrchestrationInstanceStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationLeaseStore.html">IOrchestrationLeaseStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationHistoryStore.html">IOrchestrationHistoryStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalStore.html">IOrchestrationSignalStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerStore.html">IOrchestrationTimerStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueryStore.html">IOrchestrationQueryStore</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationAdministrationStore.html">IOrchestrationAdministrationStore</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider__ctor_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider__ctor_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Common_ICurrentUserAccessor_BridgingIT_DevKit_Application_Orchestrations_IOrchestrationClock_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.#ctor(BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Common.ICurrentUserAccessor,BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock)">
+  InMemoryOrchestrationStorageProvider(ISerializer, ICurrentUserAccessor, IOrchestrationClock)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.html">InMemoryOrchestrationStorageProvider</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InMemoryOrchestrationStorageProvider(ISerializer serializer = null, ICurrentUserAccessor currentUserAccessor = null, IOrchestrationClock clock = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd><p>The serializer used for durable payloads.</p>
+</dd>
+    <dt><code>currentUserAccessor</code> <a class="xref" href="BridgingIT.DevKit.Common.ICurrentUserAccessor.html">ICurrentUserAccessor</a></dt>
+    <dd><p>The current user accessor used for audit metadata.</p>
+</dd>
+    <dt><code>clock</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock.html">IOrchestrationClock</a></dt>
+    <dd><p>The orchestration clock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Administration_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Administration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Administration" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Administration">
+  Administration
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration administration store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationAdministrationStore Administration { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationAdministrationStore.html">IOrchestrationAdministrationStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_History_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.History*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_History" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.History">
+  History
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the append-only orchestration history store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationHistoryStore History { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationHistoryStore.html">IOrchestrationHistoryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Instances_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Instances*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Instances" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Instances">
+  Instances
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration instance snapshot store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationInstanceStore Instances { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationInstanceStore.html">IOrchestrationInstanceStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Leases_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Leases*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Leases" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Leases">
+  Leases
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration lease store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationLeaseStore Leases { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationLeaseStore.html">IOrchestrationLeaseStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Queries_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Queries*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Queries" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Queries">
+  Queries
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration query store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationQueryStore Queries { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueryStore.html">IOrchestrationQueryStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Serializer_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Serializer*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Serializer" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Serializer">
+  Serializer
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the serializer used for durable orchestration payloads.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISerializer Serializer { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Signals_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Signals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Signals" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Signals">
+  Signals
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration signal store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationSignalStore Signals { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalStore.html">IOrchestrationSignalStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Timers_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Timers*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_Timers" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.Timers">
+  Timers
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the orchestration timer store.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IOrchestrationTimerStore Timers { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerStore.html">IOrchestrationTimerStore</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_AcquireAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.AcquireAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_AcquireAsync_System_Guid_System_String_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.AcquireAsync(System.Guid,System.String,System.TimeSpan,System.Threading.CancellationToken)">
+  AcquireAsync(Guid, string, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Acquires an exclusive lease for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationLease&gt; AcquireAsync(Guid instanceId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The lease duration.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationLease.html">OrchestrationLease</a>&gt;</dt>
+    <dd><p>The acquired lease.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_AppendAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.AppendAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_AppendAsync_BridgingIT_DevKit_Application_Orchestrations_OrchestrationHistoryEntry_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.AppendAsync(BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry,System.Threading.CancellationToken)">
+  AppendAsync(OrchestrationHistoryEntry, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends a durable history record.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationHistoryEntry&gt; AppendAsync(OrchestrationHistoryEntry entry, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a></dt>
+    <dd><p>The history entry to append.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a>&gt;</dt>
+    <dd><p>The persisted history entry.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ArchiveAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ArchiveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ArchiveAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ArchiveAsync(System.Guid,System.Threading.CancellationToken)">
+  ArchiveAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Archives a persisted orchestration instance and its retained operational data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; ArchiveAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p><code>true</code> when the instance transitioned to archived state; otherwise <code>false</code> when it was already archived.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_CreateAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.CreateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_CreateAsync__1_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0__System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.CreateAsync``1(BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{``0},System.String,System.Threading.CancellationToken)">
+  CreateAsync&lt;TData&gt;(OrchestrationContext&lt;TData&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new orchestration instance snapshot from the current context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; CreateAsync&lt;TData&gt;(OrchestrationContext&lt;TData&gt; context, string concurrencyKey = null, CancellationToken cancellationToken = default) where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;</dt>
+    <dd><p>The orchestration context to persist.</p>
+</dd>
+    <dt><code>concurrencyKey</code> <span class="xref">string</span></dt>
+    <dd><p>The optional concurrency key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetAsync(System.Guid,System.Threading.CancellationToken)">
+  GetAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the latest snapshot for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; GetAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot when found; otherwise <code>null</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetContextAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetContextAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetContextAsync__1_System_Guid_System_IServiceProvider_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetContextAsync``1(System.Guid,System.IServiceProvider,System.Threading.CancellationToken)">
+  GetContextAsync&lt;TData&gt;(Guid, IServiceProvider, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads and deserializes the current orchestration context snapshot by identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationContext&lt;TData&gt;&gt; GetContextAsync&lt;TData&gt;(Guid instanceId, IServiceProvider services = null, CancellationToken cancellationToken = default) where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
+    <dd><p>The service provider used when rehydrating the context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;&gt;</dt>
+    <dd><p>The rehydrated orchestration context when found; otherwise <code>null</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetDueAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetDueAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetDueAsync_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetDueAsync(System.DateTimeOffset,System.Threading.CancellationToken)">
+  GetDueAsync(DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads due timers in deterministic order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationTimerRecord&gt;&gt; GetDueAsync(DateTimeOffset asOfUtc, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>asOfUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The comparison time in UTC.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;&gt;</dt>
+    <dd><p>The due timer records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetHistoryAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetHistoryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetHistoryAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetHistoryAsync(System.Guid,System.Threading.CancellationToken)">
+  GetHistoryAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads execution history for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationHistoryEntry&gt;&gt; GetHistoryAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a>&gt;&gt;</dt>
+    <dd><p>The persisted history records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetInstanceAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetInstanceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetInstanceAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetInstanceAsync(System.Guid,System.Threading.CancellationToken)">
+  GetInstanceAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads the current orchestration instance snapshot by identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; GetInstanceAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot when found; otherwise <code>null</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetMetricsAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetMetricsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetMetricsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetMetricsAsync(System.Threading.CancellationToken)">
+  GetMetricsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets basic metrics derived from persisted orchestration state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationMetricsSnapshot&gt; GetMetricsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationMetricsSnapshot.html">OrchestrationMetricsSnapshot</a>&gt;</dt>
+    <dd><p>The persisted-state metrics snapshot.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetProcessableAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetProcessableAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetProcessableAsync_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetProcessableAsync(System.Guid,System.String,System.Threading.CancellationToken)">
+  GetProcessableAsync(Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads pending signals eligible for processing in the specified state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationSignalRecord&gt;&gt; GetProcessableAsync(Guid instanceId, string currentState, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>currentState</code> <span class="xref">string</span></dt>
+    <dd><p>The current persisted business state.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;&gt;</dt>
+    <dd><p>The processable signal records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetSignalsAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetSignalsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetSignalsAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetSignalsAsync(System.Guid,System.Threading.CancellationToken)">
+  GetSignalsAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads persisted signal records for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationSignalRecord&gt;&gt; GetSignalsAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;&gt;</dt>
+    <dd><p>The persisted signal records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetTimersAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetTimersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_GetTimersAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.GetTimersAsync(System.Guid,System.Threading.CancellationToken)">
+  GetTimersAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads persisted timer records for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IReadOnlyCollection&lt;OrchestrationTimerRecord&gt;&gt; GetTimersAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;&gt;</dt>
+    <dd><p>The persisted timer records.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_PersistAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.PersistAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_PersistAsync__1_System_Guid_System_String___0_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.PersistAsync``1(System.Guid,System.String,``0,System.String,System.String,System.Threading.CancellationToken)">
+  PersistAsync&lt;TPayload&gt;(Guid, string, TPayload, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists a signal before it is processed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationSignalRecord&gt; PersistAsync&lt;TPayload&gt;(Guid instanceId, string signalName, TPayload payload, string currentState = null, string idempotencyKey = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>signalName</code> <span class="xref">string</span></dt>
+    <dd><p>The signal name.</p>
+</dd>
+    <dt><code>payload</code> <span class="xref">TPayload</span></dt>
+    <dd><p>The signal payload.</p>
+</dd>
+    <dt><code>currentState</code> <span class="xref">string</span></dt>
+    <dd><p>The optional state at the time of signal acceptance.</p>
+</dd>
+    <dt><code>idempotencyKey</code> <span class="xref">string</span></dt>
+    <dd><p>The optional caller-supplied idempotency key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;</dt>
+    <dd><p>The persisted signal record.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TPayload</code></dt>
+    <dd><p>The signal payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_PurgeAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.PurgeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_PurgeAsync_BridgingIT_DevKit_Application_Orchestrations_OrchestrationPurgeCriteria_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.PurgeAsync(BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeCriteria,System.Threading.CancellationToken)">
+  PurgeAsync(OrchestrationPurgeCriteria, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Purges persisted orchestration data matching the supplied maintenance criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationPurgeResult&gt; PurgeAsync(OrchestrationPurgeCriteria request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeCriteria.html">OrchestrationPurgeCriteria</a></dt>
+    <dd><p>The purge criteria.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeResult.html">OrchestrationPurgeResult</a>&gt;</dt>
+    <dd><p>The purge summary.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_QueryAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.QueryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_QueryAsync_BridgingIT_DevKit_Application_Orchestrations_OrchestrationInstanceQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.QueryAsync(BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQuery,System.Threading.CancellationToken)">
+  QueryAsync(OrchestrationInstanceQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Queries persisted orchestration instances.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceQueryResult&gt; QueryAsync(OrchestrationInstanceQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQuery.html">OrchestrationInstanceQuery</a></dt>
+    <dd><p>The query criteria.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQueryResult.html">OrchestrationInstanceQueryResult</a>&gt;</dt>
+    <dd><p>The paged query result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ReleaseAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ReleaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ReleaseAsync_System_Guid_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ReleaseAsync(System.Guid,System.Guid,System.String,System.Threading.CancellationToken)">
+  ReleaseAsync(Guid, Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases an owned lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>leaseId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The lease identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ReleaseLeaseAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ReleaseLeaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ReleaseLeaseAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ReleaseLeaseAsync(System.Guid,System.Threading.CancellationToken)">
+  ReleaseLeaseAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases an active persisted lease for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseLeaseAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_RenewAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.RenewAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_RenewAsync_System_Guid_System_Guid_System_String_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.RenewAsync(System.Guid,System.Guid,System.String,System.TimeSpan,System.Threading.CancellationToken)">
+  RenewAsync(Guid, Guid, string, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Renews an existing lease for an orchestration instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationLease&gt; RenewAsync(Guid instanceId, Guid leaseId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>leaseId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The lease identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The new lease duration.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationLease.html">OrchestrationLease</a>&gt;</dt>
+    <dd><p>The renewed lease.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_RequeueTimersAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.RequeueTimersAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_RequeueTimersAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.RequeueTimersAsync(System.Guid,System.Threading.CancellationToken)">
+  RequeueTimersAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Requeues persisted timers for an orchestration instance so they can be consumed again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;int&gt; RequeueTimersAsync(Guid instanceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
+    <dd><p>The number of timers requeued.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_SaveAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.SaveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_SaveAsync__1_BridgingIT_DevKit_Application_Orchestrations_OrchestrationInstanceSnapshot_BridgingIT_DevKit_Application_Orchestrations_OrchestrationContext___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.SaveAsync``1(BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot,BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext{``0},System.Threading.CancellationToken)">
+  SaveAsync&lt;TData&gt;(OrchestrationInstanceSnapshot, OrchestrationContext&lt;TData&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists an updated orchestration instance snapshot using optimistic concurrency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationInstanceSnapshot&gt; SaveAsync&lt;TData&gt;(OrchestrationInstanceSnapshot snapshot, OrchestrationContext&lt;TData&gt; context, CancellationToken cancellationToken = default) where TData : class, IOrchestrationData</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>snapshot</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a></dt>
+    <dd><p>The previously loaded snapshot.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;</dt>
+    <dd><p>The updated orchestration context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a>&gt;</dt>
+    <dd><p>The persisted snapshot with the new version.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TData</code></dt>
+    <dd><p>The orchestration data type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ScheduleAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ScheduleAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_ScheduleAsync_System_Guid_System_String_System_DateTimeOffset_System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.ScheduleAsync(System.Guid,System.String,System.DateTimeOffset,System.String,System.String,System.Threading.CancellationToken)">
+  ScheduleAsync(Guid, string, DateTimeOffset, string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Persists a newly scheduled timer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationTimerRecord&gt; ScheduleAsync(Guid instanceId, string triggerKind, DateTimeOffset dueTime, string targetState = null, string continuation = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>triggerKind</code> <span class="xref">string</span></dt>
+    <dd><p>The timer trigger kind.</p>
+</dd>
+    <dt><code>dueTime</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The due time in UTC.</p>
+</dd>
+    <dt><code>targetState</code> <span class="xref">string</span></dt>
+    <dd><p>The optional target state.</p>
+</dd>
+    <dt><code>continuation</code> <span class="xref">string</span></dt>
+    <dd><p>The optional continuation metadata.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;</dt>
+    <dd><p>The persisted timer record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_UpdateStatusAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.UpdateStatusAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_UpdateStatusAsync_System_Guid_BridgingIT_DevKit_Application_Orchestrations_OrchestrationSignalStatus_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.UpdateStatusAsync(System.Guid,BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalStatus,System.String,System.Threading.CancellationToken)">
+  UpdateStatusAsync(Guid, OrchestrationSignalStatus, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the durable status of a persisted signal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationSignalRecord&gt; UpdateStatusAsync(Guid signalId, OrchestrationSignalStatus status, string reason = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>signalId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The signal identifier.</p>
+</dd>
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalStatus.html">OrchestrationSignalStatus</a></dt>
+    <dd><p>The new signal status.</p>
+</dd>
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>The optional status reason.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a>&gt;</dt>
+    <dd><p>The updated signal record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_UpdateStatusAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.UpdateStatusAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_UpdateStatusAsync_System_Guid_BridgingIT_DevKit_Application_Orchestrations_OrchestrationTimerStatus_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.UpdateStatusAsync(System.Guid,BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerStatus,System.String,System.Threading.CancellationToken)">
+  UpdateStatusAsync(Guid, OrchestrationTimerStatus, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates the durable status of a persisted timer.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;OrchestrationTimerRecord&gt; UpdateStatusAsync(Guid timerId, OrchestrationTimerStatus status, string reason = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>timerId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The timer identifier.</p>
+</dd>
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerStatus.html">OrchestrationTimerStatus</a></dt>
+    <dd><p>The new timer status.</p>
+</dd>
+    <dt><code>reason</code> <span class="xref">string</span></dt>
+    <dd><p>The optional status reason.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a>&gt;</dt>
+    <dd><p>The updated timer record.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_VerifyAsync_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.VerifyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_InMemoryOrchestrationStorageProvider_VerifyAsync_System_Guid_System_Guid_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.VerifyAsync(System.Guid,System.Guid,System.String,System.Threading.CancellationToken)">
+  VerifyAsync(Guid, Guid, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Verifies that the specified owner still holds the active lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; VerifyAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instanceId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The orchestration instance identifier.</p>
+</dd>
+    <dt><code>leaseId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The lease identifier.</p>
+</dd>
+    <dt><code>owner</code> <span class="xref">string</span></dt>
+    <dd><p>The lease owner identity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p><code>true</code> when the lease is still valid and owned by the caller; otherwise <code>false</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

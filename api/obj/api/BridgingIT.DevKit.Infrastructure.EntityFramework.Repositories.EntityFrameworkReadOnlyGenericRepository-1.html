@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class EntityFrameworkReadOnlyGenericRepository&lt;TEntity&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class EntityFrameworkReadOnlyGenericRepository&lt;TEntity&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides a read-only repository implementation for Entity Framework that supports asynchronous operations for querying entities from the database.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1" class="text-break">
+Class EntityFrameworkReadOnlyGenericRepository&lt;TEntity&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.html">Repositories</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a read-only repository implementation for Entity Framework that supports
+asynchronous operations for querying entities from the database.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class EntityFrameworkReadOnlyGenericRepository&lt;TEntity&gt; : IGenericReadOnlyRepository&lt;TEntity&gt;, IRepository where TEntity : class, IEntity</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">EntityFrameworkReadOnlyGenericRepository&lt;TEntity&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IRepository.html">IRepository</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkGenericRepository-1.html">EntityFrameworkGenericRepository&lt;TEntity&gt;</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyRepositoryWrapper-2.html">EntityFrameworkReadOnlyRepositoryWrapper&lt;TEntity, TContext&gt;</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1__ctor_BridgingIT_DevKit_Common_Builder_BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkRepositoryOptionsBuilder_BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkRepositoryOptions__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.#ctor(BridgingIT.DevKit.Common.Builder{BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptionsBuilder,BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptions})">
+  EntityFrameworkReadOnlyGenericRepository(Builder&lt;EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides a read-only generic repository implementation using Entity Framework.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected EntityFrameworkReadOnlyGenericRepository(Builder&lt;EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions&gt; optionsBuilder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>optionsBuilder</code> <a class="xref" href="BridgingIT.DevKit.Common.Builder-2.html">Builder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptionsBuilder.html">EntityFrameworkRepositoryOptionsBuilder</a>, <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptions.html">EntityFrameworkRepositoryOptions</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1__ctor_BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkRepositoryOptions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.#ctor(BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptions)">
+  EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Represents a read-only generic repository using Entity Framework.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected EntityFrameworkReadOnlyGenericRepository(EntityFrameworkRepositoryOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptions.html">EntityFrameworkRepositoryOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1__ctor_Microsoft_Extensions_Logging_ILoggerFactory_Microsoft_EntityFrameworkCore_DbContext_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.EntityFrameworkCore.DbContext)">
+  EntityFrameworkReadOnlyGenericRepository(ILoggerFactory, DbContext)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>A read-only generic repository implementation using Entity Framework.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EntityFrameworkReadOnlyGenericRepository(ILoggerFactory loggerFactory, DbContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd></dd>
+    <dt><code>context</code> <span class="xref">DbContext</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_Logger_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.Logger*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_Logger" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.Logger">
+  Logger
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides logging capabilities for the repository operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ILogger&lt;IGenericRepository&lt;TEntity&gt;&gt; Logger { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericRepository-1.html">IGenericRepository</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_Logger_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Utilizes the <span class="xref">Microsoft.Extensions.Logging.ILogger</span> interface to log informational, warning, and error messages.
+The logger is typically configured during the initialization of the repository.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_Options_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.Options*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_Options" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.Options">
+  Options
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the options for the EntityFramework repository, which control various aspects such as logging,
+database context management, and other repository configurations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected EntityFrameworkRepositoryOptions Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkRepositoryOptions.html">EntityFrameworkRepositoryOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.CountAsync(BridgingIT.DevKit.Domain.ISpecification{`0},System.Threading.CancellationToken)">
+  CountAsync(ISpecification&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the provided specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; CountAsync(ISpecification&lt;TEntity&gt; specification, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification that entities must satisfy to be counted.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>The number of entities that satisfy the provided specification.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var count = await repository.CountAsync(yourSpecification, cancellationToken);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.CountAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Threading.CancellationToken)">
+  CountAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the provided specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; CountAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.CountAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_CountAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.CountAsync(System.Threading.CancellationToken)">
+  CountAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the total number of entities of type TEntity in the repository.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;long&gt; CountAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous count operation. The task result contains the total count of entities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ExistsAsync_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ExistsAsync(System.Object,System.Threading.CancellationToken)">
+  ExistsAsync(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if an entity with the specified ID exists asynchronously in the repository.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;bool&gt; ExistsAsync(object id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the entity to check for existence.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>An optional token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the entity exists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ExistsAsync_System_Object_System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var exists = await repository.ExistsAsync(entityId);
+if (exists)
+{
+// Entity exists
+}</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindAllAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves all entities that match the specified criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TEntity&gt;&gt; FindAllAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification defining the criteria entities must meet to be retrieved.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>An optional set of options to customize the retrieval operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token that can be used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task representing the asynchronous operation. The task result contains an enumerable of entities matching the criteria.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var entities = await repository.FindAllAsync(specification, options, cancellationToken);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindAllAsync(BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all entities asynchronously from the repository that match the specified options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TEntity&gt;&gt; FindAllAsync(IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>An optional parameter to specify filtering, sorting, and pagination options for the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a collection of entities matching the specified options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <p>Example usage:</p>
+<pre><code class="lang-csharp">var entities = await repository.FindAllAsync();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindAllAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindAllAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindAllAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities that match the given specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TEntity&gt;&gt; FindAllAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to apply additional query customization.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a collection of entities that
+match the given specifications.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindOneAsync(BridgingIT.DevKit.Domain.ISpecification{`0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds a single entity that matches the given specification and options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; FindOneAsync(ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to match the entity against.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the entity that matches the specification.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var entity = await repository.FindOneAsync(specification, options, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindOneAsync(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a single entity of type <code class="typeparamref">TEntity</code> based on the specified
+specifications and find options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; FindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of criteria used to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to modify query behavior, such as sorting. If null, default options are
+used.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a single entity of type
+<code class="typeparamref">TEntity</code> if found; otherwise, null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindOneAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.FindOneAsync(System.Object,BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  FindOneAsync(object, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds an entity by its ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;TEntity&gt; FindOneAsync(object id, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the entity to find.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the entity if found, otherwise null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_FindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var repository = new EntityFrameworkGenericRepository();
+var user = await repository.FindOneAsync(userId);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbConnection_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.GetDbConnection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbConnection" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.GetDbConnection">
+  GetDbConnection()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the database connection from the current context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IDbConnection GetDbConnection()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDbConnection</span></dt>
+    <dd><p>An <span class="xref">System.Data.IDbConnection</span> instance representing the current database connection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbConnection_examples">Examples</h4>
+  <pre><code class="lang-csharp">var connection = repository.GetDbConnection();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbSet_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.GetDbSet*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbSet" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.GetDbSet">
+  GetDbSet()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the DbSet for the entity type TEntity from the DbContext.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected DbSet&lt;TEntity&gt; GetDbSet()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DbSet</span>&lt;TEntity&gt;</dt>
+    <dd><p>The DbSet of type TEntity from the configured DbContext.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbSet_examples">Examples</h4>
+  <p>var dbSet = GetDbSet();</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbTransaction_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.GetDbTransaction*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbTransaction" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.GetDbTransaction">
+  GetDbTransaction()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the current database transaction from the configured DbContext.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IDbTransaction GetDbTransaction()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDbTransaction</span></dt>
+    <dd><p>The current <span class="xref">System.Data.IDbTransaction</span> if there is an active transaction;
+otherwise, null.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_GetDbTransaction_examples">Examples</h4>
+  <p>var transaction = repository.GetDbTransaction();</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ProjectAllAsync``1(BridgingIT.DevKit.Domain.ISpecification{`0},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities of type <code class="typeparamref">TEntity</code> that satisfy the provided specification
+to a collection of type <code class="typeparamref">TProjection</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TProjection&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt; specification, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type of the result projection.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ProjectAllAsync``1(System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{`0}},System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously projects all entities to the specified projection type, based on the provided specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TProjection&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The collection of specifications used to filter the entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection from the entity to the projection type.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to apply to the query, such as ordering, skipping, and taking.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>An optional cancellation token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation, containing the projected results as a collection of <code class="typeparamref">TProjection</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project the entities to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var projections = await repository.ProjectAllAsync(
+specifications,
+entity =&gt; new { entity.Id, entity.Name },
+options,
+cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ProjectAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkReadOnlyGenericRepository`1.ProjectAllAsync``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{`0},System.Threading.CancellationToken)">
+  ProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities of type <code class="typeparamref">TEntity</code> using the specified <code class="paramref">projection</code> expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual Task&lt;IEnumerable&lt;TProjection&gt;&gt; ProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression used to project each entity.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options for the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token that can be used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable of the projected results.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type of the projection result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityFrameworkReadOnlyGenericRepository_1_ProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var projection = await repository.ProjectAllAsync(entity =&gt; new { entity.Id, entity.Name });</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

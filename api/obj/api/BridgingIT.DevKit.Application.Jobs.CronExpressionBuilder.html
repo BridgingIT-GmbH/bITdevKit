@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class CronExpressionBuilder | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class CronExpressionBuilder | bITdevKit API Reference ">
+      
+      <meta name="description" content="Fluent builder for Jobs cron expressions.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder" class="text-break">
+Class CronExpressionBuilder  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Jobs.html">Jobs</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Jobs.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Fluent builder for Jobs cron expressions.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class CronExpressionBuilder</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">CronExpressionBuilder</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_examples">Examples</h2>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DailyAt(2, 30).Build();</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Builds five-field standard cron expressions by default. Seconds-based methods switch to the six-field Jobs format supported by <a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronosJobCronEngine.html">CronosJobCronEngine</a>.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder__ctor_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder__ctor" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.#ctor">
+  CronExpressionBuilder()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtDateTime_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.AtDateTime*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtDateTime_System_DateTimeOffset_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.AtDateTime(System.DateTimeOffset)">
+  AtDateTime(DateTimeOffset)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the expression to match the supplied date and time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder AtDateTime(DateTimeOffset dateTime)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>dateTime</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The date and time.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtDateTime_System_DateTimeOffset__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().AtDateTime(new DateTimeOffset(2026, 6, 2, 9, 30, 0, TimeSpan.Zero)).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtTime_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.AtTime*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtTime_System_DateTimeOffset_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.AtTime(System.DateTimeOffset)">
+  AtTime(DateTimeOffset)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the time of day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder AtTime(DateTimeOffset time)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>time</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd><p>The time value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtTime_System_DateTimeOffset__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().AtTime(DateTimeOffset.UtcNow).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtTime_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.AtTime*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtTime_System_Int32_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.AtTime(System.Int32,System.Int32,System.Int32)">
+  AtTime(int, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the time of day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder AtTime(int hour, int minute, int second = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hour</code> <span class="xref">int</span></dt>
+    <dd><p>The hour from 0 to 23.</p>
+</dd>
+    <dt><code>minute</code> <span class="xref">int</span></dt>
+    <dd><p>The minute from 0 to 59.</p>
+</dd>
+    <dt><code>second</code> <span class="xref">int</span></dt>
+    <dd><p>The second from 0 to 59. Non-zero values enable six-field output.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_AtTime_System_Int32_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().AtTime(9, 30).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Build_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Build*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Build" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Build">
+  Build()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the cron expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Build()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The cron expression.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Build_examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().EveryMinutes(30).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DailyAt_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DailyAt*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DailyAt_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DailyAt(System.Int32,System.Int32)">
+  DailyAt(int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the expression to run daily at the specified time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder DailyAt(int hour, int minute)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>hour</code> <span class="xref">int</span></dt>
+    <dd><p>The hour from 0 to 23.</p>
+</dd>
+    <dt><code>minute</code> <span class="xref">int</span></dt>
+    <dd><p>The minute from 0 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DailyAt_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DailyAt(2, 0).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonth_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfMonth*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonth_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfMonth(System.Int32)">
+  DayOfMonth(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the day-of-month field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder DayOfMonth(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The day of month value from 1 to 31.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonth_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DayOfMonth(1).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonth_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfMonth*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonth_System_String_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfMonth(System.String)">
+  DayOfMonth(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the day-of-month field to a raw cron value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder DayOfMonth(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The day-of-month value. Empty values reset to wildcard.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonth_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DayOfMonth("L").Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonthRange_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfMonthRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonthRange_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfMonthRange(System.Int32,System.Int32)">
+  DayOfMonthRange(int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the day-of-month field to a range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder DayOfMonthRange(int start, int end)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <span class="xref">int</span></dt>
+    <dd><p>The starting day of month from 1 to 31.</p>
+</dd>
+    <dt><code>end</code> <span class="xref">int</span></dt>
+    <dd><p>The ending day of month from 1 to 31.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfMonthRange_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DayOfMonthRange(1, 10).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfWeek_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfWeek*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfWeek_BridgingIT_DevKit_Application_Jobs_CronDayOfWeek_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfWeek(BridgingIT.DevKit.Application.Jobs.CronDayOfWeek)">
+  DayOfWeek(CronDayOfWeek)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the day-of-week field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder DayOfWeek(CronDayOfWeek value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronDayOfWeek.html">CronDayOfWeek</a></dt>
+    <dd><p>The day of week value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfWeek_BridgingIT_DevKit_Application_Jobs_CronDayOfWeek__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DayOfWeek(CronDayOfWeek.Monday).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfWeek_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfWeek*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfWeek_System_String_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.DayOfWeek(System.String)">
+  DayOfWeek(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the day-of-week field to a raw cron value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder DayOfWeek(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The day-of-week value. Empty values reset to wildcard.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_DayOfWeek_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().DayOfWeek("MON-FRI").Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EveryHours_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.EveryHours*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EveryHours_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.EveryHours(System.Int32)">
+  EveryHours(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the expression to run every specified number of hours.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder EveryHours(int interval)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <span class="xref">int</span></dt>
+    <dd><p>The hours interval from 1 to 23.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EveryHours_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().EveryHours(6).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EveryMinutes_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.EveryMinutes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EveryMinutes_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.EveryMinutes(System.Int32)">
+  EveryMinutes(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the expression to run every specified number of minutes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder EveryMinutes(int interval)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <span class="xref">int</span></dt>
+    <dd><p>The minutes interval from 1 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EveryMinutes_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().EveryMinutes(5).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EverySeconds_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.EverySeconds*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EverySeconds_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.EverySeconds(System.Int32)">
+  EverySeconds(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the expression to run every specified number of seconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder EverySeconds(int interval)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>interval</code> <span class="xref">int</span></dt>
+    <dd><p>The seconds interval from 1 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_EverySeconds_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().EverySeconds(15).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Hours_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Hours*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Hours_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Hours(System.Int32)">
+  Hours(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the hours field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder Hours(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The hours value from 0 to 23.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Hours_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().Hours(9).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_HoursRange_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.HoursRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_HoursRange_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.HoursRange(System.Int32,System.Int32)">
+  HoursRange(int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the hours field to a range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder HoursRange(int start, int end)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <span class="xref">int</span></dt>
+    <dd><p>The starting hour from 0 to 23.</p>
+</dd>
+    <dt><code>end</code> <span class="xref">int</span></dt>
+    <dd><p>The ending hour from 0 to 23.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_HoursRange_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().HoursRange(8, 17).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Minutes_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Minutes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Minutes_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Minutes(System.Int32)">
+  Minutes(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the minutes field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder Minutes(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The minutes value from 0 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Minutes_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().Minutes(15).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_MinutesRange_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.MinutesRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_MinutesRange_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.MinutesRange(System.Int32,System.Int32)">
+  MinutesRange(int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the minutes field to a range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder MinutesRange(int start, int end)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <span class="xref">int</span></dt>
+    <dd><p>The starting minute from 0 to 59.</p>
+</dd>
+    <dt><code>end</code> <span class="xref">int</span></dt>
+    <dd><p>The ending minute from 0 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_MinutesRange_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().MinutesRange(0, 30).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Month_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Month*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Month_BridgingIT_DevKit_Application_Jobs_CronMonth_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Month(BridgingIT.DevKit.Application.Jobs.CronMonth)">
+  Month(CronMonth)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the month field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder Month(CronMonth value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronMonth.html">CronMonth</a></dt>
+    <dd><p>The month value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Month_BridgingIT_DevKit_Application_Jobs_CronMonth__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().Month(CronMonth.January).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Month_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Month*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Month_System_String_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Month(System.String)">
+  Month(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the month field to a raw cron value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder Month(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The month value. Empty values reset to wildcard.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Month_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().Month("JAN-MAR").Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Seconds_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Seconds*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Seconds_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.Seconds(System.Int32)">
+  Seconds(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the seconds field and enables six-field output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder Seconds(int value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">int</span></dt>
+    <dd><p>The seconds value from 0 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_Seconds_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().Seconds(5).Build();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_SecondsRange_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.SecondsRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_SecondsRange_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.SecondsRange(System.Int32,System.Int32)">
+  SecondsRange(int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the seconds field to a range and enables six-field output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public CronExpressionBuilder SecondsRange(int start, int end)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>start</code> <span class="xref">int</span></dt>
+    <dd><p>The starting second from 0 to 59.</p>
+</dd>
+    <dt><code>end</code> <span class="xref">int</span></dt>
+    <dd><p>The ending second from 0 to 59.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Jobs.CronExpressionBuilder.html">CronExpressionBuilder</a></dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Jobs_CronExpressionBuilder_SecondsRange_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cron = new CronExpressionBuilder().SecondsRange(0, 10).Build();</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

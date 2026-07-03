@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FileStorageProviderExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FileStorageProviderExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Extension methods for IFileStorageProvider to add encryption, and additional functionality, with thread safety.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions" class="text-break">
+Class FileStorageProviderExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Extension methods for IFileStorageProvider to add encryption, and additional functionality, with thread safety.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class FileStorageProviderExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">FileStorageProviderExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_DeepCopyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.DeepCopyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_DeepCopyAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_Boolean_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.DeepCopyAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.String,System.Boolean,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  DeepCopyAsync(IFileStorageProvider, string, string, bool, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deep copies a file or directory structure from the source path to the destination path within the same storage location.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; DeepCopyAsync(this IFileStorageProvider provider, string sourcePath, string destinationPath, bool skipFiles = false, string searchPattern = null, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd><p>The file storage provider to use for copying the structure.</p>
+</dd>
+    <dt><code>sourcePath</code> <span class="xref">string</span></dt>
+    <dd><p>The source path of the file or directory to copy (e.g., &quot;source/folder&quot;).</p>
+</dd>
+    <dt><code>destinationPath</code> <span class="xref">string</span></dt>
+    <dd><p>The destination path where the structure will be copied (e.g., &quot;dest/folder&quot;).</p>
+</dd>
+    <dt><code>skipFiles</code> <span class="xref">bool</span></dt>
+    <dd><p>If true, skips copying files and only copies the directory structure. Default is false.</p>
+</dd>
+    <dt><code>searchPattern</code> <span class="xref">string</span></dt>
+    <dd><p>An optional search pattern to filter files to copy (e.g., &quot;*.txt&quot;). If null, all files are copied unless skipFiles is true.</p>
+</dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd><p>An optional progress reporter for tracking the copying process.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the deep copy operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_DeepCopyAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_Boolean_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method recursively copies the directory structure, including empty directories, and files that match the search pattern (unless skipped) from the source to the destination.
+It uses the provider's methods to list directories, list files, create directories, and copy files, ensuring thread safety and progress reporting.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadBytesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadBytesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadBytesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadBytesAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  ReadBytesAsync(IFileStorageProvider, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file from the storage provider as a byte array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;byte[]&gt;&gt; ReadBytesAsync(this IFileStorageProvider provider, string path, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">byte</span>[]&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadEncryptedFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadEncryptedFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadEncryptedFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadEncryptedFileAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  ReadEncryptedFileAsync(IFileStorageProvider, string, string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file from the storage provider and decrypts it using AES.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;Stream&gt;&gt; ReadEncryptedFileAsync(this IFileStorageProvider provider, string path, string encryptionKey, string initializationVector, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>encryptionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>initializationVector</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadFileAsync__1_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_BridgingIT_DevKit_Common_ISerializer_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadFileAsync``1(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,BridgingIT.DevKit.Common.ISerializer,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  ReadFileAsync&lt;T&gt;(IFileStorageProvider, string, ISerializer, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a file from the storage provider and deserializes it into a generic object using the specified serializer (default: SystemTextJsonSerializer).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;T&gt;&gt; ReadFileAsync&lt;T&gt;(this IFileStorageProvider provider, string path, ISerializer serializer = null, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadTextFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadTextFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_ReadTextFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_Text_Encoding_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.ReadTextFileAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.Text.Encoding,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  ReadTextFileAsync(IFileStorageProvider, string, Encoding, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a text file from the storage provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;string&gt;&gt; ReadTextFileAsync(this IFileStorageProvider provider, string path, Encoding encoding = null, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>encoding</code> <span class="xref">Encoding</span></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_TraverseFilesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.TraverseFilesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_TraverseFilesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_Func_System_String_System_IO_Stream_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.TraverseFilesAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.Func{System.String,System.IO.Stream,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  TraverseFilesAsync(IFileStorageProvider, string, Func&lt;string, Stream, CancellationToken, Task&gt;, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;List&lt;FileMetadata&gt;&gt;&gt; TraverseFilesAsync(this IFileStorageProvider provider, string path, Func&lt;string, Stream, CancellationToken, Task&gt; fileAction = null, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>fileAction</code> <span class="xref">Func</span>&lt;<span class="xref">string</span>, <span class="xref">Stream</span>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">List</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteBytesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteBytesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteBytesAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_Byte___System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteBytesAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.Byte[],System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  WriteBytesAsync(IFileStorageProvider, string, byte[], IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a byte array to the storage provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WriteBytesAsync(this IFileStorageProvider provider, string path, byte[] bytes, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>bytes</code> <span class="xref">byte</span>[]</dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteEncryptedFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteEncryptedFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteEncryptedFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_IO_Stream_System_String_System_String_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteEncryptedFileAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.IO.Stream,System.String,System.String,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  WriteEncryptedFileAsync(IFileStorageProvider, string, Stream, string, string, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a file to the storage provider with AES encryption.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WriteEncryptedFileAsync(this IFileStorageProvider provider, string path, Stream content, string encryptionKey, string initializationVector, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>content</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
+    <dt><code>encryptionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>initializationVector</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteFileAsync__1_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String___0_BridgingIT_DevKit_Common_ISerializer_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteFileAsync``1(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,``0,BridgingIT.DevKit.Common.ISerializer,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  WriteFileAsync&lt;T&gt;(IFileStorageProvider, string, T, ISerializer, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a generic object to the storage provider by serializing it using the specified serializer (default: SystemTextJsonSerializer).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WriteFileAsync&lt;T&gt;(this IFileStorageProvider provider, string path, T content, ISerializer serializer = null, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default) where T : class</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>content</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteTextFileAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteTextFileAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileStorageProviderExtensions_WriteTextFileAsync_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_System_String_System_Text_Encoding_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.WriteTextFileAsync(BridgingIT.DevKit.Application.Storage.IFileStorageProvider,System.String,System.String,System.Text.Encoding,System.IProgress{BridgingIT.DevKit.Application.Storage.FileProgress},System.Threading.CancellationToken)">
+  WriteTextFileAsync(IFileStorageProvider, string, string, Encoding, IProgress&lt;FileProgress&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes a text file to the storage provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WriteTextFileAsync(this IFileStorageProvider provider, string path, string content, Encoding encoding = null, IProgress&lt;FileProgress&gt; progress = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>provider</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+    <dd></dd>
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>content</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>encoding</code> <span class="xref">Encoding</span></dt>
+    <dd></dd>
+    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

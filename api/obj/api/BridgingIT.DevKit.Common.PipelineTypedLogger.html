@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class PipelineTypedLogger | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class PipelineTypedLogger | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides source-generated logging helpers for pipeline execution events.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_PipelineTypedLogger" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger" class="text-break">
+Class PipelineTypedLogger  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides source-generated logging helpers for pipeline execution events.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class PipelineTypedLogger</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">PipelineTypedLogger</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogCompletionCallbackFailed_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogCompletionCallbackFailed*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogCompletionCallbackFailed_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_Guid_System_Exception_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogCompletionCallbackFailed(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.Guid,System.Exception)">
+  LogCompletionCallbackFailed(ILogger, string, string, Guid, Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline completion callback failed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 9, Level = LogLevel.Error, Message = &quot;[{LogKey}] pipeline completion callback failed (pipeline={PipelineName}, executionId={ExecutionId})&quot;)]
+public static void LogCompletionCallbackFailed(ILogger logger, string logKey, string pipelineName, Guid executionId, Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd><p>The exception that was thrown by the callback.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogHookFailure_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogHookFailure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogHookFailure_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_Guid_System_Exception_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogHookFailure(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.Guid,System.Exception)">
+  LogHookFailure(ILogger, string, string, Guid, Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline hook threw an exception that was ignored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 8, Level = LogLevel.Warning, Message = &quot;[{LogKey}] pipeline hook failure ignored (pipeline={PipelineName}, executionId={ExecutionId})&quot;)]
+public static void LogHookFailure(ILogger logger, string logKey, string pipelineName, Guid executionId, Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd><p>The exception that was ignored.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogPipelineException_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogPipelineException*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogPipelineException_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_Guid_System_Exception_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogPipelineException(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.Guid,System.Exception)">
+  LogPipelineException(ILogger, string, string, Guid, Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that the pipeline execution threw an exception.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 7, Level = LogLevel.Error, Message = &quot;[{LogKey}] pipeline exception (pipeline={PipelineName}, executionId={ExecutionId})&quot;)]
+public static void LogPipelineException(ILogger logger, string logKey, string pipelineName, Guid executionId, Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd><p>The exception that was thrown.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogPipelineFinished_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogPipelineFinished*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogPipelineFinished_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_Guid_BridgingIT_DevKit_Common_PipelineExecutionStatus_System_Double_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogPipelineFinished(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.Guid,BridgingIT.DevKit.Common.PipelineExecutionStatus,System.Double)">
+  LogPipelineFinished(ILogger, string, string, Guid, PipelineExecutionStatus, double)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline execution has finished.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = &quot;[{LogKey}] pipeline finished (pipeline={PipelineName}, executionId={ExecutionId}, status={Status}) -&gt; took {DurationMs}ms&quot;)]
+public static void LogPipelineFinished(ILogger logger, string logKey, string pipelineName, Guid executionId, PipelineExecutionStatus status, double durationMs)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Common.PipelineExecutionStatus.html">PipelineExecutionStatus</a></dt>
+    <dd><p>The final execution status.</p>
+</dd>
+    <dt><code>durationMs</code> <span class="xref">double</span></dt>
+    <dd><p>The elapsed duration in milliseconds.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogPipelineStarted_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogPipelineStarted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogPipelineStarted_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_Guid_System_String_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogPipelineStarted(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.Guid,System.String)">
+  LogPipelineStarted(ILogger, string, string, Guid, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline execution has started.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = &quot;[{LogKey}] pipeline started (pipeline={PipelineName}, executionId={ExecutionId}, correlationId={CorrelationId})&quot;)]
+public static void LogPipelineStarted(ILogger logger, string logKey, string pipelineName, Guid executionId, string correlationId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>correlationId</code> <span class="xref">string</span></dt>
+    <dd><p>The correlation identifier for the execution.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepException_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepException*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepException_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_Guid_System_Exception_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepException(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.Guid,System.Exception)">
+  LogStepException(ILogger, string, string, string, Guid, Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline step threw an exception.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 6, Level = LogLevel.Error, Message = &quot;[{LogKey}] pipeline step failure (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})&quot;)]
+public static void LogStepException(ILogger logger, string logKey, string pipelineName, string stepName, Guid executionId, Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>stepName</code> <span class="xref">string</span></dt>
+    <dd><p>The step name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd><p>The exception that was thrown.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepFinished_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepFinished*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepFinished_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_Guid_BridgingIT_DevKit_Common_PipelineControlOutcome_System_Double_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepFinished(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.Guid,BridgingIT.DevKit.Common.PipelineControlOutcome,System.Double)">
+  LogStepFinished(ILogger, string, string, string, Guid, PipelineControlOutcome, double)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline step has finished.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = &quot;[{LogKey}] pipeline step finished (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, outcome={Outcome}) -&gt; took {DurationMs}ms&quot;)]
+public static void LogStepFinished(ILogger logger, string logKey, string pipelineName, string stepName, Guid executionId, PipelineControlOutcome outcome, double durationMs)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>stepName</code> <span class="xref">string</span></dt>
+    <dd><p>The step name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>outcome</code> <a class="xref" href="BridgingIT.DevKit.Common.PipelineControlOutcome.html">PipelineControlOutcome</a></dt>
+    <dd><p>The final step outcome.</p>
+</dd>
+    <dt><code>durationMs</code> <span class="xref">double</span></dt>
+    <dd><p>The elapsed duration in milliseconds.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepRetrying_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepRetrying*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepRetrying_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_Guid_System_Int32_System_Int32_System_String_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepRetrying(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.Guid,System.Int32,System.Int32,System.String)">
+  LogStepRetrying(ILogger, string, string, string, Guid, int, int, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline step requested a retry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = &quot;[{LogKey}] pipeline step retry requested (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, attempt={Attempt}, maxAttempts={MaxAttempts}, message={Message})&quot;)]
+public static void LogStepRetrying(ILogger logger, string logKey, string pipelineName, string stepName, Guid executionId, int attempt, int maxAttempts, string message)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>stepName</code> <span class="xref">string</span></dt>
+    <dd><p>The step name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+    <dt><code>attempt</code> <span class="xref">int</span></dt>
+    <dd><p>The current attempt number.</p>
+</dd>
+    <dt><code>maxAttempts</code> <span class="xref">int</span></dt>
+    <dd><p>The configured maximum number of attempts.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The retry reason.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepStarted_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepStarted*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_PipelineTypedLogger_LogStepStarted_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_Guid_" data-uid="BridgingIT.DevKit.Common.PipelineTypedLogger.LogStepStarted(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.Guid)">
+  LogStepStarted(ILogger, string, string, string, Guid)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs that a pipeline step has started.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = &quot;[{LogKey}] pipeline step started (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})&quot;)]
+public static void LogStepStarted(ILogger logger, string logKey, string pipelineName, string stepName, Guid executionId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to.</p>
+</dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd><p>The structured log key.</p>
+</dd>
+    <dt><code>pipelineName</code> <span class="xref">string</span></dt>
+    <dd><p>The pipeline name.</p>
+</dd>
+    <dt><code>stepName</code> <span class="xref">string</span></dt>
+    <dd><p>The step name.</p>
+</dd>
+    <dt><code>executionId</code> <span class="xref">Guid</span></dt>
+    <dd><p>The pipeline execution identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

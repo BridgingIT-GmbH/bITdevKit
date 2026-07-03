@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class GenericReadOnlyRepositoryResultExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class GenericReadOnlyRepositoryResultExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides extension methods for performing result-based queries on repositories.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions" class="text-break">
+Class GenericReadOnlyRepositoryResultExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a>.<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.html">Repositories</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides extension methods for performing result-based queries on repositories.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class GenericReadOnlyRepositoryResultExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">GenericReadOnlyRepositoryResultExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  CountResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities based on the filter model and returns the result as a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;long&gt;&gt; CountResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>filterModel</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model to apply.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>Optional additional specifications to apply.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the count of matching entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},System.Threading.CancellationToken)">
+  CountResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the specified criteria and returns the result as a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;long&gt;&gt; CountResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The criteria that entities must satisfy to be counted.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the count of entities that satisfy the specified criteria.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  CountResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the provided specifications and returns the result as a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;long&gt;&gt; CountResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the count of entities that satisfy the provided specifications.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+  CountResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities based on the given specification and returns the result as a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;long&gt;&gt; CountResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression to filter the entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the count of entities that match the specification.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_CountResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.CountResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Threading.CancellationToken)">
+  CountResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously counts the total number of entities and returns the result as a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;long&gt;&gt; CountResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the count of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ExistsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ExistsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ExistsResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ExistsResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  ExistsResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if any entity matches the filter model criteria and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;bool&gt;&gt; ExistsResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>filterModel</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model to apply.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>Optional additional specifications to apply.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object indicating if a matching entity exists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ExistsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ExistsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ExistsResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ExistsResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+  ExistsResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if any entity matches the specified expression and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;bool&gt;&gt; ExistsResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression to filter entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object indicating if a matching entity exists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ExistsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ExistsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ExistsResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ExistsResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Object,System.Threading.CancellationToken)">
+  ExistsResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;bool&gt;&gt; ExistsResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, object id, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllIdsResultAsync&lt;TEntity, TId&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds all IDs of entities that match a given specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsResultAsync&lt;TEntity, TId&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository to query.</p>
+</dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional parameters to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation.
+The task result contains a result object with a collection of entity IDs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The type of the entity's ID.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllIdsResultAsync&lt;TEntity, TId&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entity IDs in the repository based on the given options and cancellation token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsResultAsync&lt;TEntity, TId&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository source.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>The options to be used for the find operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the collection of IDs.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of entity.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The type of the identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllIdsResultAsync&lt;TEntity, TId&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds all identifiers matching the given specifications and returns the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsResultAsync&lt;TEntity, TId&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository from which to retrieve the entities.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> object with the resulting identifiers.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The type of the identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllIdsResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllIdsResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllIdsResultAsync&lt;TEntity, TId&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a list of entity identifiers that match the specified criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TId&gt;&gt;&gt; FindAllIdsResultAsync&lt;TEntity, TId&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The generic read-only repository to extend.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression used to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional additional options for the find operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A cancellation token that can be used to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a result object with a list of entity identifiers.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The type of the identifier.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  FindAllResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filter, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds all entities of type <code class="typeparamref">TEntity</code> that satisfy the specified
+<code class="paramref">specification</code> and returns them as a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> of <span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository from which to read the entities.</p>
+</dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification defining the conditions that the entities must satisfy.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options that may affect the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task representing the asynchronous operation. The task result contains a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a>
+of <span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</span> of <code class="typeparamref">TEntity</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves all entities from the repository and returns them wrapped in a success result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The generic read-only repository from which to retrieve entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options for the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task representing the asynchronous operation. The task result contains a success result wrapping the retrieved entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds all entities that match the given specifications and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options for the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the entities found.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindAllResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds all entities that match the given expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression used to filter entities.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task representing the asynchronous operation, containing a result with the collection of found entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filter, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__System_Linq_Expressions_Expression_System_Func___0_System_Object___System_Int32_System_Int32_BridgingIT_DevKit_Common_OrderDirection_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Int32,System.Int32,BridgingIT.DevKit.Common.OrderDirection,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, int, int, OrderDirection, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a paged result of entities from the repository based on the provided specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, Expression&lt;Func&lt;TEntity, object&gt;&gt; orderingExpression, int page = 1, int pageSize = 10, OrderDirection orderDirection = OrderDirection.Ascending, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository instance.</p>
+</dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter entities.</p>
+</dd>
+    <dt><code>orderingExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression used for ordering the results.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve (default is 1).</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of items per page (default is 10).</p>
+</dd>
+    <dt><code>orderDirection</code> <a class="xref" href="BridgingIT.DevKit.Common.OrderDirection.html">OrderDirection</a></dt>
+    <dd><p>The direction to order the results (default is ascending).</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression to include related entities (default is null).</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The path to include related entities (default is null).</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancellation token (default is none).</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task representing the asynchronous operation, with a result of the paged entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__System_String_System_Int32_System_Int32_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, string, int, int, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a paginated result set of entities that match the provided specification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, string ordering, int page = 1, int pageSize = 10, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository to query against.</p>
+</dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter the entities.</p>
+</dd>
+    <dt><code>ordering</code> <span class="xref">string</span></dt>
+    <dd><p>The ordering criteria as a string.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve. Default is 1.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of entities per page. Default is 10.</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>Optional expression specifying related entities to include.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>Optional path string specifying related entities to include.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token for the async operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the paginated result set of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Linq_Expressions_Expression_System_Func___0_System_Object___System_Int32_System_Int32_BridgingIT_DevKit_Common_OrderDirection_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Int32,System.Int32,BridgingIT.DevKit.Common.OrderDirection,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, int, int, OrderDirection, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a paged result of entities from the repository based on specified criteria and ordering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Expression&lt;Func&lt;TEntity, object&gt;&gt; orderingExpression, int page = 1, int pageSize = 10, OrderDirection orderDirection = OrderDirection.Ascending, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to apply to filter the entities.</p>
+</dd>
+    <dt><code>orderingExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression to order the entities.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve, starting from 1.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of entities per page.</p>
+</dd>
+    <dt><code>orderDirection</code> <a class="xref" href="BridgingIT.DevKit.Common.OrderDirection.html">OrderDirection</a></dt>
+    <dd><p>The direction of the order (Ascending or Descending).</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>An optional expression to include related entities.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>An optional path string to include related entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the paged result of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_String_System_Int32_System_Int32_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, string, int, int, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a paged result set of entities that satisfy the given specifications,
+with optional ordering, paging, and inclusion of related data.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, string ordering, int page = 1, int pageSize = 10, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository to retrieve data from.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The collection of specifications entities must satisfy.</p>
+</dd>
+    <dt><code>ordering</code> <span class="xref">string</span></dt>
+    <dd><p>The ordering clause for sorting the results.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve. Default is 1.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of items per page. Default is 10.</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>An optional expression to include related data.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>An optional path to include related data.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the paged result set of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___System_Linq_Expressions_Expression_System_Func___0_System_Object___System_Int32_System_Int32_BridgingIT_DevKit_Common_OrderDirection_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Int32,System.Int32,BridgingIT.DevKit.Common.OrderDirection,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, int, int, OrderDirection, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a paged result of entities based on the provided criteria.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, Expression&lt;Func&lt;TEntity, object&gt;&gt; orderingExpression, int page = 1, int pageSize = 10, OrderDirection orderDirection = OrderDirection.Ascending, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository source to query.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The filter expression to apply to the query.</p>
+</dd>
+    <dt><code>orderingExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression to order the query results.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve. Defaults to 1.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of items per page. Defaults to 10.</p>
+</dd>
+    <dt><code>orderDirection</code> <a class="xref" href="BridgingIT.DevKit.Common.OrderDirection.html">OrderDirection</a></dt>
+    <dd><p>The direction of ordering (ascending or descending). Defaults to ascending.</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>An optional expression to include related entities.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>An optional path to include related entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token to cancel the operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a paged result of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___System_String_System_Int32_System_Int32_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, string, int, int, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a paginated result set of entities based on a specified condition.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, string ordering, int page = 1, int pageSize = 10, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The generic read-only repository source.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression to filter the entities.</p>
+</dd>
+    <dt><code>ordering</code> <span class="xref">string</span></dt>
+    <dd><p>The ordering criteria as a string.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve. Defaults to 1.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of items per page. Defaults to 10.</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression to include related entities.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The path to include related entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a paged result set of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Object___System_Int32_System_Int32_BridgingIT_DevKit_Common_OrderDirection_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Int32,System.Int32,BridgingIT.DevKit.Common.OrderDirection,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, object&gt;&gt;, int, int, OrderDirection, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a paginated collection of entities from the repository.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, object&gt;&gt; orderingExpression, int page = 1, int pageSize = 10, OrderDirection orderDirection = OrderDirection.Ascending, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository from which the entities are retrieved.</p>
+</dd>
+    <dt><code>orderingExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>Expression used to order the entities.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve (defaults to 1).</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of entities per page (defaults to 10).</p>
+</dd>
+    <dt><code>orderDirection</code> <a class="xref" href="BridgingIT.DevKit.Common.OrderDirection.html">OrderDirection</a></dt>
+    <dd><p>The direction to order the entities (ascending or descending).</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>Optional expression to include related entities.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>Optional include path to related entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional token to cancel the async operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> which includes the entities and pagination info.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindAllResultPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_String_System_Int32_System_Int32_System_Linq_Expressions_Expression_System_Func___0_System_Object___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindAllResultPagedAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String,System.Threading.CancellationToken)">
+  FindAllResultPagedAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, string, int, int, Expression&lt;Func&lt;TEntity, object&gt;&gt;, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds and returns a paged result of all entities from the repository.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TEntity&gt;&gt; FindAllResultPagedAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, string ordering, int page = 1, int pageSize = 10, Expression&lt;Func&lt;TEntity, object&gt;&gt; includeExpression = null, string includePath = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>ordering</code> <span class="xref">string</span></dt>
+    <dd><p>The ordering criteria.</p>
+</dd>
+    <dt><code>page</code> <span class="xref">int</span></dt>
+    <dd><p>The page number to retrieve.</p>
+</dd>
+    <dt><code>pageSize</code> <span class="xref">int</span></dt>
+    <dd><p>The number of items per page.</p>
+</dd>
+    <dt><code>includeExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression for including related entities.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The path for including related entities.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to notify if the operation should be canceled.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains the paged result of entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  FindOneResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TEntity&gt;&gt; FindOneResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filterModel, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>filterModel</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindOneResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TEntity&gt;&gt; FindOneResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindOneResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously retrieves a single entity based on multiple specifications.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TEntity&gt;&gt; FindOneResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository to fetch the entity from.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options for retrieval.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A result containing the found entity if successful, or an error if not found.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindOneResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously finds a single entity based on the provided expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TEntity&gt;&gt; FindOneResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The repository from which to retrieve the entity.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression to filter the entity.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to observe for cancellation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous find operation. The task result contains the find result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_FindOneResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.FindOneResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Object,BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  FindOneResultAsync&lt;TEntity&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, object, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TEntity&gt;&gt; FindOneResultAsync&lt;TEntity&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, object id, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>id</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Linq_Expressions_Expression_System_Func___0___1___System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  ProjectAllResultAsync&lt;TEntity, TProjection&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities based on the filter model and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllResultAsync&lt;TEntity, TProjection&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filter, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd><p>The filter model to apply.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>Optional additional specifications to apply.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project the entities to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Domain_ISpecification___0__System_Linq_Expressions_Expression_System_Func___0___1___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Domain.ISpecification{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  ProjectAllResultAsync&lt;TEntity, TProjection&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities that match the specified specification to the projection type and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllResultAsync&lt;TEntity, TProjection&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, ISpecification&lt;TEntity&gt; specification, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
+    <dd><p>The specification to filter the entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project the entities to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Linq_Expressions_Expression_System_Func___0___1___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Linq.Expressions.Expression{System.Func{``0,``1}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  ProjectAllResultAsync&lt;TEntity, TProjection&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities that match the specified specifications to the projection type and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllResultAsync&lt;TEntity, TProjection&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The collection of specifications to filter the entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project the entities to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0_System_Boolean___System_Linq_Expressions_Expression_System_Func___0___1___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,``1}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  ProjectAllResultAsync&lt;TEntity, TProjection&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, bool&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities that match the specified expression to the projection type and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllResultAsync&lt;TEntity, TProjection&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, bool&gt;&gt; expression, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression to filter the entities.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project the entities to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__System_Linq_Expressions_Expression_System_Func___0___1___BridgingIT_DevKit_Domain_Repositories_IFindOptions___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},BridgingIT.DevKit.Domain.Repositories.IFindOptions{``0},System.Threading.CancellationToken)">
+  ProjectAllResultAsync&lt;TEntity, TProjection&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Projects all entities to the specified projection type and returns the result asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TProjection&gt;&gt;&gt; ProjectAllResultAsync&lt;TEntity, TProjection&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IFindOptions&lt;TEntity&gt; options = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd><p>The expression defining the projection.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
+    <dd><p>Optional find options to customize the query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the projected entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>TProjection</code></dt>
+    <dd><p>The type to project the entities to.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultPagedAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultPagedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericReadOnlyRepositoryResultExtensions_ProjectAllResultPagedAsync__2_BridgingIT_DevKit_Domain_Repositories_IGenericReadOnlyRepository___0__BridgingIT_DevKit_Common_FilterModel_System_Linq_Expressions_Expression_System_Func___0___1___System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericReadOnlyRepositoryResultExtensions.ProjectAllResultPagedAsync``2(BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository{``0},BridgingIT.DevKit.Common.FilterModel,System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Domain.ISpecification{``0}},System.Threading.CancellationToken)">
+  ProjectAllResultPagedAsync&lt;TEntity, TProjection&gt;(IGenericReadOnlyRepository&lt;TEntity&gt;, FilterModel, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TProjection&gt;&gt; ProjectAllResultPagedAsync&lt;TEntity, TProjection&gt;(this IGenericReadOnlyRepository&lt;TEntity&gt; source, FilterModel filterModel, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt; projection, IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt; specifications = null, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>filterModel</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
+    <dd></dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+    <dt><code>TProjection</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

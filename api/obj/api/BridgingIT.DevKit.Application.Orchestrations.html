@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Application.Orchestrations | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Application.Orchestrations | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Orchestrations">
+
+  <h1 id="BridgingIT_DevKit_Application_Orchestrations" data-uid="BridgingIT.DevKit.Application.Orchestrations" class="text-break">Namespace BridgingIT.DevKit.Application.Orchestrations</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.AliveOrchestration.html">AliveOrchestration</a></dt>
+      <dd><p>Provides the built-in orchestration alive probe definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.AliveOrchestrationData.html">AliveOrchestrationData</a></dt>
+      <dd><p>Represents the input for the built-in orchestration alive probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.ApprovalDecisionSignal.html">ApprovalDecisionSignal</a></dt>
+      <dd><p>Represents an approval decision payload supplied by a signal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.ChaosExceptionOrchestrationBehavior.html">ChaosExceptionOrchestrationBehavior</a></dt>
+      <dd><p>Injects chaos exceptions into orchestration activity execution for orchestration types that opt in.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.ChaosExceptionOrchestrationOptions.html">ChaosExceptionOrchestrationOptions</a></dt>
+      <dd><p>Configuration options for orchestration chaos-exception injection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.DummyOrchestrationBehavior.html">DummyOrchestrationBehavior</a></dt>
+      <dd><p>A no-op orchestration behavior that logs before and after activity execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.FakeOrchestrationClock.html">FakeOrchestrationClock</a></dt>
+      <dd><p>Provides a controllable orchestration clock for deterministic test execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.HumanTaskResolutionSignal.html">HumanTaskResolutionSignal</a></dt>
+      <dd><p>Represents a human task completion or cancellation payload supplied by a signal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationExecutor.html">InMemoryOrchestrationExecutor</a></dt>
+      <dd><p>Executes orchestrations using persisted in-memory runtime semantics.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationExecutor.RecoveryActionOutcome.html">InMemoryOrchestrationExecutor.RecoveryActionOutcome</a></dt>
+      <dd><p>Represents the result of a recovery action together with the number of affected timers when applicable.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationStorageProvider.html">InMemoryOrchestrationStorageProvider</a></dt>
+      <dd><p>Provides an in-memory orchestration persistence implementation for runtime and unit-test scenarios.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.InlineOrchestrationActivity-1.html">InlineOrchestrationActivity&lt;TData&gt;</a></dt>
+      <dd><p>Adapts an inline delegate into an orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.JobOrchestrationExecuteDefinitionBuilder-3.html">JobOrchestrationExecuteDefinitionBuilder&lt;TData, TOrchestration, TOrchestrationData&gt;</a></dt>
+      <dd><p>Builds an orchestration execution job definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.JobSchedulerOrchestrationIntegrationExtensions.html">JobSchedulerOrchestrationIntegrationExtensions</a></dt>
+      <dd><p>Registers Orchestration-backed outbound jobs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.MetricsOrchestrationBehavior.html">MetricsOrchestrationBehavior</a></dt>
+      <dd><p>Emits orchestration activity total, current, failure, and duration metrics.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationActivityDefinition-1.html">OrchestrationActivityDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Describes an activity configured for a state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationActivityExecutionContext.html">OrchestrationActivityExecutionContext</a></dt>
+      <dd><p>Represents the metadata associated with a single orchestration activity execution attempt.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationAdministrationService.html">OrchestrationAdministrationService</a></dt>
+      <dd><p>Provides orchestration administration operations backed by persisted state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationAliveOptions.html">OrchestrationAliveOptions</a></dt>
+      <dd><p>Stores runtime availability for the built-in orchestration alive probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationBehaviorBase.html">OrchestrationBehaviorBase</a></dt>
+      <dd><p>Provides a base class for orchestration activity behaviors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.html">OrchestrationBuilderContext</a></dt>
+      <dd><p>Provides the shared builder context for orchestration registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationCompensationDefinition-1.html">OrchestrationCompensationDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Describes an activity used to compensate previously completed work.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContextPropertySnapshot.html">OrchestrationContextPropertySnapshot</a></dt>
+      <dd><p>Represents one serialized property captured in a durable orchestration context snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContextSnapshotModel.html">OrchestrationContextSnapshotModel</a></dt>
+      <dd><p>Represents the latest persisted orchestration context snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContextSnapshot-1.html">OrchestrationContextSnapshot&lt;TData&gt;</a></dt>
+      <dd><p>Represents the durable orchestration context payload that is serialized inside an instance snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext&lt;TData&gt;</a></dt>
+      <dd><p>Represents the shared execution context of an orchestration instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationDefinitionBuilder-1.html">OrchestrationDefinitionBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds an orchestration definition from code-first state declarations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationDefinitionDiagramProjector.html">OrchestrationDefinitionDiagramProjector</a></dt>
+      <dd><p>Projects orchestration definitions into reusable diagram documents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationDefinition-1.html">OrchestrationDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Represents a built orchestration definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationDiagramOptions.html">OrchestrationDiagramOptions</a></dt>
+      <dd><p>Represents options used when projecting orchestration instance diagrams.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationDiagramService.html">OrchestrationDiagramService</a></dt>
+      <dd><p>Builds orchestration definition and instance diagrams using the reusable diagram infrastructure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationExecuteJob-3.html">OrchestrationExecuteJob&lt;TData, TOrchestration, TOrchestrationData&gt;</a></dt>
+      <dd><p>Executes or dispatches an orchestration from a scheduled job occurrence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationExecuteResult.html">OrchestrationExecuteResult</a></dt>
+      <dd><p>Represents the result of inline orchestration execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationExecutionSettings.html">OrchestrationExecutionSettings</a></dt>
+      <dd><p>Configures background execution and recovery behavior for orchestrations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryEntry.html">OrchestrationHistoryEntry</a></dt>
+      <dd><p>Represents a durable, append-only orchestration history record.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationHistoryModel.html">OrchestrationHistoryModel</a></dt>
+      <dd><p>Represents a dashboard-ready orchestration history entry.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceDiagramProjector.html">OrchestrationInstanceDiagramProjector</a></dt>
+      <dd><p>Projects persisted orchestration runtime state into reusable diagram documents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceModel.html">OrchestrationInstanceModel</a></dt>
+      <dd><p>Represents a dashboard-ready orchestration instance summary.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQuery.html">OrchestrationInstanceQuery</a></dt>
+      <dd><p>Represents query criteria for orchestration instance inspection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceQueryResult.html">OrchestrationInstanceQueryResult</a></dt>
+      <dd><p>Represents a paged orchestration instance query result.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationInstanceSnapshot.html">OrchestrationInstanceSnapshot</a></dt>
+      <dd><p>Represents the durable orchestration instance snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationLease.html">OrchestrationLease</a></dt>
+      <dd><p>Represents a persisted orchestration instance lease.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationMetricsModel.html">OrchestrationMetricsModel</a></dt>
+      <dd><p>Represents aggregated dashboard metrics derived from persisted orchestration state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationMetricsRequest.html">OrchestrationMetricsRequest</a></dt>
+      <dd><p>Represents the request used to aggregate orchestration metrics from persisted state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationMetricsSnapshot.html">OrchestrationMetricsSnapshot</a></dt>
+      <dd><p>Represents basic metrics derived from persisted orchestration state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcome.html">OrchestrationOutcome</a></dt>
+      <dd><p>Represents the outcome returned by an orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeCriteria.html">OrchestrationPurgeCriteria</a></dt>
+      <dd><p>Represents purge criteria for retained orchestration data.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeRequest.html">OrchestrationPurgeRequest</a></dt>
+      <dd><p>Represents the purge request used by orchestration administration endpoints and services.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationPurgeResult.html">OrchestrationPurgeResult</a></dt>
+      <dd><p>Represents the outcome of a purge operation over retained orchestration data.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationQueryRequest.html">OrchestrationQueryRequest</a></dt>
+      <dd><p>Represents the request used to query persisted orchestration instances.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationQueryService.html">OrchestrationQueryService</a></dt>
+      <dd><p>Provides persisted-state-backed orchestration query operations for dashboards, endpoints, and support tooling.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRecoveryService.html">OrchestrationRecoveryService</a></dt>
+      <dd><p>Performs periodic orchestration recovery for due timers and incomplete waiting boundaries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRegistrationStore.html">OrchestrationRegistrationStore</a></dt>
+      <dd><p>Stores orchestration types registered for dependency injection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRetryPolicy.html">OrchestrationRetryPolicy</a></dt>
+      <dd><p>Defines durable retry behavior for orchestration activities.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalBuilder-1.html">OrchestrationSignalBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds signal-driven orchestration behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalBuilder-2.html">OrchestrationSignalBuilder&lt;TData, TPayload&gt;</a></dt>
+      <dd><p>Builds typed signal-driven orchestration behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalDefinition-1.html">OrchestrationSignalDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Describes a configured signal-driven orchestration behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalModel.html">OrchestrationSignalModel</a></dt>
+      <dd><p>Represents a dashboard-ready persisted signal record.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalRecord.html">OrchestrationSignalRecord</a></dt>
+      <dd><p>Represents a persisted orchestration signal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationStateBuilder-1.html">OrchestrationStateBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds a single orchestration state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationStateDefinition-1.html">OrchestrationStateDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Represents a configured orchestration state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTestHarness.html">OrchestrationTestHarness</a></dt>
+      <dd><p>Provides a deterministic orchestration test harness built on the in-memory orchestration runtime.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTestHarnessAssertions.html">OrchestrationTestHarnessAssertions</a></dt>
+      <dd><p>Provides fluent assertions over a persisted orchestration instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTestHarnessBuilder.html">OrchestrationTestHarnessBuilder</a></dt>
+      <dd><p>Builds an <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTestHarness.html">OrchestrationTestHarness</a> instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerBuilder-1.html">OrchestrationTimerBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds durable timer behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerDefinition-1.html">OrchestrationTimerDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Describes a configured durable orchestration timer.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerModel.html">OrchestrationTimerModel</a></dt>
+      <dd><p>Represents a dashboard-ready persisted timer record.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerRecord.html">OrchestrationTimerRecord</a></dt>
+      <dd><p>Represents a persisted orchestration timer.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTransitionDefinition-1.html">OrchestrationTransitionDefinition&lt;TData&gt;</a></dt>
+      <dd><p>Describes a transition from one state to another.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWaitFor.html">OrchestrationWaitFor</a></dt>
+      <dd><p>Describes the condition used by dispatch-and-wait orchestration execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWaitResult.html">OrchestrationWaitResult</a></dt>
+      <dd><p>Represents the result returned by dispatch-and-wait operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWorkflowExtensions.html">OrchestrationWorkflowExtensions</a></dt>
+      <dd><p>Provides built-in workflow helpers for orchestration activities that integrate with other feature abstractions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.Orchestration-1.html">Orchestration&lt;TData&gt;</a></dt>
+      <dd><p>Provides the base class for code-first orchestration definitions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.SystemOrchestrationClock.html">SystemOrchestrationClock</a></dt>
+      <dd><p>Provides the production orchestration clock backed by system UTC time.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.WaitFor.html">WaitFor</a></dt>
+      <dd><p>Provides helpers for creating <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationWaitFor.html">OrchestrationWaitFor</a> values.</p>
+</dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.Constants.html">Constants</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IChaosExceptionOrchestration.html">IChaosExceptionOrchestration</a></dt>
+      <dd><p>Enables chaos-exception injection for an orchestration type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationActivityBuilder-1.html">IOrchestrationActivityBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Configures advanced behavior for an orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationActivity-1.html">IOrchestrationActivity&lt;TData&gt;</a></dt>
+      <dd><p>Represents an executable orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationAdministrationService.html">IOrchestrationAdministrationService</a></dt>
+      <dd><p>Defines the public orchestration administration surface for maintenance and repair operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationAdministrationStore.html">IOrchestrationAdministrationStore</a></dt>
+      <dd><p>Performs persisted orchestration administration and repair operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationApprovalActivityBuilder-1.html">IOrchestrationApprovalActivityBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Configures an approval activity backed by orchestration signals.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationBehavior.html">IOrchestrationBehavior</a></dt>
+      <dd><p>Defines a behavior that wraps orchestration activity execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationBranchBuilder-1.html">IOrchestrationBranchBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds a single branch within a parallel orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationBuilder-1.html">IOrchestrationBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Provides the fluent authoring surface for orchestration definitions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationClock.html">IOrchestrationClock</a></dt>
+      <dd><p>Provides the orchestration runtime clock used for timestamps, leases, and deterministic waiting.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationDiagramService.html">IOrchestrationDiagramService</a></dt>
+      <dd><p>Provides orchestration-specific diagram export operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationExecutor.html">IOrchestrationExecutor</a></dt>
+      <dd><p>Executes registered orchestrations in memory.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationHistoryStore.html">IOrchestrationHistoryStore</a></dt>
+      <dd><p>Appends durable execution history records.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationHumanTaskActivityBuilder-1.html">IOrchestrationHumanTaskActivityBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Configures a human task activity backed by orchestration signals.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationInstanceStore.html">IOrchestrationInstanceStore</a></dt>
+      <dd><p>Persists the latest durable orchestration instance snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationLeaseStore.html">IOrchestrationLeaseStore</a></dt>
+      <dd><p>Coordinates exclusive orchestration instance leases.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationLoopBuilder-1.html">IOrchestrationLoopBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds a looping orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationMessageActivityBuilder-2.html">IOrchestrationMessageActivityBuilder&lt;TData, TMessage&gt;</a></dt>
+      <dd><p>Configures a messaging-backed orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationNotificationActivityBuilder-2.html">IOrchestrationNotificationActivityBuilder&lt;TData, TNotification&gt;</a></dt>
+      <dd><p>Configures a notifier-backed orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationParallelBuilder-1.html">IOrchestrationParallelBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Builds a parallel orchestration activity composed of multiple branches.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationPipelineActivityBuilder-2.html">IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;</a></dt>
+      <dd><p>Configures a pipeline-backed orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueryService.html">IOrchestrationQueryService</a></dt>
+      <dd><p>Defines the public persisted-state query surface for orchestration operations, dashboards, and support tooling.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueryStore.html">IOrchestrationQueryStore</a></dt>
+      <dd><p>Exposes persisted orchestration state for support, operations, and administration use cases.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationQueueActivityBuilder-2.html">IOrchestrationQueueActivityBuilder&lt;TData, TMessage&gt;</a></dt>
+      <dd><p>Configures a queueing-backed orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationRequestActivityBuilder-3.html">IOrchestrationRequestActivityBuilder&lt;TData, TRequest, TValue&gt;</a></dt>
+      <dd><p>Configures a requester-backed orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationService.html">IOrchestrationService</a></dt>
+      <dd><p>Defines the public orchestration runtime service surface.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-1.html">IOrchestrationSignalBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Provides the fluent authoring surface for a signal-driven state behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalBuilder-2.html">IOrchestrationSignalBuilder&lt;TData, TPayload&gt;</a></dt>
+      <dd><p>Provides the fluent authoring surface for a typed signal-driven state behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationSignalStore.html">IOrchestrationSignalStore</a></dt>
+      <dd><p>Persists and updates durable orchestration signals.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStartChildActivityBuilder-2.html">IOrchestrationStartChildActivityBuilder&lt;TData, TChildData&gt;</a></dt>
+      <dd><p>Configures an activity that starts and optionally waits on a child orchestration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStateBuilder-1.html">IOrchestrationStateBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Provides the fluent authoring surface for a single orchestration state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationStorageProvider.html">IOrchestrationStorageProvider</a></dt>
+      <dd><p>Groups the orchestration persistence services required by the runtime and operations layer.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerBuilder-1.html">IOrchestrationTimerBuilder&lt;TData&gt;</a></dt>
+      <dd><p>Provides the fluent authoring surface for a durable timer.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationTimerStore.html">IOrchestrationTimerStore</a></dt>
+      <dd><p>Persists durable orchestration timers.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.InMemoryOrchestrationExecutor.RecoveryActionResult.html">InMemoryOrchestrationExecutor.RecoveryActionResult</a></dt>
+      <dd><p>Describes the outcome of a recovery action executed by the orchestration runtime.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationActivityExecutionKind.html">OrchestrationActivityExecutionKind</a></dt>
+      <dd><p>Identifies the kind of orchestration activity execution currently being processed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcomeKind.html">OrchestrationOutcomeKind</a></dt>
+      <dd><p>Represents the outcome produced by an orchestration activity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRetryBackoffMode.html">OrchestrationRetryBackoffMode</a></dt>
+      <dd><p>Specifies how orchestration activity retry delays are calculated.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationSignalStatus.html">OrchestrationSignalStatus</a></dt>
+      <dd><p>Represents the durable status of a persisted signal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationStatus.html">OrchestrationStatus</a></dt>
+      <dd><p>Represents the current lifecycle status of an orchestration instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTerminalDirectiveKind.html">OrchestrationTerminalDirectiveKind</a></dt>
+      <dd><p>Defines the terminal directive configured for a state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationTimerStatus.html">OrchestrationTimerStatus</a></dt>
+      <dd><p>Represents the durable status of a persisted timer.</p>
+</dd>
+    </dl>
+    <h3 id="delegates">
+Delegates
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationDelegate.html">OrchestrationDelegate</a></dt>
+      <dd><p>Represents the next delegate in the orchestration behavior pipeline.</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

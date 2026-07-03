@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class JobService.TypedLogger | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class JobService.TypedLogger | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger" class="text-break">
+Class JobService.TypedLogger  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.html">JobScheduling</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.JobScheduling.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class JobService.TypedLogger</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">JobService.TypedLogger</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJob_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJob*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJob_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJob(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogGetJob(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(1, LogLevel.Debug, &quot;[{LogKey}] jobservice: get job (name={JobName}, group={JobGroup})&quot;)]
+public static void LogGetJob(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJobRunStats_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJobRunStats*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJobRunStats_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJobRunStats(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogGetJobRunStats(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(3, LogLevel.Debug, &quot;[{LogKey}] jobservice: get job run stats (name={JobName}, group={JobGroup})&quot;)]
+public static void LogGetJobRunStats(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJobRuns_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJobRuns*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJobRuns_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJobRuns(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogGetJobRuns(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(2, LogLevel.Debug, &quot;[{LogKey}] jobservice: get job runs (name={JobName}, group={JobGroup})&quot;)]
+public static void LogGetJobRuns(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJobs_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJobs*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetJobs_Microsoft_Extensions_Logging_ILogger_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetJobs(Microsoft.Extensions.Logging.ILogger,System.String)">
+  LogGetJobs(ILogger, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(0, LogLevel.Debug, &quot;[{LogKey}] jobservice: get jobs&quot;)]
+public static void LogGetJobs(ILogger logger, string logKey)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetTriggers_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetTriggers*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogGetTriggers_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogGetTriggers(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogGetTriggers(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(4, LogLevel.Debug, &quot;[{LogKey}] jobservice: get triggers (name={JobName}, group={JobGroup})&quot;)]
+public static void LogGetTriggers(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogPauseJob_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogPauseJob*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogPauseJob_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogPauseJob(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogPauseJob(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(7, LogLevel.Debug, &quot;[{LogKey}] jobservice: pause job (name={JobName}, group={JobGroup})&quot;)]
+public static void LogPauseJob(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogPurgeJobRuns_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogPurgeJobRuns*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogPurgeJobRuns_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_DateTimeOffset_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogPurgeJobRuns(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.DateTimeOffset)">
+  LogPurgeJobRuns(ILogger, string, string, string, DateTimeOffset)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(9, LogLevel.Debug, &quot;[{LogKey}] jobservice: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})&quot;)]
+public static void LogPurgeJobRuns(ILogger logger, string logKey, string jobName, string jobGroup, DateTimeOffset olderThan)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogResumeJob_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogResumeJob*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogResumeJob_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogResumeJob(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogResumeJob(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(8, LogLevel.Debug, &quot;[{LogKey}] jobservice: resume job (name={JobName}, group={JobGroup})&quot;)]
+public static void LogResumeJob(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogSaveJobRun_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogSaveJobRun*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogSaveJobRun_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogSaveJobRun(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.String)">
+  LogSaveJobRun(ILogger, string, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(5, LogLevel.Debug, &quot;[{LogKey}] jobservice: save job run (name={JobName}, group={JobGroup}, id={EntryId})&quot;)]
+public static void LogSaveJobRun(ILogger logger, string logKey, string jobName, string jobGroup, string entryId)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>entryId</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogTriggerJob_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogTriggerJob*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_JobScheduling_JobService_TypedLogger_LogTriggerJob_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.JobScheduling.JobService.TypedLogger.LogTriggerJob(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String)">
+  LogTriggerJob(ILogger, string, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[LoggerMessage(6, LogLevel.Debug, &quot;[{LogKey}] jobservice: trigger job (name={JobName}, group={JobGroup})&quot;)]
+public static void LogTriggerJob(ILogger logger, string logKey, string jobName, string jobGroup)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd></dd>
+    <dt><code>logKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>jobGroup</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

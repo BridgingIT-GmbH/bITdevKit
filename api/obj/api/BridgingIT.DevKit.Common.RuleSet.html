@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class RuleSet | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class RuleSet | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides a comprehensive set of validation rules for various types of values.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.RuleSet">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_RuleSet" data-uid="BridgingIT.DevKit.Common.RuleSet" class="text-break">
+Class RuleSet  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Rules.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a comprehensive set of validation rules for various types of values.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class RuleSet</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">RuleSet</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_All_" data-uid="BridgingIT.DevKit.Common.RuleSet.All*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_All__1_System_Collections_Generic_IEnumerable___0__System_Func___0_BridgingIT_DevKit_Common_IRule__" data-uid="BridgingIT.DevKit.Common.RuleSet.All``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,BridgingIT.DevKit.Common.IRule})">
+  All&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, IRule&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that all elements in a collection satisfy a rule.
+Usage: ValueRules.All(orderItems, item =&gt; ValueRules.GreaterThan(item.Quantity, 0))</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule All&lt;T&gt;(IEnumerable&lt;T&gt; collection, Func&lt;T, IRule&gt; ruleFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>ruleFactory</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_Any_" data-uid="BridgingIT.DevKit.Common.RuleSet.Any*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_Any__1_System_Collections_Generic_IEnumerable___0__System_Func___0_BridgingIT_DevKit_Common_IRule__" data-uid="BridgingIT.DevKit.Common.RuleSet.Any``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,BridgingIT.DevKit.Common.IRule})">
+  Any&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, IRule&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that any element in a collection satisfies a rule.
+Usage: ValueRules.Any(users, user =&gt; ValueRules.GreaterThan(user.Age, 18))</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule Any&lt;T&gt;(IEnumerable&lt;T&gt; collection, Func&lt;T, IRule&gt; ruleFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>ruleFactory</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_Contains_" data-uid="BridgingIT.DevKit.Common.RuleSet.Contains*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_Contains_System_String_System_String_System_StringComparison_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.Contains(System.String,System.String,System.StringComparison,System.String)">
+  Contains(string, string, StringComparison, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string contains a substring.
+Usage: ValueRules.Contains(email, &quot;@&quot;, StringComparison.OrdinalIgnoreCase)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule Contains(string value, string substring, StringComparison comparison = StringComparison.Ordinal, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>substring</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_DoesNotContain_" data-uid="BridgingIT.DevKit.Common.RuleSet.DoesNotContain*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_DoesNotContain_System_String_System_String_System_StringComparison_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.DoesNotContain(System.String,System.String,System.StringComparison,System.String)">
+  DoesNotContain(string, string, StringComparison, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string does not contain a substring.
+Usage: ValueRules.DoesNotContain(username, &quot;admin&quot;, StringComparison.OrdinalIgnoreCase)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule DoesNotContain(string value, string substring, StringComparison comparison = StringComparison.Ordinal, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>substring</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_DoesNotEndWith_" data-uid="BridgingIT.DevKit.Common.RuleSet.DoesNotEndWith*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_DoesNotEndWith_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.RuleSet.DoesNotEndWith(System.String,System.String,System.StringComparison)">
+  DoesNotEndWith(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string does not end with a suffix.
+Usage: ValueRules.DoesNotEndWith(domain, &quot;.temp&quot;)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule DoesNotEndWith(string value, string suffix, StringComparison comparison = StringComparison.Ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>suffix</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_DoesNotStartWith_" data-uid="BridgingIT.DevKit.Common.RuleSet.DoesNotStartWith*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_DoesNotStartWith_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.RuleSet.DoesNotStartWith(System.String,System.String,System.StringComparison)">
+  DoesNotStartWith(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string does not start with a prefix.
+Usage: ValueRules.DoesNotStartWith(email, &quot;noreply&quot;)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule DoesNotStartWith(string value, string prefix, StringComparison comparison = StringComparison.Ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>prefix</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_EndsWith_" data-uid="BridgingIT.DevKit.Common.RuleSet.EndsWith*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_EndsWith_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.RuleSet.EndsWith(System.String,System.String,System.StringComparison)">
+  EndsWith(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string ends with a suffix.
+Usage: ValueRules.EndsWith(email, &quot;@company.com&quot;)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule EndsWith(string value, string suffix, StringComparison comparison = StringComparison.Ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>suffix</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_Equal_" data-uid="BridgingIT.DevKit.Common.RuleSet.Equal*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_Equal__1___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.Equal``1(``0,``0,System.String)">
+  Equal&lt;T&gt;(T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that two values are equal.
+Usage: ValueRules.Equal(status, Status.Active)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule Equal&lt;T&gt;(T value, T other, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_FullTextSearch_" data-uid="BridgingIT.DevKit.Common.RuleSet.FullTextSearch*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_FullTextSearch_System_String_System_String_System_StringComparison_" data-uid="BridgingIT.DevKit.Common.RuleSet.FullTextSearch(System.String,System.String,System.StringComparison)">
+  FullTextSearch(string, string, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates text against a full-text search query.
+Usage: ValueRules.FullTextSearch(document.Content, &quot;important meeting&quot;, searchFields)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule FullTextSearch(string text, string searchTerm, StringComparison comparison = StringComparison.OrdinalIgnoreCase)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>text</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>searchTerm</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_GreaterThanOrEqual_" data-uid="BridgingIT.DevKit.Common.RuleSet.GreaterThanOrEqual*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_GreaterThanOrEqual__1___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.GreaterThanOrEqual``1(``0,``0,System.String)">
+  GreaterThanOrEqual&lt;T&gt;(T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value is greater than or equal to another value.
+Usage: ValueRules.GreaterThanOrEqual(amount, 0)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule GreaterThanOrEqual&lt;T&gt;(T value, T other, string message = null) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_GreaterThan_" data-uid="BridgingIT.DevKit.Common.RuleSet.GreaterThan*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_GreaterThan__1___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.GreaterThan``1(``0,``0,System.String)">
+  GreaterThan&lt;T&gt;(T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value is greater than another value.
+Usage: ValueRules.GreaterThan(age, 18)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule GreaterThan&lt;T&gt;(T value, T other, string message = null) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_HasCollectionSize_" data-uid="BridgingIT.DevKit.Common.RuleSet.HasCollectionSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_HasCollectionSize__1_System_Collections_Generic_IEnumerable___0__System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.RuleSet.HasCollectionSize``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32)">
+  HasCollectionSize&lt;T&gt;(IEnumerable&lt;T&gt;, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a collection has a specific size range.
+Usage: ValueRules.CollectionSize(items, 1, 10)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule HasCollectionSize&lt;T&gt;(IEnumerable&lt;T&gt; collection, int minSize, int maxSize)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>minSize</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>maxSize</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_HasStringLength_" data-uid="BridgingIT.DevKit.Common.RuleSet.HasStringLength*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_HasStringLength_System_String_System_Int32_System_Int32_" data-uid="BridgingIT.DevKit.Common.RuleSet.HasStringLength(System.String,System.Int32,System.Int32)">
+  HasStringLength(string, int, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string has a specific length range.
+Usage: ValueRules.StringLength(password, 8, 20)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule HasStringLength(string value, int minLength, int maxLength)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>minLength</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>maxLength</code> <span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_HasValues_" data-uid="BridgingIT.DevKit.Common.RuleSet.HasValues*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_HasValues__1___0_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.RuleSet.HasValues``1(``0,System.Collections.Generic.IEnumerable{``0})">
+  HasValues&lt;TEnum&gt;(TEnum, IEnumerable&lt;TEnum&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that an enum value is one of the allowed values.
+Usage: ValueRules.EnumValues(status, new[] { Status.Active, Status.Pending })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule HasValues&lt;TEnum&gt;(TEnum value, IEnumerable&lt;TEnum&gt; allowedValues) where TEnum : struct, Enum</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TEnum</span></dt>
+    <dd></dd>
+    <dt><code>allowedValues</code> <span class="xref">IEnumerable</span>&lt;TEnum&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEnum</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_In_" data-uid="BridgingIT.DevKit.Common.RuleSet.In*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_In__1___0_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.RuleSet.In``1(``0,System.Collections.Generic.IEnumerable{``0})">
+  In&lt;T&gt;(T, IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value exists in a collection.
+Usage: ValueRules.In(status, new[] { Status.Active, Status.Pending })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule In&lt;T&gt;(T value, IEnumerable&lt;T&gt; allowedValues)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>allowedValues</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsAfter_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsAfter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsAfter_System_DateTime_System_DateTime_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsAfter(System.DateTime,System.DateTime,System.String)">
+  IsAfter(DateTime, DateTime, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsAfter(DateTime value, DateTime comparisonDate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>comparisonDate</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsBefore_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsBefore*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsBefore_System_DateTime_System_DateTime_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsBefore(System.DateTime,System.DateTime,System.String)">
+  IsBefore(DateTime, DateTime, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsBefore(DateTime value, DateTime comparisonDate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>comparisonDate</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsEmpty_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsEmpty_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsEmpty(System.String,System.String)">
+  IsEmpty(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a collection or string is empty.
+Usage: ValueRules.IsEmpty(list)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsEmpty(string value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsEmpty_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsEmpty__1_System_Collections_Generic_IEnumerable___0__System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+  IsEmpty&lt;T&gt;(IEnumerable&lt;T&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a collection or string is empty.
+Usage: ValueRules.IsEmpty(list)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsEmpty&lt;T&gt;(IEnumerable&lt;T&gt; value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsFalse_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsFalse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsFalse_System_Boolean_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsFalse(System.Boolean,System.String)">
+  IsFalse(bool, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsFalse(bool value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsInRange_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsInRange_System_DateTime_System_DateTime_System_DateTime_System_Boolean_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRange(System.DateTime,System.DateTime,System.DateTime,System.Boolean)">
+  IsInRange(DateTime, DateTime, DateTime, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a date falls within a specific range.
+Usage: ValueRules.DateRange(appointmentDate, startDate, endDate, inclusive: true)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsInRange(DateTime value, DateTime start, DateTime end, bool inclusive = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>start</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>end</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>inclusive</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsInRange_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsInRange_System_TimeOnly_System_TimeOnly_System_TimeOnly_System_Boolean_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRange(System.TimeOnly,System.TimeOnly,System.TimeOnly,System.Boolean)">
+  IsInRange(TimeOnly, TimeOnly, TimeOnly, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a time falls within a specific range.
+Usage: ValueRules.TimeRange(openingTime, TimeOnly.Parse(&quot;09:00&quot;), TimeOnly.Parse(&quot;17:00&quot;))</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsInRange(TimeOnly value, TimeOnly start, TimeOnly end, bool inclusive = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeOnly</span></dt>
+    <dd></dd>
+    <dt><code>start</code> <span class="xref">TimeOnly</span></dt>
+    <dd></dd>
+    <dt><code>end</code> <span class="xref">TimeOnly</span></dt>
+    <dd></dd>
+    <dt><code>inclusive</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsInRelativeRange_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRelativeRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsInRelativeRange_System_DateTime_BridgingIT_DevKit_Common_DateUnit_System_Int32_BridgingIT_DevKit_Common_DateTimeDirection_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRelativeRange(System.DateTime,BridgingIT.DevKit.Common.DateUnit,System.Int32,BridgingIT.DevKit.Common.DateTimeDirection)">
+  IsInRelativeRange(DateTime, DateUnit, int, DateTimeDirection)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a date falls within a relative range (e.g., next 7 days).
+Usage: ValueRules.DateRelative(dueDate, DateRelativeUnit.Day, 7, RelativeDirection.Future)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsInRelativeRange(DateTime value, DateUnit unit, int amount, DateTimeDirection direction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">DateTime</span></dt>
+    <dd></dd>
+    <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
+    <dd></dd>
+    <dt><code>amount</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>direction</code> <a class="xref" href="BridgingIT.DevKit.Common.DateTimeDirection.html">DateTimeDirection</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsInRelativeRange_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRelativeRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsInRelativeRange_System_TimeOnly_BridgingIT_DevKit_Common_TimeUnit_System_Int32_BridgingIT_DevKit_Common_DateTimeDirection_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsInRelativeRange(System.TimeOnly,BridgingIT.DevKit.Common.TimeUnit,System.Int32,BridgingIT.DevKit.Common.DateTimeDirection)">
+  IsInRelativeRange(TimeOnly, TimeUnit, int, DateTimeDirection)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a time falls within a relative range (e.g., next 2 hours).
+Usage: ValueRules.TimeRelative(meetingTime, TimeRelativeUnit.Hour, 2, RelativeDirection.Future)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsInRelativeRange(TimeOnly value, TimeUnit unit, int amount, DateTimeDirection direction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeOnly</span></dt>
+    <dd></dd>
+    <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeUnit.html">TimeUnit</a></dt>
+    <dd></dd>
+    <dt><code>amount</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>direction</code> <a class="xref" href="BridgingIT.DevKit.Common.DateTimeDirection.html">DateTimeDirection</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsNotEmpty_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNotEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsNotEmpty_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNotEmpty(System.String,System.String)">
+  IsNotEmpty(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a collection or string is not empty.
+Usage: ValueRules.IsNotEmpty(requiredList)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsNotEmpty(string value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsNotEmpty_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNotEmpty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsNotEmpty__1_System_Collections_Generic_IEnumerable___0__System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNotEmpty``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+  IsNotEmpty&lt;T&gt;(IEnumerable&lt;T&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a collection or string is not empty.
+Usage: ValueRules.IsNotEmpty(requiredList)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsNotEmpty&lt;T&gt;(IEnumerable&lt;T&gt; value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsNotNull_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNotNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsNotNull__1___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNotNull``1(``0,System.String)">
+  IsNotNull&lt;T&gt;(T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value is not null.
+Usage: ValueRules.IsNotNull(requiredValue)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsNotNull&lt;T&gt;(T value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsNull_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNull*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsNull__1___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsNull``1(``0,System.String)">
+  IsNull&lt;T&gt;(T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value is null.
+Usage: ValueRules.IsNull(optionalValue)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsNull&lt;T&gt;(T value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsTrue_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsTrue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsTrue_System_Boolean_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsTrue(System.Boolean,System.String)">
+  IsTrue(bool, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsTrue(bool value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_IsValidEmail_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsValidEmail*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_IsValidEmail_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.IsValidEmail(System.String,System.String)">
+  IsValidEmail(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string is a valid email address.
+Usage: ValueRules.IsEmail(&quot;test@example.com&quot;)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule IsValidEmail(string value, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_LessThanOrEqual_" data-uid="BridgingIT.DevKit.Common.RuleSet.LessThanOrEqual*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_LessThanOrEqual__1___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.LessThanOrEqual``1(``0,``0,System.String)">
+  LessThanOrEqual&lt;T&gt;(T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value is less than or equal to another value.
+Usage: ValueRules.LessThanOrEqual(discount, 100)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule LessThanOrEqual&lt;T&gt;(T value, T other, string message = null) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_LessThan_" data-uid="BridgingIT.DevKit.Common.RuleSet.LessThan*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_LessThan__1___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.LessThan``1(``0,``0,System.String)">
+  LessThan&lt;T&gt;(T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value is less than another value.
+Usage: ValueRules.LessThan(temperature, 100)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule LessThan&lt;T&gt;(T value, T other, string message = null) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_MatchesPattern_" data-uid="BridgingIT.DevKit.Common.RuleSet.MatchesPattern*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_MatchesPattern_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.MatchesPattern(System.String,System.String)">
+  MatchesPattern(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value matches a regular expression pattern.
+Usage: ValueRules.Pattern(email, @&quot;^[^@\s]+@[^@\s]+\.[^@\s]+$&quot;)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule MatchesPattern(string value, string pattern)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>pattern</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_None_" data-uid="BridgingIT.DevKit.Common.RuleSet.None*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_None__1_System_Collections_Generic_IEnumerable___0__System_Func___0_BridgingIT_DevKit_Common_IRule__" data-uid="BridgingIT.DevKit.Common.RuleSet.None``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,BridgingIT.DevKit.Common.IRule})">
+  None&lt;T&gt;(IEnumerable&lt;T&gt;, Func&lt;T, IRule&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that no element in a collection satisfies a rule.
+Usage: ValueRules.None(products, product =&gt; ValueRules.Equal(product.Status, Status.Discontinued))</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule None&lt;T&gt;(IEnumerable&lt;T&gt; collection, Func&lt;T, IRule&gt; ruleFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>collection</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>ruleFactory</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_NotEqual_" data-uid="BridgingIT.DevKit.Common.RuleSet.NotEqual*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_NotEqual__1___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.NotEqual``1(``0,``0,System.String)">
+  NotEqual&lt;T&gt;(T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that two values are not equal.
+Usage: ValueRules.NotEqual(status, Status.Deleted)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule NotEqual&lt;T&gt;(T value, T other, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>other</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_NotIn_" data-uid="BridgingIT.DevKit.Common.RuleSet.NotIn*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_NotIn__1___0_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.RuleSet.NotIn``1(``0,System.Collections.Generic.IEnumerable{``0})">
+  NotIn&lt;T&gt;(T, IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value does not exist in a collection.
+Usage: ValueRules.NotIn(username, reservedUsernames)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule NotIn&lt;T&gt;(T value, IEnumerable&lt;T&gt; disallowedValues)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>disallowedValues</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_NumericIn_" data-uid="BridgingIT.DevKit.Common.RuleSet.NumericIn*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_NumericIn__1___0_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.RuleSet.NumericIn``1(``0,System.Collections.Generic.IEnumerable{``0})">
+  NumericIn&lt;T&gt;(T, IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a numeric value is in a list of allowed values.
+Usage: ValueRules.NumericIn(quantity, new[] { 1, 5, 10 })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule NumericIn&lt;T&gt;(T value, IEnumerable&lt;T&gt; allowedValues) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>allowedValues</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_NumericNotIn_" data-uid="BridgingIT.DevKit.Common.RuleSet.NumericNotIn*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_NumericNotIn__1___0_System_Collections_Generic_IEnumerable___0__" data-uid="BridgingIT.DevKit.Common.RuleSet.NumericNotIn``1(``0,System.Collections.Generic.IEnumerable{``0})">
+  NumericNotIn&lt;T&gt;(T, IEnumerable&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a numeric value is not in a list of disallowed values.
+Usage: ValueRules.NumericNotIn(quantity, new[] { 0, -1 })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule NumericNotIn&lt;T&gt;(T value, IEnumerable&lt;T&gt; disallowedValues) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>disallowedValues</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_NumericRange_" data-uid="BridgingIT.DevKit.Common.RuleSet.NumericRange*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_NumericRange__1___0___0___0_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.NumericRange``1(``0,``0,``0,System.String)">
+  NumericRange&lt;T&gt;(T, T, T, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a value falls within a numeric range (inclusive).
+Usage: ValueRules.NumericRange(rating, 1, 5)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule NumericRange&lt;T&gt;(T value, T min, T max, string message = null) where T : IComparable&lt;T&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>min</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>max</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_StartsWith_" data-uid="BridgingIT.DevKit.Common.RuleSet.StartsWith*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_StartsWith_System_String_System_String_System_StringComparison_System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.StartsWith(System.String,System.String,System.StringComparison,System.String)">
+  StartsWith(string, string, StringComparison, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that a string starts with a prefix.
+Usage: ValueRules.StartsWith(phoneNumber, &quot;+1&quot;)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule StartsWith(string value, string prefix, StringComparison comparison = StringComparison.Ordinal, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>prefix</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_TextIn_" data-uid="BridgingIT.DevKit.Common.RuleSet.TextIn*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_TextIn_System_String_System_Collections_Generic_IEnumerable_System_String__System_StringComparison_" data-uid="BridgingIT.DevKit.Common.RuleSet.TextIn(System.String,System.Collections.Generic.IEnumerable{System.String},System.StringComparison)">
+  TextIn(string, IEnumerable&lt;string&gt;, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates text against a list of allowed words.
+Usage: ValueRules.TextIn(category, new[] { &quot;Electronics&quot;, &quot;Books&quot;, &quot;Clothing&quot; })</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule TextIn(string value, IEnumerable&lt;string&gt; allowedValues, StringComparison comparison = StringComparison.Ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>allowedValues</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_TextNotIn_" data-uid="BridgingIT.DevKit.Common.RuleSet.TextNotIn*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_TextNotIn_System_String_System_Collections_Generic_IEnumerable_System_String__System_StringComparison_" data-uid="BridgingIT.DevKit.Common.RuleSet.TextNotIn(System.String,System.Collections.Generic.IEnumerable{System.String},System.StringComparison)">
+  TextNotIn(string, IEnumerable&lt;string&gt;, StringComparison)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates text against a list of disallowed words.
+Usage: ValueRules.TextNotIn(username, reservedUsernames)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule TextNotIn(string value, IEnumerable&lt;string&gt; disallowedValues, StringComparison comparison = StringComparison.Ordinal)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>disallowedValues</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_RuleSet_Validate_" data-uid="BridgingIT.DevKit.Common.RuleSet.Validate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_RuleSet_Validate__1___0_FluentValidation_IValidator___0__System_String_" data-uid="BridgingIT.DevKit.Common.RuleSet.Validate``1(``0,FluentValidation.IValidator{``0},System.String)">
+  Validate&lt;T&gt;(T, IValidator&lt;T&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates an object using a FluentValidation validator.
+Usage: ValueRules.ValidateWith(customer, new CustomerValidator())</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IRule Validate&lt;T&gt;(T instance, IValidator&lt;T&gt; validator, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">T</span></dt>
+    <dd></dd>
+    <dt><code>validator</code> <span class="xref">IValidator</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

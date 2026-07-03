@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ResultResilientExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ResultResilientExtensions | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ResultResilientExtensions" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions" class="text-break">
+Class ResultResilientExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ResultResilientExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ResultResilientExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAllAsync_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteAllAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAllAsync__1_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0____BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteAllAsync``1(System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}}},BridgingIT.DevKit.Common.ResultExecuteOptions,System.Threading.CancellationToken)">
+  ExecuteAllAsync&lt;TValue&gt;(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;TValue&gt;&gt;&gt;, ResultExecuteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes multiple async operations in parallel with timeout and cancellation support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TValue&gt;&gt;&gt; ExecuteAllAsync&lt;TValue&gt;(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;TValue&gt;&gt;&gt; operations, ResultExecuteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operations</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TValue&gt;&gt;&gt;</dt>
+    <dd><p>The collection of async operations to execute.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultExecuteOptions.html">ResultExecuteOptions</a></dt>
+    <dd><p>Optional configuration for the async operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TValue&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing all operation results.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result values.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAllAsync__1_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0____BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var operations = userIds.Select(id =&gt;
+    async ct =&gt; await _userService.GetUserAsync(id, ct)
+);
+var result = await Result{User}.ExecuteAllAsync(operations);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAllBatchedAsync_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteAllBatchedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAllBatchedAsync__1_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0____System_Int32_BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteAllBatchedAsync``1(System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}}},System.Int32,BridgingIT.DevKit.Common.ResultExecuteOptions,System.Threading.CancellationToken)">
+  ExecuteAllBatchedAsync&lt;TValue&gt;(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;TValue&gt;&gt;&gt;, int, ResultExecuteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes multiple async operations in parallel with batching support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TValue&gt;&gt;&gt; ExecuteAllBatchedAsync&lt;TValue&gt;(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;TValue&gt;&gt;&gt; operations, int batchSize, ResultExecuteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operations</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TValue&gt;&gt;&gt;</dt>
+    <dd><p>The collection of async operations to execute.</p>
+</dd>
+    <dt><code>batchSize</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of concurrent operations.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultExecuteOptions.html">ResultExecuteOptions</a></dt>
+    <dd><p>Optional configuration for the async operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TValue&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing all operation results.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result values.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAllBatchedAsync__1_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0____System_Int32_BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var operations = userIds.Select(id =&gt;
+    async ct =&gt; await _userService.GetUserAsync(id, ct)
+);
+var result = await Result{User}.ExecuteAllBatchedAsync(operations, batchSize: 10);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAsync_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteAsync``1(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},BridgingIT.DevKit.Common.ResultExecuteOptions,System.Threading.CancellationToken)">
+  ExecuteAsync&lt;TValue&gt;(Func&lt;CancellationToken, Task&lt;TValue&gt;&gt;, ResultExecuteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes an async operation with timeout, retry, and cancellation support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TValue&gt;&gt; ExecuteAsync&lt;TValue&gt;(Func&lt;CancellationToken, Task&lt;TValue&gt;&gt; operation, ResultExecuteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TValue&gt;&gt;</dt>
+    <dd><p>The async operation to execute.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultExecuteOptions.html">ResultExecuteOptions</a></dt>
+    <dd><p>Optional configuration for the async operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A Result containing the operation outcome.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await Result{User}.ExecuteAsync(
+    async ct =&gt; await _userService.GetUserAsync(userId, ct),
+    AsyncOptions.Default,
+    cancellationToken
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteWithBackgroundAsync_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteWithBackgroundAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteWithBackgroundAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ExecuteWithBackgroundAsync``1(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},BridgingIT.DevKit.Common.ResultExecuteOptions,System.Threading.CancellationToken)">
+  ExecuteWithBackgroundAsync&lt;TValue&gt;(Func&lt;CancellationToken, Task&lt;TValue&gt;&gt;, Func&lt;CancellationToken, Task&gt;, ResultExecuteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes an async operation with a background task that can be cancelled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TValue&gt;&gt; ExecuteWithBackgroundAsync&lt;TValue&gt;(Func&lt;CancellationToken, Task&lt;TValue&gt;&gt; operation, Func&lt;CancellationToken, Task&gt; backgroundWork, ResultExecuteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TValue&gt;&gt;</dt>
+    <dd><p>The main async operation.</p>
+</dd>
+    <dt><code>backgroundWork</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>The background work to perform during the operation.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultExecuteOptions.html">ResultExecuteOptions</a></dt>
+    <dd><p>Optional configuration for the async operation.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd><p>A Result containing the operation outcome.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_ExecuteWithBackgroundAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await Result{FileData}.ExecuteWithBackgroundAsync(
+    async ct =&gt; await ProcessLargeFileAsync(fileId, ct),
+    async ct =&gt; await UpdateProgressIndicatorAsync(ct)
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_ProcessSequenceAsync_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ProcessSequenceAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_ProcessSequenceAsync__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.ProcessSequenceAsync``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{``1}},BridgingIT.DevKit.Common.ResultExecuteOptions,System.Threading.CancellationToken)">
+  ProcessSequenceAsync&lt;TInput, TOutput&gt;(IEnumerable&lt;TInput&gt;, Func&lt;TInput, CancellationToken, Task&lt;TOutput&gt;&gt;, ResultExecuteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Processes a sequence of items asynchronously with retry and error handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TOutput&gt;&gt;&gt; ProcessSequenceAsync&lt;TInput, TOutput&gt;(this IEnumerable&lt;TInput&gt; items, Func&lt;TInput, CancellationToken, Task&lt;TOutput&gt;&gt; operation, ResultExecuteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;TInput&gt;</dt>
+    <dd><p>The items to process.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;TInput, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TOutput&gt;&gt;</dt>
+    <dd><p>The async operation to perform on each item.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultExecuteOptions.html">ResultExecuteOptions</a></dt>
+    <dd><p>Optional configuration for the async operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Optional cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TOutput&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing the processed items.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TInput</code></dt>
+    <dd><p>The type of input items.</p>
+</dd>
+    <dt><code>TOutput</code></dt>
+    <dd><p>The type of output items.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultResilientExtensions_ProcessSequenceAsync__2_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___BridgingIT_DevKit_Common_ResultExecuteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var items = await orderIds.ProcessSequenceAsync(
+    async (id, ct) =&gt; await _orderService.ProcessOrderAsync(id, ct)
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result__BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy(System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
+  WithRetryPolicy(Task&lt;Result&gt;, RetryPolicy, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; WithRetryPolicy(this Task&lt;Result&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Common.RetryPolicy.html">RetryPolicy</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultResilientExtensions_WithRetryPolicy__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0___BridgingIT_DevKit_Common_RetryPolicy_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultResilientExtensions.WithRetryPolicy``1(System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}},BridgingIT.DevKit.Common.RetryPolicy,System.Threading.CancellationToken)">
+  WithRetryPolicy&lt;TValue&gt;(Task&lt;Result&lt;TValue&gt;&gt;, RetryPolicy, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;TValue&gt;&gt; WithRetryPolicy&lt;TValue&gt;(this Task&lt;Result&lt;TValue&gt;&gt; operation, RetryPolicy policy, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Common.RetryPolicy.html">RetryPolicy</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TValue</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

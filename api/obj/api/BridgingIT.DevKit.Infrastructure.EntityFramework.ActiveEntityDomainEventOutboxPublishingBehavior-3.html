@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ActiveEntityDomainEventOutboxPublishingBehavior&lt;TEntity, TId, TContext&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ActiveEntityDomainEventOutboxPublishingBehavior&lt;TEntity, TId, TContext&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Behavior that stores domain events in an EF Core outbox for an ActiveRecord entity.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3" class="text-break">
+Class ActiveEntityDomainEventOutboxPublishingBehavior&lt;TEntity, TId, TContext&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Behavior that stores domain events in an EF Core outbox for an ActiveRecord entity.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ActiveEntityDomainEventOutboxPublishingBehavior&lt;TEntity, TId, TContext&gt; : ActiveEntityBehaviorBase&lt;TEntity&gt;, IActiveEntityBehavior&lt;TEntity&gt; where TEntity : ActiveEntity&lt;TEntity, TId&gt; where TContext : DbContext, IOutboxDomainEventContext</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The entity type, inheriting from ActiveRecord.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd></dd>
+    <dt><code>TContext</code></dt>
+    <dd><p>The DbContext type, implementing IOutboxDomainEventContext.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html">ActiveEntityBehaviorBase</a>&lt;TEntity&gt;</div>
+      <div><span class="xref">ActiveEntityDomainEventOutboxPublishingBehavior&lt;TEntity, TId, TContext&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Domain.IActiveEntityBehavior-1.html">IActiveEntityBehavior</a>&lt;TEntity&gt;</div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeUpdateSetAsync_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeUpdateSetAsync(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterUpdateSetAsync_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterUpdateSetAsync(bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeDeleteAsync_System_Object_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeDeleteAsync(object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterDeleteAsync_System_Object_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterDeleteAsync(object, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeDeleteSetAsync_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeDeleteSetAsync(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterDeleteSetAsync_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterDeleteSetAsync(bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindOneAsync(object, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindOneAsync(object, IFindOptions&lt;TEntity&gt;, TEntity, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindOneAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindOneAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, TEntity, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindOneAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, TEntity, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindOneAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindOneAsync(FilterModel, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindOneAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindOneAsync(FilterModel, IFindOptions&lt;TEntity&gt;, TEntity, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable__0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllAsync(IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TEntity&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable__0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TEntity&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllPagedAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged__0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllPagedAsync(IFindOptions&lt;TEntity&gt;, ResultPaged&lt;TEntity&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TProjection&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;TEntity&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TProjection&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterProjectAllAsync&lt;TProjection&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TProjection&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeProjectAllPagedAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterProjectAllPagedAsync&lt;TProjection&gt;(Expression&lt;Func&lt;TEntity, TProjection&gt;&gt;, IFindOptions&lt;TEntity&gt;, ResultPaged&lt;TProjection&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeExistsAsync_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeExistsAsync(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterExistsAsync_System_Boolean_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterExistsAsync(bool, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeExistsAsync_System_Object_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeExistsAsync(object, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterExistsAsync_System_Object_System_Boolean_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterExistsAsync(object, bool, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeExistsAsync(ISpecification&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Boolean_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterExistsAsync(ISpecification&lt;TEntity&gt;, bool, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeExistsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Boolean_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterExistsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, bool, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeExistsAsync_BridgingIT_DevKit_Common_FilterModel_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeExistsAsync(FilterModel, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterExistsAsync_BridgingIT_DevKit_Common_FilterModel_System_Boolean_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterExistsAsync(FilterModel, bool, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeCountAsync_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeCountAsync(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterCountAsync_System_Int64_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterCountAsync(long, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeCountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeCountAsync(ISpecification&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterCountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Int64_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterCountAsync(ISpecification&lt;TEntity&gt;, long, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsAsync__1_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsAsync&lt;TId&gt;(IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsAsync&lt;TId&gt;(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsAsync&lt;TId&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsAsync(FilterModel, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsAsync__1_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsAsync&lt;TId&gt;(FilterModel, IFindOptions&lt;TEntity&gt;, IEnumerable&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsPagedAsync(IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsPagedAsync&lt;TId&gt;(IFindOptions&lt;TEntity&gt;, ResultPaged&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsPagedAsync(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsPagedAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsPagedAsync&lt;TId&gt;(ISpecification&lt;TEntity&gt;, IFindOptions&lt;TEntity&gt;, ResultPaged&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsPagedAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsPagedAsync&lt;TId&gt;(IEnumerable&lt;ISpecification&lt;TEntity&gt;&gt;, IFindOptions&lt;TEntity&gt;, ResultPaged&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeFindAllIdsPagedAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeFindAllIdsPagedAsync(FilterModel, IFindOptions&lt;TEntity&gt;, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterFindAllIdsPagedAsync__1_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterFindAllIdsPagedAsync&lt;TId&gt;(FilterModel, IFindOptions&lt;TEntity&gt;, ResultPaged&lt;TId&gt;, bool, CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_BeforeTransactionAsync_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.BeforeTransactionAsync(CancellationToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html#BridgingIT_DevKit_Domain_ActiveEntityBehaviorBase_1_AfterTransactionAsync_System_Boolean_System_Threading_CancellationToken_">ActiveEntityBehaviorBase&lt;TEntity&gt;.AfterTransactionAsync(bool, CancellationToken)</a>
+    </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3__ctor__2_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Domain_ActiveEntityDomainEventCollector_BridgingIT_DevKit_Infrastructure_EntityFramework_IOutboxDomainEventQueue_BridgingIT_DevKit_Domain_Outbox_OutboxDomainEventOptions_BridgingIT_DevKit_Domain_ActiveEntityDomainEventPublishingBehaviorOptions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.#ctor(`2,Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Domain.ActiveEntityDomainEventCollector,BridgingIT.DevKit.Infrastructure.EntityFramework.IOutboxDomainEventQueue,BridgingIT.DevKit.Domain.Outbox.OutboxDomainEventOptions,BridgingIT.DevKit.Domain.ActiveEntityDomainEventPublishingBehaviorOptions)">
+  ActiveEntityDomainEventOutboxPublishingBehavior(TContext, ILoggerFactory, ActiveEntityDomainEventCollector, IOutboxDomainEventQueue, OutboxDomainEventOptions, ActiveEntityDomainEventPublishingBehaviorOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the ActiveEntityDomainEventOutboxPublishingBehavior&lt;TEntity, TContext&gt; class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ActiveEntityDomainEventOutboxPublishingBehavior(TContext context, ILoggerFactory loggerFactory = null, ActiveEntityDomainEventCollector collector = null, IOutboxDomainEventQueue eventQueue = null, OutboxDomainEventOptions outboxOptions = null, ActiveEntityDomainEventPublishingBehaviorOptions options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <span class="xref">TContext</span></dt>
+    <dd><p>The DbContext instance to use for database operations.</p>
+</dd>
+    <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd><p>Optional logger factory for logging.</p>
+</dd>
+    <dt><code>collector</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityDomainEventCollector.html">ActiveEntityDomainEventCollector</a></dt>
+    <dd><p>Optional domain event collector for traversing and publishing events.</p>
+</dd>
+    <dt><code>eventQueue</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IOutboxDomainEventQueue.html">IOutboxDomainEventQueue</a></dt>
+    <dd><p>Optional queue for immediate event processing.</p>
+</dd>
+    <dt><code>outboxOptions</code> <a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxDomainEventOptions.html">OutboxDomainEventOptions</a></dt>
+    <dd><p>Optional outbox options (e.g., serializer, processing mode).</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityDomainEventPublishingBehaviorOptions.html">ActiveEntityDomainEventPublishingBehaviorOptions</a></dt>
+    <dd><p>Optional behavior options to control publishing timing.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterDeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterDeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterDeleteAsync__0_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterDeleteAsync(`0,System.Boolean,System.Threading.CancellationToken)">
+  AfterDeleteAsync(TEntity, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes after deleting the entity, storing events in the outbox if configured to do so and the operation was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; AfterDeleteAsync(TEntity entity, bool success, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity that was deleted.</p>
+</dd>
+    <dt><code>success</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether the delete operation was successful.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterInsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterInsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterInsertAsync__0_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterInsertAsync(`0,System.Boolean,System.Threading.CancellationToken)">
+  AfterInsertAsync(TEntity, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes after inserting the entity, storing events in the outbox if configured to do so and the operation was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; AfterInsertAsync(TEntity entity, bool success, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity that was inserted.</p>
+</dd>
+    <dt><code>success</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether the insert operation was successful.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterUpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterUpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterUpdateAsync__0_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterUpdateAsync(`0,System.Boolean,System.Threading.CancellationToken)">
+  AfterUpdateAsync(TEntity, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes after updating the entity, storing events in the outbox if configured to do so and the operation was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; AfterUpdateAsync(TEntity entity, bool success, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity that was updated.</p>
+</dd>
+    <dt><code>success</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether the update operation was successful.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterUpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterUpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_AfterUpsertAsync__0_BridgingIT_DevKit_Domain_Repositories_RepositoryActionResult_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.AfterUpsertAsync(`0,BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult,System.Boolean,System.Threading.CancellationToken)">
+  AfterUpsertAsync(TEntity, RepositoryActionResult, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes after upserting the entity, storing events in the outbox if configured to do so and the operation was successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; AfterUpsertAsync(TEntity entity, RepositoryActionResult action, bool success, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity that was upserted.</p>
+</dd>
+    <dt><code>action</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a></dt>
+    <dd><p>The action performed (Inserted/Updated).</p>
+</dd>
+    <dt><code>success</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether the upsert operation was successful.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeDeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeDeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeDeleteAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeDeleteAsync(`0,System.Threading.CancellationToken)">
+  BeforeDeleteAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes before deleting the entity, storing events in the outbox if configured to do so.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; BeforeDeleteAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity being deleted.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeInsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeInsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeInsertAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeInsertAsync(`0,System.Threading.CancellationToken)">
+  BeforeInsertAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes before inserting the entity, storing events in the outbox if configured to do so.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; BeforeInsertAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity being inserted.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeUpdateAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeUpdateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeUpdateAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeUpdateAsync(`0,System.Threading.CancellationToken)">
+  BeforeUpdateAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes before updating the entity, storing events in the outbox if configured to do so.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; BeforeUpdateAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity being updated.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeUpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeUpsertAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_ActiveEntityDomainEventOutboxPublishingBehavior_3_BeforeUpsertAsync__0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityDomainEventOutboxPublishingBehavior`3.BeforeUpsertAsync(`0,System.Threading.CancellationToken)">
+  BeforeUpsertAsync(TEntity, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes before upserting the entity, storing events in the outbox if configured to do so.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; BeforeUpsertAsync(TEntity entity, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <span class="xref">TEntity</span></dt>
+    <dd><p>The entity being upserted.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

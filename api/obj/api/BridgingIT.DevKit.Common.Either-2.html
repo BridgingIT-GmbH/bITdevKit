@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Either&lt;T1, T2&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Either&lt;T1, T2&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents a value that can be of two different types. This class provides a type-safe way to handle scenarios where a value can be one of two distinct types.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Either`2">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Either_2" data-uid="BridgingIT.DevKit.Common.Either`2" class="text-break">
+Class Either&lt;T1, T2&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a value that can be of two different types. This class provides a type-safe way to handle scenarios
+where a value can be one of two distinct types.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Either&lt;T1, T2&gt;</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T1</code></dt>
+    <dd><p>The type of the first possible value.</p>
+</dd>
+    <dt><code>T2</code></dt>
+    <dd><p>The type of the second possible value.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Either&lt;T1, T2&gt;</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.Exists.html">Exists</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.InstanceOrNone-1.html">InstanceOrNone&lt;T&gt;</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.StringOrNumber.html">StringOrNumber</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_Either_2_examples">Examples</h2>
+  <pre><code class="lang-csharp">// Basic usage examples
+var first = new Either&lt;int, string&gt;(42);
+var second = new Either&lt;int, string&gt;("Hello");
+
+// Using implicit operators
+Either&lt;int, string&gt; fromInt = 42;
+Either&lt;int, string&gt; fromString = "Hello";
+
+// Pattern matching
+var result = first.Match(
+    num =&gt; $"Number is {num}",
+    str =&gt; $"String is {str}"
+);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2__ctor_" data-uid="BridgingIT.DevKit.Common.Either`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2__ctor" data-uid="BridgingIT.DevKit.Common.Either`2.#ctor">
+  Either()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected Either()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2__ctor_" data-uid="BridgingIT.DevKit.Common.Either`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2__ctor__0_" data-uid="BridgingIT.DevKit.Common.Either`2.#ctor(`0)">
+  Either(T1)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either&lt;T1, T2&gt;</a> class with a first value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Either(T1 value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T1</span></dt>
+    <dd><p>The first value to store.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2__ctor__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Basic construction
+var either = new Either&lt;int, string&gt;(42);
+Console.WriteLine(either.IsFirst); // True
+
+// Error handling example
+try
+{
+    var invalidEither = new Either&lt;string, int&gt;(null);
+}
+catch (ArgumentNullException ex)
+{
+    Console.WriteLine("Cannot create Either with null value");
+}
+
+// Usage in collections
+var list = new List&lt;Either&lt;int, string&gt;&gt;
+{
+    new(42),
+    new("Hello")
+};</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when value is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2__ctor_" data-uid="BridgingIT.DevKit.Common.Either`2.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2__ctor__1_" data-uid="BridgingIT.DevKit.Common.Either`2.#ctor(`1)">
+  Either(T2)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either&lt;T1, T2&gt;</a> class with a second value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Either(T2 value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T2</span></dt>
+    <dd><p>The second value to store.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2__ctor__1__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Basic construction
+var either = new Either&lt;int, string&gt;("Hello");
+Console.WriteLine(either.IsSecond); // True
+
+// Error handling example
+try
+{
+    var invalidEither = new Either&lt;int, string&gt;(null);
+}
+catch (ArgumentNullException ex)
+{
+    Console.WriteLine("Cannot create Either with null value");
+}
+
+// Usage with method parameters
+void ProcessValue(Either&lt;int, string&gt; value)
+{
+    value.Switch(
+        num =&gt; Console.WriteLine($"Got number: {num}"),
+        str =&gt; Console.WriteLine($"Got string: {str}")
+    );
+}
+
+ProcessValue(new Either&lt;int, string&gt;("Test"));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when value is null.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_FirstValue_" data-uid="BridgingIT.DevKit.Common.Either`2.FirstValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_FirstValue" data-uid="BridgingIT.DevKit.Common.Either`2.FirstValue">
+  FirstValue
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the first value if it exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T1 FirstValue { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T1</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_FirstValue_examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Safe access pattern
+if (either.IsFirst)
+{
+    int value = either.FirstValue;
+    Console.WriteLine($"Got number: {value}");
+}
+
+// Error handling example
+try
+{
+    var stringEither = new Either&lt;int, string&gt;("Hello");
+    int invalidAccess = stringEither.FirstValue; // Will throw
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine("Attempted to access FirstValue when containing second type");
+}
+
+// Pattern with null coalescing
+int number = either.IsFirst ? either.FirstValue : -1;</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the instance contains the second value.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Index_" data-uid="BridgingIT.DevKit.Common.Either`2.Index*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Index" data-uid="BridgingIT.DevKit.Common.Either`2.Index">
+  Index
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected int Index { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_IsFirst_" data-uid="BridgingIT.DevKit.Common.Either`2.IsFirst*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_IsFirst" data-uid="BridgingIT.DevKit.Common.Either`2.IsFirst">
+  IsFirst
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the instance contains the first value type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFirst { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_IsFirst_examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Basic check
+if (either.IsFirst)
+{
+    Console.WriteLine($"Number value: {either.FirstValue}");
+}
+
+// Combined with switch pattern
+either.Switch(
+    firstAction: num =&gt; Console.WriteLine($"Got number: {num}"),
+    secondAction: _ =&gt; Console.WriteLine("Not a number")
+);
+
+// Use in LINQ queries
+var numbers = items
+    .Where(e =&gt; e.IsFirst)
+    .Select(e =&gt; e.FirstValue);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_IsSecond_" data-uid="BridgingIT.DevKit.Common.Either`2.IsSecond*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_IsSecond" data-uid="BridgingIT.DevKit.Common.Either`2.IsSecond">
+  IsSecond
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the instance contains the second value type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSecond { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_IsSecond_examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;("Hello");
+
+// Basic check
+if (either.IsSecond)
+{
+    Console.WriteLine($"String value: {either.SecondValue}");
+}
+
+// Validation example
+public bool ValidateEither(Either&lt;int, string&gt; input)
+{
+    if (input.IsSecond)
+    {
+        return !string.IsNullOrEmpty(input.SecondValue);
+    }
+    return input.FirstValue &gt; 0;
+}
+
+// Collection processing
+var errorMessages = items
+    .Where(e =&gt; e.IsSecond)
+    .Select(e =&gt; e.SecondValue)
+    .ToList();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_SecondValue_" data-uid="BridgingIT.DevKit.Common.Either`2.SecondValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_SecondValue" data-uid="BridgingIT.DevKit.Common.Either`2.SecondValue">
+  SecondValue
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the second value if it exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T2 SecondValue { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T2</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_SecondValue_examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;("Hello");
+
+// Safe access pattern
+if (either.IsSecond)
+{
+    string value = either.SecondValue;
+    Console.WriteLine($"Got string: {value}");
+}
+
+// Error handling example
+try
+{
+    var intEither = new Either&lt;int, string&gt;(42);
+    string invalidAccess = intEither.SecondValue; // Will throw
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine("Attempted to access SecondValue when containing first type");
+}
+
+// LINQ usage example
+var items = new List&lt;Either&lt;int, string&gt;&gt;();
+var strings = items.Where(e =&gt; e.IsSecond).Select(e =&gt; e.SecondValue);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the instance contains the first value.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Value1_" data-uid="BridgingIT.DevKit.Common.Either`2.Value1*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Value1" data-uid="BridgingIT.DevKit.Common.Either`2.Value1">
+  Value1
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected T1 Value1 { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T1</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Value2_" data-uid="BridgingIT.DevKit.Common.Either`2.Value2*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Value2" data-uid="BridgingIT.DevKit.Common.Either`2.Value2">
+  Value2
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected T2 Value2 { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T2</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Filter_" data-uid="BridgingIT.DevKit.Common.Either`2.Filter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Filter_System_Func__0_System_Boolean___1_" data-uid="BridgingIT.DevKit.Common.Either`2.Filter(System.Func{`0,System.Boolean},`1)">
+  Filter(Func&lt;T1, bool&gt;, T2)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filters the first value based on a predicate, converting to the second type if the predicate fails.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Either&lt;T1, T2&gt; Filter(Func&lt;T1, bool&gt; predicate, T2 defaultSecond)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T1, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>The condition to test.</p>
+</dd>
+    <dt><code>defaultSecond</code> <span class="xref">T2</span></dt>
+    <dd><p>The second value to use if the predicate fails.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, T2&gt;</dt>
+    <dd><p>A new Either instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_Filter_System_Func__0_System_Boolean___1__examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Filter positive numbers
+var filtered = either.Filter(
+    n =&gt; n &gt; 0,
+    "Number must be positive"
+);
+
+// Validate user input
+var userInput = new Either&lt;UserDto, string&gt;(dto);
+var validated = userInput.Filter(
+    dto =&gt; dto.Age &gt;= 18,
+    "User must be 18 or older"
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_FromFirst_" data-uid="BridgingIT.DevKit.Common.Either`2.FromFirst*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_FromFirst__0_" data-uid="BridgingIT.DevKit.Common.Either`2.FromFirst(`0)">
+  FromFirst(T1)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an Either instance from the first value type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Either&lt;T1, T2&gt; FromFirst(T1 value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T1</span></dt>
+    <dd><p>The value to store.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, T2&gt;</dt>
+    <dd><p>A new Either instance containing the first value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_FromFirst__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Basic factory usage
+var either = Either&lt;int, string&gt;.FromFirst(42);
+
+// Useful when type inference doesn't work
+var items = new List&lt;Either&lt;int, string&gt;&gt;
+{
+    Either&lt;int, string&gt;.FromFirst(42),
+    Either&lt;int, string&gt;.FromSecond("Hello")
+};
+
+// With conditional logic
+var result = condition
+    ? Either&lt;int, string&gt;.FromFirst(42)
+    : Either&lt;int, string&gt;.FromSecond("Error");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_FromNullable_" data-uid="BridgingIT.DevKit.Common.Either`2.FromNullable*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_FromNullable__0__1_" data-uid="BridgingIT.DevKit.Common.Either`2.FromNullable(`0,`1)">
+  FromNullable(T1, T2)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an Either instance from a nullable value, using the second type for the null case.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Either&lt;T1, T2&gt; FromNullable(T1 value, T2 defaultSecond)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T1</span></dt>
+    <dd><p>The nullable value to convert.</p>
+</dd>
+    <dt><code>defaultSecond</code> <span class="xref">T2</span></dt>
+    <dd><p>The second value to use if value is null.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, T2&gt;</dt>
+    <dd><p>An Either instance containing either the value or the default second value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_FromNullable__0__1__examples">Examples</h4>
+  <pre><code class="lang-csharp">string nullableValue = null;
+var either = Either&lt;string, string&gt;.FromNullable(
+    nullableValue,
+    "Value was null"
+);
+
+// With custom objects
+User user = await GetUserAsync(id);
+var result = Either&lt;User, string&gt;.FromNullable(
+    user,
+    $"User not found with id: {id}"
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_FromSecond_" data-uid="BridgingIT.DevKit.Common.Either`2.FromSecond*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_FromSecond__1_" data-uid="BridgingIT.DevKit.Common.Either`2.FromSecond(`1)">
+  FromSecond(T2)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an Either instance from the second value type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Either&lt;T1, T2&gt; FromSecond(T2 value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T2</span></dt>
+    <dd><p>The value to store.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, T2&gt;</dt>
+    <dd><p>A new Either instance containing the second value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_FromSecond__1__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Basic factory usage
+var either = Either&lt;int, string&gt;.FromSecond("Hello");
+
+// Error handling pattern
+public Either&lt;int, string&gt; ParseNumber(string input)
+{
+    if (int.TryParse(input, out var number))
+    {
+        return Either&lt;int, string&gt;.FromFirst(number);
+    }
+    return Either&lt;int, string&gt;.FromSecond("Invalid number format");
+}
+
+// LINQ usage
+var results = items.Select(item =&gt;
+    item.IsValid
+        ? Either&lt;int, string&gt;.FromFirst(item.Value)
+        : Either&lt;int, string&gt;.FromSecond(item.ErrorMessage)
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_GetValue_" data-uid="BridgingIT.DevKit.Common.Either`2.GetValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_GetValue__1" data-uid="BridgingIT.DevKit.Common.Either`2.GetValue``1">
+  GetValue&lt;TOutput&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the value stored in the <a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either&lt;T1, T2&gt;</a> instance, converting it to the specified type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TOutput GetValue&lt;TOutput&gt;()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TOutput</span></dt>
+    <dd><p>The stored value cast to the specified type <code class="typeparamref">TOutput</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TOutput</code></dt>
+    <dd><p>The type to which the stored value will be cast.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidCastException</span></dt>
+    <dd><p>Thrown when the stored value cannot be cast to the specified type.</p>
+</dd>
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown if the Either instance does not contain a value.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_MatchAsync_" data-uid="BridgingIT.DevKit.Common.Either`2.MatchAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_MatchAsync__1_System_Func__0_System_Threading_Tasks_Task___0___System_Func__1_System_Threading_Tasks_Task___0___" data-uid="BridgingIT.DevKit.Common.Either`2.MatchAsync``1(System.Func{`0,System.Threading.Tasks.Task{``0}},System.Func{`1,System.Threading.Tasks.Task{``0}})">
+  MatchAsync&lt;T&gt;(Func&lt;T1, Task&lt;T&gt;&gt;, Func&lt;T2, Task&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously matches the contained value with the appropriate function and returns the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;T&gt; MatchAsync&lt;T&gt;(Func&lt;T1, Task&lt;T&gt;&gt; firstMatch, Func&lt;T2, Task&lt;T&gt;&gt; secondMatch)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstMatch</code> <span class="xref">Func</span>&lt;T1, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The async function to execute if the instance contains the first type.</p>
+</dd>
+    <dt><code>secondMatch</code> <span class="xref">Func</span>&lt;T2, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd><p>The async function to execute if the instance contains the second type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_MatchAsync__1_System_Func__0_System_Threading_Tasks_Task___0___System_Func__1_System_Threading_Tasks_Task___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Basic async transformation
+var result = await either.MatchAsync(
+    firstMatch: async num =&gt; await GetUserByIdAsync(num),
+    secondMatch: async str =&gt; await GetUserByNameAsync(str)
+);
+
+// With error handling
+try
+{
+    var result = await either.MatchAsync(
+        firstMatch: async num =&gt;
+        {
+            var user = await dbContext.Users.FindAsync(num);
+            if (user == null) throw new KeyNotFoundException();
+            return user;
+        },
+        secondMatch: async str =&gt;
+        {
+            var user = await dbContext.Users.FirstOrDefaultAsync(u =&gt; u.Email == str);
+            if (user == null) throw new KeyNotFoundException();
+            return user;
+        }
+    );
+}
+catch (KeyNotFoundException)
+{
+    // Handle not found
+}
+
+// With cancellation
+using var cts = new CancellationTokenSource();
+var result = await either.MatchAsync(
+    async num =&gt; await ProcessNumberAsync(num, cts.Token),
+    async str =&gt; await ProcessStringAsync(str, cts.Token)
+);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when either match function is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Match_" data-uid="BridgingIT.DevKit.Common.Either`2.Match*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Match__1_System_Func__0___0__System_Func__1___0__" data-uid="BridgingIT.DevKit.Common.Either`2.Match``1(System.Func{`0,``0},System.Func{`1,``0})">
+  Match&lt;T&gt;(Func&lt;T1, T&gt;, Func&lt;T2, T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Matches the contained value with the appropriate function and returns the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Match&lt;T&gt;(Func&lt;T1, T&gt; firstMatch, Func&lt;T2, T&gt; secondMatch)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstMatch</code> <span class="xref">Func</span>&lt;T1, T&gt;</dt>
+    <dd><p>The function to execute if the instance contains the first type.</p>
+</dd>
+    <dt><code>secondMatch</code> <span class="xref">Func</span>&lt;T2, T&gt;</dt>
+    <dd><p>The function to execute if the instance contains the second type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd><p>The result of the matching function.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_Match__1_System_Func__0___0__System_Func__1___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Simple string conversion
+string result = either.Match(
+    firstMatch: num =&gt; $"Number: {num}",
+    secondMatch: str =&gt; $"Text: {str}"
+);
+
+// Object transformation
+var dto = either.Match(
+    firstMatch: num =&gt; new SuccessDto { Value = num },
+    secondMatch: err =&gt; new ErrorDto { Message = err }
+);
+
+// Validation example
+bool isValid = either.Match(
+    firstMatch: num =&gt; num &gt; 0,
+    secondMatch: str =&gt; !string.IsNullOrEmpty(str)
+);
+
+// Error handling
+try
+{
+    var result = either.Match(null, str =&gt; str);
+}
+catch (ArgumentNullException ex)
+{
+    Console.WriteLine("Match functions cannot be null");
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when either match function is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Switch_" data-uid="BridgingIT.DevKit.Common.Either`2.Switch*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Switch_System_Action__0__System_Action__1__" data-uid="BridgingIT.DevKit.Common.Either`2.Switch(System.Action{`0},System.Action{`1})">
+  Switch(Action&lt;T1&gt;, Action&lt;T2&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the appropriate action based on the contained value type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Switch(Action&lt;T1&gt; firstAction, Action&lt;T2&gt; secondAction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstAction</code> <span class="xref">Action</span>&lt;T1&gt;</dt>
+    <dd><p>The action to execute if the instance contains the first type.</p>
+</dd>
+    <dt><code>secondAction</code> <span class="xref">Action</span>&lt;T2&gt;</dt>
+    <dd><p>The action to execute if the instance contains the second type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_Switch_System_Action__0__System_Action__1___examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Basic usage
+either.Switch(
+    firstAction: num =&gt; Console.WriteLine($"Number: {num}"),
+    secondAction: str =&gt; Console.WriteLine($"Text: {str}")
+);
+
+// With logging
+either.Switch(
+    firstAction: num =&gt;
+    {
+        logger.LogInformation("Processing number: {Number}", num);
+        ProcessNumber(num);
+    },
+    secondAction: str =&gt;
+    {
+        logger.LogInformation("Processing text: {Text}", str);
+        ProcessText(str);
+    }
+);
+
+// Error handling with validation
+either.Switch(
+    firstAction: num =&gt;
+    {
+        if (num &lt; 0) throw new ArgumentException("Number must be positive");
+        ProcessPositiveNumber(num);
+    },
+    secondAction: str =&gt;
+    {
+        if (string.IsNullOrEmpty(str)) throw new ArgumentException("String cannot be empty");
+        ProcessNonEmptyString(str);
+    }
+);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when either action is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_SwitchAsync_" data-uid="BridgingIT.DevKit.Common.Either`2.SwitchAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_SwitchAsync_System_Func__0_System_Threading_Tasks_Task__System_Func__1_System_Threading_Tasks_Task__" data-uid="BridgingIT.DevKit.Common.Either`2.SwitchAsync(System.Func{`0,System.Threading.Tasks.Task},System.Func{`1,System.Threading.Tasks.Task})">
+  SwitchAsync(Func&lt;T1, Task&gt;, Func&lt;T2, Task&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously executes the appropriate action based on the contained value type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task SwitchAsync(Func&lt;T1, Task&gt; firstAction, Func&lt;T2, Task&gt; secondAction)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstAction</code> <span class="xref">Func</span>&lt;T1, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>The async action to execute if the instance contains the first type.</p>
+</dd>
+    <dt><code>secondAction</code> <span class="xref">Func</span>&lt;T2, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>The async action to execute if the instance contains the second type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_SwitchAsync_System_Func__0_System_Threading_Tasks_Task__System_Func__1_System_Threading_Tasks_Task___examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Basic async operation
+await either.SwitchAsync(
+    firstAction: async num =&gt; await SaveNumberAsync(num),
+    secondAction: async str =&gt; await SaveStringAsync(str)
+);
+
+// With dependency injection and logging
+await either.SwitchAsync(
+    firstAction: async num =&gt;
+    {
+        await logger.LogInformationAsync("Processing number: {Number}", num);
+        await dataService.ProcessNumberAsync(num);
+    },
+    secondAction: async str =&gt;
+    {
+        await logger.LogInformationAsync("Processing text: {Text}", str);
+        await dataService.ProcessTextAsync(str);
+    }
+);
+
+// With retry policy
+await either.SwitchAsync(
+    firstAction: async num =&gt;
+    {
+        await Policy
+            .Handle&lt;HttpRequestException&gt;()
+            .WaitAndRetryAsync(3, i =&gt; TimeSpan.FromSeconds(Math.Pow(2, i)))
+            .ExecuteAsync(async () =&gt; await ProcessNumberAsync(num));
+    },
+    secondAction: async str =&gt;
+    {
+        await Policy
+            .Handle&lt;HttpRequestException&gt;()
+            .WaitAndRetryAsync(3, i =&gt; TimeSpan.FromSeconds(Math.Pow(2, i)))
+            .ExecuteAsync(async () =&gt; await ProcessStringAsync(str));
+    }
+);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when either action is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_ToResult_" data-uid="BridgingIT.DevKit.Common.Either`2.ToResult*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_ToResult__1_System_Func__0___0__System_Func__1___0__System_Func__1_BridgingIT_DevKit_Common_IResultError__" data-uid="BridgingIT.DevKit.Common.Either`2.ToResult``1(System.Func{`0,``0},System.Func{`1,``0},System.Func{`1,BridgingIT.DevKit.Common.IResultError})">
+  ToResult&lt;TResult&gt;(Func&lt;T1, TResult&gt;, Func&lt;T2, TResult&gt;, Func&lt;T2, IResultError&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Either instance to a Result type, mapping both success and failure cases.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;TResult&gt; ToResult&lt;TResult&gt;(Func&lt;T1, TResult&gt; firstMatch, Func&lt;T2, TResult&gt; secondMatch, Func&lt;T2, IResultError&gt; errorFactory = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstMatch</code> <span class="xref">Func</span>&lt;T1, TResult&gt;</dt>
+    <dd><p>Function to convert the first value type to the result value.</p>
+</dd>
+    <dt><code>secondMatch</code> <span class="xref">Func</span>&lt;T2, TResult&gt;</dt>
+    <dd><p>Function to convert the second value type to the result value.</p>
+</dd>
+    <dt><code>errorFactory</code> <span class="xref">Func</span>&lt;T2, <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TResult&gt;</dt>
+    <dd><p>A Result instance containing the mapped value with appropriate success/failure state.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_ToResult__1_System_Func__0___0__System_Func__1___0__System_Func__1_BridgingIT_DevKit_Common_IResultError___examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Convert to Result with value mapping
+var result = either.ToResult(
+    firstMatch: num =&gt; num.ToString(),  // Success case
+    secondMatch: error =&gt; "0"           // Error case
+);
+
+// Convert with error handling
+var result = either.ToResult(
+    firstMatch: num =&gt; new UserDto { Id = num },
+    secondMatch: error =&gt; default
+);
+
+// With domain validation
+var result = either.ToResult(
+    firstMatch: user =&gt; user,
+    secondMatch: error =&gt; default,
+    error =&gt; new ValidationError(error)
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_ToResult_" data-uid="BridgingIT.DevKit.Common.Either`2.ToResult*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_ToResult__1_System_Func__0___0__System_String_" data-uid="BridgingIT.DevKit.Common.Either`2.ToResult``1(System.Func{`0,``0},System.String)">
+  ToResult&lt;TResult&gt;(Func&lt;T1, TResult&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Either instance to a Result type with error handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;TResult&gt; ToResult&lt;TResult&gt;(Func&lt;T1, TResult&gt; firstMatch, string errorMessage)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstMatch</code> <span class="xref">Func</span>&lt;T1, TResult&gt;</dt>
+    <dd><p>Function to convert the first value type to the result value.</p>
+</dd>
+    <dt><code>errorMessage</code> <span class="xref">string</span></dt>
+    <dd><p>The error message to use when the Either contains the second type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TResult&gt;</dt>
+    <dd><p>A Result instance containing the mapped value with appropriate success/failure state.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_ToResult__1_System_Func__0___0__System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// Basic conversion with error message
+var result = either.ToResult(
+    firstMatch: num =&gt; num.ToString(),
+    errorMessage: "Failed to process value"
+);
+
+// With domain object
+var result = either.ToResult(
+    firstMatch: id =&gt; new User { Id = id },
+    errorMessage: "Invalid user ID"
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_ToResult_" data-uid="BridgingIT.DevKit.Common.Either`2.ToResult*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_ToResult__2_System_Func__0___0__" data-uid="BridgingIT.DevKit.Common.Either`2.ToResult``2(System.Func{`0,``0})">
+  ToResult&lt;TResult, TError&gt;(Func&lt;T1, TResult&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts an Either instance to a Result type with custom error handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Result&lt;TResult&gt; ToResult&lt;TResult, TError&gt;(Func&lt;T1, TResult&gt; firstMatch) where TError : IResultError, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>firstMatch</code> <span class="xref">Func</span>&lt;T1, TResult&gt;</dt>
+    <dd><p>Function to convert the first value type to the result value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TResult&gt;</dt>
+    <dd><p>A Result instance containing the mapped value with appropriate success/failure state.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TError</code></dt>
+    <dd><p>The type of the error to create.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_ToResult__2_System_Func__0___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+
+// With custom error type
+var result = either.ToResult&lt;UserDto, ValidationError&gt;(
+    firstMatch: id =&gt; new UserDto { Id = id }
+);
+
+// With domain validation
+var result = either.ToResult&lt;User, DomainError&gt;(
+    firstMatch: id =&gt; new User { Id = id }
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_ToString_" data-uid="BridgingIT.DevKit.Common.Either`2.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_ToString" data-uid="BridgingIT.DevKit.Common.Either`2.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts the Either instance to a string representation based on its contained value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A string representation of the contained value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_ToString_examples">Examples</h4>
+  <pre><code class="lang-csharp">var either = new Either&lt;int, string&gt;(42);
+Console.WriteLine(either.ToString()); // "First(42)"
+
+var stringEither = new Either&lt;int, string&gt;("Hello");
+Console.WriteLine(stringEither.ToString()); // "Second(Hello)"</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_Try_" data-uid="BridgingIT.DevKit.Common.Either`2.Try*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_Try_System_Func__0__" data-uid="BridgingIT.DevKit.Common.Either`2.Try(System.Func{`0})">
+  Try(Func&lt;T1&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to execute a function that returns a value, wrapping the result or exception in an Either.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Either&lt;T1, Exception&gt; Try(Func&lt;T1&gt; func)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;T1&gt;</dt>
+    <dd><p>The function to execute.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, <span class="xref">Exception</span>&gt;</dt>
+    <dd><p>Either the successful result or the caught exception.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_Try_System_Func__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">// Parse number safely
+var result = Either&lt;int, Exception&gt;.Try(() =&gt; int.Parse("42"));
+
+// Handle database operations
+var dbResult = Either&lt;User, Exception&gt;.Try(() =&gt;
+    dbContext.Users.First(u =&gt; u.Id == userId)
+);
+
+// Process result
+dbResult.Switch(
+    user =&gt; Console.WriteLine($"Found user: {user.Name}"),
+    ex =&gt; Console.WriteLine($"Error: {ex.Message}")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_TryAsync_" data-uid="BridgingIT.DevKit.Common.Either`2.TryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_TryAsync_System_Func_System_Threading_Tasks_Task__0___" data-uid="BridgingIT.DevKit.Common.Either`2.TryAsync(System.Func{System.Threading.Tasks.Task{`0}})">
+  TryAsync(Func&lt;Task&lt;T1&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to execute an async function, wrapping the result or exception in an Either.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Either&lt;T1, Exception&gt;&gt; TryAsync(Func&lt;Task&lt;T1&gt;&gt; func)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>func</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;T1&gt;&gt;</dt>
+    <dd><p>The async function to execute.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, <span class="xref">Exception</span>&gt;&gt;</dt>
+    <dd><p>A task containing either the successful result or the caught exception.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_TryAsync_System_Func_System_Threading_Tasks_Task__0____examples">Examples</h4>
+  <pre><code class="lang-csharp">// Async API call with error handling
+var result = await Either&lt;ApiResponse, Exception&gt;.TryAsync(async () =&gt;
+{
+    using var client = new HttpClient();
+    var response = await client.GetAsync("https://api.example.com/data");
+    response.EnsureSuccessStatusCode();
+    return await response.Content.ReadFromJsonAsync&lt;ApiResponse&gt;();
+});
+
+// Process result
+await result.SwitchAsync(
+    async response =&gt; await ProcessResponseAsync(response),
+    async ex =&gt; await LogErrorAsync(ex)
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_TryGetFirstValue_" data-uid="BridgingIT.DevKit.Common.Either`2.TryGetFirstValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_TryGetFirstValue__0__" data-uid="BridgingIT.DevKit.Common.Either`2.TryGetFirstValue(`0@)">
+  TryGetFirstValue(out T1)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the first value stored in the <a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either&lt;T1, T2&gt;</a> instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetFirstValue(out T1 first)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>first</code> <span class="xref">T1</span></dt>
+    <dd><p>When this method returns, contains the first value if the retrieval succeeded, or the default value if it failed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>true if the first value is successfully retrieved; otherwise, false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the <a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either&lt;T1, T2&gt;</a> instance contains the second value.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_TryGetSecondValue_" data-uid="BridgingIT.DevKit.Common.Either`2.TryGetSecondValue*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_TryGetSecondValue__1__" data-uid="BridgingIT.DevKit.Common.Either`2.TryGetSecondValue(`1@)">
+  TryGetSecondValue(out T2)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attempts to retrieve the second value stored in the instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryGetSecondValue(out T2 second)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>second</code> <span class="xref">T2</span></dt>
+    <dd><p>The variable to store the second value if it exists.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p>True if the instance contains the second value; otherwise, false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the instance contains the first value.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Either`2.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_op_Implicit__0__BridgingIT_DevKit_Common_Either__0__1_" data-uid="BridgingIT.DevKit.Common.Either`2.op_Implicit(`0)~BridgingIT.DevKit.Common.Either{`0,`1}">
+  implicit operator Either&lt;T1, T2&gt;(T1)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a value of the first type to an Either instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Either&lt;T1, T2&gt;(T1 value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T1</span></dt>
+    <dd><p>The value to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, T2&gt;</dt>
+    <dd><p>A new Either instance containing the first value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_op_Implicit__0__BridgingIT_DevKit_Common_Either__0__1__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Direct assignment
+Either&lt;int, string&gt; either = 42;
+
+// Method parameter
+void ProcessEither(Either&lt;int, string&gt; value) { }
+ProcessEither(42); // Implicit conversion
+
+// In collections
+var list = new List&lt;Either&lt;int, string&gt;&gt;
+{
+    42,                // Implicit conversion
+    "Hello"           // Implicit conversion
+};</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Either_2_op_Implicit_" data-uid="BridgingIT.DevKit.Common.Either`2.op_Implicit*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Either_2_op_Implicit__1__BridgingIT_DevKit_Common_Either__0__1_" data-uid="BridgingIT.DevKit.Common.Either`2.op_Implicit(`1)~BridgingIT.DevKit.Common.Either{`0,`1}">
+  implicit operator Either&lt;T1, T2&gt;(T2)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Implicitly converts a value of the second type to an Either instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static implicit operator Either&lt;T1, T2&gt;(T2 value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">T2</span></dt>
+    <dd><p>The value to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Either-2.html">Either</a>&lt;T1, T2&gt;</dt>
+    <dd><p>A new Either instance containing the second value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Either_2_op_Implicit__1__BridgingIT_DevKit_Common_Either__0__1__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Direct assignment
+Either&lt;int, string&gt; either = "Hello";
+
+// In expression
+Either&lt;int, string&gt; GetValue(bool useNumber)
+    =&gt; useNumber ? 42 : "Not a number";
+
+// With LINQ
+var results = items.Select&lt;string, Either&lt;int, string&gt;&gt;(item =&gt;
+    int.TryParse(item, out var number) ? number : item);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

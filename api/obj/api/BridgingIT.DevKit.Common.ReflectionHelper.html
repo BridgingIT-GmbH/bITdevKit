@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ReflectionHelper | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ReflectionHelper | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides helper methods for reflecting and manipulating object properties at runtime.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ReflectionHelper">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ReflectionHelper" data-uid="BridgingIT.DevKit.Common.ReflectionHelper" class="text-break">
+Class ReflectionHelper  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides helper methods for reflecting and manipulating object properties at runtime.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ReflectionHelper</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ReflectionHelper</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_CreateGetter_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.CreateGetter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_CreateGetter__2_System_Reflection_FieldInfo_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.CreateGetter``2(System.Reflection.FieldInfo)">
+  CreateGetter&lt;TParam, TReturn&gt;(FieldInfo)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a getter function for accessing the value of a specified field.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Func&lt;TParam, TReturn&gt; CreateGetter&lt;TParam, TReturn&gt;(FieldInfo field)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>field</code> <span class="xref">FieldInfo</span></dt>
+    <dd><p>The FieldInfo object representing the field for which the getter function is created.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Func</span>&lt;TParam, TReturn&gt;</dt>
+    <dd><p>A function that takes an instance of type TParam and returns the value of the field of type TReturn.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TParam</code></dt>
+    <dd><p>The type of the object containing the field.</p>
+</dd>
+    <dt><code>TReturn</code></dt>
+    <dd><p>The type of the field value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_FindTypes_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.FindTypes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_FindTypes_System_Func_System_Type_System_Boolean__System_Reflection_Assembly___" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.FindTypes(System.Func{System.Type,System.Boolean},System.Reflection.Assembly[])">
+  FindTypes(Func&lt;Type, bool&gt;, params Assembly[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds and returns all types from the specified assemblies that match the provided predicate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;Type&gt; FindTypes(Func&lt;Type, bool&gt; predicate, params Assembly[] assemblies)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">Type</span>, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>A function to test each type for a condition.</p>
+</dd>
+    <dt><code>assemblies</code> <span class="xref">Assembly</span>[]</dt>
+    <dd><p>An optional array of assemblies to search for types. If not specified, all assemblies in the
+current AppDomain are searched.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
+    <dd><p>An enumerable collection of types that match the specified predicate.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_GetCachedMethods_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetCachedMethods*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_GetCachedMethods_System_Type_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetCachedMethods(System.Type)">
+  GetCachedMethods(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the cached methods for the specified type. If not already cached, retrieves all public and non-public instance methods and caches them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MethodInfo[] GetCachedMethods(Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The type whose methods are to be retrieved.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">MethodInfo</span>[]</dt>
+    <dd><p>An array of <span class="xref">System.Reflection.MethodInfo</span> representing the methods of the type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_GetCachedProperties_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetCachedProperties*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_GetCachedProperties_System_Type_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetCachedProperties(System.Type)">
+  GetCachedProperties(Type)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the cached properties for the specified type. If not already cached, retrieves all public and non-public instance properties and caches them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyInfo[] GetCachedProperties(Type type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">Type</span></dt>
+    <dd><p>The type whose properties are to be retrieved.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">PropertyInfo</span>[]</dt>
+    <dd><p>An array of <span class="xref">System.Reflection.PropertyInfo</span> representing the properties of the type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_GetProperty_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetProperty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_GetProperty_System_Object_System_String_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetProperty(System.Object,System.String)">
+  GetProperty(object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the value of a specified property from a given instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static object GetProperty(object instance, string propertyName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">object</span></dt>
+    <dd><p>The object instance from which the property value is to be retrieved.</p>
+</dd>
+    <dt><code>propertyName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the property whose value is to be retrieved.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">object</span></dt>
+    <dd><p>The value of the property if found; otherwise, the default value for the property type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_GetProperty_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetProperty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_GetProperty__1_System_Object_System_String_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.GetProperty``1(System.Object,System.String)">
+  GetProperty&lt;TType&gt;(object, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the property value of the specified property name from the given instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TType GetProperty&lt;TType&gt;(object instance, string propertyName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">object</span></dt>
+    <dd><p>The instance from which the property value is retrieved.</p>
+</dd>
+    <dt><code>propertyName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the property whose value is to be retrieved.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TType</span></dt>
+    <dd><p>The value of the property if found; otherwise, the default value of the specified type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TType</code></dt>
+    <dd><p>The type of the property value to be returned.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_SetProperties_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.SetProperties*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_SetProperties_System_Object_System_Collections_Generic_IDictionary_System_String_System_Object__" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.SetProperties(System.Object,System.Collections.Generic.IDictionary{System.String,System.Object})">
+  SetProperties(object, IDictionary&lt;string, object&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the properties of the specified instance with the values provided in the propertyValues dictionary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetProperties(object instance, IDictionary&lt;string, object&gt; propertyValues)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">object</span></dt>
+    <dd><p>The object instance whose properties need to be set.</p>
+</dd>
+    <dt><code>propertyValues</code> <span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd><p>A dictionary containing property names and their corresponding values.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ReflectionHelper_SetProperty_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.SetProperty*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ReflectionHelper_SetProperty_System_Object_System_String_System_Object_" data-uid="BridgingIT.DevKit.Common.ReflectionHelper.SetProperty(System.Object,System.String,System.Object)">
+  SetProperty(object, string, object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the value of a specified property on an instance of a given object. The property can be private, public,
+static, or instance-based.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void SetProperty(object instance, string propertyName, object propertyValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>instance</code> <span class="xref">object</span></dt>
+    <dd><p>The object instance on which the property value will be set.</p>
+</dd>
+    <dt><code>propertyName</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the property to set. Case is ignored.</p>
+</dd>
+    <dt><code>propertyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The value to assign to the property.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

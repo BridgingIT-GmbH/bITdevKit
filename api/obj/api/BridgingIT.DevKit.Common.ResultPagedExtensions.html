@@ -1,0 +1,2666 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ResultPagedExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ResultPagedExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents the result of an operation, which can either be a success or a failure. Contains functional methods to better work with success and failure results and their values, as well as construct results from actions or tasks.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ResultPagedExtensions" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions" class="text-break">
+Class ResultPagedExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents the result of an operation, which can either be a success or a failure.
+Contains functional methods to better work with success and failure results and their values, as well as construct results from actions or tasks.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ResultPagedExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ResultPagedExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_AndThenAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.AndThenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_AndThenAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.AndThenAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.ResultPaged{``0}}},System.Threading.CancellationToken)">
+  AndThenAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously chains a new operation maintaining paging context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; AndThenAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_AndThenAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var result = await pagedUsers
+.AndThenAsync(
+async (users, ct) =&gt; await ValidateAndProcessPageAsync(
+users,
+CurrentPage,
+ct
+),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_AndThen_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.AndThen*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_AndThen__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__BridgingIT_DevKit_Common_ResultPaged___0___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.AndThen``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},BridgingIT.DevKit.Common.ResultPaged{``0}})">
+  AndThen&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, ResultPaged&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Chains a new operation if the current ResultPaged is successful.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; AndThen&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, ResultPaged&lt;T&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_AndThen__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__BridgingIT_DevKit_Common_ResultPaged___0____examples">Examples</h4>
+  <p>var result = pagedUsers
+.AndThen(users =&gt; ValidatePageSize(users))
+.AndThen(users =&gt; ProcessUserPage(users, CurrentPage));</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_BiMap_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.BiMap*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_BiMap__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.BiMap``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1}},System.Func{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Common.IResultError}})">
+  BiMap&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, IEnumerable&lt;IResultError&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps both success and failure cases simultaneously while preserving pagination metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;TNew&gt; BiMap&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt; onSuccess, Func&lt;IReadOnlyList&lt;IResultError&gt;, IEnumerable&lt;IResultError&gt;&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The source result to map.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;</dt>
+    <dd><p>Function to transform the collection if successful.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;&gt;</dt>
+    <dd><p>Function to transform the errors if failed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;</dt>
+    <dd><p>A new ResultPaged with either the transformed collection or transformed errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the source result value.</p>
+</dd>
+    <dt><code>TNew</code></dt>
+    <dd><p>The type of the new result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_BiMap__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_IResultError____examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = pagedUsers
+    .BiMap(
+        users =&gt; users.Select(u =&gt; new UserDto(u)),
+        errors =&gt; errors.Select(e =&gt; new PublicError(e.Message))
+    );</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_BindAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.BindAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_BindAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___1____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.BindAsync``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.ResultPaged{``1}}},System.Threading.CancellationToken)">
+  BindAsync&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;TNew&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously binds the page collection to a new paged result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TNew&gt;&gt; BindAsync&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;TNew&gt;&gt;&gt; binder, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_BindAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___1____System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var activeUsers = await pagedUsers.BindAsync(async (users, ct) =&gt;
+users.Any()
+? await ValidateAndFilterUsersAsync(users, ct)
+: ResultPaged{User}.Failure(&quot;No users to process&quot;),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Bind_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Bind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Bind__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__BridgingIT_DevKit_Common_ResultPaged___1___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Bind``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},BridgingIT.DevKit.Common.ResultPaged{``1}})">
+  Bind&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, ResultPaged&lt;TNew&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Binds the page collection to a new paged result while preserving metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;TNew&gt; Bind&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, ResultPaged&lt;TNew&gt;&gt; binder)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>binder</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Bind__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__BridgingIT_DevKit_Common_ResultPaged___1____examples">Examples</h4>
+  <p>var activeUsers = pagedUsers.Bind(users =&gt;
+users.Any()
+? ResultPaged{User}.Success(
+users.Where(u =&gt; u.IsActive),
+totalCount: activeCount,
+page: currentPage,
+pageSize: pageSize)
+: ResultPaged{User}.Failure(&quot;No active users found&quot;)
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_ChooseAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ChooseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_ChooseAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultChooseOption_System_Collections_Generic_IEnumerable___1_____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ChooseAsync``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.ResultChooseOption{System.Collections.Generic.IEnumerable{``1}}}},System.Threading.CancellationToken)">
+  ChooseAsync&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;ResultChooseOption&lt;IEnumerable&lt;TNew&gt;&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TNew&gt;&gt; ChooseAsync&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;ResultChooseOption&lt;IEnumerable&lt;TNew&gt;&gt;&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultChooseOption-1.html">ResultChooseOption</a>&lt;<span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Choose_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Choose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Choose__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__BridgingIT_DevKit_Common_ResultChooseOption_System_Collections_Generic_IEnumerable___1____" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Choose``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},BridgingIT.DevKit.Common.ResultChooseOption{System.Collections.Generic.IEnumerable{``1}}})">
+  Choose&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, ResultChooseOption&lt;IEnumerable&lt;TNew&gt;&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;TNew&gt; Choose&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, ResultChooseOption&lt;IEnumerable&lt;TNew&gt;&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.ResultChooseOption-1.html">ResultChooseOption</a>&lt;<span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_CollectAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.CollectAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_CollectAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___1____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.CollectAsync``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``1}}},System.Threading.CancellationToken)">
+  CollectAsync&lt;T, TOutput&gt;(ResultPaged&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;Result&lt;TOutput&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously applies an operation to each element while maintaining pagination.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TOutput&gt;&gt; CollectAsync&lt;T, TOutput&gt;(this ResultPaged&lt;T&gt; result, Func&lt;T, CancellationToken, Task&lt;Result&lt;TOutput&gt;&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;T, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TOutput&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TOutput</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_CollectAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___1____System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var userDtos = await pagedUsers.CollectAsync(
+async (user, ct) =&gt; await ValidateAndMapUserAsync(user, ct),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Collect_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Collect*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Collect__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_BridgingIT_DevKit_Common_Result___1___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Collect``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{``0,BridgingIT.DevKit.Common.Result{``1}})">
+  Collect&lt;T, TOutput&gt;(ResultPaged&lt;T&gt;, Func&lt;T, Result&lt;TOutput&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;TOutput&gt; Collect&lt;T, TOutput&gt;(this ResultPaged&lt;T&gt; result, Func&lt;T, Result&lt;TOutput&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TOutput&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TOutput</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_EnsureAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.EnsureAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_EnsureAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.EnsureAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IResultError,System.Threading.CancellationToken)">
+  EnsureAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;bool&gt;&gt;, IResultError, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously ensures a condition is met for the page collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; EnsureAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;bool&gt;&gt; predicate, IResultError error, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_EnsureAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var result = await pagedUsers.EnsureAsync(
+async (users, ct) =&gt; await ValidatePageSizeAsync(users, ct),
+new ValidationError(&quot;Invalid page configuration&quot;),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Ensure_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Ensure*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Ensure__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Ensure``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},BridgingIT.DevKit.Common.IResultError)">
+  Ensure&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, bool&gt;, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Ensure&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, bool&gt; predicate, IResultError error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.FilterAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.FilterAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IResultError,System.Threading.CancellationToken)">
+  FilterAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;bool&gt;&gt;, IResultError, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously filters the page collection based on a predicate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; FilterAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;bool&gt;&gt; predicate, IResultError error = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var validUsers = await pagedUsers.FilterAsync(
+async (users, ct) =&gt; await ValidateAllUsersAsync(users, ct),
+new ValidationError(&quot;Not all users are valid&quot;),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.FilterAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.FilterAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{``0,System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Threading.CancellationToken)">
+  FilterAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously filters items in a paged collection while maintaining pagination metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; FilterAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt; predicate, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The async filtering function that returns true for items to keep</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A Task containing the filtered ResultPaged</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Validate users against external service
+var validUsers = await pagedUsers.FilterAsync(
+    async (user, ct) =&gt; await userValidator.IsValidAsync(user, ct),
+    cancellationToken
+);
+
+// Check user permissions
+var authorizedUsers = await pagedUsers.FilterAsync(
+    async (user, ct) =&gt; await permissionService.HasAccessAsync(user.Id, ct)
+);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_FilterAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Handles cancellation and preserves error/message state. Returns original result
+if input is in error state or predicate is null.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Filter_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Filter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Filter__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Filter``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},BridgingIT.DevKit.Common.IResultError)">
+  Filter&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, bool&gt;, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Filters the page collection based on a predicate, preserving pagination metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Filter&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, bool&gt; predicate, IResultError error = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Filter__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <p>var adultUsers = pagedUsers.Filter(
+users =&gt; users.All(u =&gt; u.Age &gt;= 18),
+new ValidationError(&quot;All users must be adults&quot;)
+);
+// Maintains the same page info even if some items are filtered</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Filter_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Filter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Filter__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func___0_System_Boolean__" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Filter``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{``0,System.Boolean})">
+  Filter&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;T, bool&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Filter&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;T, bool&gt; predicate)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.HandleAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Action_System_Collections_Generic_IEnumerable___0___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.HandleAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Action{System.Collections.Generic.IEnumerable{``0}},System.Func{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  HandleAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Action&lt;IEnumerable&lt;T&gt;&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a synchronous success function with an async failure handler.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; HandleAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Action&lt;IEnumerable&lt;T&gt;&gt; onSuccess, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&gt; onFailure, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to handle.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Action</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
+    <dd><p>Synchronous function to execute if the Result is successful, receiving the values.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>Async function to execute if the Result failed, receiving the errors.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A Task containing the original ResultPaged instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Action_System_Collections_Generic_IEnumerable___0___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+await result.HandleAsync(
+    users =&gt; {
+        foreach(var user in users) {
+            Console.WriteLine($"Processing user: {user.Name}");
+        }
+    },
+    async (errors, ct) =&gt; await LogErrorsAsync(errors, ct),
+    cancellationToken
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.HandleAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.HandleAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Action{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError}},System.Threading.CancellationToken)">
+  HandleAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&gt;, Action&lt;IReadOnlyList&lt;IResultError&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously executes a success function with a synchronous failure handler.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; HandleAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&gt; onSuccess, Action&lt;IReadOnlyList&lt;IResultError&gt;&gt; onFailure, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to handle.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>Async function to execute if the Result is successful, receiving the values.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Action</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;&gt;</dt>
+    <dd><p>Synchronous function to execute if the Result failed, receiving the errors.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A Task containing the original ResultPaged instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+await result.HandleAsync(
+    async (users, ct) =&gt; {
+        foreach(var user in users) {
+            await ProcessUserAsync(user, ct);
+        }
+    },
+    errors =&gt; Console.WriteLine($"Failed with {errors.Count} errors"),
+    cancellationToken
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.HandleAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.HandleAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Func{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  HandleAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously executes different actions based on the ResultPaged's success state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; HandleAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&gt; onSuccess, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&gt; onFailure, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to handle.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>Async function to execute if the Result is successful, receiving the values.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd><p>Async function to execute if the Result failed, receiving the errors.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A Task containing the original ResultPaged instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_HandleAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+await result.HandleAsync(
+    async (users, ct) =&gt; {
+        foreach(var user in users) {
+            await LogUserAccessAsync(user, ct);
+        }
+    },
+    async (errors, ct) =&gt; await LogErrorsAsync(errors, ct),
+    cancellationToken
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Handle_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Handle*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Handle__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Action_System_Collections_Generic_IEnumerable___0___System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Handle``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Action{System.Collections.Generic.IEnumerable{``0}},System.Action{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError}})">
+  Handle&lt;T&gt;(ResultPaged&lt;T&gt;, Action&lt;IEnumerable&lt;T&gt;&gt;, Action&lt;IReadOnlyList&lt;IResultError&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes different actions based on the ResultPaged's success state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Handle&lt;T&gt;(this ResultPaged&lt;T&gt; result, Action&lt;IEnumerable&lt;T&gt;&gt; onSuccess, Action&lt;IReadOnlyList&lt;IResultError&gt;&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to handle.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Action</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
+    <dd><p>Action to execute if the Result is successful, receiving the values.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Action</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;&gt;</dt>
+    <dd><p>Action to execute if the Result failed, receiving the errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The original ResultPaged instance.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Handle__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Action_System_Collections_Generic_IEnumerable___0___System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+result.Handle(
+    onSuccess: users =&gt; {
+        Console.WriteLine($"Processing {users.Count()} users from page {result.CurrentPage}");
+        foreach(var user in users) {
+            Console.WriteLine($"User: {user.Name}");
+        }
+    },
+    onFailure: errors =&gt; Console.WriteLine($"Failed with {errors.Count} errors")
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_Microsoft_Extensions_Logging_LogLevel_Microsoft_Extensions_Logging_LogLevel_System_Object___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log``1(BridgingIT.DevKit.Common.ResultPaged{``0},Microsoft.Extensions.Logging.ILogger,System.String,Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.LogLevel,System.Object[])">
+  Log&lt;T&gt;(ResultPaged&lt;T&gt;, ILogger, string, LogLevel, LogLevel, params object[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs a <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> using structured logging with custom levels.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Log&lt;T&gt;(this ResultPaged&lt;T&gt; result, ILogger logger, string messageTemplate, LogLevel successLevel, LogLevel failureLevel, params object[] args)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result instance to log.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to. If null, the method is a no-op and returns the original result.</p>
+</dd>
+    <dt><code>messageTemplate</code> <span class="xref">string</span></dt>
+    <dd><p>Optional message template for structured logging (e.g., &quot;Searched {Entity} page {Page}&quot;).</p>
+</dd>
+    <dt><code>successLevel</code> <span class="xref">LogLevel</span></dt>
+    <dd><p>The log level used when the result indicates success.</p>
+</dd>
+    <dt><code>failureLevel</code> <span class="xref">LogLevel</span></dt>
+    <dd><p>The log level used when the result indicates failure.</p>
+</dd>
+    <dt><code>args</code> <span class="xref">object</span>[]</dt>
+    <dd><p>Optional structured logging arguments corresponding to <code class="paramref">messageTemplate</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The original <code class="paramref">result</code> unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the paged items.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_Microsoft_Extensions_Logging_LogLevel_Microsoft_Extensions_Logging_LogLevel_System_Object____examples">Examples</h4>
+  <pre><code class="lang-csharp">result.Log(logger,
+    "Queried {Entity} page {Page} (size {Size})",
+    LogLevel.Information,
+    LogLevel.Error,
+    "Order",
+    result.CurrentPage,
+    result.PageSize);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_Microsoft_Extensions_Logging_LogLevel_Microsoft_Extensions_Logging_LogLevel_System_Object____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Logging exceptions are swallowed and do not affect the returned <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a>.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Object____" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log``1(BridgingIT.DevKit.Common.ResultPaged{``0},Microsoft.Extensions.Logging.ILogger,System.String,System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},System.Object[]})">
+  Log&lt;T&gt;(ResultPaged&lt;T&gt;, ILogger, string, Func&lt;ResultPaged&lt;T&gt;, object[]&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs a ResultPaged&lt;T&gt; using structured logging with default levels
+(Debug on success, Warning on failure). The arguments for the message template are
+produced from the current paged result via <code class="paramref">argsFactory</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Log&lt;T&gt;(this ResultPaged&lt;T&gt; result, ILogger logger, string messageTemplate, Func&lt;ResultPaged&lt;T&gt;, object[]&gt; argsFactory)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result instance to log.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to. If null, the method is a no-op.</p>
+</dd>
+    <dt><code>messageTemplate</code> <span class="xref">string</span></dt>
+    <dd><p>The structured message template to log.</p>
+</dd>
+    <dt><code>argsFactory</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <span class="xref">object</span>[]&gt;</dt>
+    <dd><p>Factory building arguments from the current paged result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The original <code class="paramref">result</code> unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the paged items.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Object____Microsoft_Extensions_Logging_LogLevel_Microsoft_Extensions_Logging_LogLevel_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log``1(BridgingIT.DevKit.Common.ResultPaged{``0},Microsoft.Extensions.Logging.ILogger,System.String,System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},System.Object[]},Microsoft.Extensions.Logging.LogLevel,Microsoft.Extensions.Logging.LogLevel)">
+  Log&lt;T&gt;(ResultPaged&lt;T&gt;, ILogger, string, Func&lt;ResultPaged&lt;T&gt;, object[]&gt;, LogLevel, LogLevel)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs a ResultPaged&lt;T&gt; using structured logging with custom levels.
+The arguments for the message template are produced from the current paged result via
+<code class="paramref">argsFactory</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Log&lt;T&gt;(this ResultPaged&lt;T&gt; result, ILogger logger, string messageTemplate, Func&lt;ResultPaged&lt;T&gt;, object[]&gt; argsFactory, LogLevel successLevel, LogLevel failureLevel)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result instance to log.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to. If null, the method is a no-op.</p>
+</dd>
+    <dt><code>messageTemplate</code> <span class="xref">string</span></dt>
+    <dd><p>The structured message template to log.</p>
+</dd>
+    <dt><code>argsFactory</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <span class="xref">object</span>[]&gt;</dt>
+    <dd><p>Factory building arguments from the current paged result.</p>
+</dd>
+    <dt><code>successLevel</code> <span class="xref">LogLevel</span></dt>
+    <dd><p>Log level on success.</p>
+</dd>
+    <dt><code>failureLevel</code> <span class="xref">LogLevel</span></dt>
+    <dd><p>Log level on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The original <code class="paramref">result</code> unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the paged items.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Object___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Log``1(BridgingIT.DevKit.Common.ResultPaged{``0},Microsoft.Extensions.Logging.ILogger,System.String,System.Object[])">
+  Log&lt;T&gt;(ResultPaged&lt;T&gt;, ILogger, string, params object[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Logs a <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> using structured logging with default levels
+(Debug on success, Warning on failure).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Log&lt;T&gt;(this ResultPaged&lt;T&gt; result, ILogger logger, string messageTemplate = null, params object[] args)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result instance to log.</p>
+</dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger to write to. If null, the method is a no-op and returns the original result.</p>
+</dd>
+    <dt><code>messageTemplate</code> <span class="xref">string</span></dt>
+    <dd><p>Optional message template for structured logging (e.g., &quot;Fetched page {Page} of products&quot;).</p>
+</dd>
+    <dt><code>args</code> <span class="xref">object</span>[]</dt>
+    <dd><p>Optional structured logging arguments corresponding to <code class="paramref">messageTemplate</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The original <code class="paramref">result</code> unchanged.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the paged items.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Object____examples">Examples</h4>
+  <pre><code class="lang-csharp">result.Log(logger, "Fetched {Entity} page {Page}", "Product", result.CurrentPage);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Log__1_BridgingIT_DevKit_Common_ResultPaged___0__Microsoft_Extensions_Logging_ILogger_System_String_System_Object____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method never alters the business outcome or throws.
+It emits consistent fields: LogKey, Page, PageSize, TotalCount, TotalPages, HasNextPage,
+HasPreviousPage, Messages (count), Errors (count), and ErrorTypes for failures.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_MapAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.MapAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_MapAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Collections_Generic_IEnumerable___1____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.MapAsync``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Collections.Generic.IEnumerable{``1}}},System.Threading.CancellationToken)">
+  MapAsync&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;IEnumerable&lt;TNew&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously maps the page collection while preserving pagination information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TNew&gt;&gt; MapAsync&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;IEnumerable&lt;TNew&gt;&gt;&gt; mapper, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>mapper</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_MapAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Collections_Generic_IEnumerable___1____System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var userDtos = await pagedUsers.MapAsync(
+async users =&gt; await Task.WhenAll(
+users.Select(u =&gt; MapToUserDtoAsync(u))
+),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Map_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Map*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Map__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Map``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1}})">
+  Map&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps the page collection to a new type while preserving pagination information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;TNew&gt; Map&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt; mapper)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>mapper</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Map__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1____examples">Examples</h4>
+  <p>var userDtos = pagedUsers.Map(users =&gt; users.Select(u =&gt; new UserDto(u)));
+// Preserves page count, current page, and page size</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_MatchAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.MatchAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_MatchAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.MatchAsync``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{``1}},System.Func{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError},System.Threading.CancellationToken,System.Threading.Tasks.Task{``1}},System.Threading.CancellationToken)">
+  MatchAsync&lt;T, TResult&gt;(ResultPaged&lt;T&gt;, Func&lt;ResultPaged&lt;T&gt;, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously executes different functions based on the result's success state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; MatchAsync&lt;T, TResult&gt;(this ResultPaged&lt;T&gt; result, Func&lt;ResultPaged&lt;T&gt;, CancellationToken, Task&lt;TResult&gt;&gt; onSuccess, Func&lt;IReadOnlyList&lt;IResultError&gt;, CancellationToken, Task&lt;TResult&gt;&gt; onFailure, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to match.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd><p>Async function to execute if successful, receiving the values.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd><p>Async function to execute if failed, receiving the errors.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd><p>A Task containing the result of either the success or failure function.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the return value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_MatchAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+var status = await result.MatchAsync(
+    async (r, ct) =&gt; await FormatSuccessMessageAsync(r, ct),
+    async (errors, ct) =&gt; await FormatErrorMessageAsync(errors, ct),
+    cancellationToken
+);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Match_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Match*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Match__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_BridgingIT_DevKit_Common_ResultPaged___0____1__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____1__" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Match``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},``1},System.Func{System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.IResultError},``1})">
+  Match&lt;T, TResult&gt;(ResultPaged&lt;T&gt;, Func&lt;ResultPaged&lt;T&gt;, TResult&gt;, Func&lt;IReadOnlyList&lt;IResultError&gt;, TResult&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes different functions based on the result's success state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TResult Match&lt;T, TResult&gt;(this ResultPaged&lt;T&gt; result, Func&lt;ResultPaged&lt;T&gt;, TResult&gt; onSuccess, Func&lt;IReadOnlyList&lt;IResultError&gt;, TResult&gt; onFailure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to match.</p>
+</dd>
+    <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, TResult&gt;</dt>
+    <dd><p>Function to execute if the Result is successful, receiving the values.</p>
+</dd>
+    <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, TResult&gt;</dt>
+    <dd><p>Function to execute if the Result failed, receiving the errors.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd><p>The result of either the success or failure function.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the return value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Match__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_BridgingIT_DevKit_Common_ResultPaged___0____1__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____1___examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+var message = result.Match(
+    onSuccess: r =&gt; $"Found {r.TotalCount} users across {r.TotalPages} pages",
+    onFailure: errors =&gt; $"Failed with {errors.Count} errors"
+);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Match_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Match*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Match__2_BridgingIT_DevKit_Common_ResultPaged___0____1___1_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Match``2(BridgingIT.DevKit.Common.ResultPaged{``0},``1,``1)">
+  Match&lt;T, TResult&gt;(ResultPaged&lt;T&gt;, TResult, TResult)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns different values based on the result's success state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TResult Match&lt;T, TResult&gt;(this ResultPaged&lt;T&gt; result, TResult success, TResult failure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The ResultPaged to match.</p>
+</dd>
+    <dt><code>success</code> <span class="xref">TResult</span></dt>
+    <dd><p>Value to return if successful.</p>
+</dd>
+    <dt><code>failure</code> <span class="xref">TResult</span></dt>
+    <dd><p>Value to return if failed.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TResult</span></dt>
+    <dd><p>Either the success or failure value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The type of the return value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Match__2_BridgingIT_DevKit_Common_ResultPaged___0____1___1__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10);
+
+var status = result.Match(
+    success: "Users retrieved successfully",
+    failure: "Failed to retrieve users"
+);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_OrElseAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.OrElseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_OrElseAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.OrElseAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.ResultPaged{``0}}},System.Threading.CancellationToken)">
+  OrElseAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously provides a fallback page collection in case of failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; OrElseAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt; fallback, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>fallback</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_OrElseAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var users = await pagedUsers.OrElseAsync(
+async ct =&gt; await GetFallbackPageAsync(
+CurrentPage,
+PageSize,
+ct
+),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_OrElse_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.OrElse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_OrElse__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_BridgingIT_DevKit_Common_ResultPaged___0___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.OrElse``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{BridgingIT.DevKit.Common.ResultPaged{``0}})">
+  OrElse&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;ResultPaged&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides a fallback page collection in case of failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; OrElse&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;ResultPaged&lt;T&gt;&gt; fallback)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>fallback</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_OrElse__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_BridgingIT_DevKit_Common_ResultPaged___0____examples">Examples</h4>
+  <p>var users = pagedUsers.OrElse(() =&gt; {
+var fallbackUsers = _cache.GetUserPage(page, pageSize);
+return ResultPaged{User}.Success(
+fallbackUsers,
+_cache.GetTotalUserCount(),
+page,
+pageSize
+);
+});</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_TapAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.TapAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_TapAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.TapAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  TapAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously executes a side-effect on the page collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; TapAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_TapAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var result = await pagedUsers.TapAsync(
+async (users, ct) =&gt; await _cache.StorePageAsync(
+users,
+CurrentPage,
+ct
+),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Tap_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Tap*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Tap__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Action_System_Collections_Generic_IEnumerable___0___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Tap``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Action{System.Collections.Generic.IEnumerable{``0}})">
+  Tap&lt;T&gt;(ResultPaged&lt;T&gt;, Action&lt;IEnumerable&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes a side-effect on the page collection without changing the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Tap&lt;T&gt;(this ResultPaged&lt;T&gt; result, Action&lt;IEnumerable&lt;T&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Action</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Tap__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Action_System_Collections_Generic_IEnumerable___0____examples">Examples</h4>
+  <p>var result = pagedUsers.Tap(users =&gt;
+_logger.LogInformation(
+&quot;Retrieved {Count} users on page {Page}/{TotalPages}&quot;,
+users.Count(),
+CurrentPage,
+TotalPages
+)
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_TeeMapAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.TeeMapAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_TeeMapAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___System_Func_System_Collections_Generic_IEnumerable___1__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.TeeMapAsync``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1}},System.Func{System.Collections.Generic.IEnumerable{``1},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  TeeMapAsync&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt;, Func&lt;IEnumerable&lt;TNew&gt;, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously maps the page collection while performing a side-effect.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;TNew&gt;&gt; TeeMapAsync&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt; mapper, Func&lt;IEnumerable&lt;TNew&gt;, CancellationToken, Task&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>mapper</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;TNew&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_TeeMapAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___System_Func_System_Collections_Generic_IEnumerable___1__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var userDtos = await pagedUsers.TeeMapAsync(
+users =&gt; users.Select(u =&gt; u.ToDto()),
+async (dtos, ct) =&gt; await _cache.StorePagedDtosAsync(dtos, ct),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_TeeMap_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.TeeMap*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_TeeMap__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___System_Action_System_Collections_Generic_IEnumerable___1___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.TeeMap``2(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1}},System.Action{System.Collections.Generic.IEnumerable{``1}})">
+  TeeMap&lt;T, TNew&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt;, Action&lt;IEnumerable&lt;TNew&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps the page collection while performing a side-effect on the transformed values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;TNew&gt; TeeMap&lt;T, TNew&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, IEnumerable&lt;TNew&gt;&gt; mapper, Action&lt;IEnumerable&lt;TNew&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>mapper</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>operation</code> <span class="xref">Action</span>&lt;<span class="xref">IEnumerable</span>&lt;TNew&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TNew&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+    <dt><code>TNew</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_TeeMap__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1___System_Action_System_Collections_Generic_IEnumerable___1____examples">Examples</h4>
+  <p>var userDtos = pagedUsers.TeeMap(
+users =&gt; users.Select(u =&gt; u.ToDto()),
+dtos =&gt; _logger.LogInformation(
+&quot;Mapped {Count} users to DTOs on page {Page}&quot;,
+dtos.Count(),
+CurrentPage
+)
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_ThrowIfFailed_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ThrowIfFailed*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_ThrowIfFailed__1_BridgingIT_DevKit_Common_ResultPaged___0__" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ThrowIfFailed``1(BridgingIT.DevKit.Common.ResultPaged{``0})">
+  ThrowIfFailed&lt;T&gt;(ResultPaged&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Throws a <a class="xref" href="BridgingIT.DevKit.Common.ResultException.html">ResultException</a> if the current result is a failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; ThrowIfFailed&lt;T&gt;(this ResultPaged&lt;T&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The result to check.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The current result if it is successful.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultException.html">ResultException</a></dt>
+    <dd><p>Thrown if the current result is a failure.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_ThrowIfFailed_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ThrowIfFailed*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_ThrowIfFailed__2_BridgingIT_DevKit_Common_ResultPaged___0__" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ThrowIfFailed``2(BridgingIT.DevKit.Common.ResultPaged{``0})">
+  ThrowIfFailed&lt;T, TException&gt;(ResultPaged&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Throws an exception of type TException if the result is a failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; ThrowIfFailed&lt;T, TException&gt;(this ResultPaged&lt;T&gt; result) where TException : Exception</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The result to check.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The current Result if it indicates success.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+    <dt><code>TException</code></dt>
+    <dd><p>The type of exception to throw.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_UnlessAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.UnlessAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IResultError,System.Threading.CancellationToken)">
+  UnlessAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;bool&gt;&gt;, IResultError, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously converts to failure if the predicate returns true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; UnlessAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, CancellationToken, Task&lt;bool&gt;&gt; predicate, IResultError error, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_UnlessAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IResultError_System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var result = await pagedUsers.UnlessAsync(
+async (users, ct) =&gt; await ContainsBlockedUsersAsync(users, ct),
+new ValidationError(&quot;Page contains blocked users&quot;),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Unless_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Unless*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Unless__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Unless``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},BridgingIT.DevKit.Common.IResultError)">
+  Unless&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, bool&gt;, IResultError)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts to failure if the predicate returns true for the page collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Unless&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, bool&gt; predicate, IResultError error)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Unless__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <p>var result = pagedUsers.Unless(
+users =&gt; users.Any(u =&gt; u.IsBlocked),
+new ValidationError(&quot;Page contains blocked users&quot;)
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_ValidateAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ValidateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_ValidateAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__FluentValidation_IValidator___0__System_Action_FluentValidation_Internal_ValidationStrategy___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.ValidateAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},FluentValidation.IValidator{``0},System.Action{FluentValidation.Internal.ValidationStrategy{``0}},System.Threading.CancellationToken)">
+  ValidateAsync&lt;T&gt;(ResultPaged&lt;T&gt;, IValidator&lt;T&gt;, Action&lt;ValidationStrategy&lt;T&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously validates each item in the page collection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; ValidateAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, IValidator&lt;T&gt; validator, Action&lt;ValidationStrategy&lt;T&gt;&gt; options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>validator</code> <span class="xref">IValidator</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <span class="xref">Action</span>&lt;<span class="xref">ValidationStrategy</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_ValidateAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__FluentValidation_IValidator___0__System_Action_FluentValidation_Internal_ValidationStrategy___0___System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var result = await pagedUsers.ValidateEachAsync(
+new UserValidator(),
+options =&gt; options
+.IncludeRuleSets(&quot;BasicValidation&quot;)
+.IncludeProperties(x =&gt; x.Email),
+cancellationToken
+);</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_Validate_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Validate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_Validate__1_BridgingIT_DevKit_Common_ResultPaged___0__FluentValidation_IValidator___0__System_Action_FluentValidation_Internal_ValidationStrategy___0___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.Validate``1(BridgingIT.DevKit.Common.ResultPaged{``0},FluentValidation.IValidator{``0},System.Action{FluentValidation.Internal.ValidationStrategy{``0}})">
+  Validate&lt;T&gt;(ResultPaged&lt;T&gt;, IValidator&lt;T&gt;, Action&lt;ValidationStrategy&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates each item in the page collection using FluentValidation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; Validate&lt;T&gt;(this ResultPaged&lt;T&gt; result, IValidator&lt;T&gt; validator, Action&lt;ValidationStrategy&lt;T&gt;&gt; options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>validator</code> <span class="xref">IValidator</span>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <span class="xref">Action</span>&lt;<span class="xref">ValidationStrategy</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Validate__1_BridgingIT_DevKit_Common_ResultPaged___0__FluentValidation_IValidator___0__System_Action_FluentValidation_Internal_ValidationStrategy___0____examples">Examples</h4>
+  <p>public class UserValidator : AbstractValidator{User} {
+public UserValidator() {
+RuleFor(user =&gt; user.Age)
+.GreaterThanOrEqualTo(18)
+.WithMessage(&quot;Users must be at least 18 years old&quot;);
+}
+}</p>
+<p>var result = pagedUsers.ValidateEach(new UserValidator());</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_WhenAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_WhenAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.WhenAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Boolean,System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.ResultPaged{``0}}},System.Threading.CancellationToken)">
+  WhenAsync&lt;T&gt;(ResultPaged&lt;T&gt;, bool, Func&lt;ResultPaged&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously and conditionally executes a chain of operations on the paged result based on an external condition.
+If the condition is false, the original result is returned unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; WhenAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, bool condition, Func&lt;ResultPaged&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result to operate on.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The condition that determines whether to execute the operations.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>An async function that receives the result and returns a transformed result through chained operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The transformed result if condition is true and result is successful; otherwise, the original result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_WhenAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10)
+    .WhenAsync(isAdmin, async (r, ct) =&gt; await r
+        .EnsureAsync(async (users, ct) =&gt; await ValidateAllActiveAsync(users, ct), new Error("Must be active"), ct)
+        .TapAsync(async (users, ct) =&gt; await EnrichAdminDataAsync(users, ct), ct)
+    , cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_WhenAsync_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_WhenAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.WhenAsync``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.ResultPaged{``0}}},System.Threading.CancellationToken)">
+  WhenAsync&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, bool&gt;, Func&lt;ResultPaged&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously and conditionally executes a chain of operations on the paged result based on a predicate evaluated against the value collection.
+If the predicate returns false, the original result is returned unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;ResultPaged&lt;T&gt;&gt; WhenAsync&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, bool&gt; predicate, Func&lt;ResultPaged&lt;T&gt;, CancellationToken, Task&lt;ResultPaged&lt;T&gt;&gt;&gt; operation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result to operate on.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>A function that evaluates the value collection to determine whether to execute the operations.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>An async function that receives the result and returns a transformed result through chained operations.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The transformed result if predicate is true and result is successful; otherwise, the original result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_WhenAsync__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await ResultPaged{Order}.Success(orders, totalCount: 50, page: 1, pageSize: 10)
+    .WhenAsync(
+        orders =&gt; orders.Any(o =&gt; o.Total &gt; 1000),
+        async (r, ct) =&gt; await r
+            .TapAsync(async (orders, ct) =&gt; await NotifyAccountManagerAsync(orders, ct), ct),
+        cancellationToken
+    );</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_When_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_When__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Func_BridgingIT_DevKit_Common_ResultPaged___0__BridgingIT_DevKit_Common_ResultPaged___0___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.When``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Boolean,System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},BridgingIT.DevKit.Common.ResultPaged{``0}})">
+  When&lt;T&gt;(ResultPaged&lt;T&gt;, bool, Func&lt;ResultPaged&lt;T&gt;, ResultPaged&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Conditionally executes a chain of operations on the paged result based on an external condition.
+If the condition is false, the original result is returned unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; When&lt;T&gt;(this ResultPaged&lt;T&gt; result, bool condition, Func&lt;ResultPaged&lt;T&gt;, ResultPaged&lt;T&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result to operate on.</p>
+</dd>
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The condition that determines whether to execute the operations.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A function that receives the result and returns a transformed result through chained operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The transformed result if condition is true and result is successful; otherwise, the original result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_When__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Func_BridgingIT_DevKit_Common_ResultPaged___0__BridgingIT_DevKit_Common_ResultPaged___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10)
+    .When(isAdmin, r =&gt; r
+        .Ensure(users =&gt; users.All(u =&gt; u.IsActive), new Error("All users must be active"))
+        .Tap(users =&gt; LogAdminAccess(users))
+    )
+    .When(requiresValidation, r =&gt; r
+        .Ensure(users =&gt; users.All(u =&gt; u.Email != null), new Error("Email required"))
+    );</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ResultPagedExtensions_When_" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ResultPagedExtensions_When__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__System_Func_BridgingIT_DevKit_Common_ResultPaged___0__BridgingIT_DevKit_Common_ResultPaged___0___" data-uid="BridgingIT.DevKit.Common.ResultPagedExtensions.When``1(BridgingIT.DevKit.Common.ResultPaged{``0},System.Func{System.Collections.Generic.IEnumerable{``0},System.Boolean},System.Func{BridgingIT.DevKit.Common.ResultPaged{``0},BridgingIT.DevKit.Common.ResultPaged{``0}})">
+  When&lt;T&gt;(ResultPaged&lt;T&gt;, Func&lt;IEnumerable&lt;T&gt;, bool&gt;, Func&lt;ResultPaged&lt;T&gt;, ResultPaged&lt;T&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Conditionally executes a chain of operations on the paged result based on a predicate evaluated against the value collection.
+If the predicate returns false, the original result is returned unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ResultPaged&lt;T&gt; When&lt;T&gt;(this ResultPaged&lt;T&gt; result, Func&lt;IEnumerable&lt;T&gt;, bool&gt; predicate, Func&lt;ResultPaged&lt;T&gt;, ResultPaged&lt;T&gt;&gt; operation)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The paged result to operate on.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">bool</span>&gt;</dt>
+    <dd><p>A function that evaluates the value collection to determine whether to execute the operations.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A function that receives the result and returns a transformed result through chained operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
+    <dd><p>The transformed result if predicate is true and result is successful; otherwise, the original result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The type of the result value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_When__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__System_Func_BridgingIT_DevKit_Common_ResultPaged___0__BridgingIT_DevKit_Common_ResultPaged___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = ResultPaged{Order}.Success(orders, totalCount: 50, page: 1, pageSize: 10)
+    .When(orders =&gt; orders.Any(o =&gt; o.Total &gt; 1000), r =&gt; r
+        .Tap(orders =&gt; NotifyAccountManager(orders))
+    )
+    .When(orders =&gt; orders.All(o =&gt; o.IsInternational), r =&gt; r
+        .Ensure(orders =&gt; orders.All(o =&gt; o.CustomsInfo != null), new Error("Customs info required"))
+    );</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

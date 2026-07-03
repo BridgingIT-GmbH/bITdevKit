@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Namespace BridgingIT.DevKit.Application.Storage | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Namespace BridgingIT.DevKit.Application.Storage | bITdevKit API Reference ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage">
+
+  <h1 id="BridgingIT_DevKit_Application_Storage" data-uid="BridgingIT.DevKit.Application.Storage" class="text-break">Namespace BridgingIT.DevKit.Application.Storage</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+
+    <h3 id="classes">
+Classes
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BaseFileStorageProvider.html">BaseFileStorageProvider</a></dt>
+      <dd><p>Provides a base implementation of IFileStorageProvider with default Result-based methods,
+translating exceptions into typed IResultError instances or ExceptionError for unhandled errors.
+Intended for inheritance by concrete providers, ensuring testability and consistency.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.CacheDocument.html">CacheDocument</a></dt>
+      <dd><p>Represents a cache entry persisted through the document-store-backed cache implementation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehaviorOptions.html">CacheDocumentStoreClientBehaviorOptions</a></dt>
+      <dd><p>Configures cache expiration defaults for <a class="xref" href="BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior-1.html">CacheDocumentStoreClientBehavior&lt;T&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior-1.html">CacheDocumentStoreClientBehavior&lt;T&gt;</a></dt>
+      <dd><p>Adds read-through caching and write invalidation to an <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.CachingFileStorageBehavior.html">CachingFileStorageBehavior</a></dt>
+      <dd><p>A behavior that caches file storage operations, reducing repeated I/O for read-heavy scenarios.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.CachingOptions.html">CachingOptions</a></dt>
+      <dd><p>Configuration options for caching behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ChaosDocumentStoreClientBehaviorOptions.html">ChaosDocumentStoreClientBehaviorOptions</a></dt>
+      <dd><p>Configures fault injection for <a class="xref" href="BridgingIT.DevKit.Application.Storage.ChaosDocumentStoreClientBehavior-1.html">ChaosDocumentStoreClientBehavior&lt;T&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ChaosDocumentStoreClientBehavior-1.html">ChaosDocumentStoreClientBehavior&lt;T&gt;</a></dt>
+      <dd><p>Injects synthetic faults into document-store operations for resilience testing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntity.html">DocumentEntity</a></dt>
+      <dd><p>Represents a document persisted in the in-memory document-store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreCache.html">DocumentStoreCache</a></dt>
+      <dd><p>Implements <span class="xref">Microsoft.Extensions.Caching.Distributed.IDistributedCache</span> by storing cache entries as documents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreCacheProvider.html">DocumentStoreCacheProvider</a></dt>
+      <dd><p>Implements <a class="xref" href="BridgingIT.DevKit.Common.ICacheProvider.html">ICacheProvider</a> on top of a distributed cache facade backed by document storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreCacheProviderConfiguration.html">DocumentStoreCacheProviderConfiguration</a></dt>
+      <dd><p>Configures the document-store-backed <a class="xref" href="BridgingIT.DevKit.Common.ICacheProvider.html">ICacheProvider</a> implementation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientResultExtensions.html">DocumentStoreClientResultExtensions</a></dt>
+      <dd><p>Provides result-based extension methods for <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClient-1.html">DocumentStoreClient&lt;T&gt;</a></dt>
+      <dd><p>Represents the default client implementation for storing and retrieving documents through an <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileCompressionOptions.html">FileCompressionOptions</a></dt>
+      <dd><p>Configuration options for compression and decompression using SharpCompress.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileCompressionOptionsBuilder.html">FileCompressionOptionsBuilder</a></dt>
+      <dd><p>A fluent builder for creating and configuring <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileCompressionOptions.html">FileCompressionOptions</a> instances.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileEvent.html">FileEvent</a></dt>
+      <dd><p>Represents a file event detected by the FileMonitoring system in the application layer.
+This is the domain entity used by FileMonitoringService and processors, distinct from the persistence entity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileEventArgs.html">FileEventArgs</a></dt>
+      <dd><p>Represents event arguments containing information about a file event.
+Used for event handling in the file monitoring system.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileEventReceivedEventArgs.html">FileEventReceivedEventArgs</a></dt>
+      <dd><p>Arguments for the FileEventReceived event, carrying the detected FileEvent.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileLoggerProcessor.html">FileLoggerProcessor</a></dt>
+      <dd><p>Logs file events to the ILogger, capturing event details for auditing or debugging.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a></dt>
+      <dd><p>Represents metadata for a file or blob, used in IFileStorageProvider operations.
+Supports properties like path, size, and last modification time.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.html">FileMonitoringBuilder</a></dt>
+      <dd><p>Fluent builder for configuring the FileMonitoring system.
+Provides core methods; location-specific configurations are added via extensions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilderContext.html">FileMonitoringBuilderContext</a></dt>
+      <dd><p>Context returned by AddFileMonitoring to allow further configuration chaining.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilderProviderExtensions.html">FileMonitoringBuilderProviderExtensions</a></dt>
+      <dd><p>Adds scan-based monitoring locations backed by already-registered file storage providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.html">FileMonitoringLocationScanJob</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.TypedLogger.html">FileMonitoringLocationScanJob.TypedLogger</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringService.html">FileMonitoringService</a></dt>
+      <dd><p>Implements the IFileMonitoringService as a singleton to orchestrate file monitoring across multiple locations.
+Manages LocationHandler instances, coordinates global behaviors, and provides control over the monitoring process.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMoverProcessor.html">FileMoverProcessor</a></dt>
+      <dd><p>Moves files to a specified destination directory based on the file event, preserving the original structure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingContext.html">FileProcessingContext</a></dt>
+      <dd><p>Represents the context for processing a FileEvent, passed through the processor chain.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingResult.html">FileProcessingResult</a></dt>
+      <dd><p>Represents the result of processing a FileEvent by an IFileEventProcessor.
+Captures the outcome (success/failure) and additional details for storage and auditing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanContext.html">FileScanContext</a></dt>
+      <dd><p>Represents the context of a scan operation, including detected changes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanOptions.html">FileScanOptions</a></dt>
+      <dd><p>Represents options for scanning, including processing behavior and timing settings.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanOptionsBuilder.html">FileScanOptionsBuilder</a></dt>
+      <dd><p>Builder class for creating and configuring scan options with a fluent API.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanProgress.html">FileScanProgress</a></dt>
+      <dd><p>Represents the progress of a file scan operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageBuilderContext.html">FileStorageBuilderContext</a></dt>
+      <dd><p>Provides the shared builder context for file storage registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html">FileStorageProviderCompressionExtensions</a></dt>
+      <dd><p>Extension methods for <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a> to add compression and decompression functionality using SharpCompress.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCrossExtensions.html">FileStorageProviderCrossExtensions</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderExtensions.html">FileStorageProviderExtensions</a></dt>
+      <dd><p>Extension methods for IFileStorageProvider to add encryption, and additional functionality, with thread safety.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory.html">FileStorageProviderFactory</a></dt>
+      <dd><p>Factory for creating and managing file storage providers with various configurations and behaviors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory.FileStorageBuilder.html">FileStorageProviderFactory.FileStorageBuilder</a></dt>
+      <dd><p>Builder for configuring file storage providers and their behaviors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderTreeExtensions.html">FileStorageProviderTreeExtensions</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.HtmlFileStorageTreeRenderer.html">HtmlFileStorageTreeRenderer</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryDocumentStoreContext.html">InMemoryDocumentStoreContext</a></dt>
+      <dd><p>Provides the thread-safe backing store used by <a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryDocumentStoreProvider.html">InMemoryDocumentStoreProvider</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryDocumentStoreProvider.html">InMemoryDocumentStoreProvider</a></dt>
+      <dd><p>Implements <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a> using an in-memory context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryFileEventStore.html">InMemoryFileEventStore</a></dt>
+      <dd><p>In-memory implementation of IFileEventStore for testing or simple applications.
+Stores FileEvents in a ConcurrentDictionary with ConcurrentBag, not persistent across restarts.
+Thread-safe for concurrent access and modifications.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryFileStorageProvider.html">InMemoryFileStorageProvider</a></dt>
+      <dd><p>An in-memory implementation of IFileStorageProvider for testing or ephemeral storage, supporting both files and directories.
+Maintains a dictionary of files and a hash set of directories, ensuring thread-safe operations and hierarchical structure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.InMemoryLocationHandler.html">InMemoryLocationHandler</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocalFileStorageProvider.html">LocalFileStorageProvider</a></dt>
+      <dd><p>A thread-safe local file system implementation of IFileStorageProvider for file operations on disk.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocalLocationHandler.html">LocalLocationHandler</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationHandlerBase.html">LocationHandlerBase</a></dt>
+      <dd><p>Manages file change detection and event processing for a specific storage location.
+Integrates real-time watching, on-demand scanning, and a processor chain with rate limiting.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html">LocationOptions</a></dt>
+      <dd><p>Configures options for a monitored location.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationStatus.html">LocationStatus</a></dt>
+      <dd><p>Represents the status of a monitored location.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingBehavior.html">LoggingBehavior</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.html">LoggingDocumentStoreClientBehavior&lt;T&gt;</a></dt>
+      <dd><p>Logs document-store operations before forwarding them to the inner client.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.TypedLogger.html">LoggingDocumentStoreClientBehavior&lt;T&gt;.TypedLogger</a></dt>
+      <dd><p>Provides strongly typed logger-message helpers for document-store operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingFileStorageBehavior.html">LoggingFileStorageBehavior</a></dt>
+      <dd><p>A behavior that logs file storage operations, wrapping an IFileStorageProvider for logging before and after operations.
+Uses structured logging with TypedLogger for consistent formatting, similar to RepositoryLoggingBehavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingFileStorageBehavior.TypedLogger.html">LoggingFileStorageBehavior.TypedLogger</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingOptions.html">LoggingOptions</a></dt>
+      <dd><p>Configuration options for logging behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingProcessorBehavior.html">LoggingProcessorBehavior</a></dt>
+      <dd><p>Logs processor execution details before and after processing a file event.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.OpenWriteFileStream.html">OpenWriteFileStream</a></dt>
+      <dd><p>A stream wrapper that provides progress reporting, cancellation support, and success/finalization callbacks for write operations to a file stream. It ensures that progress is reported after each write operation and that appropriate callbacks are invoked upon successful completion or finalization of the stream. The stream also handles exceptions and ensures that resources are properly disposed of, even in the case of errors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessingErrorEventArgs.html">ProcessingErrorEventArgs</a></dt>
+      <dd><p>Arguments for the ProcessingError event, carrying details of the processing failure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a></dt>
+      <dd><p>Configures a processor with a specific type and behaviors. Allows setting up a delegate for custom configuration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RateLimitOptions.html">RateLimitOptions</a></dt>
+      <dd><p>Configures rate limiting options for event processing with specified limits on events per second and burst size.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RateLimiter.html">RateLimiter</a></dt>
+      <dd><p>Controls the rate of events processed over time, allowing for bursts of activity up to a specified limit.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryDocumentStoreClientBehaviorOptions.html">RetryDocumentStoreClientBehaviorOptions</a></dt>
+      <dd><p>Configures retry behavior for <a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryDocumentStoreClientBehavior-1.html">RetryDocumentStoreClientBehavior&lt;T&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryDocumentStoreClientBehavior-1.html">RetryDocumentStoreClientBehavior&lt;T&gt;</a></dt>
+      <dd><p>Retries failed document-store operations according to a Polly-based retry policy.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryFileStorageBehavior.html">RetryFileStorageBehavior</a></dt>
+      <dd><p>A behavior that retries failed file storage operations with exponential backoff, wrapping an IFileStorageProvider.
+Uses structured logging with TypedLogger for consistent formatting, similar to RepositoryLoggingBehavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryFileStorageBehavior.TypedLogger.html">RetryFileStorageBehavior.TypedLogger</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryOptions.html">RetryOptions</a></dt>
+      <dd><p>Configuration options for retry behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryProcessorBehavior.html">RetryProcessorBehavior</a></dt>
+      <dd><p>Retries failed processor operations with exponential backoff up to a specified number of attempts.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ServiceCollectionExtensions.html">ServiceCollectionExtensions</a></dt>
+      <dd><p>Provides extension methods for IServiceCollection to configure the FileMonitoring system.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.TextFileStorageTreeRenderer.html">TextFileStorageTreeRenderer</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehaviorOptions.html">TimeoutDocumentStoreClientBehaviorOptions</a></dt>
+      <dd><p>Configures timeout behavior for <a class="xref" href="BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehavior-1.html">TimeoutDocumentStoreClientBehavior&lt;T&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehavior-1.html">TimeoutDocumentStoreClientBehavior&lt;T&gt;</a></dt>
+      <dd><p>Enforces a maximum execution time for document-store operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.TreeNode.html">TreeNode</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="structs">
+Structs
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.Constants.html">Constants</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+      <dd><p>Represents the logical key of a document in the store.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.DataKeys.html">FileMonitoringLocationScanJob.DataKeys</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a></dt>
+      <dd></dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a></dt>
+      <dd><p>Defines the public API used by application code to query and mutate typed documents.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a></dt>
+      <dd><p>Defines the backend contract implemented by document-store providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileEventProcessor.html">IFileEventProcessor</a></dt>
+      <dd><p>Defines the contract for processing FileEvent instances in the FileMonitoring system.
+Processors are chained sequentially per location to handle detected file events.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileEventStore.html">IFileEventStore</a></dt>
+      <dd><p>Defines the contract for storing and retrieving FileEvent instances in the FileMonitoring system.
+Acts as a bridge between the domain layer and persistence layer, abstracting storage details.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.html">IFileMonitoringService</a></dt>
+      <dd><p>Defines the contract for the FileMonitoringService, which orchestrates file monitoring across multiple locations.
+Provides methods for starting, stopping, scanning, and managing the monitoring process, along with events for external integration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageBehavior.html">IFileStorageBehavior</a></dt>
+      <dd><p>Defines a behavior/decorator contract for extending IFileStorageProvider functionality,
+such as logging, caching, or retrying operations, while preserving the Result pattern.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a></dt>
+      <dd><p>Defines a contract for abstracting file system interactions across various storage types,
+including traditional file shares and cloud storage systems like Azure Blob Storage.
+Hierarchical structure is mimicked via path naming (e.g., blob names like &quot;folder/subfolder/file.txt&quot;).
+Containers or shares are configured during provider initialization.
+All operations return a Result to handle success/failure with messages and typed errors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProviderFactory.html">IFileStorageProviderFactory</a></dt>
+      <dd><p>Factory interface for creating and configuring file storage providers.
+Supports registration, creation, and behavior decoration of storage providers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageTreeRenderer.html">IFileStorageTreeRenderer</a></dt>
+      <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ILocationHandler.html">ILocationHandler</a></dt>
+      <dd><p>Interface for handling operations on a monitored location, including scanning, processing events, and managing processors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IMonitoringBehavior.html">IMonitoringBehavior</a></dt>
+      <dd><p>Defines the contract for global behaviors that observe scan operations in the FileMonitoring system.
+Provides hooks for monitoring scan lifecycle events across all locations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IProcessorBehavior.html">IProcessorBehavior</a></dt>
+      <dd><p>Defines the contract for behaviors that enhance IFileEventProcessor execution.
+Behaviors execute before and after processing, providing features like logging or retry logic.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyFilter.html">DocumentKeyFilter</a></dt>
+      <dd><p>Defines how a <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a> should be interpreted when filtering document queries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileCompressionArchiveType.html">FileCompressionArchiveType</a></dt>
+      <dd><p>Specifies the type of archive to create or decompress.
+Supported formats: Zip, Tar, GZip.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileEventType.html">FileEventType</a></dt>
+      <dd><p>Represents the type of file event that occurred in the monitored storage location.
+Used by processors to determine the nature of the change (e.g., Added, Changed, Deleted).</p>
+</dd>
+    </dl>
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

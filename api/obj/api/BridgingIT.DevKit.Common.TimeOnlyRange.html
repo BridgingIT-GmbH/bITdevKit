@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Struct TimeOnlyRange | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Struct TimeOnlyRange | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents a half-open  range using [start, end) semantics, with one optional open boundary.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.TimeOnlyRange">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_TimeOnlyRange" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange" class="text-break">
+Struct TimeOnlyRange  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a half-open <span class="xref">System.TimeOnly</span> range using [start, end) semantics, with one optional open boundary.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly struct TimeOnlyRange</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_Contains_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.Contains(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_EndsAfter_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.EndsAfter(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_Gap_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.Gap(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_Intersection_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.Intersection(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_IsAdjacentTo_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.IsAdjacentTo(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_IsAfter_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.IsAfter(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_IsBefore_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.IsBefore(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_StartsBefore_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.StartsBefore(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_ToIsoRangeString_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.ToIsoRangeString(TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_Touches_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.Touches(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_TryIntersection_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange__">DateTimeRangeOperations.TryIntersection(TimeOnlyRange, TimeOnlyRange, out TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_TryMerge_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange__">DateTimeRangeOperations.TryMerge(TimeOnlyRange, TimeOnlyRange, out TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.DateTimeRangeOperations.html#BridgingIT_DevKit_Common_DateTimeRangeOperations_Union_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_">DateTimeRangeOperations.Union(TimeOnlyRange, TimeOnlyRange)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_TimeOnlyRange_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p><example><pre><code class="lang-csharp">var range = new TimeOnlyRange(start, end);</code></pre></example></p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange__ctor_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange__ctor_System_Nullable_System_TimeOnly__System_Nullable_System_TimeOnly__" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.#ctor(System.Nullable{System.TimeOnly},System.Nullable{System.TimeOnly})">
+  TimeOnlyRange(TimeOnly?, TimeOnly?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new half-open <span class="xref">System.TimeOnly</span> range with one optional open boundary.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeOnlyRange(TimeOnly? startInclusive, TimeOnly? endExclusive)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startInclusive</code> <span class="xref">TimeOnly</span>?</dt>
+    <dd><p>The inclusive range start, or <code>null</code> for an open start.</p>
+</dd>
+    <dt><code>endExclusive</code> <span class="xref">TimeOnly</span>?</dt>
+    <dd><p>The exclusive range end, or <code>null</code> for an open end.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when both boundaries are open, or when the end is before the start.</p>
+</dd>
+  </dl>
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_Duration_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Duration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_Duration" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Duration">
+  Duration
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the range duration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeSpan Duration { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the range has an open boundary.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_EndExclusive_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.EndExclusive*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_EndExclusive" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.EndExclusive">
+  EndExclusive
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the exclusive range end, or <code>null</code> when the end is open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeOnly? EndExclusive { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeOnly</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_IsOpenEnd_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.IsOpenEnd*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_IsOpenEnd" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.IsOpenEnd">
+  IsOpenEnd
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the end boundary is open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsOpenEnd { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_IsOpenStart_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.IsOpenStart*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_IsOpenStart" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.IsOpenStart">
+  IsOpenStart
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the start boundary is open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsOpenStart { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_StartInclusive_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.StartInclusive*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_StartInclusive" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.StartInclusive">
+  StartInclusive
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the inclusive range start, or <code>null</code> when the start is open.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TimeOnly? StartInclusive { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TimeOnly</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_CompareTo_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.CompareTo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_CompareTo_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.CompareTo(BridgingIT.DevKit.Common.TimeOnlyRange)">
+  CompareTo(TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares this range to another range for sorting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(TimeOnlyRange other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd><p>The range to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>A negative value when this range sorts before the other range, zero when equal, or a positive value when after.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_TimeOnlyRange_CompareTo_BridgingIT_DevKit_Common_TimeOnlyRange__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><example><pre><code class="lang-csharp">ranges.Sort();</code></pre></example></p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_CompareTo_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.CompareTo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_CompareTo_System_Object_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.CompareTo(System.Object)">
+  CompareTo(object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares this range to another object for sorting.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CompareTo(object obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd><p>The object to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd><p>A negative value when this range sorts before the other range, zero when equal, or a positive value when after.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_TimeOnlyRange_CompareTo_System_Object__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><example><pre><code class="lang-csharp">Array.Sort(items);</code></pre></example></p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">obj</code> is not a <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a>.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_Contains_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Contains*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_Contains_System_TimeOnly_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Contains(System.TimeOnly)">
+  Contains(TimeOnly)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value is inside the half-open range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Contains(TimeOnly value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">TimeOnly</span></dt>
+    <dd><p>The value to test.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> when value is greater than or equal to start, when present, and less than end, when present.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_TimeOnlyRange_Contains_System_TimeOnly__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><example><pre><code class="lang-csharp">var contains = range.Contains(value);</code></pre></example></p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_Equals_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_Equals_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Equals(BridgingIT.DevKit.Common.TimeOnlyRange)">
+  Equals(TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(TimeOnlyRange other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_Equals_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Equals*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_Equals_System_Object_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Equals(System.Object)">
+  Equals(object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool Equals(object obj)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_GetHashCode_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.GetHashCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_GetHashCode" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.GetHashCode">
+  GetHashCode()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_Overlaps_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Overlaps*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_Overlaps_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.Overlaps(BridgingIT.DevKit.Common.TimeOnlyRange)">
+  Overlaps(TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether this range overlaps another half-open range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Overlaps(TimeOnlyRange other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd><p>The range to compare.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> when the ranges overlap.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_TimeOnlyRange_Overlaps_BridgingIT_DevKit_Common_TimeOnlyRange__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><example><pre><code class="lang-csharp">var overlaps = range.Overlaps(other);</code></pre></example></p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_ToString_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.ToString*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_ToString" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.ToString">
+  ToString()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_op_Equality_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_Equality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_op_Equality_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_Equality(BridgingIT.DevKit.Common.TimeOnlyRange,BridgingIT.DevKit.Common.TimeOnlyRange)">
+  operator ==(TimeOnlyRange, TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator ==(TimeOnlyRange left, TimeOnlyRange right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_op_GreaterThan_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_GreaterThan*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_op_GreaterThan_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_GreaterThan(BridgingIT.DevKit.Common.TimeOnlyRange,BridgingIT.DevKit.Common.TimeOnlyRange)">
+  operator &gt;(TimeOnlyRange, TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares whether one range sorts after another range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &gt;(TimeOnlyRange left, TimeOnlyRange right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_op_GreaterThanOrEqual_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_GreaterThanOrEqual*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_op_GreaterThanOrEqual_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_GreaterThanOrEqual(BridgingIT.DevKit.Common.TimeOnlyRange,BridgingIT.DevKit.Common.TimeOnlyRange)">
+  operator &gt;=(TimeOnlyRange, TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares whether one range sorts after or equal to another range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &gt;=(TimeOnlyRange left, TimeOnlyRange right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_op_Inequality_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_Inequality*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_op_Inequality_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_Inequality(BridgingIT.DevKit.Common.TimeOnlyRange,BridgingIT.DevKit.Common.TimeOnlyRange)">
+  operator !=(TimeOnlyRange, TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator !=(TimeOnlyRange left, TimeOnlyRange right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_op_LessThan_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_LessThan*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_op_LessThan_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_LessThan(BridgingIT.DevKit.Common.TimeOnlyRange,BridgingIT.DevKit.Common.TimeOnlyRange)">
+  operator &lt;(TimeOnlyRange, TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares whether one range sorts before another range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &lt;(TimeOnlyRange left, TimeOnlyRange right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeOnlyRange_op_LessThanOrEqual_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_LessThanOrEqual*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeOnlyRange_op_LessThanOrEqual_BridgingIT_DevKit_Common_TimeOnlyRange_BridgingIT_DevKit_Common_TimeOnlyRange_" data-uid="BridgingIT.DevKit.Common.TimeOnlyRange.op_LessThanOrEqual(BridgingIT.DevKit.Common.TimeOnlyRange,BridgingIT.DevKit.Common.TimeOnlyRange)">
+  operator &lt;=(TimeOnlyRange, TimeOnlyRange)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Compares whether one range sorts before or equal to another range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool operator &lt;=(TimeOnlyRange left, TimeOnlyRange right)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>left</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+    <dt><code>right</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeOnlyRange.html">TimeOnlyRange</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

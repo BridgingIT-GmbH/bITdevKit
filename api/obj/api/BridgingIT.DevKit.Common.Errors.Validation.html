@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Errors.Validation | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Errors.Validation | bITdevKit API Reference ">
+      
+      <meta name="description" content="Input validation and data format errors.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Errors.Validation">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Errors_Validation" data-uid="BridgingIT.DevKit.Common.Errors.Validation" class="text-break">
+Class Errors.Validation  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Input validation and data format errors.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Errors.Validation</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Errors.Validation</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_Argument_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Argument*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_Argument_System_String_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Argument(System.String)">
+  Argument(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an <a class="xref" href="BridgingIT.DevKit.Common.ArgumentError.html">ArgumentError</a> for invalid arguments.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ArgumentError Argument(string argument = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>argument</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ArgumentError.html">ArgumentError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_CollectionValidate_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.CollectionValidate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_CollectionValidate_System_String_System_Int32_System_String_System_Object_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.CollectionValidate(System.String,System.Int32,System.String,System.Object)">
+  CollectionValidate(string, int, string, object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Common.CollectionValidationError.html">CollectionValidationError</a> for collection validation failures at a specific index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static CollectionValidationError CollectionValidate(string message, int index, string propertyName = null, object attemptedValue = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>index</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>propertyName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>attemptedValue</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.CollectionValidationError.html">CollectionValidationError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_Duplicate_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Duplicate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_Duplicate_System_String_System_String_System_Object_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Duplicate(System.String,System.String,System.Object)">
+  Duplicate(string, string, object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Common.DuplicateError.html">DuplicateError</a> for duplicate values with context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static DuplicateError Duplicate(string message = null, string propertyName = null, object attemptedValue = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>propertyName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>attemptedValue</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.DuplicateError.html">DuplicateError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_Error_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Error*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_Error_System_String_System_String_System_Object_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Error(System.String,System.String,System.Object)">
+  Error(string, string, object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Common.ValidationError.html">ValidationError</a> for general validation failures.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValidationError Error(string message = null, string propertyName = null, object attemptedValue = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>propertyName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>attemptedValue</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ValidationError.html">ValidationError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_FluentValidation_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.FluentValidation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_FluentValidation_FluentValidation_Results_ValidationResult_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.FluentValidation(FluentValidation.Results.ValidationResult)">
+  FluentValidation(ValidationResult)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Common.FluentValidationError.html">FluentValidationError</a> for FluentValidation failures.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FluentValidationError FluentValidation(ValidationResult validationResult)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>validationResult</code> <span class="xref">ValidationResult</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.FluentValidationError.html">FluentValidationError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_InvalidFormat_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.InvalidFormat*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_InvalidFormat_System_String_System_Object_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.InvalidFormat(System.String,System.Object)">
+  InvalidFormat(string, object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an <a class="xref" href="BridgingIT.DevKit.Common.InvalidFormatError.html">InvalidFormatError</a> for format or parsing failures.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static InvalidFormatError InvalidFormat(string message = null, object receivedData = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>receivedData</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.InvalidFormatError.html">InvalidFormatError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_InvalidInput_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.InvalidInput*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_InvalidInput_System_String_System_String_System_Object_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.InvalidInput(System.String,System.String,System.Object)">
+  InvalidInput(string, string, object)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates an <a class="xref" href="BridgingIT.DevKit.Common.InvalidInputError.html">InvalidInputError</a> for invalid user input with field context.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static InvalidInputError InvalidInput(string message = null, string fieldName = null, object providedValue = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>fieldName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>providedValue</code> <span class="xref">object</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.InvalidInputError.html">InvalidInputError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_Mapping_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Mapping*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_Mapping_System_Exception_System_String_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.Mapping(System.Exception,System.String)">
+  Mapping(Exception, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Common.MappingError.html">MappingError</a> for object mapping failures.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static MappingError Mapping(Exception exception, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.MappingError.html">MappingError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Errors_Validation_RequiredField_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.RequiredField*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Errors_Validation_RequiredField_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.Errors.Validation.RequiredField(System.String,System.String)">
+  RequiredField(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Common.RequiredFieldError.html">RequiredFieldError</a> for missing required fields.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RequiredFieldError RequiredField(string fieldName, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>fieldName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RequiredFieldError.html">RequiredFieldError</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

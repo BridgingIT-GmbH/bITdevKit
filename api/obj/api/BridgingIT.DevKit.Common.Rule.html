@@ -1,0 +1,4159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class Rule | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Rule | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides static methods to create and configure s set of rules.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.Rule">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_Rule" data-uid="BridgingIT.DevKit.Common.Rule" class="text-break">
+Class Rule  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Rules.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides static methods to create and configure s set of rules.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class Rule</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">Rule</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_Rule_examples">Examples</h2>
+  <p>Basic usage:</p>
+<pre><code class="lang-csharp">Rule.Setup(settings =&gt; settings
+    .ThrowOnRuleFailure(false)
+    .ThrowOnRuleException(true))
+    .UseLogger(logger)
+
+var result = await Rule.Check(new MinimumAgeRule(person));
+var result = await Rule.Throw(new MinimumAgeRule(person));</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_Rule_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The Rule class supports both synchronous and asynchronous rule execution with configurable
+exception handling and logging behavior.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Settings_" data-uid="BridgingIT.DevKit.Common.Rule.Settings*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Settings" data-uid="BridgingIT.DevKit.Common.Rule.Settings">
+  Settings
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleSettings Settings { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleSettings.html">RuleSettings</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Add_" data-uid="BridgingIT.DevKit.Common.Rule.Add*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Add" data-uid="BridgingIT.DevKit.Common.Rule.Add">
+  Add()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides a fluent interface for building and executing collections of rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Add()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Add_examples">Examples</h4>
+  <pre><code class="lang-csharp">return Rule
+    // Basic validation using ValueRules
+    .Add(Rules.IsNotEmpty(product.Name))
+    .Add(Rules.StringLength(product.Name, 3, 100))
+    .Add(Rules.NumericRange(product.Price, 0.01m, 999.99m))
+
+    // Conditional validation with When
+    .When(!product.IsDigital, builder =&gt; builder
+        .Add(Rules.IsNotEmpty(product.ShippingAddress))
+        .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
+
+    // Using Unless (inverse of When)
+    .Unless(product.IsDigital,
+        Rules.GreaterThan(product.Price, 10m))
+
+    // Combining multiple conditions
+    .WhenAll(new[]
+    {
+        product.Price &gt; 100,
+        product.IsDigital,
+        product.Categories?.Count &gt; 2
+    }, Rules.IsNotEmpty(product.ShippingAddress))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Add_" data-uid="BridgingIT.DevKit.Common.Rule.Add*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Add_BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.Add(BridgingIT.DevKit.Common.IRule)">
+  Add(IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new rule builder starting with the specified rule.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Add(IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The initial rule.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new rule builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Add_BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Rules
+    .Add(RuleSet.IsNotEmpty(user.Name))
+    .Add(RuleSet.IsValidEmail(user.Email))
+    .When(user.IsEmployee, builder =&gt; builder
+        .Add(RuleSet.HasStringLength(user.EmployeeId, 5, 10)))
+    .Check();
+
+if (result.IsSuccess)
+{
+    // Validation passed
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Add_" data-uid="BridgingIT.DevKit.Common.Rule.Add*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Add_BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.Add(BridgingIT.DevKit.Common.IRule[])">
+  Add(params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a new rule builder starting with the specified rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Add(params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The initial rules.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new rule builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Add_BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Rules
+    .Add(RuleSet.IsNotEmpty(user.Name))
+    .Add(RuleSet.IsValidEmail(user.Email))
+    .When(user.IsEmployee, builder =&gt; builder
+        .Add(RuleSet.HasStringLength(user.EmployeeId, 5, 10)))
+    .Check();
+
+if (result.IsSuccess)
+{
+    // Validation passed
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Check_" data-uid="BridgingIT.DevKit.Common.Rule.Check*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Check_BridgingIT_DevKit_Common_IRule_System_Nullable_System_Boolean__System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.Rule.Check(BridgingIT.DevKit.Common.IRule,System.Nullable{System.Boolean},System.Nullable{System.Boolean})">
+  Check(IRule, bool?, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a single rule synchronously to validate a value or state.
+Returns a success result if the rule passes, or a failure result if it fails.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result Check(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to apply.</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule fails.</p>
+</dd>
+    <dt><code>throwOnRuleException</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule throws an exception.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A Result indicating success or failure of the rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Check_BridgingIT_DevKit_Common_IRule_System_Nullable_System_Boolean__System_Nullable_System_Boolean___examples">Examples</h4>
+  <pre><code class="lang-csharp">var nameRule = RuleSet.IsNotEmpty(user.Name);
+var result = Rules.Check(nameRule);
+
+if (result.IsSuccess)
+{
+    Validation passed
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Check_" data-uid="BridgingIT.DevKit.Common.Rule.Check*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Check_System_Func_System_Boolean__System_Nullable_System_Boolean__System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Common.Rule.Check(System.Func{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean})">
+  Check(Func&lt;bool&gt;, bool?, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a rule defined by a boolean expression synchronously and returns the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result Check(Func&lt;bool&gt; expression, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean expression to evaluate.</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule fails.</p>
+</dd>
+    <dt><code>throwOnRuleException</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule throws an exception.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Check_System_Func_System_Boolean__System_Nullable_System_Boolean__System_Nullable_System_Boolean___examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Rule.Check(() =&gt; user.Age &gt; 18);
+if (result.IsSuccess)
+{
+    // Validation passed
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_CheckAsync_" data-uid="BridgingIT.DevKit.Common.Rule.CheckAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_CheckAsync_BridgingIT_DevKit_Common_IRule_System_Nullable_System_Boolean__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Rule.CheckAsync(BridgingIT.DevKit.Common.IRule,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  CheckAsync(IRule, bool?, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a single rule asynchronously to validate a value or state.
+Returns a success result if the rule passes, or a failure result if it fails.
+Supports both synchronous and asynchronous rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; CheckAsync(IRule rule, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to check.</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule fails.</p>
+</dd>
+    <dt><code>throwOnRuleException</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule throws an exception.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task containing the Result indicating success or failure of the rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_CheckAsync_BridgingIT_DevKit_Common_IRule_System_Nullable_System_Boolean__System_Nullable_System_Boolean__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var userExistsRule = new UserExistsRule(userId);
+var result = await Rules.CheckAsync(userExistsRule, cancellationToken);
+
+if (result.IsSuccess)
+{
+     Validation passed
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_CheckAsync_" data-uid="BridgingIT.DevKit.Common.Rule.CheckAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_CheckAsync_System_Func_System_Boolean__System_Nullable_System_Boolean__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Rule.CheckAsync(System.Func{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  CheckAsync(Func&lt;bool&gt;, bool?, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a rule defined by a boolean expression asynchronously and returns the result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; CheckAsync(Func&lt;bool&gt; expression, bool? throwOnRuleFailure = null, bool? throwOnRuleException = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean expression to evaluate.</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule fails.</p>
+</dd>
+    <dt><code>throwOnRuleException</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Indicates whether to throw an exception if the rule throws an exception.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task containing the <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_CheckAsync_System_Func_System_Boolean__System_Nullable_System_Boolean__System_Nullable_System_Boolean__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await Rule.CheckAsync(() =&gt; CheckUserPermissions(userId));
+if (result.IsSuccess)
+{
+    // Validation passed
+}</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Setup_" data-uid="BridgingIT.DevKit.Common.Rule.Setup*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Setup_System_Action_BridgingIT_DevKit_Common_RuleSettingsBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.Setup(System.Action{BridgingIT.DevKit.Common.RuleSettingsBuilder})">
+  Setup(Action&lt;RuleSettingsBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures the global settings for the <a class="xref" href="BridgingIT.DevKit.Common.Rule.html">Rule</a> type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Setup(Action&lt;RuleSettingsBuilder&gt; settings)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>settings</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleSettingsBuilder.html">RuleSettingsBuilder</a>&gt;</dt>
+    <dd><p>A delegate to configure the <a class="xref" href="BridgingIT.DevKit.Common.RuleSettingsBuilder.html">RuleSettingsBuilder</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Throw_" data-uid="BridgingIT.DevKit.Common.Rule.Throw*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Throw_BridgingIT_DevKit_Common_IRule_System_Boolean_" data-uid="BridgingIT.DevKit.Common.Rule.Throw(BridgingIT.DevKit.Common.IRule,System.Boolean)">
+  Throw(IRule, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a rule and always converts failures into exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result Throw(IRule rule, bool throwOnRuleFailure = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to validate</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A success Result if validation passes</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Throw_BridgingIT_DevKit_Common_IRule_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = Rule.Throw(new MinAgeRule(person));
+Throws if validation fails, otherwise returns success</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleException.html">RuleException</a></dt>
+    <dd><p>When rule execution throws an error</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Throw_" data-uid="BridgingIT.DevKit.Common.Rule.Throw*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Throw_System_Func_System_Boolean__System_Boolean_" data-uid="BridgingIT.DevKit.Common.Rule.Throw(System.Func{System.Boolean},System.Boolean)">
+  Throw(Func&lt;bool&gt;, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a rule defined by a boolean expression synchronously and throws on failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result Throw(Func&lt;bool&gt; expression, bool throwOnRuleFailure = true)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean expression to evaluate.</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether to throw an exception if the rule fails.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Throw_System_Func_System_Boolean__System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">Rule.Throw(() =&gt; user.Age &gt; 18);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleException.html">RuleException</a></dt>
+    <dd><p>Thrown when rule execution throws an error.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_ThrowAsync_" data-uid="BridgingIT.DevKit.Common.Rule.ThrowAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_ThrowAsync_BridgingIT_DevKit_Common_IRule_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Rule.ThrowAsync(BridgingIT.DevKit.Common.IRule,System.Boolean,System.Threading.CancellationToken)">
+  ThrowAsync(IRule, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Asynchronously applies a rule with configurable failure handling.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; ThrowAsync(IRule rule, bool throwOnRuleFailure = true, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to validate</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span></dt>
+    <dd><p>When true, failures throw exceptions. When false, failures return Result.Failure</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A Task containing a Result indicating success or failure</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_ThrowAsync_BridgingIT_DevKit_Common_IRule_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">Return failure Result instead of throwing
+var result = await Rule.ThrowAsync(new AsyncMinAgeRule(person), throwOnRuleFailure: false);
+if(result.IsFailure) {
+     Handle validation failure
+}</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleException.html">RuleException</a></dt>
+    <dd><p>When rule execution throws an error</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_ThrowAsync_" data-uid="BridgingIT.DevKit.Common.Rule.ThrowAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_ThrowAsync_System_Func_System_Boolean__System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.Rule.ThrowAsync(System.Func{System.Boolean},System.Boolean,System.Threading.CancellationToken)">
+  ThrowAsync(Func&lt;bool&gt;, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies a rule defined by a boolean expression asynchronously and throws on failure.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&gt; ThrowAsync(Func&lt;bool&gt; expression, bool throwOnRuleFailure = true, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean expression to evaluate.</p>
+</dd>
+    <dt><code>throwOnRuleFailure</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether to throw an exception if the rule fails.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A task containing the <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the rule.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_ThrowAsync_System_Func_System_Boolean__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.ThrowAsync(() =&gt; CheckUserPermissions(userId));</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleException.html">RuleException</a></dt>
+    <dd><p>Thrown when rule execution throws an error.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Unless_" data-uid="BridgingIT.DevKit.Common.Rule.Unless*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.Unless(System.Boolean,BridgingIT.DevKit.Common.IRule)">
+  Unless(bool, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Unless(bool condition, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.Unless(product.IsDigital, Rules.GreaterThan(product.Price, 10m))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Unless_" data-uid="BridgingIT.DevKit.Common.Rule.Unless*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.Unless(System.Boolean,System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  Unless(bool, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Unless(bool condition, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.Unless(product.IsDigital, builder =&gt; builder
+    .Add(Rules.IsNotEmpty(product.ShippingAddress))
+    .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Unless_" data-uid="BridgingIT.DevKit.Common.Rule.Unless*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_System_Func_System_Boolean__System_String_" data-uid="BridgingIT.DevKit.Common.Rule.Unless(System.Boolean,System.Func{System.Boolean},System.String)">
+  Unless(bool, Func&lt;bool&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule defined by a boolean predicate when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Unless(bool condition, Func&lt;bool&gt; predicate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean predicate to evaluate if the condition is false.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Optional custom message for rule failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_System_Func_System_Boolean__System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.Unless(user.IsActive, () =&gt; user.IsVerified, "User must be verified if not active.")
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_Unless_" data-uid="BridgingIT.DevKit.Common.Rule.Unless*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_System_Func_System_Boolean____" data-uid="BridgingIT.DevKit.Common.Rule.Unless(System.Boolean,System.Func{System.Boolean}[])">
+  Unless(bool, params Func&lt;bool&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules defined by boolean predicates when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder Unless(bool condition, params Func&lt;bool&gt;[] predicates)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>predicates</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;[]</dt>
+    <dd><p>The boolean predicates to evaluate if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_Unless_System_Boolean_System_Func_System_Boolean_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.Unless(product.IsOnSale,
+    () =&gt; product.Discount &gt;= 0.1m,
+    () =&gt; product.Discount == 0.5m)
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule asynchronously when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.UnlessAsync(async (token) =&gt; await product.IsDigitalAsync(token),
+    Rules.IsNotEmpty(product.ShippingAddress))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules asynchronously when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.UnlessAsync(async (token) =&gt; await product.IsDigitalAsync(token),
+    Rules.IsNotEmpty(product.ShippingAddress),
+    Rules.StringLength(product.ShippingAddress, 10, 200))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules asynchronously when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.UnlessAsync(async (token) =&gt; await product.IsDigitalAsync(token),
+    builder =&gt; builder
+        .Add(Rules.IsNotEmpty(product.ShippingAddress))
+        .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Boolean__System_String_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Func{System.Boolean},System.String)">
+  UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;bool&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule defined by a predicate when the async condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, Func&lt;bool&gt; predicate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The predicate to evaluate if the condition is false.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Optional custom message for rule failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Boolean__System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.UnlessAsync(async (token) =&gt; await product.IsDigitalAsync(token),
+    () =&gt; product.Price &gt; 0,
+    "Price must be greater than 0 for non-digital products")
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_String_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.String)">
+  UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule defined by an async predicate when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, Func&lt;CancellationToken, Task&lt;bool&gt;&gt; predicate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The async predicate to evaluate if the condition is false.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Optional custom message for rule failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.UnlessAsync(async token =&gt; await user.IsActiveAsync(token),
+    async token =&gt; await user.IsVerifiedAsync(token),
+    "User must be verified if not active.")
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_UnlessAsync_" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean_____" data-uid="BridgingIT.DevKit.Common.Rule.UnlessAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}[])">
+  UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, params Func&lt;CancellationToken, Task&lt;bool&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules defined by async predicates when the specified condition is false.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; UnlessAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, params Func&lt;CancellationToken, Task&lt;bool&gt;&gt;[] predicates)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>predicates</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;[]</dt>
+    <dd><p>The async predicates to evaluate if the condition is false.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_UnlessAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean______examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.UnlessAsync(async token =&gt; await product.IsOnSaleAsync(token),
+    async token =&gt; await product.IsDiscountValidAsync(token),
+    async token =&gt; await product.IsPriceValidAsync(token))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Boolean,BridgingIT.DevKit.Common.IRule)">
+  When(bool, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when the specified condition is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(bool condition, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(product.IsDigital, Rules.ApplyDigitalRules())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Boolean,System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  When(bool, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when the specified condition is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(bool condition, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(!product.IsDigital, builder =&gt; builder
+    .Add(Rules.IsNotEmpty(product.ShippingAddress))
+    .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_System_Func_System_Boolean__System_String_" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Boolean,System.Func{System.Boolean},System.String)">
+  When(bool, Func&lt;bool&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule defined by a boolean predicate when the specified condition is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(bool condition, Func&lt;bool&gt; predicate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean predicate to evaluate if the condition is true.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Optional custom message for rule failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_System_Func_System_Boolean__System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(product.HasDiscount, () =&gt; product.Price &gt; 0, "Price must be greater than 0 when discounted.")
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_System_Func_System_Boolean____" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Boolean,System.Func{System.Boolean}[])">
+  When(bool, params Func&lt;bool&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules defined by boolean predicates when the specified condition is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(bool condition, params Func&lt;bool&gt;[] predicates)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">bool</span></dt>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
+    <dt><code>predicates</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;[]</dt>
+    <dd><p>The boolean predicates to evaluate if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Boolean_System_Func_System_Boolean_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(product.HasSubscription,
+    () =&gt; product.SubscriptionLevel &gt; 0,
+    () =&gt; product.SubscriptionValid)
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Func_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Func{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  When(Func&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule with a sync condition using a lambda expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(Func&lt;bool&gt; condition, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The condition to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Func_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(() =&gt; product.IsDigital, Rules.IsNotEmpty(product.DownloadUrl))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Func_System_Boolean__BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Func{System.Boolean},BridgingIT.DevKit.Common.IRule[])">
+  When(Func&lt;bool&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules with a sync condition using a lambda expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(Func&lt;bool&gt; condition, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The condition to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Func_System_Boolean__BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(() =&gt; product.IsDigital,
+    Rules.IsNotEmpty(product.DownloadUrl),
+    Rules.StringLength(product.DownloadUrl, 5, 100))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_When_" data-uid="BridgingIT.DevKit.Common.Rule.When*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_When_System_Func_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.When(System.Func{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  When(Func&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules with a sync condition using a builder action.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder When(Func&lt;bool&gt; condition, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The condition to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_When_System_Func_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.When(() =&gt; !product.IsDigital, builder =&gt; builder
+    .Add(Rules.IsNotEmpty(product.ShippingAddress))
+    .Add(Rules.StringLength(product.ShippingAddress, 10, 200)))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAll_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll(System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenAll(IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when all of the specified conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAll(IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if all conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAll(new[] { true, true, true }, Rules.ApplyAllTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAll_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll(System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAll(IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when all of the specified conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAll(IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if all conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAll(new[] { true, true, true }, builder =&gt; builder
+    .Add(Rules.ApplyAllTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAll_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenAll(IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when all conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAll(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if all conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAll(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, Rules.IsNotEmpty(product.DownloadUrl))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAll_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenAll(IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when all conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAll(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if all conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAll(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription },
+    Rules.IsNotEmpty(product.DownloadUrl),
+    Rules.StringLength(product.DownloadUrl, 5, 100))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAll_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAll(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAll(IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when all conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAll(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if all conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAll_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAll(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, builder =&gt; builder
+    .Add(Rules.IsNotEmpty(product.DownloadUrl))
+    .Add(Rules.StringLength(product.DownloadUrl, 5, 100)))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAny_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny(System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenAny(IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when any of the specified conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAny(IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAny(new[] { true, false, false }, Rules.ApplyAnyTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAny_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny(System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAny(IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when any of the specified conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAny(IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAny(new[] { true, false, false }, builder =&gt; builder
+    .Add(Rules.ApplyAnyTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAny_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenAny(IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when any of the conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAny(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAny(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, Rules.IsNotEmpty(product.DownloadUrl))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAny_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenAny(IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when any of the conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAny(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAny(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription },
+    Rules.IsNotEmpty(product.DownloadUrl),
+    Rules.StringLength(product.DownloadUrl, 5, 100))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAny_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAny(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAny(IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when any of the conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAny(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAny_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAny(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, builder =&gt; builder
+    .Add(Rules.IsNotEmpty(product.DownloadUrl))
+    .Add(Rules.StringLength(product.DownloadUrl, 5, 100)))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAnyAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAnyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAnyAsync_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAnyAsync(System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}})">
+  WhenAnyAsync(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when any of the conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAnyAsync(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt; rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;</dt>
+    <dd><p>The async rule to add if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAnyAsync_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenAnyAsync(new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAnyAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAnyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAnyAsync_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule_____" data-uid="BridgingIT.DevKit.Common.Rule.WhenAnyAsync(System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}}[])">
+  WhenAnyAsync(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when any of the conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAnyAsync(IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;[]</dt>
+    <dd><p>The async rules to add if any condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule with an asynchronous condition.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAsync(async (token) =&gt; await product.IsAvailableAsync(token), Rules.ApplyAsyncRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules with an async condition using a lambda expression.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAsync(async (token) =&gt; await product.IsAvailableAsync(token),
+    Rules.IsNotEmpty(product.DownloadUrl),
+    Rules.StringLength(product.DownloadUrl, 5, 100))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules with an asynchronous condition.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAsync(async (token) =&gt; await product.IsAvailableAsync(token), builder =&gt; builder
+    .Add(Rules.ApplyAsyncRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Boolean__System_String_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Func{System.Boolean},System.String)">
+  WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;bool&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules with an asynchronous condition using multiple rules.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, Func&lt;bool&gt; predicate, string message = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The predicate to evaluate if the condition is true.</p>
+</dd>
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>Optional custom message for rule failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Boolean__System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAsync(async (token) =&gt; await product.IsAvailableAsync(token),
+    () =&gt; product.Price &gt; 0,
+    "Price must be greater than 0 for available products")
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean_____" data-uid="BridgingIT.DevKit.Common.Rule.WhenAsync(System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}[])">
+  WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt;, params Func&lt;CancellationToken, Task&lt;bool&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules defined by async predicates when the specified condition is true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAsync(Func&lt;CancellationToken, Task&lt;bool&gt;&gt; condition, params Func&lt;CancellationToken, Task&lt;bool&gt;&gt;[] predicates)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>condition</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The asynchronous condition to evaluate.</p>
+</dd>
+    <dt><code>predicates</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;[]</dt>
+    <dd><p>The async predicates to evaluate if the condition is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean______examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenAsync(async token =&gt; await product.HasSubscriptionAsync(token),
+    async token =&gt; await product.IsSubscriptionLevelValidAsync(token),
+    async token =&gt; await product.IsSubscriptionActiveAsync(token))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast(System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenAtLeast(int, IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when at least the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtLeast(int count, IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtLeast(1, new[] { true, false, false }, Rules.ApplyAtLeastTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast(System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAtLeast(int, IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when at least the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtLeast(int count, IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtLeast(1, new[] { true, false, false }, builder =&gt; builder
+    .Add(Rules.ApplyAtLeastTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenAtLeast(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when at least the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtLeast(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtLeast(1, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, Rules.SendNotification())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenAtLeast(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when at least the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtLeast(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtLeast(1, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription },
+    Rules.SendNotification(),
+    Rules.ApplyDiscount())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeast(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAtLeast(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when at least the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtLeast(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeast_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtLeast(1, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, builder =&gt; builder
+    .Add(Rules.SendNotification())
+    .Add(Rules.ApplyDiscount()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeastAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeastAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeastAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeastAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}})">
+  WhenAtLeastAsync(int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when at least the specified number of conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAtLeastAsync(int count, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt; rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;</dt>
+    <dd><p>The async rule to add if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeastAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenAtLeastAsync(1, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtLeastAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeastAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtLeastAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule_____" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtLeastAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}}[])">
+  WhenAtLeastAsync(int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when at least the specified number of conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAtLeastAsync(int count, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;[]</dt>
+    <dd><p>The async rules to add if at least the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtLeastAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule______examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenAtLeastAsync(1, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule1(),
+async token =&gt; await Rules.GetAsyncRule2())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMost_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost(System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenAtMost(int, IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when at most the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtMost(int count, IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtMost(1, new[] { true, false, false }, Rules.ApplyAtMostTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMost_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost(System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAtMost(int, IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when at most the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtMost(int count, IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtMost(1, new[] { true, false, false }, builder =&gt; builder
+    .Add(Rules.ApplyAtMostTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMost_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenAtMost(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when at most the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtMost(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtMost(1, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, Rules.ApplyStandardPrice())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMost_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenAtMost(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when at most the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtMost(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtMost(1, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription },
+    Rules.ApplyStandardPrice(),
+    Rules.RequireShippingAddress())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMost_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMost(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenAtMost(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when at most the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenAtMost(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMost_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenAtMost(1, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, builder =&gt; builder
+    .Add(Rules.ApplyStandardPrice())
+    .Add(Rules.RequireShippingAddress()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMostAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMostAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMostAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMostAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}})">
+  WhenAtMostAsync(int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when at most the specified number of conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAtMostAsync(int count, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt; rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;</dt>
+    <dd><p>The async rule to add if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMostAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenAtMostAsync(1, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenAtMostAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMostAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenAtMostAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule_____" data-uid="BridgingIT.DevKit.Common.Rule.WhenAtMostAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}}[])">
+  WhenAtMostAsync(int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when at most the specified number of conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenAtMostAsync(int count, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of conditions that can be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;[]</dt>
+    <dd><p>The async rules to add if at most the specified count of conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenAtMostAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule______examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenAtMostAsync(1, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule1(),
+async token =&gt; await Rules.GetAsyncRule2())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetween_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenBetween(int, int, IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when the number of true conditions falls within the specified range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenBetween(int min, int max, IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenBetween(1, 2, new[] { true, true, false }, Rules.ApplyBetweenTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetween_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenBetween(int, int, IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when the number of true conditions falls within the specified range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenBetween(int min, int max, IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenBetween(1, 2, new[] { true, true, false }, builder =&gt; builder
+    .Add(Rules.ApplyBetweenTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetween_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenBetween(int, int, IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when the number of true conditions falls within the specified range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenBetween(int min, int max, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenBetween(1, 2, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription, () =&gt; product.IsOnSale }, Rules.ApplyFlexibleDiscount())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetween_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenBetween(int, int, IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when the number of true conditions falls within the specified range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenBetween(int min, int max, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenBetween(1, 2, new[]
+{
+    () =&gt; product.IsDigital,
+    () =&gt; product.HasSubscription,
+    () =&gt; product.IsOnSale
+},
+Rules.ApplyFlexibleDiscount(),
+Rules.RequireDownloadUrl())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetween_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetween(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenBetween(int, int, IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when the number of true conditions falls within the specified range.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenBetween(int min, int max, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetween_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenBetween(1, 2, new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription, () =&gt; product.IsOnSale }, builder =&gt; builder
+    .Add(Rules.ApplyFlexibleDiscount())
+    .Add(Rules.RequireDownloadUrl()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetweenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetweenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetweenAsync_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetweenAsync(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}})">
+  WhenBetweenAsync(int, int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when the number of true conditions falls within the specified range asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenBetweenAsync(int min, int max, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt; rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;</dt>
+    <dd><p>The async rule to add if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetweenAsync_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenBetweenAsync(1, 2, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token),
+    async token =&gt; await product.IsOnSaleAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenBetweenAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetweenAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenBetweenAsync_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule_____" data-uid="BridgingIT.DevKit.Common.Rule.WhenBetweenAsync(System.Int32,System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}}[])">
+  WhenBetweenAsync(int, int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when the number of true conditions falls within the specified range asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenBetweenAsync(int min, int max, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>min</code> <span class="xref">int</span></dt>
+    <dd><p>The minimum number of true conditions.</p>
+</dd>
+    <dt><code>max</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of true conditions.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;[]</dt>
+    <dd><p>The async rules to add if the true condition count is within the range.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenBetweenAsync_System_Int32_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule______examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenBetweenAsync(1, 2, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token),
+    async token =&gt; await product.IsOnSaleAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule1(),
+async token =&gt; await Rules.GetAsyncRule2())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactly_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly(System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenExactly(int, IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when exactly the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenExactly(int count, IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenExactly(2, new[] { true, true, false }, Rules.ApplyExactTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactly_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly(System.Int32,System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenExactly(int, IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when exactly the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenExactly(int count, IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenExactly(2, new[] { true, true, false }, builder =&gt; builder
+    .Add(Rules.ApplyExactTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactly_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenExactly(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when exactly the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenExactly(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenExactly(2, new[] { () =&gt; product.HasSubscription, () =&gt; product.IsDigital, () =&gt; product.IsOnSale }, Rules.ApplySpecialDiscount())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactly_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenExactly(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when exactly the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenExactly(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenExactly(2, new[]
+{
+    () =&gt; product.IsDigital,
+    () =&gt; product.HasSubscription,
+    () =&gt; product.IsOnSale
+},
+Rules.ApplyDigitalPricing(),
+Rules.RequireDownloadUrl())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactly_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactly(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenExactly(int, IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when exactly the specified number of conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenExactly(int count, IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactly_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenExactly(2, new[] { () =&gt; product.HasSubscription, () =&gt; product.IsDigital, () =&gt; product.IsOnSale }, builder =&gt; builder
+    .Add(Rules.ApplySpecialDiscount())
+    .Add(Rules.RequireDownloadUrl()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactlyAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactlyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactlyAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactlyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}})">
+  WhenExactlyAsync(int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when exactly the specified number of conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenExactlyAsync(int count, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, Func&lt;CancellationToken, Task&lt;IRule&gt;&gt; rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;</dt>
+    <dd><p>The async rule to add if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactlyAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenExactlyAsync(2, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenExactlyAsync_" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactlyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenExactlyAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule_____" data-uid="BridgingIT.DevKit.Common.Rule.WhenExactlyAsync(System.Int32,System.Collections.Generic.IEnumerable{System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{System.Boolean}}},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.IRule}}[])">
+  WhenExactlyAsync(int, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt;, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when exactly the specified number of conditions are true asynchronously.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;RuleBuilder&gt; WhenExactlyAsync(int count, IEnumerable&lt;Func&lt;CancellationToken, Task&lt;bool&gt;&gt;&gt; conditions, params Func&lt;CancellationToken, Task&lt;IRule&gt;&gt;[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>count</code> <span class="xref">int</span></dt>
+    <dd><p>The exact number of conditions that must be true.</p>
+</dd>
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The async conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>&gt;&gt;[]</dt>
+    <dd><p>The async rules to add if the exact count of conditions is true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>A Task containing the RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenExactlyAsync_System_Int32_System_Collections_Generic_IEnumerable_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean____System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_IRule______examples">Examples</h4>
+  <pre><code class="lang-csharp">await Rule.WhenExactlyAsync(2, new[]
+{
+    async token =&gt; await product.IsDigitalAsync(token),
+    async token =&gt; await product.HasSubscriptionAsync(token),
+    async token =&gt; await product.IsOnSaleAsync(token)
+},
+async token =&gt; await Rules.GetAsyncRule1(),
+async token =&gt; await Rules.GetAsyncRule2())
+.Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenNone_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone(System.Collections.Generic.IEnumerable{System.Boolean},BridgingIT.DevKit.Common.IRule)">
+  WhenNone(IEnumerable&lt;bool&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when none of the specified conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenNone(IEnumerable&lt;bool&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if none of the conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Boolean__BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenNone(new[] { false, false, false }, Rules.ApplyNoneTrueRule())
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenNone_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone(System.Collections.Generic.IEnumerable{System.Boolean},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenNone(IEnumerable&lt;bool&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when none of the specified conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenNone(IEnumerable&lt;bool&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>The boolean conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if none of the conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Boolean__System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenNone(new[] { false, false, false }, builder =&gt; builder
+    .Add(Rules.ApplyNoneTrueRule())
+    .Add(Rules.AnotherRule()))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenNone_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule)">
+  WhenNone(IEnumerable&lt;Func&lt;bool&gt;&gt;, IRule)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a rule when none of the conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenNone(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, IRule rule)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
+    <dd><p>The rule to add if none of the conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule__examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenNone(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, Rules.GreaterThan(product.Price, 10m))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenNone_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule___" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},BridgingIT.DevKit.Common.IRule[])">
+  WhenNone(IEnumerable&lt;Func&lt;bool&gt;&gt;, params IRule[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds multiple rules when none of the conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenNone(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, params IRule[] rules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>rules</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a>[]</dt>
+    <dd><p>The rules to add if none of the conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___BridgingIT_DevKit_Common_IRule____examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenNone(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription },
+    Rules.GreaterThan(product.Price, 10m),
+    Rules.IsNotEmpty(product.ShippingAddress))
+    .Check();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_Rule_WhenNone_" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder__" data-uid="BridgingIT.DevKit.Common.Rule.WhenNone(System.Collections.Generic.IEnumerable{System.Func{System.Boolean}},System.Action{BridgingIT.DevKit.Common.RuleBuilder})">
+  WhenNone(IEnumerable&lt;Func&lt;bool&gt;&gt;, Action&lt;RuleBuilder&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds rules when none of the conditions are true.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuleBuilder WhenNone(IEnumerable&lt;Func&lt;bool&gt;&gt; conditions, Action&lt;RuleBuilder&gt; addRules)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>conditions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Func</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The conditions to evaluate.</p>
+</dd>
+    <dt><code>addRules</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a>&gt;</dt>
+    <dd><p>Action to add rules if none of the conditions are true.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleBuilder.html">RuleBuilder</a></dt>
+    <dd><p>A new RuleBuilder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Rule_WhenNone_System_Collections_Generic_IEnumerable_System_Func_System_Boolean___System_Action_BridgingIT_DevKit_Common_RuleBuilder___examples">Examples</h4>
+  <pre><code class="lang-csharp">var builder = Rule.WhenNone(new[] { () =&gt; product.IsDigital, () =&gt; product.HasSubscription }, builder =&gt; builder
+    .Add(Rules.GreaterThan(product.Price, 10m))
+    .Add(Rules.IsNotEmpty(product.ShippingAddress)))
+    .Check();</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

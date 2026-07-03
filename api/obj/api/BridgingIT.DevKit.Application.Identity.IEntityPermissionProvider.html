@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IEntityPermissionProvider | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IEntityPermissionProvider | bITdevKit API Reference ">
+      
+      <meta name="description" content="Defines the contract for a service that provides access to entity permissions. This interface abstracts the storage and retrieval of permissions, allowing for different implementations.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider" class="text-break">
+Interface IEntityPermissionProvider  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Identity.html">Identity</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Identity.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Defines the contract for a service that provides access to entity permissions.
+This interface abstracts the storage and retrieval of permissions, allowing for different implementations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IEntityPermissionProvider</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetEntityIdsWithPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetEntityIdsWithPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetEntityIdsWithPermissionAsync_System_String_System_String___System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetEntityIdsWithPermissionAsync(System.String,System.String[],System.String,System.String,System.Threading.CancellationToken)">
+  GetEntityIdsWithPermissionAsync(string, string[], string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all entity IDs of a specific type for which a user has a certain permission.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IEnumerable&lt;string&gt;&gt; GetEntityIdsWithPermissionAsync(string userId, string[] roles, string entityType, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A list of entity IDs for which the user has the specified permission.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetEntityIdsWithPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetEntityIdsWithPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetEntityIdsWithPermissionAsync__1_System_String_System_String___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetEntityIdsWithPermissionAsync``1(System.String,System.String[],System.String,System.Threading.CancellationToken)">
+  GetEntityIdsWithPermissionAsync&lt;TEntity&gt;(string, string[], string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all entity IDs of type TEntity for which a user has a certain permission.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IEnumerable&lt;string&gt;&gt; GetEntityIdsWithPermissionAsync&lt;TEntity&gt;(string userId, string[] roles, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A list of entity IDs for which the user has the specified permission.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetHierarchyPathAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetHierarchyPathAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetHierarchyPathAsync_System_Type_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetHierarchyPathAsync(System.Type,System.Object,System.Threading.CancellationToken)">
+  GetHierarchyPathAsync(Type, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the hierarchy path for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IEnumerable&lt;object&gt;&gt; GetHierarchyPathAsync(Type entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">Type</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>A list of objects representing the hierarchy path.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetHierarchyPathAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetHierarchyPathAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetHierarchyPathAsync__1_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetHierarchyPathAsync``1(System.Object,System.Threading.CancellationToken)">
+  GetHierarchyPathAsync&lt;TEntity&gt;(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the hierarchy path for a specific entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IEnumerable&lt;object&gt;&gt; GetHierarchyPathAsync&lt;TEntity&gt;(object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>A list of objects representing the hierarchy path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetPermissionsAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetPermissionsAsync(System.String,System.Object,System.Threading.CancellationToken)">
+  GetPermissionsAsync(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all users and roles for a specific entity (id) or entity type (wildcard).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetPermissionsAsync__1_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetPermissionsAsync``1(System.Object,System.Threading.CancellationToken)">
+  GetPermissionsAsync&lt;TEntity&gt;(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all users and roles for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetPermissionsAsync&lt;TEntity&gt;(object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolePermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolePermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolePermissionsAsync_System_String_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolePermissionsAsync(System.String,System.String,System.Object,System.Threading.CancellationToken)">
+  GetRolePermissionsAsync(string, string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all permissions for a role for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;string&gt;&gt; GetRolePermissionsAsync(string role, string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A read-only collection of permissions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolePermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolePermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolePermissionsAsync__1_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolePermissionsAsync``1(System.String,System.Object,System.Threading.CancellationToken)">
+  GetRolePermissionsAsync&lt;TEntity&gt;(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all permissions for a role for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;string&gt;&gt; GetRolePermissionsAsync&lt;TEntity&gt;(string role, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A read-only collection of permissions.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolesPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolesPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolesPermissionsAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolesPermissionsAsync(System.String,System.Object,System.Threading.CancellationToken)">
+  GetRolesPermissionsAsync(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all roles for a specific entity (id) or entity type (wildcard).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetRolesPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolesPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolesPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetRolesPermissionsAsync__1_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetRolesPermissionsAsync``1(System.Object,System.Threading.CancellationToken)">
+  GetRolesPermissionsAsync&lt;TEntity&gt;(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all roles for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetRolesPermissionsAsync&lt;TEntity&gt;(object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUserPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUserPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUserPermissionsAsync_System_String_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUserPermissionsAsync(System.String,System.String,System.Object,System.Threading.CancellationToken)">
+  GetUserPermissionsAsync(string, string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all permissions for a user for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;string&gt;&gt; GetUserPermissionsAsync(string userId, string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A read-only collection of permissions.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUserPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUserPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUserPermissionsAsync__1_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUserPermissionsAsync``1(System.String,System.Object,System.Threading.CancellationToken)">
+  GetUserPermissionsAsync&lt;TEntity&gt;(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all permissions for a user for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;string&gt;&gt; GetUserPermissionsAsync&lt;TEntity&gt;(string userId, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A read-only collection of permissions.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUsersPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUsersPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUsersPermissionsAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUsersPermissionsAsync(System.String,System.Object,System.Threading.CancellationToken)">
+  GetUsersPermissionsAsync(string, object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all users for a specific entity (id) or entity type (wildcard).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetUsersPermissionsAsync(string entityType, object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUsersPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUsersPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GetUsersPermissionsAsync__1_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GetUsersPermissionsAsync``1(System.Object,System.Threading.CancellationToken)">
+  GetUsersPermissionsAsync&lt;TEntity&gt;(object, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves all granted permissions for all users for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IReadOnlyCollection&lt;EntityPermissionInfo&gt;&gt; GetUsersPermissionsAsync&lt;TEntity&gt;(object entityId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Identity.EntityPermissionInfo.html">EntityPermissionInfo</a>&gt;&gt;</dt>
+    <dd><p>A read-only collection of entity permission information.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantRolePermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantRolePermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantRolePermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantRolePermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  GrantRolePermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grants a specific permission to a role for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task GrantRolePermissionAsync(string role, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to grant.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantRolePermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantRolePermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantRolePermissionAsync__1_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantRolePermissionAsync``1(System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  GrantRolePermissionAsync&lt;TEntity&gt;(string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grants a specific permission to a role for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task GrantRolePermissionAsync&lt;TEntity&gt;(string role, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to grant.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantUserPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantUserPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantUserPermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantUserPermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  GrantUserPermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grants a specific permission to a user for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task GrantUserPermissionAsync(string userId, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to grant.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantUserPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantUserPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_GrantUserPermissionAsync__1_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.GrantUserPermissionAsync``1(System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  GrantUserPermissionAsync&lt;TEntity&gt;(string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Grants a specific permission to a user for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task GrantUserPermissionAsync&lt;TEntity&gt;(string userId, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to grant.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync_System_String_System_String___System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync(System.String,System.String[],System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  HasPermissionAsync(string, string[], string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a user has a specific permission for an entity, either directly or through their roles.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; HasPermissionAsync(string userId, string[] roles, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the user has the permission, false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync_System_String_System_String___System_String_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync(System.String,System.String[],System.String,System.String,System.Threading.CancellationToken)">
+  HasPermissionAsync(string, string[], string, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a user has a wildcard permission (no id) for all entities of a specific type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; HasPermissionAsync(string userId, string[] roles, string entityType, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the user has the wildcard permission, false otherwise.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync__1_System_String_System_String___System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync``1(System.String,System.String[],System.Object,System.String,System.Threading.CancellationToken)">
+  HasPermissionAsync&lt;TEntity&gt;(string, string[], object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a user has a specific permission for an entity of type TEntity, either directly or through their roles.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; HasPermissionAsync&lt;TEntity&gt;(string userId, string[] roles, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the user has the permission, false otherwise.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_HasPermissionAsync__1_System_String_System_String___System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.HasPermissionAsync``1(System.String,System.String[],System.String,System.Threading.CancellationToken)">
+  HasPermissionAsync&lt;TEntity&gt;(string, string[], string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks if a user has a specific wildcard permission for all entities of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; HasPermissionAsync&lt;TEntity&gt;(string userId, string[] roles, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>roles</code> <span class="xref">string</span>[]</dt>
+    <dd><p>The roles assigned to the user.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to check.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p>True if the user has the wildcard permission, false otherwise.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeRolePermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeRolePermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeRolePermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeRolePermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  RevokeRolePermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes a specific permission from a role for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RevokeRolePermissionAsync(string role, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to revoke.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeRolePermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeRolePermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeRolePermissionAsync__1_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeRolePermissionAsync``1(System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  RevokeRolePermissionAsync&lt;TEntity&gt;(string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes a specific permission from a role for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RevokeRolePermissionAsync&lt;TEntity&gt;(string role, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to revoke.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeRolePermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeRolePermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeRolePermissionsAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeRolePermissionsAsync(System.String,System.Threading.CancellationToken)">
+  RevokeRolePermissionsAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes all permissions from a role.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RevokeRolePermissionsAsync(string role, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>role</code> <span class="xref">string</span></dt>
+    <dd><p>The name of the role.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeUserPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeUserPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeUserPermissionAsync_System_String_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeUserPermissionAsync(System.String,System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  RevokeUserPermissionAsync(string, string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes a specific permission from a user for a specific entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RevokeUserPermissionAsync(string userId, string entityType, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityType</code> <span class="xref">string</span></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to revoke.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeUserPermissionAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeUserPermissionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeUserPermissionAsync__1_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeUserPermissionAsync``1(System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  RevokeUserPermissionAsync&lt;TEntity&gt;(string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes a specific permission from a user for an entity of type TEntity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RevokeUserPermissionAsync&lt;TEntity&gt;(string userId, object entityId, string permission, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>entityId</code> <span class="xref">object</span></dt>
+    <dd><p>The ID of the specific entity.</p>
+</dd>
+    <dt><code>permission</code> <span class="xref">string</span></dt>
+    <dd><p>The permission to revoke.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeUserPermissionsAsync_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeUserPermissionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Identity_IEntityPermissionProvider_RevokeUserPermissionsAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Identity.IEntityPermissionProvider.RevokeUserPermissionsAsync(System.String,System.Threading.CancellationToken)">
+  RevokeUserPermissionsAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Revokes all permissions from a user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task RevokeUserPermissionsAsync(string userId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>userId</code> <span class="xref">string</span></dt>
+    <dd><p>The ID of the user.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

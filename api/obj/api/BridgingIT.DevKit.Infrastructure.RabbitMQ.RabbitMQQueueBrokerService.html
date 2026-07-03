@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class RabbitMQQueueBrokerService | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class RabbitMQQueueBrokerService | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides operational access to the RabbitMQ queue broker runtime state.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService" class="text-break">
+Class RabbitMQQueueBrokerService  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.RabbitMQ.html">RabbitMQ</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.RabbitMQ.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides operational access to the RabbitMQ queue broker runtime state.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class RabbitMQQueueBrokerService : IQueueBrokerService</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">RabbitMQQueueBrokerService</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Queueing.IQueueBrokerService.html">IQueueBrokerService</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Because RabbitMQ does not retain processed message history, this service tracks
+a bounded set of recent messages in memory. Older messages are evicted when
+the capacity limit is reached.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService__ctor_BridgingIT_DevKit_Application_Queueing_QueueBrokerControlState_BridgingIT_DevKit_Application_Queueing_QueueingRegistrationStore_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.#ctor(BridgingIT.DevKit.Application.Queueing.QueueBrokerControlState,BridgingIT.DevKit.Application.Queueing.QueueingRegistrationStore)">
+  RabbitMQQueueBrokerService(QueueBrokerControlState, QueueingRegistrationStore)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.html">RabbitMQQueueBrokerService</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RabbitMQQueueBrokerService(QueueBrokerControlState controlState = null, QueueingRegistrationStore registrationStore = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>controlState</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerControlState.html">QueueBrokerControlState</a></dt>
+    <dd><p>The runtime control state.</p>
+</dd>
+    <dt><code>registrationStore</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueingRegistrationStore.html">QueueingRegistrationStore</a></dt>
+    <dd><p>The subscription registration store.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ControlState_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ControlState*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ControlState" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ControlState">
+  ControlState
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the runtime control state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public QueueBrokerControlState ControlState { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerControlState.html">QueueBrokerControlState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ArchiveMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ArchiveMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ArchiveMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ArchiveMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  ArchiveMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Marks a terminal queue message as archived.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ArchiveMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves a single queue message by its primary key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueMessageInfo&gt; GetMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;</dt>
+    <dd><p>The queue message details, or <code>null</code> if not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessageContentAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessageContentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessageContentAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessageContentAsync(System.Guid,System.Threading.CancellationToken)">
+  GetMessageContentAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves the stored serialized content for a single queue message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueMessageContentInfo&gt; GetMessageContentAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageContentInfo.html">QueueMessageContentInfo</a>&gt;</dt>
+    <dd><p>The stored queue message content, or <code>null</code> if not found.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessageStatsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessageStatsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessageStatsAsync_System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessageStatsAsync(System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  GetMessageStatsAsync(DateTimeOffset?, DateTimeOffset?, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves aggregate queue message statistics.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueMessageStats&gt; GetMessageStatsAsync(DateTimeOffset? startDate = null, DateTimeOffset? endDate = null, bool? isArchived = false, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>startDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional lower processed/created date filter.</p>
+</dd>
+    <dt><code>endDate</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper processed/created date filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStats.html">QueueMessageStats</a>&gt;</dt>
+    <dd><p>The aggregated queue message statistics.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetMessagesAsync_System_Nullable_BridgingIT_DevKit_Application_Queueing_QueueMessageStatus__System_String_System_String_System_String_System_String_System_Nullable_System_Boolean__System_Nullable_System_DateTimeOffset__System_Nullable_System_DateTimeOffset__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetMessagesAsync(System.Nullable{BridgingIT.DevKit.Application.Queueing.QueueMessageStatus},System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.DateTimeOffset},System.Nullable{System.DateTimeOffset},System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetMessagesAsync(QueueMessageStatus?, string, string, string, string, bool?, DateTimeOffset?, DateTimeOffset?, int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves queue messages with optional operational filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;QueueMessageInfo&gt;&gt; GetMessagesAsync(QueueMessageStatus? status = null, string type = null, string queueName = null, string messageId = null, string lockedBy = null, bool? isArchived = false, DateTimeOffset? createdAfter = null, DateTimeOffset? createdBefore = null, int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStatus.html">QueueMessageStatus</a>?</dt>
+    <dd><p>Optional queue message status filter.</p>
+</dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>Optional persisted queue message type filter.</p>
+</dd>
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>Optional logical queue name filter.</p>
+</dd>
+    <dt><code>messageId</code> <span class="xref">string</span></dt>
+    <dd><p>Optional logical message identifier filter.</p>
+</dd>
+    <dt><code>lockedBy</code> <span class="xref">string</span></dt>
+    <dd><p>Optional lease-owner filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter. Defaults to <code>false</code>.</p>
+</dd>
+    <dt><code>createdAfter</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional lower creation-date filter.</p>
+</dd>
+    <dt><code>createdBefore</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper creation-date filter.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>Optional result limit.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>A collection of queue message summaries.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetSubscriptionsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetSubscriptionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetSubscriptionsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetSubscriptionsAsync(System.Threading.CancellationToken)">
+  GetSubscriptionsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the currently active queue subscriptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;QueueSubscriptionInfo&gt;&gt; GetSubscriptionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueSubscriptionInfo.html">QueueSubscriptionInfo</a>&gt;&gt;</dt>
+    <dd><p>The registered queue message type to handler mappings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetSummaryAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetSummaryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetSummaryAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetSummaryAsync(System.Threading.CancellationToken)">
+  GetSummaryAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a summary of broker state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;QueueBrokerSummary&gt; GetSummaryAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueBrokerSummary.html">QueueBrokerSummary</a>&gt;</dt>
+    <dd><p>A runtime summary containing counts, pause state, and broker capabilities.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetWaitingMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetWaitingMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_GetWaitingMessagesAsync_System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.GetWaitingMessagesAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+  GetWaitingMessagesAsync(int?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets messages that are waiting because no compatible handler is currently registered.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;QueueMessageInfo&gt;&gt; GetWaitingMessagesAsync(int? take = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>An optional maximum number of messages to return.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageInfo.html">QueueMessageInfo</a>&gt;&gt;</dt>
+    <dd><p>The waiting queue messages ordered by creation time.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_PauseMessageTypeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.PauseMessageTypeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_PauseMessageTypeAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.PauseMessageTypeAsync(System.String,System.Threading.CancellationToken)">
+  PauseMessageTypeAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pauses processing for the specified queue message type token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PauseMessageTypeAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The queue message type token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_PauseQueueAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.PauseQueueAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_PauseQueueAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.PauseQueueAsync(System.String,System.Threading.CancellationToken)">
+  PauseQueueAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Pauses processing for the specified logical queue.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PauseQueueAsync(string queueName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>The logical queue name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_PurgeMessagesAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.PurgeMessagesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_PurgeMessagesAsync_System_Nullable_System_DateTimeOffset__System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Queueing_QueueMessageStatus__System_Nullable_System_Boolean__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.PurgeMessagesAsync(System.Nullable{System.DateTimeOffset},System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Queueing.QueueMessageStatus},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+  PurgeMessagesAsync(DateTimeOffset?, IEnumerable&lt;QueueMessageStatus&gt;, bool?, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes persisted queue messages matching the supplied filters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task PurgeMessagesAsync(DateTimeOffset? olderThan = null, IEnumerable&lt;QueueMessageStatus&gt; statuses = null, bool? isArchived = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span>?</dt>
+    <dd><p>Optional upper age filter.</p>
+</dd>
+    <dt><code>statuses</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStatus.html">QueueMessageStatus</a>&gt;</dt>
+    <dd><p>Optional status filter.</p>
+</dd>
+    <dt><code>isArchived</code> <span class="xref">bool</span>?</dt>
+    <dd><p>Optional archive-state filter.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ReleaseLeaseAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ReleaseLeaseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ReleaseLeaseAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ReleaseLeaseAsync(System.Guid,System.Threading.CancellationToken)">
+  ReleaseLeaseAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the current lease for a queue message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ReleaseLeaseAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ResetMessageTypeCircuitAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ResetMessageTypeCircuitAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ResetMessageTypeCircuitAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ResetMessageTypeCircuitAsync(System.String,System.Threading.CancellationToken)">
+  ResetMessageTypeCircuitAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets the circuit state for the specified queue message type token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResetMessageTypeCircuitAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The queue message type token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ResumeMessageTypeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ResumeMessageTypeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ResumeMessageTypeAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ResumeMessageTypeAsync(System.String,System.Threading.CancellationToken)">
+  ResumeMessageTypeAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes processing for the specified queue message type token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResumeMessageTypeAsync(string type, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The queue message type token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ResumeQueueAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ResumeQueueAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_ResumeQueueAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.ResumeQueueAsync(System.String,System.Threading.CancellationToken)">
+  ResumeQueueAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resumes processing for the specified logical queue.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ResumeQueueAsync(string queueName, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>The logical queue name.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_RetryMessageAsync_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.RetryMessageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_RetryMessageAsync_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.RetryMessageAsync(System.Guid,System.Threading.CancellationToken)">
+  RetryMessageAsync(Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resets a retryable queue message so it can be processed again.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task RetryMessageAsync(Guid id, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">Guid</span></dt>
+    <dd><p>The queue message primary key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_TrackConsumed_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.TrackConsumed*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_TrackConsumed_BridgingIT_DevKit_Common_IQueueMessage_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.TrackConsumed(BridgingIT.DevKit.Common.IQueueMessage,System.String,System.String)">
+  TrackConsumed(IQueueMessage, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tracks a message that has been consumed from RabbitMQ.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void TrackConsumed(IQueueMessage message, string queueName, string type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
+    <dd><p>The queue message.</p>
+</dd>
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>The queue name.</p>
+</dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The message type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_TrackEnqueued_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.TrackEnqueued*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_TrackEnqueued_BridgingIT_DevKit_Common_IQueueMessage_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.TrackEnqueued(BridgingIT.DevKit.Common.IQueueMessage,System.String,System.String)">
+  TrackEnqueued(IQueueMessage, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tracks a message that has been enqueued.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void TrackEnqueued(IQueueMessage message, string queueName, string type)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
+    <dd><p>The queue message.</p>
+</dd>
+    <dt><code>queueName</code> <span class="xref">string</span></dt>
+    <dd><p>The queue name.</p>
+</dd>
+    <dt><code>type</code> <span class="xref">string</span></dt>
+    <dd><p>The message type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_TrackResult_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.TrackResult*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_RabbitMQ_RabbitMQQueueBrokerService_TrackResult_System_String_BridgingIT_DevKit_Application_Queueing_QueueMessageStatus_System_Int32_" data-uid="BridgingIT.DevKit.Infrastructure.RabbitMQ.RabbitMQQueueBrokerService.TrackResult(System.String,BridgingIT.DevKit.Application.Queueing.QueueMessageStatus,System.Int32)">
+  TrackResult(string, QueueMessageStatus, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tracks the processing result for a message.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void TrackResult(string messageId, QueueMessageStatus status, int attemptCount = 0)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>messageId</code> <span class="xref">string</span></dt>
+    <dd><p>The message identifier.</p>
+</dd>
+    <dt><code>status</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueMessageStatus.html">QueueMessageStatus</a></dt>
+    <dd><p>The resulting status.</p>
+</dd>
+    <dt><code>attemptCount</code> <span class="xref">int</span></dt>
+    <dd><p>The attempt count, if applicable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

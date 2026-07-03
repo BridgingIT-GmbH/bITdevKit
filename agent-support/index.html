@@ -10,9 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/decisions-repository-vs-activeentity/">
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/agent-support/">
       
       
+        <link rel="prev" href="../templates/">
+      
+      
+        <link rel="next" href="../developer-dashboards/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>Repository vs ActiveEntity - bITdevKit</title>
+        <title>AI Agent Support - bITdevKit</title>
       
     
     
@@ -70,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#repository-vs-activeentity" class="md-skip">
+        <a href="#ai-agent-support" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Repository vs ActiveEntity
+              AI Agent Support
             
           </span>
         </div>
@@ -417,10 +421,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../agent-support/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -436,6 +467,280 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-it-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#three-agent-angles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three agent angles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docs-aware-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docs-aware coding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-and-enable-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install and enable MCP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Install and enable MCP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-the-bdk-net-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install the bdk .NET tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enable-mcp-in-the-web-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enable MCP in the web host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-start-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Start the application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configure-the-mcp-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configure the MCP client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-verify-the-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Verify the setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-agents-can-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What agents can access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useful-development-prompts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful development prompts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Useful development prompts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#runtime-orientation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime orientation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-a-failing-local-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging a failing local feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs-messaging-and-queueing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jobs, messaging and queueing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orchestrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orchestrations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#project-owned-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project-owned diagnostics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation-aware-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation-aware coding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-and-destructive-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin and destructive operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-an-mcp-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure an MCP client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-project-owned-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add project-owned tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#safety-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety model
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2469,10 +2774,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#choose-repository-when" class="md-nav__link">
+  <a href="#why-it-matters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choose Repository when
+        Why it matters
       
     </span>
   </a>
@@ -2480,10 +2785,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#choose-activeentity-when" class="md-nav__link">
+  <a href="#three-agent-angles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choose ActiveEntity when
+        Three agent angles
       
     </span>
   </a>
@@ -2491,10 +2796,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-comparison" class="md-nav__link">
+  <a href="#docs-aware-coding" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick comparison
+        Docs-aware coding
       
     </span>
   </a>
@@ -2502,10 +2807,220 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#practical-rule-of-thumb" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Practical rule of thumb
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-and-enable-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install and enable MCP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Install and enable MCP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-the-bdk-net-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install the bdk .NET tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enable-mcp-in-the-web-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enable MCP in the web host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-start-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Start the application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configure-the-mcp-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Configure the MCP client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-verify-the-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Verify the setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-agents-can-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What agents can access
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useful-development-prompts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful development prompts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Useful development prompts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#runtime-orientation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime orientation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-a-failing-local-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging a failing local feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jobs-messaging-and-queueing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jobs, messaging and queueing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orchestrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orchestrations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#project-owned-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project-owned diagnostics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation-aware-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation-aware coding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-and-destructive-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin and destructive operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-an-mcp-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure an MCP client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-project-owned-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add project-owned tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#safety-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety model
       
     </span>
   </a>
@@ -2532,67 +3047,314 @@
   
 
 
-<h1 id="repository-vs-activeentity">Repository vs ActiveEntity<a class="headerlink" href="#repository-vs-activeentity" title="Permanent link">&para;</a></h1>
-<p><code>bITdevKit</code> supports both patterns. The right choice depends on the complexity of the domain and the
-kind of codebase being built.</p>
-<h2 id="choose-repository-when">Choose Repository when<a class="headerlink" href="#choose-repository-when" title="Permanent link">&para;</a></h2>
+<h1 id="ai-agent-support">AI Agent Support<a class="headerlink" href="#ai-agent-support" title="Permanent link">&para;</a></h1>
+<p><code>bITdevKit</code> is agent-capable through the <code>bdk mcp</code> command. It gives MCP-capable IDEs and coding agents a local, workspace-aware way to read official DevKit documentation, inspect the running application, and apply the expected patterns while they help with development.</p>
+<p>This is designed for local development. It is not a public HTTP endpoint and it is not a production administration API.</p>
+<h2 id="why-it-matters">Why it matters<a class="headerlink" href="#why-it-matters" title="Permanent link">&para;</a></h2>
+<p>Modern coding agents are more useful when they can combine framework guidance with live runtime context. With DevKit MCP, an agent can search official DevKit docs, request curated implementation guidance, summarize the selected project runtime, and then ask the running application for bounded diagnostics instead of guessing from source code alone.</p>
+<p>Common workflows include:</p>
 <ul>
-<li>aggregates and domain boundaries matter</li>
-<li>query specifications or richer composition are needed</li>
-<li>strict separation of concerns is important</li>
-<li>the codebase is expected to grow in complexity</li>
+<li>check whether the selected local runtime is ready</li>
+<li>inspect application health and runtime metrics</li>
+<li>query retained logs and recent errors</li>
+<li>follow correlation ids across logs and operational features</li>
+<li>inspect messaging and queueing state</li>
+<li>inspect and operate durable jobs</li>
+<li>inspect orchestration instances, history, signals and timers</li>
+<li>call project-owned diagnostics exposed by the application</li>
+<li>search official DevKit documentation from the consuming project</li>
+<li>request curated implementation guidance for common DevKit feature work</li>
+<li>summarize the selected runtime, registered modules and advertised MCP capabilities</li>
+<li>use DevKit docs while implementing jobs, queues, handlers, modules, endpoints or project-owned MCP tools</li>
 </ul>
-<p>See:
-<a href="../reference/features-domain-repositories/">Domain Repositories</a></p>
-<h2 id="choose-activeentity-when">Choose ActiveEntity when<a class="headerlink" href="#choose-activeentity-when" title="Permanent link">&para;</a></h2>
-<ul>
-<li>the scenario is more CRUD-oriented</li>
-<li>development speed matters more than abstraction purity</li>
-<li>the domain is simple and the persistence model is straightforward</li>
-<li>a more direct style is acceptable</li>
-</ul>
-<p>See:
-<a href="../reference/features-domain-activeentity/">ActiveEntity</a></p>
-<h2 id="quick-comparison">Quick comparison<a class="headerlink" href="#quick-comparison" title="Permanent link">&para;</a></h2>
+<h2 id="three-agent-angles">Three agent angles<a class="headerlink" href="#three-agent-angles" title="Permanent link">&para;</a></h2>
+<p>DevKit MCP gives agents three complementary sources of context:</p>
 <table>
 <thead>
 <tr>
-<th>Concern</th>
-<th>Repository</th>
-<th>ActiveEntity</th>
+<th>Angle</th>
+<th>Tools</th>
+<th>Use</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Complexity fit</td>
-<td>Better for richer domains</td>
-<td>Better for simpler CRUD-style domains</td>
+<td>Guidance</td>
+<td><code>bdk_guidance_list</code>, <code>bdk_guidance_get</code></td>
+<td>Get a concise implementation checklist for common DevKit work.</td>
 </tr>
 <tr>
-<td>Testing</td>
-<td>Clear abstractions for mocking or substitution</td>
-<td>More direct persistence style</td>
+<td>Documentation</td>
+<td><code>bdk_docs_search</code>, <code>bdk_docs_get</code></td>
+<td>Read official DevKit feature docs while coding in a consuming project.</td>
 </tr>
 <tr>
-<td>DDD alignment</td>
-<td>Stronger aggregate boundary emphasis</td>
-<td>Lighter-weight model</td>
-</tr>
-<tr>
-<td>Query flexibility</td>
-<td>Better for specifications and filtering</td>
-<td>More limited</td>
-</tr>
-<tr>
-<td>Onboarding simplicity</td>
-<td>More concepts up front</td>
-<td>Easier to start with</td>
+<td>Runtime</td>
+<td><code>bdk_project_summary</code>, <code>bdk_capabilities_get</code>, feature tools</td>
+<td>Inspect the selected app, its modules, capabilities and live operational state.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="practical-rule-of-thumb">Practical rule of thumb<a class="headerlink" href="#practical-rule-of-thumb" title="Permanent link">&para;</a></h2>
-<p>Start with <code>Repository</code> when the domain model is expected to matter.</p>
-<p>Use <code>ActiveEntity</code> when speed and simplicity are the higher priority.</p>
+<p>For feature work, prefer this flow:</p>
+<div class="highlight"><pre><span></span><code>Guidance -&gt; Docs -&gt; Code -&gt; Runtime verification
+</code></pre></div>
+<p>Guidance is intentionally one generic operation. When a prompt asks for "guidance", "how to implement", "add", "create" or "build" DevKit-specific code, ask the agent to call <code>bdk_guidance_get</code> with the natural-language request as <code>query</code>. The tool infers the relevant guidance topics, including combined cases such as a job that triggers an orchestration.</p>
+<p>Example guidance call:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;how to implement a new job that triggers an orchestration&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Guidance topics cover major DevKit areas such as jobs, messaging, queueing, orchestration, pipelines, caching, mapping, serialization, utilities, commands and queries, application events, ActiveEntity, domain events, repositories, specifications, domain modeling, filtering, modules, requester/notifier, results, rules, startup tasks, document storage, file storage, storage monitoring and dashboard pages.</p>
+<h2 id="docs-aware-coding">Docs-aware coding<a class="headerlink" href="#docs-aware-coding" title="Permanent link">&para;</a></h2>
+<p><code>bdk mcp</code> exposes documentation tools directly to the agent:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bdk_docs_search</code></td>
+<td>Search official DevKit documentation by topic.</td>
+</tr>
+<tr>
+<td><code>bdk_docs_get</code></td>
+<td>Load a bounded markdown source returned by search.</td>
+</tr>
+</tbody>
+</table>
+<p>These tools read the official DevKit documentation from GitHub, not the consuming project's local <code>docs</code> folder. That means a customer project can use <code>bdk</code> as a development assistant without vendoring the DevKit source repository.</p>
+<p>A useful agent workflow is:</p>
+<ol>
+<li>Search the DevKit docs for the feature being changed.</li>
+<li>Summarize the expected pattern.</li>
+<li>Inspect the existing project code for matching conventions.</li>
+<li>Make the implementation change.</li>
+<li>Use runtime MCP tools to verify the app advertises or executes the feature.</li>
+</ol>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code>Use the bdk MCP docs tools to read the DevKit Jobs guidance first.
+Then implement a nightly customer cleanup job following the documented pattern.
+After the change, use bdk_jobs_list to verify the running app advertises the job.
+</code></pre></div>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    Developer["Developer"]
+    Agent["IDE or coding agent"]
+    Mcp["bdk mcp"]
+    Registry["Local host registry"]
+    App["Running DevKit web host"]
+    Handler["MCP handler"]
+    Service["Application service"]
+
+    Developer --&gt; Agent
+    Agent --&gt;|"MCP over stdio"| Mcp
+    Mcp --&gt;|"discover ready runtimes"| Registry
+    Mcp --&gt;|"local IPC"| App
+    App --&gt; Handler
+    Handler --&gt; Service</code></pre>
+<p>The CLI discovers ready DevKit hosts for the current workspace, selects the current runtime, and forwards runtime-bound tool calls over local IPC. Stale runtime descriptors are ignored by MCP selection so agents work with currently running hosts.</p>
+<h2 id="install-and-enable-mcp">Install and enable MCP<a class="headerlink" href="#install-and-enable-mcp" title="Permanent link">&para;</a></h2>
+<p>MCP has two sides:</p>
+<ul>
+<li>the <code>bdk mcp</code> STDIO server started by your IDE or agent</li>
+<li>a running DevKit web host with local MCP tooling enabled</li>
+</ul>
+<h3 id="1-install-the-bdk-net-tool">1. Install the <code>bdk</code> .NET tool<a class="headerlink" href="#1-install-the-bdk-net-tool" title="Permanent link">&para;</a></h3>
+<p>Install the DevKit CLI as a local .NET tool in the project repository. Local tools pin the CLI version in <code>.config/dotnet-tools.json</code>, so the MCP setup is repeatable for the team.</p>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">new</span> <span class="n">tool-manifest</span>
+<span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="n">BridgingIT</span><span class="p">.</span><span class="n">DevKit</span><span class="p">.</span><span class="nb">Cli</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div>
+<p>The MCP command shape is:</p>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">mcp</span> <span class="p">-</span><span class="n">-toolset</span> <span class="n">diagnostics</span><span class="p">,</span><span class="n">operations</span><span class="p">,</span><span class="n">admin</span>
+</code></pre></div>
+<h3 id="2-enable-mcp-in-the-web-host">2. Enable MCP in the web host<a class="headerlink" href="#2-enable-mcp-in-the-web-host" title="Permanent link">&para;</a></h3>
+<p>Use the DevKit web application builder and register MCP handlers. For local development, MCP follows the DevKit local tooling policy by default.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddLogging</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddModules</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithModule</span><span class="o">&lt;</span><span class="n">CoreModule</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddMcp</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithHandlersFromAssembly</span><span class="o">&lt;</span><span class="n">CoreModule</span><span class="o">&gt;</span><span class="p">());</span>
+</code></pre></div>
+<p>If the project only needs built-in handlers from DevKit feature packages, those packages can register their own handlers. Project-owned handlers are added with <code>.WithHandler&lt;THandler&gt;()</code> or <code>.WithHandlersFromAssembly&lt;TMarker&gt;()</code>.</p>
+<h3 id="3-start-the-application">3. Start the application<a class="headerlink" href="#3-start-the-application" title="Permanent link">&para;</a></h3>
+<p>Run the DevKit web host in local development. When MCP is enabled, the host writes a local runtime descriptor and starts a local IPC endpoint.</p>
+<p>The startup log should include a BDK line similar to:</p>
+<div class="highlight"><pre><span></span><code>[BDK] mcp handlers registered (...)
+</code></pre></div>
+<p>The MCP dashboard page can also show whether MCP is enabled and whether a <code>bdk mcp</code> server is connected to the runtime.</p>
+<h3 id="4-configure-the-mcp-client">4. Configure the MCP client<a class="headerlink" href="#4-configure-the-mcp-client" title="Permanent link">&para;</a></h3>
+<p>For VS Code, add a repo-local <code>.vscode/mcp.json</code> entry:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dotnet&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;--project&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;src/Presentation.Cli/Presentation.Cli.csproj&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;--&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;mcp&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;--toolset&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;diagnostics,operations,admin&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Some clients use <code>.mcp.json</code>, <code>.codex/config.toml</code>, or IDE-specific settings instead of <code>.vscode/mcp.json</code>. Keep the command and arguments equivalent.</p>
+<p>For client-specific setup, see <a href="../reference/features-cli-mcp-clients/">MCP Client Configuration</a>.</p>
+<h3 id="5-verify-the-setup">5. Verify the setup<a class="headerlink" href="#5-verify-the-setup" title="Permanent link">&para;</a></h3>
+<p>Ask the agent to run a self-test:</p>
+<div class="highlight"><pre><span></span><code>Use the bdk MCP self-test and tell me whether the selected runtime is healthy.
+</code></pre></div>
+<p>Or call these tools from the MCP client:</p>
+<ul>
+<li><code>bdk_mcp_status</code></li>
+<li><code>bdk_mcp_self_test</code></li>
+<li><code>bdk_runtimes_list</code></li>
+<li><code>bdk_capabilities_get</code></li>
+</ul>
+<p>The expected result is one ready selected runtime and a capabilities response listing the operations exposed by the host.</p>
+<h2 id="what-agents-can-access">What agents can access<a class="headerlink" href="#what-agents-can-access" title="Permanent link">&para;</a></h2>
+<p>The stable MCP tool catalog is owned by the CLI. The selected runtime advertises the app-side operations it supports.</p>
+<p>Built-in areas include:</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Runtime</td>
+<td>MCP status, self-test, capabilities, health and metrics</td>
+</tr>
+<tr>
+<td>Logs and errors</td>
+<td>query logs, tail logs, recent errors, inspect correlation ids</td>
+</tr>
+<tr>
+<td>Messaging</td>
+<td>summaries, subscriptions, retained messages, retry, archive, pause and resume</td>
+</tr>
+<tr>
+<td>Queueing</td>
+<td>queue summaries, retained queue messages, retry, archive, queue/type pause and resume</td>
+</tr>
+<tr>
+<td>Jobs</td>
+<td>job definitions, run history, run statistics, trigger, pause, resume and interrupt</td>
+</tr>
+<tr>
+<td>Orchestrations</td>
+<td>instances, details, history, timers, signals and runtime control</td>
+</tr>
+<tr>
+<td>Project tools</td>
+<td>application-owned diagnostics through <code>bdk_project_operations</code> and <code>bdk_project_call</code></td>
+</tr>
+<tr>
+<td>Project summary</td>
+<td>selected runtime, registered modules, MCP capability groups and project-owned operations</td>
+</tr>
+<tr>
+<td>Guidance</td>
+<td>curated implementation checklists for jobs, messaging, queueing, orchestration, pipelines and dashboard pages</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>official DevKit docs search and retrieval for implementation guidance</td>
+</tr>
+</tbody>
+</table>
+<p>Operations are grouped into toolsets:</p>
+<ul>
+<li><code>diagnostics</code>: default read-oriented tools</li>
+<li><code>operations</code>: runtime control such as retry, pause, resume, trigger or signal</li>
+<li><code>admin</code>: destructive maintenance operations, always requiring explicit confirmation</li>
+</ul>
+<h2 id="useful-development-prompts">Useful development prompts<a class="headerlink" href="#useful-development-prompts" title="Permanent link">&para;</a></h2>
+<p>Use prompts that tell the agent what to inspect first, what to change, and when to stop for approval. These examples assume the application is running locally and the MCP client has started <code>bdk mcp</code>.</p>
+<h3 id="runtime-orientation">Runtime orientation<a class="headerlink" href="#runtime-orientation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use the bdk MCP tools to verify the selected runtime. Run the MCP self-test, inspect the available capabilities, and summarize which diagnostics are available before changing code.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to check whether this application exposes logs, jobs, messaging, queueing, orchestrations and project-owned operations. Tell me which areas are available and which are not.
+</code></pre></div>
+<h3 id="debugging-a-failing-local-feature">Debugging a failing local feature<a class="headerlink" href="#debugging-a-failing-local-feature" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to inspect the latest errors from the running app. For the newest error, follow the correlation id, summarize the related logs, and point me to the most likely code area.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>I just reproduced a bug locally. Use bdk MCP to tail recent warning and error logs from the last 10 minutes, then suggest the smallest code change to investigate first.
+</code></pre></div>
+<h3 id="jobs-messaging-and-queueing">Jobs, messaging and queueing<a class="headerlink" href="#jobs-messaging-and-queueing" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to list recent job runs and failed executions. If a job failed, inspect its run details and related logs, then summarize the failure path.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to inspect waiting queue messages and retained broker messages. Identify messages that look stuck, leased, failed or ready for retry, but do not perform operations yet.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk MCP operations to retry the failed queue message I identify. Before calling any operation, show me the exact MCP tool arguments you plan to use.
+</code></pre></div>
+<h3 id="orchestrations">Orchestrations<a class="headerlink" href="#orchestrations" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to list active orchestration instances. For any failed or stuck instance, inspect details, history, signals and timers, then summarize what happened.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to investigate orchestration instance &lt;instance-id&gt;. Include history, signals, timers and related correlation logs if available.
+</code></pre></div>
+<h3 id="project-owned-diagnostics">Project-owned diagnostics<a class="headerlink" href="#project-owned-diagnostics" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to list project-owned operations, choose the operation that best inspects a customer or product issue, and ask me for any required identifiers before calling it.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk_project_operations to discover application-specific diagnostics. Then call the safest read-only project operation that helps explain why product &lt;product-id&gt; is not visible.
+</code></pre></div>
+<h3 id="documentation-aware-coding">Documentation-aware coding<a class="headerlink" href="#documentation-aware-coding" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use the bdk MCP docs tools to find the DevKit guidance for queueing retries. Compare that guidance with the current code before proposing changes.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Before implementing this feature, use bdk MCP docs search for the relevant DevKit feature docs, summarize the expected pattern, then inspect the codebase for existing matching conventions.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>I need a new DevKit job. Use bdk_docs_search and bdk_docs_get to read the Jobs docs first, then implement the job and verify it with bdk_jobs_list.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk_guidance_get for jobs, then use the linked docs and bdk_project_summary before editing. After implementation, verify with bdk_jobs_list.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk_project_summary to orient on this app&#39;s modules and MCP capabilities. Then choose the right DevKit guidance topic before proposing code changes.
+</code></pre></div>
+<h3 id="admin-and-destructive-operations">Admin and destructive operations<a class="headerlink" href="#admin-and-destructive-operations" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to inspect retained local test data older than yesterday. Do not purge anything. If cleanup is appropriate, show the exact admin call and wait for my approval.
+</code></pre></div>
+<p>For destructive actions, prefer a two-step prompt: first ask the agent to inspect and propose the operation, then approve a second prompt with the explicit confirmation arguments.</p>
+<h2 id="configure-an-mcp-client">Configure an MCP client<a class="headerlink" href="#configure-an-mcp-client" title="Permanent link">&para;</a></h2>
+<p>For VS Code, Visual Studio, Rider and repo-local client examples, see:</p>
+<ul>
+<li><a href="../reference/features-cli-mcp-clients/">MCP Client Configuration</a></li>
+<li><a href="../reference/features-cli-mcp/">DevKit MCP Reference</a></li>
+<li><a href="../reference/features-cli/">DevKit CLI Reference</a></li>
+</ul>
+<h2 id="add-project-owned-tools">Add project-owned tools<a class="headerlink" href="#add-project-owned-tools" title="Permanent link">&para;</a></h2>
+<p>Applications can expose their own diagnostics by implementing <code>IMcpHandler</code> and registering the handler through the DevKit web host builder:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddLogging</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddModules</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithModule</span><span class="o">&lt;</span><span class="n">CoreModule</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddMcp</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithHandlersFromAssembly</span><span class="o">&lt;</span><span class="n">CoreModule</span><span class="o">&gt;</span><span class="p">());</span>
+</code></pre></div>
+<p>Project operations should use client-safe names such as <code>catalog_inspect_product</code> or <code>orders_find_customer_context</code>. Agents can discover them with <code>bdk_project_operations</code> and call them through <code>bdk_project_call</code>.</p>
+<h2 id="safety-model">Safety model<a class="headerlink" href="#safety-model" title="Permanent link">&para;</a></h2>
+<p>MCP support is intentionally local-first:</p>
+<ul>
+<li>no public MCP HTTP endpoint is exposed</li>
+<li>host communication uses local IPC with nonce validation</li>
+<li>runtime selection is workspace-aware and only targets ready runtimes</li>
+<li>responses are bounded for agent use</li>
+<li>operations and admin tools must be enabled explicitly</li>
+<li>destructive admin operations require confirmation arguments</li>
+</ul>
+<p>This keeps the feature useful for development while preserving a clear boundary between local diagnostics and production operations.</p>
 
 
 

@@ -21,16 +21,16 @@ public class SqlServerSequenceNumberGeneratorTests(ITestOutputHelper output, Tes
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
+    private readonly string connectionString = fixture.CreateSqlConnectionString($"Sequences_{Guid.NewGuid():N}");
 
     protected override ISequenceNumberGenerator CreateGenerator()
     {
         var services = new ServiceCollection();
         services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(this.output)));
 
-        var db = this.fixture.EnsureSqlServerDbContext(this.output);
         services.AddDbContext<StubDbContext>(options =>
         {
-            options.UseSqlServer(this.fixture.SqlConnectionString);
+            options.UseSqlServer(this.connectionString);
         });
 
         services.AddScoped<ISequenceNumberGenerator, SqlServerSequenceNumberGenerator<StubDbContext>>(
@@ -45,6 +45,7 @@ public class SqlServerSequenceNumberGeneratorTests(ITestOutputHelper output, Tes
         // Ensure the database and sequences are created
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<StubDbContext>();
+        context.Database.EnsureCreated();
 
         return serviceProvider.GetRequiredService<ISequenceNumberGenerator>();
     }

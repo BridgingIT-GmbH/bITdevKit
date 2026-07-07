@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -8,437 +8,124 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 using Application.Storage;
 
 [IntegrationTest("Application")]
-//[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : TestsBase(output)
 {
     private readonly InMemoryDocumentStoreProvider sut = new(XunitLoggerFactory.Create(output));
 
     [Fact]
-    public async Task FindAsync_WithoutFilter_ReturnsEntities()
+    public async Task FindPageResultAsync_WithContinuation_ReturnsAllMatchingDocumentsInOrder()
     {
         // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "Mary" + ticks,
-                LastName = "Jane",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
+        var partitionKey = "people-" + Guid.NewGuid().ToString("N");
+        await this.UpsertPeopleAsync(partitionKey, ["001", "002", "003"]);
+        var firstQuery = DocumentQueries.Query()
+            .ForKey(partitionKey, "00")
+            .WithRowKeyPrefix()
+            .Take(2)
+            .Build();
 
         // Act
-        var result = await this.sut.FindAsync<PersonStub>();
+        var firstPage = await this.sut.FindPageResultAsync<PersonStub>(firstQuery);
+        var secondPage = await this.sut.FindPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey(partitionKey, "00")
+                .WithRowKeyPrefix()
+                .Take(2)
+                .ContinueWith(firstPage.Value.ContinuationToken)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBeGreaterThanOrEqualTo(5); // due to other tests
-        result.Any(e => e.FirstName.Equals("Mary" + ticks))
-            .ShouldBeTrue();
+        firstPage.IsSuccess.ShouldBeTrue();
+        firstPage.Value.Items.Select(item => item.FirstName).ShouldBe(["First001", "First002"]);
+        firstPage.Value.HasMore.ShouldBeTrue();
+        secondPage.IsSuccess.ShouldBeTrue();
+        secondPage.Value.Items.Select(item => item.FirstName).ShouldBe(["First003"]);
+        secondPage.Value.HasMore.ShouldBeFalse();
     }
 
     [Fact]
-    public async Task FindAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities()
+    public async Task ListPageResultAsync_WithContinuation_ReturnsKeysWithoutPayloadDependence()
     {
         // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "Mary" + ticks,
-                LastName = "Jane",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
+        var partitionKey = "keys-" + Guid.NewGuid().ToString("N");
+        await this.UpsertPeopleAsync(partitionKey, ["101", "102", "103"]);
+        var firstPage = await this.sut.ListPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey(partitionKey, "10")
+                .WithRowKeyPrefix()
+                .Take(2)
+                .Build());
 
         // Act
-        var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.FullMatch);
+        var secondPage = await this.sut.ListPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey(partitionKey, "10")
+                .WithRowKeyPrefix()
+                .Take(2)
+                .ContinueWith(firstPage.Value.ContinuationToken)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(1);
-        result.First()
-            .FirstName.ShouldBe("Mary" + ticks);
+        firstPage.IsSuccess.ShouldBeTrue();
+        firstPage.Value.Items.Select(key => key.RowKey).ShouldBe(["101", "102"]);
+        firstPage.Value.HasMore.ShouldBeTrue();
+        secondPage.IsSuccess.ShouldBeTrue();
+        secondPage.Value.Items.Select(key => key.RowKey).ShouldBe(["103"]);
+        secondPage.Value.HasMore.ShouldBeFalse();
     }
 
     [Fact]
-    public async Task FindAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities()
+    public async Task CountExistsGetAndDeleteResultAsync_RoundTripThroughProvider()
     {
         // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
+        var partitionKey = "roundtrip-" + Guid.NewGuid().ToString("N");
+        var documentKey = new DocumentKey(partitionKey, "201");
+        await this.sut.UpsertResultAsync(
+            documentKey,
             new PersonStub
             {
                 Id = Guid.NewGuid(),
                 Country = "USA",
-                FirstName = "Mary" + ticks,
-                LastName = "Jane",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
+                FirstName = "Round",
+                LastName = "Trip",
+                Age = 32
             });
 
         // Act
-        var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeyPrefixMatch);
+        var count = await this.sut.CountResultAsync<PersonStub>(
+            DocumentQueries.Count()
+                .ForKey(partitionKey, "20")
+                .WithRowKeyPrefix()
+                .Build());
+        var existsBeforeDelete = await this.sut.ExistsResultAsync<PersonStub>(documentKey);
+        var get = await this.sut.GetResultAsync<PersonStub>(documentKey);
+        var delete = await this.sut.DeleteResultAsync<PersonStub>(documentKey);
+        var existsAfterDelete = await this.sut.ExistsResultAsync<PersonStub>(documentKey);
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(5);
-        result.First()
-            .FirstName.ShouldBe("Mary" + ticks);
+        count.IsSuccess.ShouldBeTrue();
+        count.Value.ShouldBe(1);
+        existsBeforeDelete.Value.ShouldBeTrue();
+        get.IsSuccess.ShouldBeTrue();
+        get.Value.FirstName.ShouldBe("Round");
+        delete.IsSuccess.ShouldBeTrue();
+        existsAfterDelete.Value.ShouldBeFalse();
     }
 
-    [Fact]
-    public async Task FindAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities()
+    private async Task UpsertPeopleAsync(string partitionKey, IEnumerable<string> rowKeys)
     {
-        // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "Mary" + ticks,
-                LastName = "Jane",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-
-        // Act
-        var result = await this.sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeySuffixMatch);
-
-        // Assert
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(1);
-        result.First()
-            .FirstName.ShouldBe("Mary" + ticks);
-    }
-
-    [Fact]
-    public async Task ListAsync_WithoutFilter_ReturnsDocumentKeys()
-    {
-        // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "Mary" + ticks,
-                LastName = "Jane",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-
-        // Act
-        var result = await this.sut.ListAsync<PersonStub>();
-
-        // Assert
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBeGreaterThanOrEqualTo(5); // due to other tests
-        result.All(d => d.PartitionKey.Equals("partition"))
-            .ShouldBeTrue();
-        result.Any(d => d.RowKey.StartsWith("row" + ticks))
-            .ShouldBeTrue();
-    }
-
-    [Fact]
-    public async Task ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
-    {
-        // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "Mary" + ticks,
-                LastName = "Jane",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-        await this.sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"),
-            new PersonStub
-            {
-                Id = Guid.NewGuid(),
-                Country = "USA",
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 18
-            });
-
-        // Act
-        var result = await this.sut.ListAsync<PersonStub>(new DocumentKey("partition", "row" + ticks));
-
-        // Assert
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(1);
-        result.All(d => d.PartitionKey.Equals("partition"))
-            .ShouldBeTrue();
-        result.All(d => d.RowKey.StartsWith("row" + ticks))
-            .ShouldBeTrue();
-    }
-
-    [Fact]
-    public async Task UpsertAsync_CreatesOrUpdateEntity()
-    {
-        // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        var documentKey = new DocumentKey("partition", "row" + ticks);
-        var entity = new PersonStub
+        foreach (var rowKey in rowKeys)
         {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        };
-
-        // Act
-        await this.sut.UpsertAsync(documentKey, entity);
-
-        // Assert
-        var result = await this.sut.FindAsync<PersonStub>(documentKey);
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(1);
-        result.First()
-            .ShouldBe(entity);
-    }
-
-    [Fact]
-    public async Task DeleteAsync_DeletesEntity()
-    {
-        // Arrange
-        var ticks = DateTime.UtcNow.Ticks;
-        var documentKey = new DocumentKey("partition", "row" + ticks);
-        var entity = new PersonStub
-        {
-            Id = Guid.NewGuid(),
-            Country = "USA",
-            FirstName = "John",
-            LastName = "Doe",
-            Age = 18
-        };
-
-        // Act
-        await this.sut.UpsertAsync(documentKey, entity);
-        await this.sut.DeleteAsync<PersonStub>(documentKey);
-
-        // Assert
-        var result = await this.sut.FindAsync<PersonStub>(documentKey);
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(0);
+            await this.sut.UpsertResultAsync(
+                new DocumentKey(partitionKey, rowKey),
+                new PersonStub
+                {
+                    Id = Guid.NewGuid(),
+                    Country = "USA",
+                    FirstName = "First" + rowKey,
+                    LastName = "Last" + rowKey,
+                    Age = 20
+                });
+        }
     }
 }

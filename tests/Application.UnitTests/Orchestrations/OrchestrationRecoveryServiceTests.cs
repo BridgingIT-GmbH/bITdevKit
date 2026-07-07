@@ -386,9 +386,28 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
 
         healthReport.Entries[nameof(OrchestrationRecoveryService)].Status.ShouldBe(HealthStatus.Healthy);
 
-        clock.Advance(TimeSpan.FromMilliseconds(20));
-        await provider.SecondQuerySucceeded.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await AdvanceClockUntilAsync(
+            clock,
+            provider.SecondQuerySucceeded.Task,
+            TimeSpan.FromMilliseconds(20),
+            TimeSpan.FromSeconds(5));
         await hostedService.StopAsync(CancellationToken.None);
+    }
+
+    private static async Task AdvanceClockUntilAsync(
+        FakeOrchestrationClock clock,
+        Task signal,
+        TimeSpan step,
+        TimeSpan timeout)
+    {
+        var deadline = DateTimeOffset.UtcNow.Add(timeout);
+        while (!signal.IsCompleted && DateTimeOffset.UtcNow < deadline)
+        {
+            clock.Advance(step);
+            await Task.Delay(10).ConfigureAwait(false);
+        }
+
+        await signal.WaitAsync(TimeSpan.Zero).ConfigureAwait(false);
     }
 
     private ServiceProvider CreateServices(

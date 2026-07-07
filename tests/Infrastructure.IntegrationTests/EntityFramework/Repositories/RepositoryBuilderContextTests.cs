@@ -10,6 +10,7 @@ using Infrastructure.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(TestEnvironmentCollection))]
 public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase(output, services =>
     {
         services.AddMediatR()

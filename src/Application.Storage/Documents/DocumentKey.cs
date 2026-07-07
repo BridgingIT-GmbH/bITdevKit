@@ -17,7 +17,7 @@ using System.Diagnostics;
 /// <example>
 /// <code>
 /// var key = new DocumentKey("customers", "42");
-/// await documents.UpsertAsync(key, customer, cancellationToken);
+/// await documents.UpsertResultAsync(key, customer, cancellationToken);
 /// </code>
 /// </example>
 [DebuggerDisplay("PartitionKey={PartitionKey}, RowKey={RowKey}")]

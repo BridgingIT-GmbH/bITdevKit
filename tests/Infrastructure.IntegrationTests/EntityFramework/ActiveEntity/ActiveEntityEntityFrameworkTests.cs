@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -24,14 +24,15 @@ using Xunit;
 using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection5))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(ActiveEntityTestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class ActiveEntityEntityFrameworkTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : TestsBase(output, services =>
 {
-    fixture.EnsureSqlServerDbContext();
+    var connectionString = fixture.CreateSqlConnectionString($"ActiveEntity_{Guid.NewGuid():N}");
+
     services.AddLogging();
     services.AddSingleton(provider => XunitLogger.Create(output));
     services.AddSingleton(provider => XunitLoggerFactory.Create(output));
-    services.AddSqlServerDbContext<ActiveEntityDbContext>(fixture.SqlConnectionString);
+    services.AddSqlServerDbContext<ActiveEntityDbContext>(connectionString);
     services.AddNotifier()
         .AddHandlers();
 
@@ -94,7 +95,13 @@ public class ActiveEntityEntityFrameworkTests(ITestOutputHelper output, TestEnvi
     //});
 
     // Register the global service provider for ActiveEntity configurator
-    ActiveEntityConfigurator.SetGlobalServiceProvider(services.BuildServiceProvider()); // app.UseActiveEntity(app.Services);  // Sets global SP
+    var serviceProvider = services.BuildServiceProvider();
+    using (var scope = serviceProvider.CreateScope())
+    {
+        scope.ServiceProvider.GetRequiredService<ActiveEntityDbContext>().Database.EnsureCreated();
+    }
+
+    ActiveEntityConfigurator.SetGlobalServiceProvider(serviceProvider); // app.UseActiveEntity(app.Services);  // Sets global SP
 })
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);

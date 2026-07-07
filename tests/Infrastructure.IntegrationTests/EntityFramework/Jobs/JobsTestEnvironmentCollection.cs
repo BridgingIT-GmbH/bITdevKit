@@ -5,5 +5,5 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Jobs;
 
-[CollectionDefinition(nameof(JobsTestEnvironmentCollection))]
+[CollectionDefinition(nameof(JobsTestEnvironmentCollection), DisableParallelization = true)]
 public class JobsTestEnvironmentCollection : ICollectionFixture<JobsTestEnvironmentFixture>;

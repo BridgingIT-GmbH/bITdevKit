@@ -94,11 +94,9 @@ public class DocumentStoreCacheProvider : ICacheProvider
     /// <inheritdoc />
     public async Task<IEnumerable<string>> GetKeysAsync(CancellationToken token = default)
     {
-        var documents = await this.client.ListAsync(new DocumentKey("storage-cache", string.Empty),
-            DocumentKeyFilter.RowKeyPrefixMatch,
-            token);
+        var documents = await this.ListKeysByPrefixAsync(string.Empty, token);
 
-        return documents.SafeNull().Select(d => d.RowKey);
+        return documents.Select(d => d.RowKey);
     }
 
     /// <inheritdoc />
@@ -122,13 +120,11 @@ public class DocumentStoreCacheProvider : ICacheProvider
     /// <inheritdoc />
     public async Task RemoveStartsWithAsync(string key, CancellationToken token = default)
     {
-        var documents = await this.client.ListAsync(new DocumentKey("storage-cache", key),
-            DocumentKeyFilter.RowKeyPrefixMatch,
-            token);
+        var documents = await this.ListKeysByPrefixAsync(key, token);
 
         foreach (var document in documents.SafeNull())
         {
-            await this.client.DeleteAsync(new DocumentKey(document.PartitionKey, document.RowKey), token);
+            await this.client.DeleteResultAsync(new DocumentKey(document.PartitionKey, document.RowKey), token);
         }
     }
 
@@ -164,5 +160,39 @@ public class DocumentStoreCacheProvider : ICacheProvider
                 SlidingExpiration = slidingExpiration ?? this.configuration.SlidingExpiration
             },
             cancellationToken);
+    }
+
+    private async Task<IReadOnlyCollection<DocumentKey>> ListKeysByPrefixAsync(string prefix, CancellationToken token)
+    {
+        var keys = new List<DocumentKey>();
+        string continuationToken = null;
+
+        do
+        {
+            var query = DocumentQueries.Query()
+                .ForKey("storage-cache", prefix)
+                .WithRowKeyPrefix()
+                .Take(500);
+
+            if (!string.IsNullOrWhiteSpace(continuationToken))
+            {
+                query.ContinueWith(continuationToken);
+            }
+
+            var result = await this.client.ListPageResultAsync(query.Build(), token);
+            if (result.IsFailure)
+            {
+                this.logger.LogWarning("{LogKey} cache document key listing failed: {Error}",
+                    Constants.LogKey,
+                    result.Errors.FirstOrDefault()?.Message);
+                break;
+            }
+
+            keys.AddRange(result.Value.Items);
+            continuationToken = result.Value.ContinuationToken;
+        }
+        while (!string.IsNullOrWhiteSpace(continuationToken));
+
+        return keys;
     }
 }

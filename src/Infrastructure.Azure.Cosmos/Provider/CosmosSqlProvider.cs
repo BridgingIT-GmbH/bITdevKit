@@ -34,6 +34,10 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     private string containerName;
     private Database database;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CosmosSqlProvider{TItem}" /> class.
+    /// </summary>
+    /// <param name="options">The Cosmos SQL provider options.</param>
     public CosmosSqlProvider(CosmosSqlProviderOptions<TItem> options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
@@ -46,10 +50,15 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         this.idProperty = typeof(TItem).GetProperty("Id") ?? typeof(TItem).GetProperty("id");
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CosmosSqlProvider{TItem}" /> class using an options builder.
+    /// </summary>
+    /// <param name="optionsBuilder">The builder used to configure Cosmos SQL provider options.</param>
     public CosmosSqlProvider(
         Builder<CosmosSqlProviderOptionsBuilder<TItem>, CosmosSqlProviderOptions<TItem>> optionsBuilder)
         : this(optionsBuilder(new CosmosSqlProviderOptionsBuilder<TItem>()).Build()) { }
 
+    /// <inheritdoc />
     public virtual async Task<TItem> ReadItemAsync(
         string id,
         object partitionKeyValue = null,
@@ -60,7 +69,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             return default;
         }
 
-        await this.InitializeAsync(this.options);
+        await this.InitializeAsync(this.options, cancellationToken);
         var watch = ValueStopwatch.StartNew();
         var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, id);
 
@@ -123,6 +132,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         return default;
     }
 
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TItem>> ReadItemsAsync(
     IEnumerable<Expression<Func<TItem, bool>>> expressions = null,
     int? skip = null,
@@ -132,7 +142,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     object partitionKeyValue = null,
     CancellationToken cancellationToken = default)
     {
-        await this.InitializeAsync(this.options);
+        await this.InitializeAsync(this.options, cancellationToken);
         var watch = ValueStopwatch.StartNew();
         var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue);
 
@@ -183,6 +193,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         return result;
     }
 
+    /// <inheritdoc />
+    /// <inheritdoc />
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TItem>> ReadItemsAsync(
         Expression<Func<TItem, bool>> expression,
         int? skip = null,
@@ -202,6 +215,96 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             cancellationToken).AnyContext();
     }
 
+    /// <inheritdoc />
+    public virtual async Task<Result<CosmosSqlPage<TItem>>> ReadItemsPageResultAsync(
+        Expression<Func<TItem, bool>> expression,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.ReadItemsPageResultAsync(
+            expression != null ? new[] { expression } : null,
+            take,
+            orderExpression,
+            orderDescending,
+            partitionKeyValue,
+            continuationToken,
+            cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<Result<CosmosSqlPage<TItem>>> ReadItemsPageResultAsync(
+        IEnumerable<Expression<Func<TItem, bool>>> expressions = null,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await this.ReadProjectedItemsPageResultAsync(
+            expressions,
+            item => item,
+            take,
+            orderExpression,
+            orderDescending,
+            partitionKeyValue,
+            continuationToken,
+            syncConcurrencyVersions: true,
+            cancellationToken).AnyContext();
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<Result<CosmosSqlPage<TResult>>> ReadItemsPageResultAsync<TResult>(
+        Expression<Func<TItem, bool>> expression,
+        Expression<Func<TItem, TResult>> projection,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.ReadItemsPageResultAsync(
+            expression != null ? new[] { expression } : null,
+            projection,
+            take,
+            orderExpression,
+            orderDescending,
+            partitionKeyValue,
+            continuationToken,
+            cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<Result<CosmosSqlPage<TResult>>> ReadItemsPageResultAsync<TResult>(
+        IEnumerable<Expression<Func<TItem, bool>>> expressions,
+        Expression<Func<TItem, TResult>> projection,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.ReadProjectedItemsPageResultAsync(
+            expressions,
+            projection,
+            take,
+            orderExpression,
+            orderDescending,
+            partitionKeyValue,
+            continuationToken,
+            syncConcurrencyVersions: false,
+            cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
     public async Task<TItem> CreateItemAsync(
         TItem item,
         object partitionKeyValue = null,
@@ -210,7 +313,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         EnsureArg.IsNotNull(item, nameof(item));
         EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Item property '{this.idProperty.Name}' has to have a mandatory value."));
 
-        await this.InitializeAsync(this.options);
+        await this.InitializeAsync(this.options, cancellationToken);
         var watch = ValueStopwatch.StartNew();
         var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
 
@@ -242,6 +345,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
     }
 
+    /// <inheritdoc />
     public async Task<TItem> UpsertItemAsync(
         TItem item,
         object partitionKeyValue = null,
@@ -250,7 +354,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         EnsureArg.IsNotNull(item, nameof(item));
         EnsureArg.IsTrue(this.ValidateItemId(item), this.idProperty.Name, o => o.WithMessage($"Property '{this.idProperty.Name}' should have a value."));
 
-        await this.InitializeAsync(this.options);
+        await this.InitializeAsync(this.options, cancellationToken);
         var watch = ValueStopwatch.StartNew();
         var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
 
@@ -290,8 +394,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
     }
 
-    /// <summary>
-    /// Asynchronously deletes an item identified by
+    /// <inheritdoc />
     public virtual async Task<bool> DeleteItemAsync(
         string id,
         object partitionKeyValue = null,
@@ -302,7 +405,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             return false;
         }
 
-        await this.InitializeAsync(this.options);
+        await this.InitializeAsync(this.options, cancellationToken);
         var watch = ValueStopwatch.StartNew();
 
         var item = await this.ReadItemAsync(id, partitionKeyValue, cancellationToken).AnyContext(); // Read current item to get its version
@@ -336,6 +439,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
     }
 
+    /// <summary>
+    /// Releases resources used by the provider.
+    /// </summary>
     public void Dispose()
     {
         //this.client?.Dispose(); don't dispose instances which were injected (ctor)
@@ -409,42 +515,129 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         return requestOptions;
     }
 
-    private async Task InitializeAsync(CosmosSqlProviderOptions<TItem> options)
+    private async Task<Result<CosmosSqlPage<TResult>>> ReadProjectedItemsPageResultAsync<TResult>(
+        IEnumerable<Expression<Func<TItem, bool>>> expressions,
+        Expression<Func<TItem, TResult>> projection,
+        int? take,
+        Expression<Func<TItem, object>> orderExpression,
+        bool orderDescending,
+        object partitionKeyValue,
+        string continuationToken,
+        bool syncConcurrencyVersions,
+        CancellationToken cancellationToken)
+    {
+        EnsureArg.IsNotNull(projection, nameof(projection));
+
+        await this.InitializeAsync(this.options, cancellationToken);
+        var watch = ValueStopwatch.StartNew();
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue);
+        requestOptions.MaxItemCount = take;
+
+        try
+        {
+            var iterator = this.container.GetItemLinqQueryable<TItem>(
+                    requestOptions: requestOptions,
+                    continuationToken: continuationToken,
+                    linqSerializerOptions: new CosmosLinqSerializerOptions
+                    {
+                        PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                })
+                .WhereIf(expressions)
+                .OrderByIf(orderExpression, orderDescending)
+                .TakeIf(take)
+                .Select(projection)
+                .ToFeedIterator();
+
+            if (!iterator.HasMoreResults)
+            {
+                return Result<CosmosSqlPage<TResult>>.Success(new CosmosSqlPage<TResult>());
+            }
+
+            var response = await iterator.ReadNextAsync(cancellationToken).AnyContext();
+            var items = response.Resource.ToList();
+
+            if (syncConcurrencyVersions && typeof(TResult) == typeof(TItem))
+            {
+                SyncConcurrencyVersions(items.Cast<TItem>(), response.Diagnostics.ToString());
+            }
+
+            this.LogRequestCharge(response.RequestCharge, response.ActivityId);
+            this.logger.LogDebug("{LogKey} ReadItemsPageResultAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+
+            return Result<CosmosSqlPage<TResult>>.Success(new CosmosSqlPage<TResult>
+            {
+                Items = items,
+                ContinuationToken = response.ContinuationToken,
+                RequestCharge = response.RequestCharge,
+                ActivityId = response.ActivityId
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<CosmosSqlPage<TResult>>.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
+    }
+
+    private static void SyncConcurrencyVersions(IEnumerable<TItem> items, string responseDiagnostics)
+    {
+        var etags = Regex.Matches(responseDiagnostics, "\"etag\":\"([^\"]*)\"")
+            .Select(m => m.Groups[1].Value)
+            .ToList();
+        var itemList = items.ToList();
+
+        for (var i = 0; i < itemList.Count; i++)
+        {
+            var item = itemList[i];
+            if (item is IConcurrency concurrencyItem && i < etags.Count && Guid.TryParse(etags[i].Trim('"'), out var version))
+            {
+                concurrencyItem.ConcurrencyVersion = version;
+            }
+        }
+    }
+
+    private async Task InitializeAsync(CosmosSqlProviderOptions<TItem> options, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(options.Client, nameof(options.Client));
 
         if (this.container is null)
         {
             var watch = ValueStopwatch.StartNew();
-            ThroughputProperties throughputProperties;
-            if (this.options.DatabaseAutoscale)
-            {
-                throughputProperties = ThroughputProperties.CreateAutoscaleThroughput(options.DatabaseThroughPut);
-            }
-            else
-            {
-                throughputProperties = ThroughputProperties.CreateManualThroughput(options.DatabaseThroughPut);
-            }
-
-            var databaseResponse = await options.Client.CreateDatabaseIfNotExistsAsync(options.Database.EmptyToNull() ?? "master", throughputProperties);
+            var databaseResponse = options.DatabaseThroughPut > 0
+                ? await options.Client.CreateDatabaseIfNotExistsAsync(
+                    options.Database.EmptyToNull() ?? "master",
+                    this.options.DatabaseAutoscale
+                        ? ThroughputProperties.CreateAutoscaleThroughput(options.DatabaseThroughPut)
+                        : ThroughputProperties.CreateManualThroughput(options.DatabaseThroughPut),
+                    cancellationToken: cancellationToken)
+                : await options.Client.CreateDatabaseIfNotExistsAsync(
+                    options.Database.EmptyToNull() ?? "master",
+                    cancellationToken: cancellationToken);
             this.database = databaseResponse.Database;
 
             // replace the throughput on an already existing database, if the value has been configured differently
             if (databaseResponse.StatusCode == HttpStatusCode.OK &&
                 options.DatabaseThroughPut > 0 &&
-                await this.database.ReadThroughputAsync() != options.DatabaseThroughPut)
+                await this.database.ReadThroughputAsync(cancellationToken: cancellationToken) != options.DatabaseThroughPut)
             {
-                await this.database.ReplaceThroughputAsync(throughputProperties);
+                await this.database.ReplaceThroughputAsync(
+                    this.options.DatabaseAutoscale
+                        ? ThroughputProperties.CreateAutoscaleThroughput(options.DatabaseThroughPut)
+                        : ThroughputProperties.CreateManualThroughput(options.DatabaseThroughPut),
+                    cancellationToken: cancellationToken);
             }
 
-            await this.InitializeContainerAsync(options);
+            await this.InitializeContainerAsync(options, cancellationToken);
             this.logger.LogDebug("[{LogKey}] InitializeAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
         }
     }
 
     /// <summary>
     /// Initializes
-    private async Task InitializeContainerAsync(CosmosSqlProviderOptions<TItem> options)
+    private async Task InitializeContainerAsync(CosmosSqlProviderOptions<TItem> options, CancellationToken cancellationToken)
     {
         this.containerName = options.Container.EmptyToNull() ?? typeof(TItem).Name.Pluralize();
         if (!options.ContainerPrefix.IsNullOrEmpty())
@@ -456,32 +649,36 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             this.containerName = this.containerName.ToLowerInvariant();
         }
 
-        ThroughputProperties throughputProperties;
-        if (this.options.Autoscale)
+        var containerProperties = new ContainerProperties(this.containerName, this.options.PartitionKey)
         {
-            throughputProperties = ThroughputProperties.CreateAutoscaleThroughput(options.ThroughPut);
-        }
-        else
-        {
-            throughputProperties = ThroughputProperties.CreateManualThroughput(options.ThroughPut);
-        }
+            DefaultTimeToLive = this.options.TimeToLive
+            //IndexingPolicy = new Microsoft.Azure.Cosmos.IndexingPolicy(new RangeIndex(Microsoft.Azure.Cosmos.DataType.String) { Precision = -1 })
+        };
 
-        var containerResponse = await this.database.CreateContainerIfNotExistsAsync(
-                new ContainerProperties(this.containerName, this.options.PartitionKey)
-                {
-                    DefaultTimeToLive = this.options.TimeToLive
-                    //IndexingPolicy = new Microsoft.Azure.Cosmos.IndexingPolicy(new RangeIndex(Microsoft.Azure.Cosmos.DataType.String) { Precision = -1 })
-                },
-                throughputProperties)
-            .AnyContext();
+        var containerResponse = options.ThroughPut > 0
+            ? await this.database.CreateContainerIfNotExistsAsync(
+                    containerProperties,
+                    this.options.Autoscale
+                        ? ThroughputProperties.CreateAutoscaleThroughput(options.ThroughPut)
+                        : ThroughputProperties.CreateManualThroughput(options.ThroughPut),
+                    cancellationToken: cancellationToken)
+                .AnyContext()
+            : await this.database.CreateContainerIfNotExistsAsync(
+                    containerProperties,
+                    cancellationToken: cancellationToken)
+                .AnyContext();
         this.container = containerResponse.Container;
 
         // replace the throughput on an already existing container, if the value has been configured differently
         if (containerResponse.StatusCode == HttpStatusCode.OK &&
             options.ThroughPut > 0 &&
-            await this.container.ReadThroughputAsync() != options.ThroughPut)
+            await this.container.ReadThroughputAsync(cancellationToken: cancellationToken) != options.ThroughPut)
         {
-            await this.container.ReplaceThroughputAsync(throughputProperties);
+            await this.container.ReplaceThroughputAsync(
+                this.options.Autoscale
+                    ? ThroughputProperties.CreateAutoscaleThroughput(options.ThroughPut)
+                    : ThroughputProperties.CreateManualThroughput(options.ThroughPut),
+                cancellationToken: cancellationToken);
         }
     }
 

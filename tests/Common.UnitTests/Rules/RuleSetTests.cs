@@ -13,7 +13,7 @@ using Xunit;
 [Collection(nameof(RuleBuilderCollectionDefinition))] // prevents parellel execution with RuleTests (which modify the global Rule Settings)
 public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
-    private readonly RulesFixture fixture = fixture;
+    private readonly RulesFixture fixture = fixture.ResetSettings();
     private readonly Faker faker = new();
 
     [Fact]

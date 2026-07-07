@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -14,22 +14,26 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 public abstract class EntityFrameworkDocumentStoreProviderTestsBase
 {
-    public virtual async Task CountAsync_ReturnsDocumentCount()
+    public virtual async Task CountResultAsync_ReturnsDocumentCount()
     {
         // Arrange
         await this.ResetStoreAsync();
         var ticks = DateTime.UtcNow.Ticks;
-        var sut = this.CreateProvider();
+        var sut = this.CreateProvider(documentStoreOptions: new DocumentStoreOptions { AllowFullScans = true });
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.CountAsync<PersonStub>();
+        var result = await sut.CountResultAsync<PersonStub>(
+            DocumentQueries.Count()
+                .AllowFullScan()
+                .Build());
 
         // Assert
-        result.ShouldBe(5);
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.ShouldBe(5);
     }
 
-    public virtual async Task DeleteAsync_DeletesEntity()
+    public virtual async Task DeleteResultAsync_DeletesEntity()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -46,17 +50,18 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         };
 
         // Act
-        await sut.UpsertAsync(documentKey, entity);
-        await sut.DeleteAsync<PersonStub>(documentKey);
+        var upsertResult = await sut.UpsertResultAsync(documentKey, entity);
+        var deleteResult = await sut.DeleteResultAsync<PersonStub>(documentKey);
 
         // Assert
-        var result = await sut.FindAsync<PersonStub>(documentKey);
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(0);
+        var result = await sut.ExistsResultAsync<PersonStub>(documentKey);
+        upsertResult.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, upsertResult.Errors.Select(e => e.Message)));
+        deleteResult.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, deleteResult.Errors.Select(e => e.Message)));
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.ShouldBeFalse();
     }
 
-    public virtual async Task FindAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities()
+    public virtual async Task FindPageResultAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -65,17 +70,22 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.FullMatch);
+        var result = await sut.FindPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey("partition", "row" + ticks)
+                .WithFullMatch()
+                .Take(10)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Count
             .ShouldBe(1);
-        result.First()
+        result.Value.Items.First()
             .FirstName.ShouldBe("Mary" + ticks);
     }
 
-    public virtual async Task FindAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities()
+    public virtual async Task FindPageResultAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -84,17 +94,22 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeyPrefixMatch);
+        var result = await sut.FindPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey("partition", "row" + ticks)
+                .WithRowKeyPrefix()
+                .Take(10)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Count
             .ShouldBe(5);
-        result.First()
+        result.Value.Items.First()
             .FirstName.ShouldBe("Mary" + ticks);
     }
 
-    public virtual async Task FindAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities()
+    public virtual async Task FindPageResultAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -103,54 +118,66 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.FindAsync<PersonStub>(new DocumentKey("partition", "row" + ticks), DocumentKeyFilter.RowKeySuffixMatch);
+        var result = await sut.FindPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey("partition", "row" + ticks)
+                .WithRowKeySuffix()
+                .Take(10)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Count
             .ShouldBe(1);
-        result.First()
+        result.Value.Items.First()
             .FirstName.ShouldBe("Mary" + ticks);
     }
 
-    public virtual async Task FindAsync_WithoutFilter_ReturnsEntities()
+    public virtual async Task FindPageResultAsync_WithoutFilter_ReturnsEntities()
     {
         // Arrange
         await this.ResetStoreAsync();
         var ticks = DateTime.UtcNow.Ticks;
-        var sut = this.CreateProvider();
+        var sut = this.CreateProvider(documentStoreOptions: new DocumentStoreOptions { AllowFullScans = true });
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.FindAsync<PersonStub>();
+        var result = await sut.FindPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .AllowFullScan()
+                .Take(10)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Count
             .ShouldBe(5);
-        result.Any(e => e.FirstName.Equals("Mary" + ticks))
+        result.Value.Items.Any(e => e.FirstName.Equals("Mary" + ticks))
             .ShouldBeTrue();
     }
 
-    public virtual async Task ExistsAsync_WithExactKey_ReturnsExpectedValue()
+    public virtual async Task ExistsResultAsync_WithExactKey_ReturnsExpectedValue()
     {
         // Arrange
         await this.ResetStoreAsync();
         var ticks = DateTime.UtcNow.Ticks;
         var sut = this.CreateProvider();
         var documentKey = new DocumentKey("partition", "row" + ticks);
-        await sut.UpsertAsync(documentKey, this.CreatePerson("Mary" + ticks));
+        var upsertResult = await sut.UpsertResultAsync(documentKey, this.CreatePerson("Mary" + ticks));
 
         // Act
-        var existing = await sut.ExistsAsync<PersonStub>(documentKey);
-        var missing = await sut.ExistsAsync<PersonStub>(new DocumentKey("partition", "missing" + ticks));
+        var existing = await sut.ExistsResultAsync<PersonStub>(documentKey);
+        var missing = await sut.ExistsResultAsync<PersonStub>(new DocumentKey("partition", "missing" + ticks));
 
         // Assert
-        existing.ShouldBeTrue();
-        missing.ShouldBeFalse();
+        upsertResult.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, upsertResult.Errors.Select(e => e.Message)));
+        existing.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, existing.Errors.Select(e => e.Message)));
+        missing.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, missing.Errors.Select(e => e.Message)));
+        existing.Value.ShouldBeTrue();
+        missing.Value.ShouldBeFalse();
     }
 
-    public virtual async Task ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
+    public virtual async Task ListPageResultAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -159,40 +186,49 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.ListAsync<PersonStub>(new DocumentKey("partition", "row" + ticks));
+        var result = await sut.ListPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .ForKey("partition", "row" + ticks)
+                .WithFullMatch()
+                .Take(10)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Count
             .ShouldBe(1);
-        result.All(d => d.PartitionKey.Equals("partition"))
+        result.Value.Items.All(d => d.PartitionKey.Equals("partition"))
             .ShouldBeTrue();
-        result.All(d => d.RowKey.StartsWith("row" + ticks))
+        result.Value.Items.All(d => d.RowKey.StartsWith("row" + ticks))
             .ShouldBeTrue();
     }
 
-    public virtual async Task ListAsync_WithoutFilter_ReturnsDocumentKeys()
+    public virtual async Task ListPageResultAsync_WithoutFilter_ReturnsDocumentKeys()
     {
         // Arrange
         await this.ResetStoreAsync();
         var ticks = DateTime.UtcNow.Ticks;
-        var sut = this.CreateProvider();
+        var sut = this.CreateProvider(documentStoreOptions: new DocumentStoreOptions { AllowFullScans = true });
         await this.SeedPeopleAsync(sut, ticks);
 
         // Act
-        var result = await sut.ListAsync<PersonStub>();
+        var result = await sut.ListPageResultAsync<PersonStub>(
+            DocumentQueries.Query()
+                .AllowFullScan()
+                .Take(10)
+                .Build());
 
         // Assert
-        result.ShouldNotBeNull();
-        result.Count()
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.Items.Count
             .ShouldBe(5);
-        result.All(d => d.PartitionKey.Equals("partition"))
+        result.Value.Items.All(d => d.PartitionKey.Equals("partition"))
             .ShouldBeTrue();
-        result.Any(d => d.RowKey.StartsWith("row" + ticks))
+        result.Value.Items.Any(d => d.RowKey.StartsWith("row" + ticks))
             .ShouldBeTrue();
     }
 
-    public virtual async Task UpsertAsync_CreatesOrUpdatesSingleLogicalRow()
+    public virtual async Task UpsertResultAsync_CreatesOrUpdatesSingleLogicalRow()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -201,18 +237,18 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var sut = this.CreateProvider();
 
         // Act
-        await sut.UpsertAsync(documentKey, this.CreatePerson("John"));
-        await sut.UpsertAsync(documentKey, this.CreatePerson("Jane"));
+        var firstUpsert = await sut.UpsertResultAsync(documentKey, this.CreatePerson("John"));
+        var secondUpsert = await sut.UpsertResultAsync(documentKey, this.CreatePerson("Jane"));
 
         // Assert
-        var result = await sut.FindAsync<PersonStub>(documentKey);
-        result.ShouldNotBeNull();
-        result.Count()
-            .ShouldBe(1);
-        result.First().FirstName.ShouldBe("Jane");
+        var result = await sut.GetResultAsync<PersonStub>(documentKey);
+        firstUpsert.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, firstUpsert.Errors.Select(e => e.Message)));
+        secondUpsert.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, secondUpsert.Errors.Select(e => e.Message)));
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        result.Value.FirstName.ShouldBe("Jane");
     }
 
-    public virtual async Task UpsertAsync_PopulatesLookupHashesAndClearsLease()
+    public virtual async Task UpsertResultAsync_PopulatesLookupHashesAndClearsLease()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -221,9 +257,10 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var sut = this.CreateProvider();
 
         // Act
-        await sut.UpsertAsync(documentKey, this.CreatePerson("Mary" + ticks));
+        var upsertResult = await sut.UpsertResultAsync(documentKey, this.CreatePerson("Mary" + ticks));
 
         // Assert
+        upsertResult.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, upsertResult.Errors.Select(e => e.Message)));
         var row = await this.ExecuteDbContextAsync(async dbContext =>
             await dbContext.StorageDocuments.SingleAsync(e => e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey));
 
@@ -235,7 +272,7 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         row.LockedUntil.ShouldBeNull();
     }
 
-    public virtual async Task UpsertAsync_WithConcurrentWriters_PreservesSingleLogicalDocument()
+    public virtual async Task UpsertResultAsync_WithConcurrentWriters_PreservesSingleLogicalDocument()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -246,7 +283,8 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         await Task.WhenAll(Enumerable.Range(0, 8).Select(async index =>
         {
             var sut = this.CreateProvider(this.CreateConcurrentWriterOptions(), forceNew: true);
-            await sut.UpsertAsync(documentKey, this.CreatePerson("Writer" + index));
+            var upsertResult = await sut.UpsertResultAsync(documentKey, this.CreatePerson("Writer" + index));
+            upsertResult.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, upsertResult.Errors.Select(e => e.Message)));
         }));
 
         // Assert
@@ -261,7 +299,7 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         rows[0].ContentHash.ShouldNotBeNullOrWhiteSpace();
     }
 
-    public virtual async Task UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException()
+    public virtual async Task UpsertResultAsync_WithPartitionKeyLongerThan256_ReturnsFailure()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -269,13 +307,13 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var documentKey = new DocumentKey(new string('p', StorageDocument.MaximumKeyLength + 1), "row");
 
         // Act
-        var act = async () => await sut.UpsertAsync(documentKey, this.CreatePerson("TooLong"));
+        var result = await sut.UpsertResultAsync(documentKey, this.CreatePerson("TooLong"));
 
         // Assert
-        await Should.ThrowAsync<ArgumentException>(act);
+        result.IsFailure.ShouldBeTrue();
     }
 
-    public virtual async Task UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException()
+    public virtual async Task UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure()
     {
         // Arrange
         await this.ResetStoreAsync();
@@ -283,10 +321,10 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         var documentKey = new DocumentKey("partition", new string('r', StorageDocument.MaximumKeyLength + 1));
 
         // Act
-        var act = async () => await sut.UpsertAsync(documentKey, this.CreatePerson("TooLong"));
+        var result = await sut.UpsertResultAsync(documentKey, this.CreatePerson("TooLong"));
 
         // Assert
-        await Should.ThrowAsync<ArgumentException>(act);
+        result.IsFailure.ShouldBeTrue();
     }
 
     protected virtual async Task ResetStoreAsync()
@@ -314,7 +352,8 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
 
     protected virtual EntityFrameworkDocumentStoreProvider<StubDbContext> CreateProvider(
         EntityFrameworkDocumentStoreProviderOptions options = null,
-        bool forceNew = false)
+        bool forceNew = false,
+        DocumentStoreOptions documentStoreOptions = null)
     {
         return null;
     }
@@ -480,10 +519,10 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
 
     private async Task SeedPeopleAsync(EntityFrameworkDocumentStoreProvider<StubDbContext> sut, long ticks)
     {
-        await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks), this.CreatePerson("Mary" + ticks));
-        await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "a"), this.CreatePerson("John"));
-        await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "b"), this.CreatePerson("John"));
-        await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "c"), this.CreatePerson("John"));
-        await sut.UpsertAsync(new DocumentKey("partition", "row" + ticks + "d"), this.CreatePerson("John"));
+        (await sut.UpsertResultAsync(new DocumentKey("partition", "row" + ticks), this.CreatePerson("Mary" + ticks))).IsSuccess.ShouldBeTrue();
+        (await sut.UpsertResultAsync(new DocumentKey("partition", "row" + ticks + "a"), this.CreatePerson("John"))).IsSuccess.ShouldBeTrue();
+        (await sut.UpsertResultAsync(new DocumentKey("partition", "row" + ticks + "b"), this.CreatePerson("John"))).IsSuccess.ShouldBeTrue();
+        (await sut.UpsertResultAsync(new DocumentKey("partition", "row" + ticks + "c"), this.CreatePerson("John"))).IsSuccess.ShouldBeTrue();
+        (await sut.UpsertResultAsync(new DocumentKey("partition", "row" + ticks + "d"), this.CreatePerson("John"))).IsSuccess.ShouldBeTrue();
     }
 }

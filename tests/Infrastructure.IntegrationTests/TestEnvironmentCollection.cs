@@ -6,20 +6,20 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
 // https://xunit.net/docs/shared-context#collection-fixture
-[CollectionDefinition(nameof(TestEnvironmentCollection))]
+[CollectionDefinition(nameof(TestEnvironmentCollection), DisableParallelization = true)]
 public class TestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 
-[CollectionDefinition(nameof(TestEnvironmentCollection2))]
-public class TestEnvironmentCollection2 : ICollectionFixture<TestEnvironmentFixture>;
+[CollectionDefinition(nameof(EntityFrameworkCosmosTypedIdTestEnvironmentCollection), DisableParallelization = true)]
+public class EntityFrameworkCosmosTypedIdTestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 
-[CollectionDefinition(nameof(TestEnvironmentCollection3))]
-public class TestEnvironmentCollection3 : ICollectionFixture<TestEnvironmentFixture>;
+[CollectionDefinition(nameof(EntityFrameworkCosmosDocumentStoreTestEnvironmentCollection), DisableParallelization = true)]
+public class EntityFrameworkCosmosDocumentStoreTestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 
-[CollectionDefinition(nameof(TestEnvironmentCollection4))]
-public class TestEnvironmentCollection4 : ICollectionFixture<TestEnvironmentFixture>;
+[CollectionDefinition(nameof(EntityFrameworkCosmosRepositoryTestEnvironmentCollection), DisableParallelization = true)]
+public class EntityFrameworkCosmosRepositoryTestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 
-[CollectionDefinition(nameof(TestEnvironmentCollection5))]
-public class TestEnvironmentCollection5 : ICollectionFixture<TestEnvironmentFixture>;
+[CollectionDefinition(nameof(ActiveEntityTestEnvironmentCollection), DisableParallelization = true)]
+public class ActiveEntityTestEnvironmentCollection : ICollectionFixture<TestEnvironmentFixture>;
 
-[CollectionDefinition(nameof(TestEnvironmentCollection6))]
-public class TestEnvironmentCollection6 : ICollectionFixture<TestEnvironmentFixture>;
+[CollectionDefinition(nameof(IsolatedSqliteTestEnvironmentCollection), DisableParallelization = true)]
+public class IsolatedSqliteTestEnvironmentCollection;

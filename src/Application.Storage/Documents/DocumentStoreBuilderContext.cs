@@ -76,6 +76,12 @@ public class DocumentStoreBuilderContext<T>(
     /// <typeparam name="TBehavior">The decorator type to add.</typeparam>
     /// <param name="behavior">A factory that creates the decorator around the current inner client.</param>
     /// <returns>The current builder context so additional behaviors can be chained.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddEntityFrameworkDocumentStoreClient&lt;Person, AppDbContext&gt;()
+    ///     .WithBehavior(inner => new LoggingDocumentStoreClientBehavior&lt;Person&gt;(loggerFactory, inner));
+    /// </code>
+    /// </example>
     public DocumentStoreBuilderContext<T> WithBehavior<TBehavior>(Func<IDocumentStoreClient<T>, TBehavior> behavior)
         where TBehavior : notnull, IDocumentStoreClient<T>
     {
@@ -93,6 +99,14 @@ public class DocumentStoreBuilderContext<T>(
     /// <typeparam name="TBehavior">The decorator type to add.</typeparam>
     /// <param name="behavior">A factory that creates the decorator around the current inner client.</param>
     /// <returns>The current builder context so additional behaviors can be chained.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddEntityFrameworkDocumentStoreClient&lt;Person, AppDbContext&gt;()
+    ///     .WithBehavior((inner, sp) => new LoggingDocumentStoreClientBehavior&lt;Person&gt;(
+    ///         sp.GetRequiredService&lt;ILoggerFactory&gt;(),
+    ///         inner));
+    /// </code>
+    /// </example>
     public DocumentStoreBuilderContext<T> WithBehavior<TBehavior>(
         Func<IDocumentStoreClient<T>, IServiceProvider, TBehavior> behavior)
         where TBehavior : notnull, IDocumentStoreClient<T>

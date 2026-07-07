@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -6,117 +6,118 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using DotNet.Testcontainers.Containers;
+using Application.Storage;
 using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection3))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(EntityFrameworkCosmosDocumentStoreTestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
 
     [SkippableFact]
-    public override async Task CountAsync_ReturnsDocumentCount()
+    public override async Task CountResultAsync_ReturnsDocumentCount()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.CountAsync_ReturnsDocumentCount();
+        await base.CountResultAsync_ReturnsDocumentCount();
     }
 
     [SkippableFact]
-    public override async Task DeleteAsync_DeletesEntity()
+    public override async Task DeleteResultAsync_DeletesEntity()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.DeleteAsync_DeletesEntity();
+        await base.DeleteResultAsync_DeletesEntity();
     }
 
     [SkippableFact]
-    public override async Task FindAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities()
+    public override async Task FindPageResultAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.FindAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities();
+        await base.FindPageResultAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities();
     }
 
     [SkippableFact]
-    public override async Task FindAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities()
+    public override async Task FindPageResultAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.FindAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities();
+        await base.FindPageResultAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities();
     }
 
     [SkippableFact]
-    public override async Task FindAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities()
+    public override async Task FindPageResultAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.FindAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities();
+        await base.FindPageResultAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities();
     }
 
     [SkippableFact]
-    public override async Task FindAsync_WithoutFilter_ReturnsEntities()
+    public override async Task FindPageResultAsync_WithoutFilter_ReturnsEntities()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.FindAsync_WithoutFilter_ReturnsEntities();
+        await base.FindPageResultAsync_WithoutFilter_ReturnsEntities();
     }
 
     [SkippableFact]
-    public override async Task ExistsAsync_WithExactKey_ReturnsExpectedValue()
+    public override async Task ExistsResultAsync_WithExactKey_ReturnsExpectedValue()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.ExistsAsync_WithExactKey_ReturnsExpectedValue();
+        await base.ExistsResultAsync_WithExactKey_ReturnsExpectedValue();
     }
 
     [SkippableFact]
-    public override async Task ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
+    public override async Task ListPageResultAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys();
+        await base.ListPageResultAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys();
     }
 
     [SkippableFact]
-    public override async Task ListAsync_WithoutFilter_ReturnsDocumentKeys()
+    public override async Task ListPageResultAsync_WithoutFilter_ReturnsDocumentKeys()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.ListAsync_WithoutFilter_ReturnsDocumentKeys();
+        await base.ListPageResultAsync_WithoutFilter_ReturnsDocumentKeys();
     }
 
     [SkippableFact]
-    public override async Task UpsertAsync_CreatesOrUpdatesSingleLogicalRow()
+    public override async Task UpsertResultAsync_CreatesOrUpdatesSingleLogicalRow()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.UpsertAsync_CreatesOrUpdatesSingleLogicalRow();
+        await base.UpsertResultAsync_CreatesOrUpdatesSingleLogicalRow();
     }
 
     [SkippableFact]
-    public override async Task UpsertAsync_PopulatesLookupHashesAndClearsLease()
+    public override async Task UpsertResultAsync_PopulatesLookupHashesAndClearsLease()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.UpsertAsync_PopulatesLookupHashesAndClearsLease();
+        await base.UpsertResultAsync_PopulatesLookupHashesAndClearsLease();
     }
 
     [SkippableFact]
-    public override async Task UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException()
+    public override async Task UpsertResultAsync_WithPartitionKeyLongerThan256_ReturnsFailure()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException();
+        await base.UpsertResultAsync_WithPartitionKeyLongerThan256_ReturnsFailure();
     }
 
     [SkippableFact]
-    public override async Task UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException()
+    public override async Task UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
-        await base.UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException();
+        await base.UpsertResultAsync_WithRowKeyLongerThan256_ReturnsFailure();
     }
 
     protected override async Task ExecuteDbContextAsync(Func<StubDbContext, Task> action)
@@ -137,10 +138,12 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
 
     protected override EntityFrameworkDocumentStoreProvider<StubDbContext> CreateProvider(
         EntityFrameworkDocumentStoreProviderOptions options = null,
-        bool forceNew = false)
+        bool forceNew = false,
+        DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
             this.fixture.EnsureCosmosDbContext(this.output, forceNew: forceNew),
-            options: options);
+            options: options,
+            documentStoreOptions: documentStoreOptions);
     }
 }

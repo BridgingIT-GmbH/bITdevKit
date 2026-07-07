@@ -47,7 +47,8 @@ public class DocumentStoreCache : IDistributedCache
         EnsureArg.IsNotNullOrEmpty(key, nameof(key));
         token.ThrowIfCancellationRequested();
 
-        var document = (await this.client.FindAsync(new DocumentKey("storage-cache", key), token))?.FirstOrDefault();
+        var result = await this.client.GetResultAsync(new DocumentKey("storage-cache", key), token);
+        var document = result.IsSuccess ? result.Value : null;
 
         if (document != null)
         {
@@ -92,7 +93,8 @@ public class DocumentStoreCache : IDistributedCache
         EnsureArg.IsNotNullOrEmpty(key, nameof(key));
         token.ThrowIfCancellationRequested();
 
-        var document = (await this.client.FindAsync(new DocumentKey("storage-cache", key), token))?.FirstOrDefault();
+        var result = await this.client.GetResultAsync(new DocumentKey("storage-cache", key), token);
+        var document = result.IsSuccess ? result.Value : null;
 
         await this.RefreshDocumentAsync(key, document, token);
     }
@@ -106,7 +108,7 @@ public class DocumentStoreCache : IDistributedCache
     /// <inheritdoc />
     public async Task RemoveAsync(string key, CancellationToken token = default)
     {
-        await this.client.DeleteAsync(new DocumentKey("storage-cache", key), token);
+        await this.client.DeleteResultAsync(new DocumentKey("storage-cache", key), token);
     }
 
     /// <inheritdoc />
@@ -129,7 +131,7 @@ public class DocumentStoreCache : IDistributedCache
             SlidingExpiration = options?.SlidingExpiration
         };
 
-        await this.client.UpsertAsync(new DocumentKey("storage-cache", key), document, token);
+        await this.client.UpsertResultAsync(new DocumentKey("storage-cache", key), document, token);
     }
 
     private async Task RefreshDocumentAsync(string key, CacheDocument document, CancellationToken token = default)

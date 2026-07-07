@@ -11,10 +11,11 @@ using Microsoft.Extensions.Logging;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class AzureTableDocumentStoreClientBuilderContextTests
+public class AzureTableDocumentStoreClientBuilderContextTests : IDisposable
 {
     private readonly TestEnvironmentFixture fixture;
     private readonly ITestOutputHelper output;
+    private readonly ServiceProvider serviceProvider;
 
     public AzureTableDocumentStoreClientBuilderContextTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
@@ -22,17 +23,21 @@ public class AzureTableDocumentStoreClientBuilderContextTests
         this.output = output;
 
         // register the services
-        this.fixture.Services.AddMediatR();
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(output)));
+        services.AddMediatR();
 
-        this.fixture.Services.AddAzureTableServiceClient(o => o
+        services.AddAzureTableServiceClient(o => o
                 .UseConnectionString(this.fixture.AzuriteConnectionString));
 
-        this.fixture.Services.AddAzureTableDocumentStoreClient<PersonStubDocument>() // no need to setup the client+provider (sql)
+        services.AddAzureTableDocumentStoreClient<PersonStubDocument>() // no need to setup the client+provider (sql)
             .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()
             .WithBehavior((inner, sp) =>
                 new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(),
                     inner,
                     new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+
+        this.serviceProvider = services.BuildServiceProvider();
     }
 
     //[Fact]
@@ -51,9 +56,14 @@ public class AzureTableDocumentStoreClientBuilderContextTests
     {
         // Arrange
         // Act
-        var sut = this.fixture.ServiceProvider.GetService<IDocumentStoreClient<PersonStubDocument>>();
+        var sut = this.serviceProvider.GetService<IDocumentStoreClient<PersonStubDocument>>();
 
         // Assert
         sut.ShouldNotBeNull();
+    }
+
+    public void Dispose()
+    {
+        this.serviceProvider.Dispose();
     }
 }

@@ -20,10 +20,10 @@ public class EntityFrameworkPostgresFileStorageProviderTests : EntityFrameworkFi
     public EntityFrameworkPostgresFileStorageProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
         this.fixture = fixture.WithOutput(output);
-        _ = this.fixture.EnsurePostgresDbContext(output);
+        var connectionString = this.fixture.CreatePostgresConnectionString($"filestorage_{Guid.NewGuid():N}");
         this.support = new EntityFrameworkRelationalFileStorageTestSupport(
             output,
-            options => options.UseNpgsql(this.fixture.PostgresConnectionString));
+            options => options.UseNpgsql(connectionString));
     }
 
     protected override EntityFrameworkFileStorageOptions DefaultOptions => this.support.DefaultOptions;

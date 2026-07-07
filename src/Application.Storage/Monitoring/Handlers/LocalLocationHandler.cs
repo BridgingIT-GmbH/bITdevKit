@@ -38,7 +38,7 @@ public class LocalLocationHandler : LocationHandlerBase
 
         if (!this.options.UseOnDemandOnly && this.provider.SupportsNotifications)
         {
-            await this.StartWatchingAsync(cancellationToken);
+            await this.StartWatchingAsync(this.cts.Token);
         }
 
         if (!this.options.UseOnDemandOnly && this.options.ScanOnStart)
@@ -358,7 +358,14 @@ public class LocalLocationHandler : LocationHandlerBase
     {
         while (!token.IsCancellationRequested)
         {
-            await Task.Delay(this.debounceInterval, token);
+            try
+            {
+                await Task.Delay(this.debounceInterval, token);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
 
             lock (this.eventBuffer)
             {

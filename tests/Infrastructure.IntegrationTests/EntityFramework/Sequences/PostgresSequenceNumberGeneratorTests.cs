@@ -21,16 +21,16 @@ public class PostgresSequenceNumberGeneratorTests(ITestOutputHelper output, Test
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
+    private readonly string connectionString = fixture.CreatePostgresConnectionString($"sequences_{Guid.NewGuid():N}");
 
     protected override ISequenceNumberGenerator CreateGenerator()
     {
         var services = new ServiceCollection();
         services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(this.output)));
 
-        var db = this.fixture.EnsurePostgresDbContext(this.output);
         services.AddDbContext<StubDbContext>(options =>
         {
-            options.UseNpgsql(this.fixture.PostgresConnectionString);
+            options.UseNpgsql(this.connectionString);
         });
 
         services.AddScoped<ISequenceNumberGenerator, PostgresSequenceNumberGenerator<StubDbContext>>(
@@ -45,6 +45,7 @@ public class PostgresSequenceNumberGeneratorTests(ITestOutputHelper output, Test
         // Ensure the database and sequences are created
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<StubDbContext>();
+        context.Database.EnsureCreated();
 
         return serviceProvider.GetRequiredService<ISequenceNumberGenerator>();
     }

@@ -9,6 +9,7 @@ using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 
 /// <summary>
 /// Provides an Entity Framework backed <see cref="IDocumentStoreProvider" /> with hashed lookups and
@@ -36,6 +37,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
     private readonly TContext context;
     private readonly ISerializer serializer;
     private readonly EntityFrameworkDocumentStoreProviderOptions options;
+    private readonly DocumentStoreOptions documentStoreOptions;
     private readonly ILogger logger;
     private readonly string leaseOwner = $"{Environment.MachineName}:{Guid.NewGuid():N}";
 
@@ -51,13 +53,15 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         IServiceProvider serviceProvider,
         ILoggerFactory loggerFactory = null,
         ISerializer serializer = null,
-        EntityFrameworkDocumentStoreProviderOptions options = null)
+        EntityFrameworkDocumentStoreProviderOptions options = null,
+        DocumentStoreOptions documentStoreOptions = null)
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
 
         this.serviceProvider = serviceProvider;
         this.serializer = serializer ?? new SystemTextJsonSerializer();
         this.options = options ?? new EntityFrameworkDocumentStoreProviderOptions();
+        this.documentStoreOptions = documentStoreOptions ?? new DocumentStoreOptions();
         this.options.LoggerFactory ??= loggerFactory ?? serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance;
         this.logger = this.options.CreateLogger<EntityFrameworkDocumentStoreProvider<TContext>>();
     }
@@ -72,177 +76,259 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
     public EntityFrameworkDocumentStoreProvider(
         TContext context,
         ISerializer serializer = null,
-        EntityFrameworkDocumentStoreProviderOptions options = null)
+        EntityFrameworkDocumentStoreProviderOptions options = null,
+        DocumentStoreOptions documentStoreOptions = null)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
         this.context = context;
         this.serializer = serializer ?? new SystemTextJsonSerializer();
         this.options = options ?? new EntityFrameworkDocumentStoreProviderOptions();
+        this.documentStoreOptions = documentStoreOptions ?? new DocumentStoreOptions();
         this.options.LoggerFactory ??= NullLoggerFactory.Instance;
         this.logger = this.options.CreateLogger<EntityFrameworkDocumentStoreProvider<TContext>>();
     }
 
-    /// <summary>
-    /// Retrieves all entities of type <typeparamref name="T" />.
-    /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public DocumentStoreProviderCapabilities Capabilities { get; } = new()
+    {
+        FullMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
+        RowKeySuffixMatch = DocumentQuerySupport.SupportedServerSide,
+        FullScan = DocumentQuerySupport.SupportedServerSide,
+        KeyListing = DocumentQuerySupport.SupportedEfficiently,
+        SupportsContinuationPaging = true,
+        SupportsServerSideCount = true,
+        SupportsKeyOnlyProjection = true
+    };
+
+    /// <inheritdoc />
+    public async Task<Result<T>> GetResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        var identity = this.CreateTypeIdentity<T>();
+        try
+        {
+            var payload = this.CreatePayload<T>(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity: null);
+            using var lease = this.CreateContextLease();
+            var content = await this.QueryExactDocument(lease.Context, payload)
+                .AsNoTracking()
+                .Select(e => e.Content)
+                .SingleOrDefaultAsync(cancellationToken);
 
-        using var lease = this.CreateContextLease();
-        var contents = await this.QueryByType(lease.Context, identity)
-            .AsNoTracking()
-            .OrderBy(e => e.PartitionKey)
-            .ThenBy(e => e.RowKey)
-            .Select(e => e.Content)
-            .ToListAsync(cancellationToken);
-
-        return contents.ConvertAll(content => this.serializer.Deserialize<T>(content));
+            return content is null
+                ? Result<T>.Failure(new DocumentStoreNotFoundError($"Document '{documentKey.PartitionKey}/{documentKey.RowKey}' was not found."))
+                : Result<T>.Success(this.serializer.Deserialize<T>(content));
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(this.MapException(ex));
+        }
     }
 
-    /// <summary>
-    /// Retrieves entities of type <typeparamref name="T" /> for an exact key.
-    /// </summary>
-    public Task<IEnumerable<T>> FindAsync<T>(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
-        where T : class, new()
-        => this.FindAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
-
-    /// <summary>
-    /// Retrieves entities of type <typeparamref name="T" /> filtered by key semantics.
-    /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        var validatedKey = this.ValidateDocumentKey(documentKey, requireRowKey: true);
-        var identity = this.CreateTypeIdentity<T>();
-        var key = this.CreateKeyIdentity(validatedKey);
-
-        using var lease = this.CreateContextLease();
-        var contents = await this.ApplyDocumentKeyFilter(this.QueryByTypeAndPartition(lease.Context, identity, key), key, filter)
-            .AsNoTracking()
-            .OrderBy(e => e.RowKey)
-            .Select(e => e.Content)
-            .ToListAsync(cancellationToken);
-
-        return contents.ConvertAll(content => this.serializer.Deserialize<T>(content));
-    }
-
-    /// <summary>
-    /// Lists all document keys for type <typeparamref name="T" />.
-    /// </summary>
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        var identity = this.CreateTypeIdentity<T>();
-
-        using var lease = this.CreateContextLease();
-        return await this.QueryByType(lease.Context, identity)
-            .AsNoTracking()
-            .OrderBy(e => e.PartitionKey)
-            .ThenBy(e => e.RowKey)
-            .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
-            .ToListAsync(cancellationToken);
-    }
-
-    /// <summary>
-    /// Lists document keys for an exact key.
-    /// </summary>
-    public Task<IEnumerable<DocumentKey>> ListAsync<T>(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
-        where T : class, new()
-        => this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
-
-    /// <summary>
-    /// Lists document keys filtered by key semantics.
-    /// </summary>
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
+    /// <inheritdoc />
+    public async Task<Result<DocumentPage<T>>> FindPageResultAsync<T>(
+        DocumentQuery query,
         CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        var validatedKey = this.ValidateDocumentKey(documentKey, requireRowKey: filter == DocumentKeyFilter.FullMatch);
-        var identity = this.CreateTypeIdentity<T>();
-        var key = this.CreateKeyIdentity(validatedKey);
+        var validation = DocumentQueryValidator.ValidatePage<T>("find", "entity-framework", query, this.Capabilities, this.documentStoreOptions);
+        if (validation.IsFailure)
+        {
+            return Result<DocumentPage<T>>.Failure(validation);
+        }
 
-        using var lease = this.CreateContextLease();
-        return await this.ApplyDocumentKeyFilter(this.QueryByTypeAndPartition(lease.Context, identity, key), key, filter)
-            .AsNoTracking()
-            .OrderBy(e => e.RowKey)
-            .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
-            .ToListAsync(cancellationToken);
+        try
+        {
+            using var lease = this.CreateContextLease();
+            var rows = await this.ApplyContinuation(this.ApplyQuery<T>(lease.Context, query), validation.Value.ContinuationToken?.NativeToken)
+                .AsNoTracking()
+                .OrderBy(e => e.PartitionKey)
+                .ThenBy(e => e.RowKey)
+                .Select(e => new DocumentProjection(e.PartitionKey, e.RowKey, e.Content))
+                .Take(validation.Value.Take + 1)
+                .ToListAsync(cancellationToken);
+
+            var items = rows.Take(validation.Value.Take)
+                .Select(e => this.serializer.Deserialize<T>(e.Content))
+                .ToList();
+            var continuationToken = rows.Count > validation.Value.Take
+                ? CreateContinuationToken(validation.Value.QueryHash, rows[validation.Value.Take - 1].DocumentKey)
+                : null;
+
+            return Result<DocumentPage<T>>.Success(new DocumentPage<T>
+            {
+                Items = items,
+                ContinuationToken = continuationToken
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<DocumentPage<T>>.Failure(this.MapException(ex));
+        }
     }
 
-    /// <summary>
-    /// Counts the number of entities of type <typeparamref name="T" /> in the store.
-    /// </summary>
-    public async Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Result<DocumentKeyPage>> ListPageResultAsync<T>(
+        DocumentQuery query,
+        CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        var identity = this.CreateTypeIdentity<T>();
+        var validation = DocumentQueryValidator.ValidatePage<T>("list", "entity-framework", query, this.Capabilities, this.documentStoreOptions);
+        if (validation.IsFailure)
+        {
+            return Result<DocumentKeyPage>.Failure(validation);
+        }
 
-        using var lease = this.CreateContextLease();
-        return await this.QueryByType(lease.Context, identity)
-            .AsNoTracking()
-            .LongCountAsync(cancellationToken);
+        try
+        {
+            using var lease = this.CreateContextLease();
+            var rows = await this.ApplyContinuation(this.ApplyQuery<T>(lease.Context, query), validation.Value.ContinuationToken?.NativeToken)
+                .AsNoTracking()
+                .OrderBy(e => e.PartitionKey)
+                .ThenBy(e => e.RowKey)
+                .Select(e => new DocumentKey(e.PartitionKey, e.RowKey))
+                .Take(validation.Value.Take + 1)
+                .ToListAsync(cancellationToken);
+
+            var items = rows.Take(validation.Value.Take).ToList();
+            var continuationToken = rows.Count > validation.Value.Take
+                ? CreateContinuationToken(validation.Value.QueryHash, rows[validation.Value.Take - 1])
+                : null;
+
+            return Result<DocumentKeyPage>.Success(new DocumentKeyPage
+            {
+                Items = items,
+                ContinuationToken = continuationToken
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<DocumentKeyPage>.Failure(this.MapException(ex));
+        }
     }
 
-    /// <summary>
-    /// Checks whether an entity of type <typeparamref name="T" /> exists for the supplied exact key.
-    /// </summary>
-    public async Task<bool> ExistsAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Result<long>> CountResultAsync<T>(DocumentCountQuery query, CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        var payload = this.CreatePayload<T>(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity: null);
+        var validation = DocumentQueryValidator.ValidateCount<T>("count", query, this.Capabilities, this.documentStoreOptions);
+        if (validation.IsFailure)
+        {
+            return Result<long>.Failure(validation);
+        }
 
-        using var lease = this.CreateContextLease();
-        return await this.QueryExactDocument(lease.Context, payload)
-            .AsNoTracking()
-            .AnyAsync(cancellationToken);
+        try
+        {
+            using var lease = this.CreateContextLease();
+            return Result<long>.Success(await this.ApplyCountQuery<T>(lease.Context, query)
+                .AsNoTracking()
+                .LongCountAsync(cancellationToken));
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<long>.Failure(this.MapException(ex));
+        }
     }
 
-    /// <summary>
-    /// Inserts or updates an entity of type <typeparamref name="T" /> for the supplied key.
-    /// </summary>
-    public async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Result<bool>> ExistsResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        EnsureArg.IsNotNull(entity, nameof(entity));
-        await this.UpsertCoreAsync(this.CreatePayload(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity), cancellationToken);
+        try
+        {
+            var payload = this.CreatePayload<T>(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity: null);
+            using var lease = this.CreateContextLease();
+            return Result<bool>.Success(await this.QueryExactDocument(lease.Context, payload)
+                .AsNoTracking()
+                .AnyAsync(cancellationToken));
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure(this.MapException(ex));
+        }
     }
 
-    /// <summary>
-    /// Inserts or updates multiple entities of type <typeparamref name="T" />.
-    /// </summary>
-    public async Task UpsertAsync<T>(
+    /// <inheritdoc />
+    public async Task<Result> UpsertResultAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
+        where T : class, new()
+    {
+        try
+        {
+            EnsureArg.IsNotNull(entity, nameof(entity));
+            await this.UpsertCoreAsync(this.CreatePayload(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity), cancellationToken);
+            return Result.Success();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(this.MapException(ex));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result> UpsertResultAsync<T>(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
         CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        EnsureArg.IsNotNull(entities, nameof(entities));
+        if (entities is null)
+        {
+            return Result.Failure(new DocumentStoreInvalidQueryError("Document entities must not be null."));
+        }
 
-        foreach (var (documentKey, entity) in entities.SafeNull())
+        foreach (var (documentKey, entity) in entities)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await this.UpsertAsync(documentKey, entity, cancellationToken);
+            var result = await this.UpsertResultAsync(documentKey, entity, cancellationToken);
+            if (result.IsFailure)
+            {
+                return result;
+            }
         }
+
+        return Result.Success();
     }
 
-    /// <summary>
-    /// Deletes the entity of type <typeparamref name="T" /> for the supplied exact key.
-    /// </summary>
-    public async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Result> DeleteResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        await this.DeleteCoreAsync(this.CreatePayload<T>(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity: null), cancellationToken);
+        try
+        {
+            await this.DeleteCoreAsync(this.CreatePayload<T>(this.ValidateDocumentKey(documentKey, requireRowKey: true), entity: null), cancellationToken);
+            return Result.Success();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(this.MapException(ex));
+        }
     }
 
     private async Task UpsertCoreAsync(DocumentPayload payload, CancellationToken cancellationToken)
@@ -448,6 +534,77 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         this.QueryByTypeAndPartition(dbContext, new TypeIdentity(payload.Type, payload.TypeHash), new KeyIdentity(payload.PartitionKey, payload.PartitionKeyHash, payload.RowKey, payload.RowKeyHash))
             .Where(e => e.RowKeyHash == payload.RowKeyHash && e.RowKey == payload.RowKey);
 
+    private IQueryable<StorageDocument> ApplyQuery<T>(TContext dbContext, DocumentQuery query)
+        where T : class, new()
+    {
+        query ??= new DocumentQuery();
+
+        return this.ApplyCountQuery<T>(dbContext, new DocumentCountQuery
+        {
+            DocumentKey = query.DocumentKey,
+            Filter = query.Filter,
+            AllowFullScan = query.AllowFullScan
+        });
+    }
+
+    private IQueryable<StorageDocument> ApplyCountQuery<T>(TContext dbContext, DocumentCountQuery query)
+        where T : class, new()
+    {
+        query ??= new DocumentCountQuery();
+        var identity = this.CreateTypeIdentity<T>();
+
+        if (query.DocumentKey is null)
+        {
+            return this.QueryByType(dbContext, identity);
+        }
+
+        var key = this.CreateKeyIdentity(this.ValidateDocumentKey(
+            query.DocumentKey.Value,
+            requireRowKey: query.Filter == DocumentKeyFilter.FullMatch));
+
+        return this.ApplyDocumentKeyFilter(this.QueryByTypeAndPartition(dbContext, identity, key), key, query.Filter);
+    }
+
+    private IQueryable<StorageDocument> ApplyContinuation(IQueryable<StorageDocument> query, string nativeToken)
+    {
+        if (string.IsNullOrWhiteSpace(nativeToken))
+        {
+            return query;
+        }
+
+        var lastKey = JsonSerializer.Deserialize<DocumentKey>(nativeToken);
+        return query.Where(e =>
+            string.Compare(e.PartitionKey, lastKey.PartitionKey) > 0 ||
+            (e.PartitionKey == lastKey.PartitionKey && string.Compare(e.RowKey, lastKey.RowKey) > 0));
+    }
+
+    private static string CreateContinuationToken(string queryHash, DocumentKey lastKey)
+    {
+        var result = DocumentContinuationTokenSerializer.Serialize(new DocumentContinuationToken
+        {
+            Provider = "entity-framework",
+            QueryHash = queryHash,
+            NativeToken = JsonSerializer.Serialize(lastKey)
+        });
+
+        return result.IsSuccess ? result.Value : null;
+    }
+
+    private IResultError MapException(Exception ex)
+    {
+        if (IsConcurrencyException(ex))
+        {
+            return new ConcurrencyError(ex.GetFullMessage());
+        }
+
+        if (ex is JsonException)
+        {
+            return new DocumentStoreSerializationError(ex.GetFullMessage(), ex);
+        }
+
+        return new DocumentStoreProviderError(ex.GetFullMessage(), ex);
+    }
+
     private IQueryable<StorageDocument> ApplyDocumentKeyFilter(
         IQueryable<StorageDocument> query,
         KeyIdentity key,
@@ -530,6 +687,10 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         return this.IsUniqueConstraintViolation(exception) ||
             this.IsTransientLockContentionException(exception);
     }
+
+    private static bool IsConcurrencyException(Exception exception) =>
+        exception is DbUpdateConcurrencyException or TimeoutException ||
+        exception.GetType().Name is "OptimisticConcurrencyException" or "ConcurrencyException";
 
     private bool IsUniqueConstraintViolation(Exception exception)
     {
@@ -735,25 +896,48 @@ public class EntityFrameworkDocumentStoreProvider<TContext> : IDocumentStoreProv
         string Content,
         string ContentHash);
 
+    private readonly record struct DocumentProjection(string PartitionKey, string RowKey, string Content)
+    {
+        /// <summary>
+        /// Gets the document key for the projected storage row.
+        /// </summary>
+        public DocumentKey DocumentKey => new(this.PartitionKey, this.RowKey);
+    }
+
     private sealed class ContextLease : IDisposable
     {
         private readonly IServiceScope scope;
         private readonly TContext externalContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContextLease" /> class for an externally owned context.
+        /// </summary>
+        /// <param name="context">The externally owned context.</param>
         public ContextLease(TContext context)
         {
             this.Context = context;
             this.externalContext = context;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContextLease" /> class for a scoped context.
+        /// </summary>
+        /// <param name="scope">The scope that owns the context.</param>
+        /// <param name="context">The scoped context.</param>
         public ContextLease(IServiceScope scope, TContext context)
         {
             this.scope = scope;
             this.Context = context;
         }
 
+        /// <summary>
+        /// Gets the leased context.
+        /// </summary>
         public TContext Context { get; }
 
+        /// <summary>
+        /// Releases the lease and clears or disposes the underlying context ownership.
+        /// </summary>
         public void Dispose()
         {
             if (this.scope is not null)

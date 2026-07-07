@@ -15,7 +15,6 @@ using Quartz.Impl;
 
 public static class ServiceCollectionExtensions
 {
-    private static JobSchedulingOptions contextOptions;
     //private static bool schedulerIsAdded;
 
     /// <summary>
@@ -36,7 +35,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
-        contextOptions ??= optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
+        var contextOptions = optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
 
         return services.AddJobScheduling(contextOptions, null, configuration, properties);
     }
@@ -64,7 +63,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
-        contextOptions ??= optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
+        var contextOptions = optionsBuilder(new JobSchedulingOptionsBuilder()).Build();
 
         return services.AddJobScheduling(contextOptions, configure, configuration, properties);
     }
@@ -97,7 +96,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration = null,
         NameValueCollection properties = null)
     {
-        contextOptions ??= options;
+        var contextOptions = options;
 
         properties ??= [];
         if (configuration != null)

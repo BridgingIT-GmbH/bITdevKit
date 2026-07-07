@@ -128,6 +128,11 @@ public class WeatherEndpointsTests
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Content.Headers.ContentType.ShouldNotBeNull();
+        response.Content.Headers.ContentType.MediaType.ShouldBe("text/csv");
+        response.Content.Headers.ContentDisposition.ShouldNotBeNull();
+        response.Content.Headers.ContentDisposition.FileName.ShouldContain("weather-forecasts");
+
         var csv = await response.Content.ReadAsStringAsync();
         csv.ShouldNotBeNullOrWhiteSpace();
         csv.ShouldContain("ForecastDate");

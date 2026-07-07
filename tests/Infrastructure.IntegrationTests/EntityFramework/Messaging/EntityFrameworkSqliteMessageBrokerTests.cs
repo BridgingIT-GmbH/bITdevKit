@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Mess
 using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class EntityFrameworkSqliteMessageBrokerTests : EntityFrameworkMessageBrokerTestsBase, IDisposable
 {
     private readonly string databasePath;

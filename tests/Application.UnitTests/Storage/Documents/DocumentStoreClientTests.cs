@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -11,130 +11,193 @@ using Application.Storage;
 public class DocumentStoreClientTests
 {
     private readonly IDocumentStoreProvider provider;
-    private readonly DocumentStoreClient<PersonStub> sut;
+    private readonly DocumentStoreClient<DocumentClientPersonStub> sut;
 
     public DocumentStoreClientTests()
     {
         this.provider = Substitute.For<IDocumentStoreProvider>();
-        this.sut = new DocumentStoreClient<PersonStub>(this.provider);
+        this.sut = new DocumentStoreClient<DocumentClientPersonStub>(this.provider);
     }
 
     [Fact]
-    public async Task CountAsync_WithNoCancellation_ShouldCallProviderCountAsync()
-    {
-        // Arrange
-        const int expectedCount = 5;
-        this.provider.CountAsync<PersonStub>()
-            .ReturnsForAnyArgs(expectedCount);
-
-        // Act
-        var result = await this.sut.CountAsync();
-
-        // Assert
-        await this.provider.Received(1)
-            .CountAsync<PersonStub>();
-        result.ShouldBe(expectedCount);
-    }
-
-    [Fact]
-    public async Task DeleteAsync_WithDocumentKeyAndNoCancellation_ShouldCallProviderDeleteAsync()
+    public async Task GetResultAsync_WithDocumentKey_ShouldCallProvider()
     {
         // Arrange
         var documentKey = new DocumentKey("partitionKey", "rowKey");
+        var expected = new DocumentClientPersonStub { FirstName = "Mary" };
+        this.provider.GetResultAsync<DocumentClientPersonStub>(documentKey, Arg.Any<CancellationToken>())
+            .Returns(Result<DocumentClientPersonStub>.Success(expected));
 
         // Act
-        await this.sut.DeleteAsync(documentKey);
+        var result = await this.sut.GetResultAsync(documentKey);
 
         // Assert
         await this.provider.Received(1)
-            .DeleteAsync<PersonStub>(documentKey);
+            .GetResultAsync<DocumentClientPersonStub>(documentKey, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(expected);
     }
 
     [Fact]
-    public async Task ExistsAsync_WithDocumentKeyAndNoCancellation_ShouldCallProviderExistsAsync()
+    public async Task FindPageResultAsync_WithQuery_ShouldCallProvider()
+    {
+        // Arrange
+        var query = DocumentQueries.Query()
+            .ForKey("partitionKey", "row")
+            .WithRowKeyPrefix()
+            .Take(10)
+            .Build();
+        var expected = new DocumentPage<DocumentClientPersonStub>
+        {
+            Items = [new DocumentClientPersonStub { FirstName = "John" }]
+        };
+        this.provider.FindPageResultAsync<DocumentClientPersonStub>(query, Arg.Any<CancellationToken>())
+            .Returns(Result<DocumentPage<DocumentClientPersonStub>>.Success(expected));
+
+        // Act
+        var result = await this.sut.FindPageResultAsync(query);
+
+        // Assert
+        await this.provider.Received(1)
+            .FindPageResultAsync<DocumentClientPersonStub>(query, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task ListPageResultAsync_WithQuery_ShouldCallProvider()
+    {
+        // Arrange
+        var query = DocumentQueries.Query()
+            .ForKey("partitionKey", "row")
+            .WithRowKeyPrefix()
+            .Take(10)
+            .Build();
+        var expected = new DocumentKeyPage
+        {
+            Items = [new DocumentKey("partitionKey", "row1")]
+        };
+        this.provider.ListPageResultAsync<DocumentClientPersonStub>(query, Arg.Any<CancellationToken>())
+            .Returns(Result<DocumentKeyPage>.Success(expected));
+
+        // Act
+        var result = await this.sut.ListPageResultAsync(query);
+
+        // Assert
+        await this.provider.Received(1)
+            .ListPageResultAsync<DocumentClientPersonStub>(query, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(expected);
+    }
+
+    [Fact]
+    public async Task CountResultAsync_WithQuery_ShouldCallProvider()
+    {
+        // Arrange
+        var query = DocumentQueries.Count()
+            .ForKey("partitionKey", "row")
+            .WithRowKeyPrefix()
+            .Build();
+        this.provider.CountResultAsync<DocumentClientPersonStub>(query, Arg.Any<CancellationToken>())
+            .Returns(Result<long>.Success(5));
+
+        // Act
+        var result = await this.sut.CountResultAsync(query);
+
+        // Assert
+        await this.provider.Received(1)
+            .CountResultAsync<DocumentClientPersonStub>(query, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBe(5);
+    }
+
+    [Fact]
+    public async Task ExistsResultAsync_WithDocumentKey_ShouldCallProvider()
     {
         // Arrange
         var documentKey = new DocumentKey("partitionKey", "rowKey");
-        this.provider.ExistsAsync<PersonStub>(documentKey)
-            .ReturnsForAnyArgs(true);
+        this.provider.ExistsResultAsync<DocumentClientPersonStub>(documentKey, Arg.Any<CancellationToken>())
+            .Returns(Result<bool>.Success(true));
 
         // Act
-        var result = await this.sut.ExistsAsync(documentKey);
+        var result = await this.sut.ExistsResultAsync(documentKey);
 
         // Assert
         await this.provider.Received(1)
-            .ExistsAsync<PersonStub>(documentKey);
-        result.ShouldBeTrue();
+            .ExistsResultAsync<DocumentClientPersonStub>(documentKey, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeTrue();
     }
 
     [Fact]
-    public async Task FindAsync_WithNoFiltersAndNoCancellation_ShouldCallProviderFindAsync()
-    {
-        // Arrange
-        var expectedEntities = new List<PersonStub> { new(), new() };
-        this.provider.FindAsync<PersonStub>()
-            .ReturnsForAnyArgs(expectedEntities);
-
-        // Act
-        var result = await this.sut.FindAsync();
-
-        // Assert
-        await this.provider.Received(1)
-            .FindAsync<PersonStub>();
-        result.ShouldBe(expectedEntities);
-    }
-
-    [Fact]
-    public async Task FindAsync_WithDocumentKeyAndNoFiltersAndNoCancellation_ShouldCallProviderFindAsync()
+    public async Task UpsertResultAsync_WithDocumentKeyAndEntity_ShouldCallProvider()
     {
         // Arrange
         var documentKey = new DocumentKey("partitionKey", "rowKey");
-        var expectedEntities = new List<PersonStub> { new(), new() };
-        this.provider.FindAsync<PersonStub>(documentKey)
-            .ReturnsForAnyArgs(expectedEntities);
+        var entity = new DocumentClientPersonStub { FirstName = "John" };
+        this.provider.UpsertResultAsync(documentKey, entity, Arg.Any<CancellationToken>())
+            .Returns(Result.Success());
 
         // Act
-        var result = await this.sut.FindAsync(documentKey);
+        var result = await this.sut.UpsertResultAsync(documentKey, entity);
 
         // Assert
         await this.provider.Received(1)
-            .FindAsync<PersonStub>(documentKey);
-        result.ShouldBe(expectedEntities);
+            .UpsertResultAsync(documentKey, entity, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
-    public async Task ListAsync_WithNoDocumentKey_ReturnsExpectedResult()
+    public async Task UpsertResultAsync_WithEntities_ShouldCallProvider()
     {
         // Arrange
-        var expectedKeys = new List<DocumentKey> { new("partition1", "row1"), new("partition2", "row2") };
-        this.provider.ListAsync<PersonStub>(Arg.Any<CancellationToken>())
-            .Returns(expectedKeys);
+        using var cancellationTokenSource = new CancellationTokenSource();
+        var entities = new List<(DocumentKey DocumentKey, DocumentClientPersonStub Entity)>
+        {
+            (new DocumentKey("partitionKey", "rowKey1"), new DocumentClientPersonStub { FirstName = "John" }),
+            (new DocumentKey("partitionKey", "rowKey2"), new DocumentClientPersonStub { FirstName = "Mary" })
+        };
+        this.provider.UpsertResultAsync(entities, cancellationTokenSource.Token)
+            .Returns(Result.Success());
 
         // Act
-        var result = await this.sut.ListAsync(CancellationToken.None);
+        var result = await this.sut.UpsertResultAsync(entities, cancellationTokenSource.Token);
 
         // Assert
-        result.ShouldBe(expectedKeys);
+        await this.provider.Received(1)
+            .UpsertResultAsync(entities, cancellationTokenSource.Token);
+        result.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
-    public async Task ListAsync_WithDocumentKeyAndNoFilter_ReturnsExpectedResult()
+    public async Task DeleteResultAsync_WithDocumentKey_ShouldCallProvider()
     {
         // Arrange
-        var documentKey = new DocumentKey("partition1", "row1");
-        var expectedKeys = new List<DocumentKey> { new("partition1", "row1"), new("partition1", "row1") };
-        this.provider.ListAsync<PersonStub>(documentKey, Arg.Any<CancellationToken>())
-            .Returns(expectedKeys);
+        var documentKey = new DocumentKey("partitionKey", "rowKey");
+        this.provider.DeleteResultAsync<DocumentClientPersonStub>(documentKey, Arg.Any<CancellationToken>())
+            .Returns(Result.Success());
 
         // Act
-        var result = await this.sut.ListAsync(documentKey, CancellationToken.None);
+        var result = await this.sut.DeleteResultAsync(documentKey);
 
         // Assert
-        result.ShouldBe(expectedKeys);
+        await this.provider.Received(1)
+            .DeleteResultAsync<DocumentClientPersonStub>(documentKey, Arg.Any<CancellationToken>());
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Constructor_WithNullProvider_ShouldThrow()
+    {
+        // Arrange & Act
+        var action = () => new DocumentStoreClient<DocumentClientPersonStub>(null);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>();
     }
 }
 
-public class PersonStub
+public class DocumentClientPersonStub
 {
     public string FirstName { get; set; }
 

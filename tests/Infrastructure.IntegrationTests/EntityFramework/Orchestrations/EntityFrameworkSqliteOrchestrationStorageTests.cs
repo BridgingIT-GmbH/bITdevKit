@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Orch
 using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class EntityFrameworkSqliteOrchestrationStorageTests : EntityFrameworkOrchestrationStorageTestsBase, IDisposable
 {
     private readonly string databasePath;

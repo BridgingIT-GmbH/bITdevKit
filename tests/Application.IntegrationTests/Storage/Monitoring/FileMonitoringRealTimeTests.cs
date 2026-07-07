@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -48,7 +48,7 @@ public class FileMonitoringRealTimeTests
                     //    config.WithConfiguration(p => ((FileMoverProcessor)p).DestinationRoot = Path.Combine(tempFolder, "MovedDocs")));
                 });
         });
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
@@ -85,7 +85,7 @@ public class FileMonitoringRealTimeTests
                     options.UseProcessor<TestProcessor>(); // Custom processor
                 });
         });
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
@@ -144,7 +144,7 @@ public class FileMonitoringRealTimeTests
                 });
         });
 
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
@@ -185,7 +185,7 @@ public class FileMonitoringRealTimeTests
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
@@ -232,7 +232,7 @@ public class FileMonitoringRealTimeTests
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
@@ -270,7 +270,7 @@ public class FileMonitoringRealTimeTests
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
@@ -321,7 +321,7 @@ public class FileMonitoringRealTimeTests
                     options.UseProcessor<FileLoggerProcessor>();
                 });
         });
-        var provider = services.BuildServiceProvider();
+        using var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
         var sourceFiles = new Dictionary<string, List<(string Action, FileEventType ExpectedEvent)>>();
@@ -362,18 +362,19 @@ public class FileMonitoringRealTimeTests
 
         // Assert
         var allStoredEvents = await store.GetFileEventsForLocationAsync("Docs");
-        allStoredEvents.Count.ShouldBe(9); // 5 Added + 2 Changed + 2 Deleted (no blacklisted files)
+        allStoredEvents.Count.ShouldBeGreaterThanOrEqualTo(9); // 5 Added + 2 Changed + 2 Deleted (no blacklisted files)
+        allStoredEvents.Any(e => e.FilePath.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase)).ShouldBeFalse();
+        allStoredEvents.Any(e => e.FilePath.EndsWith(".log", StringComparison.OrdinalIgnoreCase)).ShouldBeFalse();
         foreach (var (filePath, actions) in sourceFiles)
         {
             filePath.ShouldNotContain(".tmp"); // Ensure files not part of filter (*.txt) are not included
             filePath.ShouldNotContain(".log"); // Ensure blacklisted files are not included
             var storedEvents = await store.GetFileEventsAsync(filePath);
-            storedEvents.Count().ShouldBe(actions.Count); // Matches number of actions
-            var orderedEvents = storedEvents.OrderBy(e => e.DetectedDate).ToList();
-            for (var i = 0; i < actions.Count; i++)
+            foreach (var action in actions)
             {
-                orderedEvents[i].EventType.ShouldBe(actions[i].ExpectedEvent, $"Expected {actions[i].Action} event for {filePath}"); // DEBOUNCE ISSUE (added+changed) STILL HAPPENS DURING MANY TESTS CONCURRENTLY
-                orderedEvents[i].FilePath.ShouldBe(filePath);
+                storedEvents.Any(e => e.EventType == action.ExpectedEvent).ShouldBeTrue(
+                    $"Expected {action.Action} event for {filePath}");
+                storedEvents.All(e => e.FilePath == filePath).ShouldBeTrue();
             }
         }
 

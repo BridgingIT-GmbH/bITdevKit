@@ -7,182 +7,330 @@ namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using Application.Storage;
 using Common;
+using System.Linq.Expressions;
 
+/// <summary>
+/// Implements <see cref="IDocumentStoreProvider" /> using Azure Cosmos DB SQL API.
+/// </summary>
+/// <example>
+/// <code>
+/// var provider = new CosmosDocumentStoreProvider(cosmosSqlProvider);
+/// await provider.UpsertResultAsync(new DocumentKey("people", "42"), person, cancellationToken);
+/// </code>
+/// </example>
 public class CosmosDocumentStoreProvider : IDocumentStoreProvider
 {
+    private const string ProviderName = "cosmos";
     private readonly ICosmosSqlProvider<CosmosStorageDocument> provider;
     private readonly ISerializer serializer;
+    private readonly DocumentStoreOptions options;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CosmosDocumentStoreProvider" /> class.
+    /// </summary>
+    /// <param name="provider">The Cosmos SQL provider used to read and write storage documents.</param>
+    /// <param name="serializer">The optional serializer used for document payloads.</param>
+    /// <param name="options">The optional document-store query safety options.</param>
     public CosmosDocumentStoreProvider( // TODO: add ctor which accepts Options
         ICosmosSqlProvider<CosmosStorageDocument> provider,
-        ISerializer serializer = null)
+        ISerializer serializer = null,
+        DocumentStoreOptions options = null)
     {
         EnsureArg.IsNotNull(provider, nameof(provider));
 
         this.provider = provider;
         this.serializer = serializer ?? new SystemTextJsonSerializer();
+        this.options = options ?? new DocumentStoreOptions();
     }
 
-    /// <summary>
-    ///     Retrieves entities of type T from document store asynchronously
-    /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public DocumentStoreProviderCapabilities Capabilities { get; } = new()
+    {
+        FullMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
+        RowKeySuffixMatch = DocumentQuerySupport.SupportedServerSide,
+        FullScan = DocumentQuerySupport.SupportedServerSide,
+        KeyListing = DocumentQuerySupport.SupportedServerSide,
+        SupportsContinuationPaging = true,
+        SupportsServerSideCount = false,
+        SupportsKeyOnlyProjection = true
+    };
+
+    /// <inheritdoc />
+    public async Task<Result<T>> GetResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        var type = this.GetTypeName<T>();
+        try
+        {
+            var pageResult = await this.provider.ReadItemsPageResultAsync(
+                this.CreateExpressions<T>(new DocumentQuery
+                {
+                    DocumentKey = documentKey,
+                    Filter = DocumentKeyFilter.FullMatch,
+                    Take = 1
+                }),
+                1,
+                e => e.RowKey,
+                partitionKeyValue: this.GetTypeName<T>(),
+                cancellationToken: cancellationToken);
+            if (pageResult.IsFailure)
+            {
+                return Result<T>.Failure(pageResult);
+            }
 
-        return (await this.provider.ReadItemsAsync(e => e.Type == type,
-            partitionKeyValue: type,
-            cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
+            var document = pageResult.Value.Items.FirstOrDefault();
+            return document is null
+                ? Result<T>.Failure(new DocumentStoreNotFoundError($"Document '{documentKey.PartitionKey}/{documentKey.RowKey}' was not found."))
+                : Result<T>.Success(this.serializer.Deserialize<T>(document.Content));
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
     }
 
-    /// <summary>
-    ///     Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
-    /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(
-        DocumentKey documentKey,
+    /// <inheritdoc />
+    public async Task<Result<DocumentPage<T>>> FindPageResultAsync<T>(DocumentQuery query, CancellationToken cancellationToken = default)
+        where T : class, new()
+    {
+        var validation = DocumentQueryValidator.ValidatePage<T>("find", ProviderName, query, this.Capabilities, this.options);
+        if (validation.IsFailure)
+        {
+            return Result<DocumentPage<T>>.Failure(validation);
+        }
+
+        try
+        {
+            var pageResult = await this.provider.ReadItemsPageResultAsync(
+                this.CreateExpressions<T>(query),
+                validation.Value.Take,
+                e => e.RowKey,
+                partitionKeyValue: this.GetTypeName<T>(),
+                continuationToken: validation.Value.ContinuationToken?.NativeToken,
+                cancellationToken: cancellationToken);
+            if (pageResult.IsFailure)
+            {
+                return Result<DocumentPage<T>>.Failure(pageResult);
+            }
+
+            return Result<DocumentPage<T>>.Success(new DocumentPage<T>
+            {
+                Items = pageResult.Value.Items.Select(e => this.serializer.Deserialize<T>(e.Content)).ToList(),
+                ContinuationToken = CreateContinuationToken(validation.Value.QueryHash, pageResult.Value.ContinuationToken)
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<DocumentPage<T>>.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<DocumentKeyPage>> ListPageResultAsync<T>(DocumentQuery query, CancellationToken cancellationToken = default)
+        where T : class, new()
+    {
+        var validation = DocumentQueryValidator.ValidatePage<T>("list", ProviderName, query, this.Capabilities, this.options);
+        if (validation.IsFailure)
+        {
+            return Result<DocumentKeyPage>.Failure(validation);
+        }
+
+        try
+        {
+            var pageResult = await this.provider.ReadItemsPageResultAsync(
+                this.CreateExpressions<T>(query),
+                e => new CosmosDocumentKeyProjection
+                {
+                    PartitionKey = e.PartitionKey,
+                    RowKey = e.RowKey
+                },
+                validation.Value.Take,
+                e => e.RowKey,
+                partitionKeyValue: this.GetTypeName<T>(),
+                continuationToken: validation.Value.ContinuationToken?.NativeToken,
+                cancellationToken: cancellationToken);
+            if (pageResult.IsFailure)
+            {
+                return Result<DocumentKeyPage>.Failure(pageResult);
+            }
+
+            return Result<DocumentKeyPage>.Success(new DocumentKeyPage
+            {
+                Items = pageResult.Value.Items.Select(e => new DocumentKey(e.PartitionKey, e.RowKey)).ToList(),
+                ContinuationToken = CreateContinuationToken(validation.Value.QueryHash, pageResult.Value.ContinuationToken)
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<DocumentKeyPage>.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<long>> CountResultAsync<T>(DocumentCountQuery query, CancellationToken cancellationToken = default)
+        where T : class, new()
+    {
+        var validation = DocumentQueryValidator.ValidateCount<T>("count", query, this.Capabilities, this.options);
+        if (validation.IsFailure)
+        {
+            return Result<long>.Failure(validation);
+        }
+
+        try
+        {
+            var count = 0L;
+            string nativeToken = null;
+            var expressions = this.CreateExpressions<T>(query);
+            do
+            {
+                var pageResult = await this.provider.ReadItemsPageResultAsync(
+                    expressions,
+                    e => new CosmosDocumentKeyProjection
+                    {
+                        PartitionKey = e.PartitionKey,
+                        RowKey = e.RowKey
+                    },
+                    this.options.MaxTake,
+                    e => e.RowKey,
+                    partitionKeyValue: this.GetTypeName<T>(),
+                    continuationToken: nativeToken,
+                    cancellationToken: cancellationToken);
+                if (pageResult.IsFailure)
+                {
+                    return Result<long>.Failure(pageResult);
+                }
+
+                count += pageResult.Value.Items.Count;
+                nativeToken = pageResult.Value.ContinuationToken;
+            }
+            while (!string.IsNullOrWhiteSpace(nativeToken));
+
+            return Result<long>.Success(count);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<long>.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<bool>> ExistsResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+        where T : class, new()
+    {
+        try
+        {
+            var pageResult = await this.provider.ReadItemsPageResultAsync(
+                this.CreateExpressions<T>(new DocumentCountQuery
+                {
+                    DocumentKey = documentKey,
+                    Filter = DocumentKeyFilter.FullMatch
+                }),
+                e => new CosmosDocumentKeyProjection
+                {
+                    PartitionKey = e.PartitionKey,
+                    RowKey = e.RowKey
+                },
+                1,
+                e => e.RowKey,
+                partitionKeyValue: this.GetTypeName<T>(),
+                cancellationToken: cancellationToken);
+            if (pageResult.IsFailure)
+            {
+                return Result<bool>.Failure()
+                    .WithErrors(pageResult.Errors);
+            }
+
+            return Result<bool>.Success(pageResult.Value.Items.Any());
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result> UpsertResultAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
+        where T : class, new()
+    {
+        try
+        {
+            await this.UpsertAsync(documentKey, entity, cancellationToken);
+            return Result.Success();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result> UpsertResultAsync<T>(
+        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
         CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        return await this.FindAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
+        try
+        {
+            await this.UpsertAsync(entities, cancellationToken);
+            return Result.Success();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
+        }
     }
 
-    /// <summary>
-    ///     Searches for entities of type T by the whole partitionKey and startswith rowKey
-    /// </summary>
-    public async Task<IEnumerable<T>> FindAsync<T>(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Result> DeleteResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
-        EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
-        EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
-
-        var type = this.GetTypeName<T>();
-        if (filter == DocumentKeyFilter.FullMatch)
+        try
         {
-            return (await this.provider.ReadItemsAsync(
-                e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
-                partitionKeyValue: type,
-                cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
+            await this.DeleteAsync<T>(documentKey, cancellationToken);
+            return Result.Success();
         }
-
-        if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
+        catch (OperationCanceledException)
         {
-            return (await this.provider.ReadItemsAsync(
-                e => e.Type == type &&
-                    e.PartitionKey == documentKey.PartitionKey &&
-                    e.RowKey.StartsWith(documentKey.RowKey),
-                partitionKeyValue: type,
-                cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
+            throw;
         }
-
-        if (filter == DocumentKeyFilter.RowKeySuffixMatch)
+        catch (Exception ex)
         {
-            return (await this.provider.ReadItemsAsync(
-                e => e.Type == type &&
-                    e.PartitionKey == documentKey.PartitionKey &&
-                    e.RowKey.EndsWith(documentKey.RowKey),
-                partitionKeyValue: type,
-                cancellationToken: cancellationToken)).Select(e => this.serializer.Deserialize<T>(e.Content));
+            return Result.Failure(new DocumentStoreProviderError(ex.GetFullMessage(), ex));
         }
-
-        return [];
-    }
-
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        var type = this.GetTypeName<T>();
-
-        return (await this.provider.ReadItemsAsync(e => e.Type == type,
-            partitionKeyValue: type,
-            cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
-    }
-
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        return await this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
-    }
-
-    public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
-
-        var type = this.GetTypeName<T>();
-        if (filter == DocumentKeyFilter.FullMatch)
-        {
-            return (await this.provider.ReadItemsAsync(
-                e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
-                partitionKeyValue: type,
-                cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
-        }
-
-        if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
-        {
-            return (await this.provider.ReadItemsAsync(
-                e => e.Type == type &&
-                    e.PartitionKey == documentKey.PartitionKey &&
-                    e.RowKey.StartsWith(documentKey.RowKey),
-                partitionKeyValue: type,
-                cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
-        }
-
-        if (filter == DocumentKeyFilter.RowKeySuffixMatch)
-        {
-            return (await this.provider.ReadItemsAsync(
-                e => e.Type == type &&
-                    e.PartitionKey == documentKey.PartitionKey &&
-                    e.RowKey.EndsWith(documentKey.RowKey),
-                partitionKeyValue: type,
-                cancellationToken: cancellationToken)).Select(e => new DocumentKey(e.PartitionKey, e.RowKey));
-        }
-
-        return [];
-    }
-
-    /// <summary>
-    ///     Counts the number of entities of type T in the document store
-    /// </summary>
-    public async Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        var type = this.GetTypeName<T>();
-
-        return (await this.provider.ReadItemsAsync(e => e.Type == type,
-            partitionKeyValue: type,
-            cancellationToken: cancellationToken)).Count();
-    }
-
-    /// <summary>
-    ///     Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
-    /// </summary>
-    public async Task<bool> ExistsAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
-        EnsureArg.IsNotNullOrEmpty(documentKey.RowKey, nameof(documentKey.RowKey));
-
-        var type = this.GetTypeName<T>();
-
-        return (await this.provider.ReadItemsAsync(
-            e => e.Type == type && e.PartitionKey == documentKey.PartitionKey && e.RowKey == documentKey.RowKey,
-            partitionKeyValue: type,
-            cancellationToken: cancellationToken)).SafeAny();
     }
 
     /// <summary>
     ///     Inserts or updates an entity of type T in the document store
     /// </summary>
-    public async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
+    private async Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -217,7 +365,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
         await this.provider.UpsertItemAsync(document, type, cancellationToken);
     }
 
-    public async Task UpsertAsync<T>(
+    private async Task UpsertAsync<T>(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
         CancellationToken cancellationToken = default)
         where T : class, new()
@@ -267,7 +415,7 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
     /// <summary>
     ///     Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
     /// </summary>
-    public async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    private async Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
         EnsureArg.IsNotNullOrEmpty(documentKey.PartitionKey, nameof(documentKey.PartitionKey));
@@ -291,5 +439,83 @@ public class CosmosDocumentStoreProvider : IDocumentStoreProvider
     private string GetTypeName<T>()
     {
         return typeof(T).FullName.ToLowerInvariant().TruncateLeft(1024);
+    }
+
+    private IEnumerable<Expression<Func<CosmosStorageDocument, bool>>> CreateExpressions<T>(DocumentQuery query)
+        where T : class, new()
+    {
+        query ??= new DocumentQuery();
+
+        return this.CreateExpressions<T>(new DocumentCountQuery
+        {
+            DocumentKey = query.DocumentKey,
+            Filter = query.Filter,
+            AllowFullScan = query.AllowFullScan
+        });
+    }
+
+    private IEnumerable<Expression<Func<CosmosStorageDocument, bool>>> CreateExpressions<T>(DocumentCountQuery query)
+        where T : class, new()
+    {
+        query ??= new DocumentCountQuery();
+        var type = this.GetTypeName<T>();
+
+        if (query.DocumentKey is null)
+        {
+            return [e => e.Type == type];
+        }
+
+        var key = query.DocumentKey.Value;
+        return query.Filter switch
+        {
+            DocumentKeyFilter.RowKeyPrefixMatch =>
+            [
+                e => e.Type == type &&
+                    e.PartitionKey == key.PartitionKey &&
+                    e.RowKey.StartsWith(key.RowKey)
+            ],
+            DocumentKeyFilter.RowKeySuffixMatch =>
+            [
+                e => e.Type == type &&
+                    e.PartitionKey == key.PartitionKey &&
+                    e.RowKey.EndsWith(key.RowKey)
+            ],
+            _ =>
+            [
+                e => e.Type == type &&
+                    e.PartitionKey == key.PartitionKey &&
+                    e.RowKey == key.RowKey
+            ]
+        };
+    }
+
+    private static string CreateContinuationToken(string queryHash, string nativeToken)
+    {
+        if (string.IsNullOrWhiteSpace(nativeToken))
+        {
+            return null;
+        }
+
+        var result = DocumentContinuationTokenSerializer.Serialize(new DocumentContinuationToken
+        {
+            Provider = ProviderName,
+            QueryHash = queryHash,
+            NativeToken = nativeToken
+        });
+
+        return result.IsSuccess ? result.Value : null;
+    }
+
+    private sealed class CosmosDocumentKeyProjection
+    {
+        /// <summary>
+        /// Gets the document partition key.
+        /// </summary>
+        public string PartitionKey { get; init; }
+
+        /// <summary>
+        /// Gets the document row key.
+        /// </summary>
+        public string RowKey { get; init; }
     }
 }

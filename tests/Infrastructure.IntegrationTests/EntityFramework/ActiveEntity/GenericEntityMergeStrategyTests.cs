@@ -1,4 +1,4 @@
-﻿//// MIT-License
+//// MIT-License
 //// Copyright BridgingIT GmbH - All Rights Reserved
 //// Use of this source code is governed by an MIT-style license that can be
 //// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -15,7 +15,7 @@
 //using Xunit;
 
 //[IntegrationTest("Infrastructure")]
-//[Collection(nameof(TestEnvironmentCollection6))] // https://xunit.net/docs/shared-context#collection-fixture
+//[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 //public class GenericEntityMergeStrategyTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : TestsBase(output, services =>
 //{
 //    services.AddLogging();

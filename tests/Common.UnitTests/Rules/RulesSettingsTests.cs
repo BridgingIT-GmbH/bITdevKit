@@ -6,9 +6,10 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Rules;
 
 [UnitTest("Common")]
+[Collection(nameof(RuleBuilderCollectionDefinition))]
 public class RulesSettingsTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
-    private readonly RulesFixture fixture = fixture;
+    private readonly RulesFixture fixture = fixture.ResetSettings();
 
     [Fact]
     public void Setup_ShouldConfigureGlobalSettings()

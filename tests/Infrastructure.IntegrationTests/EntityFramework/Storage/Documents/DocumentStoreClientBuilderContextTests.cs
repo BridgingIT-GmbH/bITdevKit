@@ -14,10 +14,11 @@ using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class DocumentStoreClientBuilderContextTests
+public class DocumentStoreClientBuilderContextTests : IDisposable
 {
     private readonly TestEnvironmentFixture fixture;
     private readonly ITestOutputHelper output;
+    private readonly ServiceProvider serviceProvider;
 
     public DocumentStoreClientBuilderContextTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
@@ -25,9 +26,12 @@ public class DocumentStoreClientBuilderContextTests
         this.output = output;
 
         // register the services
-        this.fixture.Services.AddMediatR();
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(output)));
+        services.AddMediatR();
 
-        this.fixture.Services.AddSqlServerDbContext<StubDbContext>(this.fixture.SqlConnectionString)
+        services.AddSqlServerDbContext<StubDbContext>(
+                this.fixture.CreateSqlConnectionString($"DocumentStoreClient_{Guid.NewGuid():N}"))
             .WithDatabaseCreatorService(o => o.DeleteOnStartup())
             .WithOutboxMessageService(o => o
                 .ProcessingInterval("00:00:10")
@@ -38,12 +42,14 @@ public class DocumentStoreClientBuilderContextTests
                 .StartupDelay("00:00:05")
                 .PurgeOnStartup());
 
-        this.fixture.Services.AddEntityFrameworkDocumentStoreClient<PersonStubDocument, StubDbContext>()
+        services.AddEntityFrameworkDocumentStoreClient<PersonStubDocument, StubDbContext>()
             .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()
             .WithBehavior((inner, sp) =>
                 new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(),
                     inner,
                     new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+
+        this.serviceProvider = services.BuildServiceProvider();
     }
 
     //[Fact]
@@ -62,7 +68,7 @@ public class DocumentStoreClientBuilderContextTests
     {
         // Arrange
         // Act
-        var sut = this.fixture.ServiceProvider.GetService<IDocumentStoreClient<PersonStubDocument>>();
+        var sut = this.serviceProvider.GetService<IDocumentStoreClient<PersonStubDocument>>();
 
         // Assert
         sut.ShouldNotBeNull();
@@ -97,11 +103,17 @@ public class DocumentStoreClientBuilderContextTests
         };
 
         // Act
-        await sut.UpsertAsync(documentKey, document);
-        var result = await sut.FindAsync(documentKey);
+        var upsertResult = await sut.UpsertResultAsync(documentKey, document);
+        var result = await sut.GetResultAsync(documentKey);
 
         // Assert
-        result.Count().ShouldBe(1);
-        result.First().FirstName.ShouldBe("Ada");
+        upsertResult.IsSuccess.ShouldBeTrue();
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.FirstName.ShouldBe("Ada");
+    }
+
+    public void Dispose()
+    {
+        this.serviceProvider.Dispose();
     }
 }

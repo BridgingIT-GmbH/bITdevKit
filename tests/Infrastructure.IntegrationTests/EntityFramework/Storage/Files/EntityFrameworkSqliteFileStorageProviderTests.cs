@@ -10,6 +10,7 @@ using Infrastructure.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class EntityFrameworkSqliteFileStorageProviderTests(ITestOutputHelper output) : EntityFrameworkFileStorageProviderTestsBase, IDisposable
 {
     private readonly EntityFrameworkSqliteFileStorageTestSupport support = new(output);

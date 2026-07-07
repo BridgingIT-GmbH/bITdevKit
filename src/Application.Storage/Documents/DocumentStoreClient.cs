@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -12,8 +12,8 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// <example>
 /// <code>
 /// var client = new DocumentStoreClient&lt;Person&gt;(provider);
-/// await client.UpsertAsync(new DocumentKey("people", "42"), person, cancellationToken);
-/// var people = await client.FindAsync(new DocumentKey("people", "4"), DocumentKeyFilter.RowKeyPrefixMatch, cancellationToken);
+/// await client.UpsertResultAsync(new DocumentKey("people", "42"), person, cancellationToken);
+/// var result = await client.GetResultAsync(new DocumentKey("people", "42"), cancellationToken);
 /// </code>
 /// </example>
 public class DocumentStoreClient<T> : IDocumentStoreClient<T>
@@ -22,7 +22,12 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="DocumentStoreClient{T}" /> class.
     /// </summary>
-    /// <param name="provider">The provider that executes the underlying document-store operations.</param>
+    /// <param name="provider">The provider used to execute document-store operations.</param>
+    /// <example>
+    /// <code>
+    /// var client = new DocumentStoreClient&lt;Person&gt;(provider);
+    /// </code>
+    /// </example>
     public DocumentStoreClient(IDocumentStoreProvider provider)
     {
         EnsureArg.IsNotNull(provider, nameof(provider));
@@ -36,78 +41,36 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>
     protected IDocumentStoreProvider Provider { get; }
 
     /// <inheritdoc />
-    public async Task<long> CountAsync(CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.CountAsync<T>(cancellationToken);
-    }
+    public Task<Result<T>> GetResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.Provider.GetResultAsync<T>(documentKey, cancellationToken);
 
     /// <inheritdoc />
-    public async Task DeleteAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
-    {
-        await this.Provider.DeleteAsync<T>(documentKey, cancellationToken);
-    }
+    public Task<Result<DocumentPage<T>>> FindPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
+        this.Provider.FindPageResultAsync<T>(query, cancellationToken);
 
     /// <inheritdoc />
-    public async Task<bool> ExistsAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.ExistsAsync<T>(documentKey, cancellationToken);
-    }
+    public Task<Result<DocumentKeyPage>> ListPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
+        this.Provider.ListPageResultAsync<T>(query, cancellationToken);
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> FindAsync(CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.FindAsync<T>(cancellationToken);
-    }
+    public Task<Result<long>> CountResultAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) =>
+        this.Provider.CountResultAsync<T>(query, cancellationToken);
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.FindAsync<T>(documentKey, cancellationToken);
-    }
+    public Task<Result<bool>> ExistsResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.Provider.ExistsResultAsync<T>(documentKey, cancellationToken);
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> FindAsync(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.FindAsync<T>(documentKey, filter, cancellationToken);
-    }
+    public Task<Result> UpsertResultAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default) =>
+        this.Provider.UpsertResultAsync(documentKey, entity, cancellationToken);
 
     /// <inheritdoc />
-    public async Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.ListAsync<T>(cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public async Task<IEnumerable<DocumentKey>> ListAsync(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.ListAsync<T>(documentKey, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public async Task<IEnumerable<DocumentKey>> ListAsync(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.Provider.ListAsync<T>(documentKey, filter, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public async Task UpsertAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
-    {
-        await this.Provider.UpsertAsync(documentKey, entity, cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public async Task UpsertAsync(
+    public Task<Result> UpsertResultAsync(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
-        CancellationToken cancellationToken = default)
-    {
-        await this.Provider.UpsertAsync(entities, cancellationToken);
-    }
+        CancellationToken cancellationToken = default) =>
+        this.Provider.UpsertResultAsync(entities, cancellationToken);
+
+    /// <inheritdoc />
+    public Task<Result> DeleteResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.Provider.DeleteResultAsync<T>(documentKey, cancellationToken);
 }

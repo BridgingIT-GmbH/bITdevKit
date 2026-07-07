@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class EntityFrameworkSqliteJobStoreProviderTests : EntityFrameworkJobStoreProviderTestsBase, IDisposable
 {
     private readonly string databasePath;

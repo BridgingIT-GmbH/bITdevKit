@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class InMemorySequenceNumberGeneratorTests : SequenceNumberGeneratorTestsBase
 {
     private readonly ILoggerFactory mockLoggerFactory;

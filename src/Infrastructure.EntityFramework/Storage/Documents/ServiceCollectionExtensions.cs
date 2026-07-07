@@ -9,6 +9,9 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Provides Entity Framework document-store service registration extensions.
+/// </summary>
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
@@ -20,6 +23,7 @@ public static partial class ServiceCollectionExtensions
     /// <param name="provider">An optional pre-built provider instance.</param>
     /// <param name="lifetime">The client lifetime to register.</param>
     /// <param name="configure">An optional callback used to customize provider lease and retry options.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
     /// <returns>The document-store builder for adding behaviors.</returns>
     /// <example>
     /// <code>
@@ -39,7 +43,8 @@ public static partial class ServiceCollectionExtensions
         this IServiceCollection services,
         EntityFrameworkDocumentStoreProvider<TContext> provider = null,
         ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        Action<EntityFrameworkDocumentStoreProviderOptions> configure = null)
+        Action<EntityFrameworkDocumentStoreProviderOptions> configure = null,
+        DocumentStoreOptions documentStoreOptions = null)
         where T : class, new()
         where TContext : DbContext, IDocumentStoreContext
     {
@@ -49,17 +54,17 @@ public static partial class ServiceCollectionExtensions
         {
             case ServiceLifetime.Singleton:
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? CreateProvider<TContext>(sp, configure)));
+                    provider ?? CreateProvider<TContext>(sp, configure, documentStoreOptions)));
 
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? CreateProvider<TContext>(sp, configure)));
+                    provider ?? CreateProvider<TContext>(sp, configure, documentStoreOptions)));
 
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
-                    provider ?? CreateProvider<TContext>(sp, configure)));
+                    provider ?? CreateProvider<TContext>(sp, configure, documentStoreOptions)));
 
                 break;
         }
@@ -69,7 +74,8 @@ public static partial class ServiceCollectionExtensions
 
     private static EntityFrameworkDocumentStoreProvider<TContext> CreateProvider<TContext>(
         IServiceProvider serviceProvider,
-        Action<EntityFrameworkDocumentStoreProviderOptions> configure)
+        Action<EntityFrameworkDocumentStoreProviderOptions> configure,
+        DocumentStoreOptions documentStoreOptions)
         where TContext : DbContext, IDocumentStoreContext
     {
         var options = new EntityFrameworkDocumentStoreProviderOptions
@@ -81,6 +87,7 @@ public static partial class ServiceCollectionExtensions
         return new EntityFrameworkDocumentStoreProvider<TContext>(
             serviceProvider,
             serviceProvider.GetService<ILoggerFactory>(),
-            options: options);
+            options: options,
+            documentStoreOptions: documentStoreOptions);
     }
 }

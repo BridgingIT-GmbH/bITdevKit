@@ -15,9 +15,10 @@ using Xunit;
 
 [UnitTest("Common")]
 [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
-public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
+[Collection(nameof(RuleBuilderCollectionDefinition))]
+public class RuleTests(RulesFixture fixture) : IClassFixture<RulesFixture>
 {
-    // private readonly RulesFixture fixture = fixture;
+    private readonly RulesFixture fixture = fixture.ResetSettings();
     private readonly Faker faker = new();
 
     [Fact]

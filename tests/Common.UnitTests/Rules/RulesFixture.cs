@@ -17,11 +17,13 @@ public class RulesFixture : IDisposable
         this.ResetSettings();
     }
 
-    private void ResetSettings()
+    public RulesFixture ResetSettings()
     {
         Rule.Setup(builder =>
         {
             /* Default settings */
         });
+
+        return this;
     }
 }

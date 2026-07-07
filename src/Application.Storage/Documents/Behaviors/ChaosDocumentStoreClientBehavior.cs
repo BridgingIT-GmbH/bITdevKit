@@ -1,38 +1,20 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using Polly.Contrib.Simmy;
-using Polly.Contrib.Simmy.Outcomes;
-
 /// <summary>
 /// Injects synthetic faults into document-store operations for resilience testing.
 /// </summary>
 /// <typeparam name="T">The document type handled by the decorated client.</typeparam>
-/// <example>
-/// <code>
-/// services.AddDocumentStoreClient&lt;Person&gt;(sp => client)
-///     .WithBehavior((inner, sp) => new ChaosDocumentStoreClientBehavior&lt;Person&gt;(
-///         sp.GetRequiredService&lt;ILoggerFactory&gt;(),
-///         inner,
-///         new ChaosDocumentStoreClientBehaviorOptions
-///         {
-///             InjectionRate = 0.1
-///         }));
-/// </code>
-/// </example>
 public class ChaosDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     where T : class, new()
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ChaosDocumentStoreClientBehavior{T}" /> class.
     /// </summary>
-    /// <param name="loggerFactory">The logger factory used to create the behavior logger.</param>
-    /// <param name="inner">The inner client to decorate.</param>
-    /// <param name="options">The chaos behavior options.</param>
     public ChaosDocumentStoreClientBehavior(
         ILoggerFactory loggerFactory,
         IDocumentStoreClient<T> inner,
@@ -62,106 +44,46 @@ public class ChaosDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     protected IDocumentStoreClient<T> Inner { get; }
 
     /// <inheritdoc />
-    public async Task DeleteAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
-    {
-        await this.PolicyFactory(this.Options)
-            .Execute(async context => await this.Inner.DeleteAsync(documentKey, cancellationToken), cancellationToken);
-    }
+    public Task<Result<T>> GetResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.GetResultAsync(documentKey, cancellationToken));
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> FindAsync(CancellationToken cancellationToken)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.FindAsync(cancellationToken), cancellationToken)
-            .Result;
-    }
+    public Task<Result<DocumentPage<T>>> FindPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.FindPageResultAsync(query, cancellationToken));
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.FindAsync(documentKey, cancellationToken),
-                cancellationToken)
-            .Result;
-    }
+    public Task<Result<DocumentKeyPage>> ListPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.ListPageResultAsync(query, cancellationToken));
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> FindAsync(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.FindAsync(documentKey, filter, cancellationToken),
-                cancellationToken)
-            .Result;
-    }
+    public Task<Result<long>> CountResultAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.CountResultAsync(query, cancellationToken));
 
     /// <inheritdoc />
-    public async Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken cancellationToken)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.ListAsync(cancellationToken), cancellationToken)
-            .Result;
-    }
+    public Task<Result<bool>> ExistsResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.ExistsResultAsync(documentKey, cancellationToken));
 
     /// <inheritdoc />
-    public async Task<IEnumerable<DocumentKey>> ListAsync(
-        DocumentKey documentKey,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.Inner.ListAsync(documentKey, cancellationToken);
-    }
+    public Task<Result> UpsertResultAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.UpsertResultAsync(documentKey, entity, cancellationToken));
 
     /// <inheritdoc />
-    public async Task<IEnumerable<DocumentKey>> ListAsync(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.ListAsync(documentKey, filter, cancellationToken),
-                cancellationToken)
-            .Result;
-    }
-
-    /// <inheritdoc />
-    public async Task<long> CountAsync(CancellationToken cancellationToken = default)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.CountAsync(cancellationToken), cancellationToken)
-            .Result;
-    }
-
-    /// <inheritdoc />
-    public async Task<bool> ExistsAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
-    {
-        return await this.PolicyFactory(this.Options)
-            .ExecuteAndCapture(async context => await this.Inner.ExistsAsync(documentKey, cancellationToken),
-                cancellationToken)
-            .Result;
-    }
-
-    /// <inheritdoc />
-    public async Task UpsertAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
-    {
-        await this.PolicyFactory(this.Options)
-            .Execute(async context => await this.Inner.UpsertAsync(documentKey, entity, cancellationToken),
-                cancellationToken);
-    }
-
-    /// <inheritdoc />
-    public async Task UpsertAsync(
+    public Task<Result> UpsertResultAsync(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
-        CancellationToken cancellationToken = default)
-    {
-        await this.PolicyFactory(this.Options)
-            .Execute(async context => await this.Inner.UpsertAsync(entities, cancellationToken), cancellationToken);
-    }
+        CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.UpsertResultAsync(entities, cancellationToken));
 
-    private InjectOutcomePolicy PolicyFactory(ChaosDocumentStoreClientBehaviorOptions options)
+    /// <inheritdoc />
+    public Task<Result> DeleteResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.ExecuteAsync(() => this.Inner.DeleteResultAsync(documentKey, cancellationToken));
+
+    private Task<TResult> ExecuteAsync<TResult>(Func<Task<TResult>> operation)
     {
-        return MonkeyPolicy.InjectException(with => // https://github.com/Polly-Contrib/Simmy#Inject-exception
-            with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
+        if (this.Options.InjectionRate > 0 && Random.Shared.NextDouble() < this.Options.InjectionRate)
+        {
+            throw this.Options.Fault ?? new ChaosException();
+        }
+
+        return operation();
     }
 }

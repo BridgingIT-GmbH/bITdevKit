@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class EntityFrameworkSqliteFileStorageHarnessTests(ITestOutputHelper output) : FileStorageTestsBase, IDisposable
 {
     private readonly EntityFrameworkSqliteFileStorageTestSupport support = new(output);

@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -21,14 +21,12 @@ using Xunit.Abstractions;
 
 // this test is not entity framework specific but placed here as it uses entity stubs in this project (_shared) that are also used in the active entity ef core tests (ActiveEntityEntityFrameworkTests)
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection5))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(ActiveEntityTestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class ActiveEntityInMemoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : TestsBase(output, services =>
 {
-    fixture.EnsureSqlServerDbContext();
     services.AddLogging();
     services.AddSingleton(provider => XunitLogger.Create(output));
     services.AddSingleton(provider => XunitLoggerFactory.Create(output));
-    services.AddSqlServerDbContext<ActiveEntityDbContext>(fixture.SqlConnectionString);
     services.AddNotifier()
         .AddHandlers();
 

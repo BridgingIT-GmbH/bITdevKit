@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Queu
 using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
+[Collection(nameof(IsolatedSqliteTestEnvironmentCollection))]
 public class EntityFrameworkSqliteQueueBrokerTests : EntityFrameworkQueueBrokerTestsBase, IDisposable
 {
     private readonly string databasePath;

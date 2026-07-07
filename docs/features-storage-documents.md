@@ -1,27 +1,33 @@
-# DocumentStorage Feature Documentation
+# Document Storage Feature Documentation
 
-> Store and query JSON-like documents through a simple, provider-agnostic abstraction.
+> Store typed JSON-like documents through a provider-agnostic, Result-native, continuation-paged API.
 
 [TOC]
 
 ## Overview
 
-Document Storage provides a simple, type-safe abstraction for storing and retrieving JSON-like documents keyed by a `DocumentKey` (partitionKey + rowKey). It focuses on straightforward CRUD operations, filtered lookups, and pluggable provider implementations, with optional client-side behaviors for resilience, caching, logging, and timeouts.
+Document Storage provides a type-safe abstraction for storing, retrieving, listing, counting, and deleting JSON-like documents keyed by `DocumentKey` (`PartitionKey` + `RowKey`). Consumers use `IDocumentStoreClient<T>`, and every operation returns `Result` or `Result<T>` for consistent recoverable error handling.
+
+Read operations are bounded. Query reads return one page at a time, and continuation tokens are opaque strings that can be passed back to the same provider with the same query shape to retrieve the next page.
 
 The cache behavior described here builds on the shared abstractions documented in [Common Caching](./common-caching.md), and document payload serialization follows the serializer conventions covered in [Common Serialization](./common-serialization.md).
 
 ## Challenges
 
-- Consistent access: Unified API across providers (in-memory, EF-backed, cloud) without leaking implementation details.
-- Keyed access patterns: Efficient reads by partition/row keys with flexible filtering (prefix/suffix).
-- Resilience and latency: Retriable operations, bounded execution time, and diagnostics.
-- Caching and invalidation: Avoid repeated reads while ensuring cache is invalidated on writes.
+- Consistent access: Unified API across in-memory, relational, and cloud providers without leaking implementation details.
+- Bounded reads: Prevent accidental unbounded reads by requiring page-based query APIs.
+- Query safety: Make full scans, page-size limits, unsupported query shapes, and client-side filtering explicit.
+- Keyed access patterns: Efficient reads by partition and row key with full, prefix, and provider-supported suffix matching.
+- Resilience and latency: Support retries, timeouts, diagnostics, and typed Result failures without exception-based control flow.
+- Caching and invalidation: Avoid repeated exact-key reads while invalidating cache entries after writes and deletes.
 
 ## Solution
 
-- Core Contracts: `IDocumentStoreClient<T>` and `IDocumentStoreProvider` define the public API and provider surface.
-- Keys and Filters: `DocumentKey` and `DocumentKeyFilter` standardize lookup and listing semantics.
-- Providers: In-memory and Entity Framework implementations; additional providers can be added similarly.
+- Core contracts: `IDocumentStoreClient<T>` and `IDocumentStoreProvider` define the Result-native client and provider surface.
+- Query model: `DocumentQuery`, `DocumentCountQuery`, and `DocumentQueries` provide explicit bounded query shapes.
+- Paging model: `DocumentPage<T>` and `DocumentKeyPage` return items plus opaque continuation tokens.
+- Query safety: `DocumentStoreOptions`, `DocumentStoreProviderCapabilities`, and `DocumentQueryValidator` enforce provider-aware limits.
+- Providers: In-memory, Entity Framework, Cosmos DB, Azure Blob Storage, and Azure Table Storage implementations.
 - Behaviors: Decorator pipeline around the client for logging, retry, timeout, caching, and chaos testing.
 
 ## Architecture
@@ -29,33 +35,42 @@ The cache behavior described here builds on the shared abstractions documented i
 The Document Storage architecture consists of a provider-backed client decorated by optional behaviors. Consumers depend on `IDocumentStoreClient<T>`, while providers implement `IDocumentStoreProvider`.
 
 - Components:
-  - `IDocumentStoreClient<T>`: Public API for CRUD, listing, filtering, and existence checks.
-  - `DocumentStoreClient<T>`: Default client that forwards to an `IDocumentStoreProvider`.
-  - `IDocumentStoreProvider`: Backend contract implemented by providers (e.g., In-Memory, EF).
-  - Behaviors: Decorators that wrap the client (logging, retry, timeout, cache, chaos).
+  - `IDocumentStoreClient<T>`: Public API for exact reads, paged reads, key listing, counting, existence checks, writes, and deletes.
+  - `DocumentStoreClient<T>`: Default client that forwards operations to an `IDocumentStoreProvider`.
+  - `IDocumentStoreProvider`: Backend contract implemented by providers.
+  - Query types: `DocumentQuery`, `DocumentCountQuery`, `DocumentPage<T>`, `DocumentKeyPage`.
+  - Behaviors: Decorators that wrap the client for logging, retry, timeout, cache, and chaos concerns.
 
 ### Class Diagram
 
 ```mermaid
 classDiagram
   class IDocumentStoreClient~T~ {
-    +FindAsync()
-    +FindAsync(DocumentKey)
-    +FindAsync(DocumentKey, DocumentKeyFilter)
-    +ListAsync()
-    +ListAsync(DocumentKey)
-    +ListAsync(DocumentKey, DocumentKeyFilter)
-    +CountAsync()
-    +ExistsAsync(DocumentKey)
-    +UpsertAsync(DocumentKey, T)
-    +UpsertAsync(IEnumerable~(DocumentKey, T)~)
-    +DeleteAsync(DocumentKey)
+    +GetResultAsync(DocumentKey)
+    +FindPageResultAsync(DocumentQuery)
+    +ListPageResultAsync(DocumentQuery)
+    +CountResultAsync(DocumentCountQuery)
+    +ExistsResultAsync(DocumentKey)
+    +UpsertResultAsync(DocumentKey, T)
+    +UpsertResultAsync(IEnumerable~(DocumentKey, T)~)
+    +DeleteResultAsync(DocumentKey)
   }
 
   class DocumentStoreClient~T~
-  class IDocumentStoreProvider
+  class IDocumentStoreProvider {
+    +Capabilities
+  }
+  class DocumentQuery
+  class DocumentCountQuery
+  class DocumentPage~T~
+  class DocumentKeyPage
+  class DocumentStoreOptions
+  class DocumentStoreProviderCapabilities
   class InMemoryDocumentStoreProvider
   class EntityFrameworkDocumentStoreProvider~TContext~
+  class CosmosDocumentStoreProvider
+  class AzureBlobDocumentStoreProvider
+  class AzureTableDocumentStoreProvider
   class LoggingDocumentStoreClientBehavior~T~
   class RetryDocumentStoreClientBehavior~T~
   class TimeoutDocumentStoreClientBehavior~T~
@@ -65,7 +80,15 @@ classDiagram
   IDocumentStoreClient~T~ <|.. DocumentStoreClient~T~
   IDocumentStoreProvider <|.. InMemoryDocumentStoreProvider
   IDocumentStoreProvider <|.. EntityFrameworkDocumentStoreProvider~TContext~
+  IDocumentStoreProvider <|.. CosmosDocumentStoreProvider
+  IDocumentStoreProvider <|.. AzureBlobDocumentStoreProvider
+  IDocumentStoreProvider <|.. AzureTableDocumentStoreProvider
   DocumentStoreClient~T~ --> IDocumentStoreProvider
+  IDocumentStoreClient~T~ ..> DocumentQuery
+  IDocumentStoreClient~T~ ..> DocumentCountQuery
+  IDocumentStoreClient~T~ ..> DocumentPage~T~
+  IDocumentStoreClient~T~ ..> DocumentKeyPage
+  IDocumentStoreProvider ..> DocumentStoreProviderCapabilities
   LoggingDocumentStoreClientBehavior~T~ ..> IDocumentStoreClient~T~
   RetryDocumentStoreClientBehavior~T~ ..> IDocumentStoreClient~T~
   TimeoutDocumentStoreClientBehavior~T~ ..> IDocumentStoreClient~T~
@@ -85,85 +108,87 @@ sequenceDiagram
   participant Client as DocumentStoreClient<T>
   participant Provider
 
-  Caller->>Logging: FindAsync(key, RowKeyPrefixMatch)
-  Logging->>Retry: FindAsync(key, RowKeyPrefixMatch)
-  Retry->>Timeout: FindAsync(key, RowKeyPrefixMatch)
-  Timeout->>Cache: FindAsync(key, RowKeyPrefixMatch)
-  alt cache hit
-    Cache-->>Timeout: cached result
-  else cache miss
-    Cache->>Client: FindAsync(key, RowKeyPrefixMatch)
-    Client->>Provider: FindAsync(key, RowKeyPrefixMatch)
-    Provider-->>Client: IEnumerable<T>
-    Client-->>Cache: set cache
-    Cache-->>Timeout: result
+  Caller->>Logging: FindPageResultAsync(query)
+  Logging->>Retry: FindPageResultAsync(query)
+  Retry->>Timeout: FindPageResultAsync(query)
+  Timeout->>Cache: FindPageResultAsync(query)
+  Cache->>Client: FindPageResultAsync(query)
+  Client->>Provider: FindPageResultAsync<T>(query)
+  Provider-->>Client: Result<DocumentPage<T>>
+  Client-->>Cache: Result<DocumentPage<T>>
+  Cache-->>Timeout: Result<DocumentPage<T>>
+  Timeout-->>Retry: Result<DocumentPage<T>>
+  Retry-->>Logging: Result<DocumentPage<T>>
+  Logging-->>Caller: Result<DocumentPage<T>>
+  alt page.HasMore
+    Caller->>Logging: FindPageResultAsync(query with ContinuationToken)
   end
-  Timeout-->>Retry: result
-  Retry-->>Logging: result
-  Logging-->>Caller: result
 ```
 
 ## Core Contracts
 
 - `IDocumentStoreClient<T>` ([src/Application.Storage/Documents/IDocumentStoreClient.cs](src/Application.Storage/Documents/IDocumentStoreClient.cs))
-  - **FindAsync()**: Return all entities of type `T`.
-  - **FindAsync(DocumentKey)**: Return entities for an exact key.
-  - **FindAsync(DocumentKey, DocumentKeyFilter)**: Return entities filtered by `FullMatch`, `RowKeyPrefixMatch`, or `RowKeySuffixMatch`.
-  - **ListAsync()**: Return all `DocumentKey`s for type `T`.
-  - **ListAsync(DocumentKey)**: Return `DocumentKey`s for an exact key.
-  - **ListAsync(DocumentKey, DocumentKeyFilter)**: Return filtered keys by `FullMatch`, `RowKeyPrefixMatch`, or `RowKeySuffixMatch`.
-  - **CountAsync()**: Return number of stored entities of type `T`.
-  - **ExistsAsync(DocumentKey)**: Check if an entity exists for an exact key.
-  - **UpsertAsync(DocumentKey, T)**: Insert or update a single entity.
-  - **UpsertAsync(IEnumerable<(DocumentKey, T)>)**: Insert or update multiple entities.
-  - **DeleteAsync(DocumentKey)**: Delete the entity for an exact key.
-- `DocumentStoreClientResultExtensions` ([src/Application.Storage/Documents/DocumentStoreClientResultExtensions.cs](src/Application.Storage/Documents/DocumentStoreClientResultExtensions.cs))
-  - Adds `*ResultAsync(...)` wrappers for the document-store client so callers can use the shared `Result` pattern instead of exception-based control flow.
-  - Read operations return `Result<TValue>` wrappers around the existing client values.
-  - `UpsertResultAsync(...)` and `DeleteResultAsync(...)` translate lease/concurrency failures into `ConcurrencyError`.
-- `DocumentStoreCacheProvider` and `DocumentStoreCache` ([src/Application.Storage/Caching/DocumentStoreCacheProvider.cs](src/Application.Storage/Caching/DocumentStoreCacheProvider.cs), [src/Application.Storage/Caching/DocumentStoreCache.cs](src/Application.Storage/Caching/DocumentStoreCache.cs))
-  - Allow the document-store stack to act as the backing store for `ICacheProvider`, so cache entries can persist across process restarts and be shared between hosts when the underlying provider supports it.
-  - Cache entries are stored as `CacheDocument` documents under the `storage-cache` partition.
+  - **GetResultAsync(DocumentKey)**: Retrieves one exact document. Missing documents return a typed not-found failure.
+  - **FindPageResultAsync(DocumentQuery)**: Retrieves one bounded page of payload instances.
+  - **ListPageResultAsync(DocumentQuery)**: Retrieves one bounded page of document keys only.
+  - **CountResultAsync(DocumentCountQuery)**: Counts documents matching a query shape.
+  - **ExistsResultAsync(DocumentKey)**: Checks exact-key existence.
+  - **UpsertResultAsync(DocumentKey, T)**: Inserts or updates one document.
+  - **UpsertResultAsync(IEnumerable<(DocumentKey, T)>)**: Inserts or updates multiple documents.
+  - **DeleteResultAsync(DocumentKey)**: Deletes one exact document.
 - `IDocumentStoreProvider` ([src/Application.Storage/Documents/IDocumentStoreProvider.cs](src/Application.Storage/Documents/IDocumentStoreProvider.cs))
-  - Backend interface; `DocumentStoreClient<T>` delegates to a provider implementation.
+  - Backend interface implemented by providers.
+  - Exposes `DocumentStoreProviderCapabilities Capabilities`.
 - `DocumentStoreClient<T>` ([src/Application.Storage/Documents/DocumentStoreClient.cs](src/Application.Storage/Documents/DocumentStoreClient.cs))
-  - Default client implementation that forwards all operations to the provider.
+  - Default client implementation that forwards operations to the provider.
 - `DocumentKey` ([src/Application.Storage/Documents/DocumentKey.cs](src/Application.Storage/Documents/DocumentKey.cs))
   - Value type: `PartitionKey`, `RowKey`.
-- `DocumentKeyFilter` ([src/Application.Storage/Documents/DocumentKeyFilter.cs](src/Application.Storage/Documents/DocumentKeyFilter.cs))
-  - `FullMatch`, `RowKeyPrefixMatch`, `RowKeySuffixMatch`.
+- `DocumentQuery` and `DocumentCountQuery`
+  - Query models for paged reads, key listing, and counts.
+- `DocumentPage<T>` and `DocumentKeyPage`
+  - Page result models containing items and continuation tokens.
+- `DocumentStoreOptions`
+  - Query safety settings such as `DefaultTake`, `MaxTake`, `AllowFullScans`, and `RejectClientSideFilteredQueries`.
+- `DocumentStoreProviderCapabilities`
+  - Describes provider support for exact, prefix, suffix, full-scan, key-listing, paging, count, and key-only projection behavior.
+- `DocumentStoreCacheProvider` and `DocumentStoreCache`
+  - Allow the document-store stack to act as the backing store for `ICacheProvider`.
+  - Cache entries are stored as `CacheDocument` documents under the `storage-cache` partition.
 
 ## Providers
 
 ### In-Memory
 
 - `InMemoryDocumentStoreProvider` ([src/Application.Storage/Documents/InMemory/InMemoryDocumentStoreProvider.cs](src/Application.Storage/Documents/InMemory/InMemoryDocumentStoreProvider.cs))
-  - Keeps documents in a process-local store; supports all operations and filters.
-  - Useful for local development, tests, or simple ephemeral storage.
+  - Keeps documents in a process-local store.
+  - Supports exact, prefix, suffix, full-scan, and key-listing queries.
+  - Supports continuation paging.
+  - Uses deterministic key ordering for pages.
+  - Useful for tests, local development, and ephemeral storage.
 
 ### Entity Framework
 
 - `EntityFrameworkDocumentStoreProvider<TContext>` ([src/Infrastructure.EntityFramework/Storage/Documents/EntityFrameworkDocumentStoreProvider.cs](src/Infrastructure.EntityFramework/Storage/Documents/EntityFrameworkDocumentStoreProvider.cs))
-  - Persists documents in a table (see [src/Infrastructure.EntityFramework/Storage/Documents/StorageDocument.cs](src/Infrastructure.EntityFramework/Storage/Documents/StorageDocument.cs)).
-  - Keys are stored as `Type`, `PartitionKey`, and `RowKey`, each capped at **256 characters** and validated by the EF provider before any query or mutation runs.
-  - The EF provider adds SHA-256 lookup hashes and a unique logical-key index to keep exact-key mutations stable at scale. These hash columns are an **EF implementation detail only**; they are not part of the public document-store contract and are not required by non-EF providers.
-  - Content is serialized with `System.Text.Json` by default and persisted alongside a content hash.
-  - Implements filter semantics (`FullMatch`, prefix, suffix) via LINQ queries, while exact-key operations narrow by both full values and hashed lookup columns.
-  - Coordinates writes and deletes with short-lived row leases plus optimistic concurrency so multiple hosts can safely compete for the same logical document.
+  - Persists documents in a relational table through a `DbContext` implementing `IDocumentStoreContext`.
+  - Supports exact, prefix, suffix, full-scan, key-only listing, continuation paging, and server-side count.
+  - Keys are stored as `Type`, `PartitionKey`, and `RowKey`.
+  - Adds hash columns and indexes for efficient logical-key lookup.
+  - Coordinates writes and deletes with short-lived row leases plus optimistic concurrency handling.
+  - SQL Server and PostgreSQL are recommended for active multi-host document mutation workloads.
+  - SQLite is useful for development, tests, and lightweight single-node deployments.
 
 ### Azure Cosmos DB
 
 - `CosmosDocumentStoreProvider` ([src/Infrastructure.Azure.Cosmos/Storage/Documents/CosmosDocumentStoreProvider.cs](src/Infrastructure.Azure.Cosmos/Storage/Documents/CosmosDocumentStoreProvider.cs))
   - Stores JSON documents in a Cosmos DB container via `ICosmosSqlProvider<CosmosStorageDocument>`.
-  - Supports `FullMatch`, `RowKeyPrefixMatch`, and `RowKeySuffixMatch` filters.
-  - Keys: `Type` (partition key for container), with document `PartitionKey` and `RowKey` stored per item.
+  - Supports exact, prefix, suffix, full-scan, key-listing, and continuation-paged operations.
+  - Uses `Type`, `PartitionKey`, and `RowKey` fields on stored items.
+  - Key-only listing returns `DocumentKey` values without returning application payload instances.
   - Register: [src/Infrastructure.Azure.Cosmos/Storage/Documents/ServiceCollectionExtensions.cs](src/Infrastructure.Azure.Cosmos/Storage/Documents/ServiceCollectionExtensions.cs)
 
 ```csharp
-// Using a configured CosmosClient from DI
 services.AddCosmosDocumentStoreClient<Person>(cosmosClient);
 
-// Or with options builder (container, partition key etc.)
 services.AddCosmosDocumentStoreClient<Person>(o => o
     .Container("storage_documents")
     .PartitionKey(e => e.Type));
@@ -172,62 +197,74 @@ services.AddCosmosDocumentStoreClient<Person>(o => o
 ### Azure Blob Storage
 
 - `AzureBlobDocumentStoreProvider` ([src/Infrastructure.Azure.Storage/Documents/AzureBlobDocumentStoreProvider.cs](src/Infrastructure.Azure.Storage/Documents/AzureBlobDocumentStoreProvider.cs))
-  - Stores each entity as a blob named `<PartitionKey>__<RowKey>` in a type-scoped container.
-  - Supports `FullMatch` and `RowKeyPrefixMatch` efficiently; `RowKeySuffixMatch` requires enumeration.
+  - Stores each document as a blob named `<PartitionKey>__<RowKey>` in a type-scoped container.
+  - Supports exact and row-key prefix queries efficiently.
+  - Supports row-key suffix queries through client-side filtering when `RejectClientSideFilteredQueries` is disabled.
+  - Supports full scans, key-only listing, and continuation paging.
+  - `PartitionKey` and `RowKey` must not contain the reserved blob-name separator `__`.
   - Register: [src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs](src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs)
 
 ```csharp
-// Using a BlobServiceClient from DI
 services.AddAzureBlobDocumentStoreClient<Person>();
-
-// Or provide a specific BlobServiceClient
 services.AddAzureBlobDocumentStoreClient<Person>(blobServiceClient);
 ```
 
 ### Azure Table Storage
 
 - `AzureTableDocumentStoreProvider` ([src/Infrastructure.Azure.Storage/Documents/AzureTableDocumentStoreProvider.cs](src/Infrastructure.Azure.Storage/Documents/AzureTableDocumentStoreProvider.cs))
-  - Stores entities as rows with `PartitionKey` and `RowKey`; includes `ContentHash` metadata.
-  - Supports `FullMatch` and `RowKeyPrefixMatch`; `RowKeySuffixMatch` is not supported (throws `NotSupportedException`).
+  - Stores documents as table rows with `PartitionKey`, `RowKey`, and document metadata.
+  - Supports exact and row-key prefix queries efficiently.
+  - Does not support row-key suffix queries.
+  - Supports full scans, key-only listing, and continuation paging.
   - Register: [src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs](src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs)
 
 ```csharp
-// Using a TableServiceClient from DI
 services.AddAzureTableDocumentStoreClient<Person>();
-
-// Or provide a specific TableServiceClient
 services.AddAzureTableDocumentStoreClient<Person>(tableServiceClient);
 ```
 
 ## Getting Started
 
-### DI setup
+### DI Setup
 
 Register a client for your document type and choose a provider.
 
 ```csharp
-// Register an EF-backed document client
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>();
+```
 
-// Register a singleton client with explicit EF provider tuning
+Register with provider tuning and document-query safety options:
+
+```csharp
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>(
-    lifetime: ServiceLifetime.Singleton,
     configure: options =>
     {
         options.LeaseDuration = TimeSpan.FromSeconds(15);
         options.RetryCount = 5;
         options.RetryDelay = TimeSpan.FromMilliseconds(100);
+    },
+    documentStoreOptions: new DocumentStoreOptions
+    {
+        DefaultTake = 100,
+        MaxTake = 1000,
+        AllowFullScans = false,
+        RejectClientSideFilteredQueries = true
     });
+```
 
-// Or: Register a client with a custom factory (e.g., in-memory)
+Register a custom provider:
+
+```csharp
 services.AddDocumentStoreClient<Person>(sp =>
 {
-    var provider = new InMemoryDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>());
+    var provider = new InMemoryDocumentStoreProvider(
+        sp.GetRequiredService<ILoggerFactory>());
+
     return new DocumentStoreClient<Person>(provider);
 });
 ```
 
-Add optional client behaviors (decorators):
+Add optional client behaviors:
 
 ```csharp
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
@@ -235,12 +272,11 @@ services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
     .WithBehavior<RetryDocumentStoreClientBehavior<Person>>()
     .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>();
 
-// Cache behavior (requires an ICacheProvider in DI)
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
     .WithBehavior<CacheDocumentStoreClientBehavior<Person>>();
 ```
 
-### Using document storage as a persistent cache backend
+### Using Document Storage As A Persistent Cache Backend
 
 The same document-store infrastructure can also back the shared caching abstraction.
 
@@ -257,156 +293,298 @@ builder.Services
 
 - This registers `ICacheProvider` as a `DocumentStoreCacheProvider`.
 - Cache entries are serialized into `CacheDocument` records and stored through `IDocumentStoreClient<CacheDocument>`.
-- The EF variant requires the target `DbContext` to implement `IDocumentStoreContext`, and the consuming application still owns the schema migration for the document-store table.
-- Equivalent persistent cache registrations exist for other document-store-backed providers, including Cosmos DB and Azure Storage variants.
+- The EF variant requires the target `DbContext` to implement `IDocumentStoreContext`.
+- Azure Storage and Cosmos DB document-store-backed cache registrations are also available.
 
-### Basic usage
-
-```csharp
-public sealed class PeopleService
-{
-    private readonly IDocumentStoreClient<Person> documents;
-    public PeopleService(IDocumentStoreClient<Person> documents) => this.documents = documents;
-
-    public async Task AddOrUpdateAsync(Person p, CancellationToken ct)
-    {
-        var key = new DocumentKey(partitionKey: p.Country, rowKey: p.Id.ToString());
-        await documents.UpsertAsync(key, p, ct);
-    }
-
-    public async Task<IEnumerable<Person>> GetAllAsync(CancellationToken ct)
-    {
-        return await documents.FindAsync(ct);
-    }
-
-    public async Task<IEnumerable<Person>> FindByPrefixAsync(string country, string idPrefix, CancellationToken ct)
-    {
-        var key = new DocumentKey(country, idPrefix);
-        return await documents.FindAsync(key, DocumentKeyFilter.RowKeyPrefixMatch, ct);
-    }
-
-    public async Task<bool> ExistsAsync(string country, string id, CancellationToken ct)
-    {
-        return await documents.ExistsAsync(new DocumentKey(country, id), ct);
-    }
-
-    public async Task DeleteAsync(string country, string id, CancellationToken ct)
-    {
-        await documents.DeleteAsync(new DocumentKey(country, id), ct);
-    }
-}
-```
-
-### Result-pattern usage
+### Basic Usage
 
 ```csharp
-public sealed class PeopleResultService(IDocumentStoreClient<Person> documents)
+public sealed class PeopleService(IDocumentStoreClient<Person> documents)
 {
     public async Task<Result> SaveAsync(Person person, CancellationToken ct)
     {
         var key = new DocumentKey(person.Country, person.Id.ToString());
+
         return await documents.UpsertResultAsync(key, person, ct);
     }
 
-    public async Task<Result<IEnumerable<Person>>> FindByPrefixAsync(string country, string prefix, CancellationToken ct)
+    public async Task<Result<Person>> GetAsync(string country, string id, CancellationToken ct)
     {
-        return await documents.FindResultAsync(
-            new DocumentKey(country, prefix),
-            DocumentKeyFilter.RowKeyPrefixMatch,
-            ct);
+        return await documents.GetResultAsync(new DocumentKey(country, id), ct);
+    }
+
+    public async Task<Result<bool>> ExistsResultAsync(string country, string id, CancellationToken ct)
+    {
+        return await documents.ExistsResultAsync(new DocumentKey(country, id), ct);
+    }
+
+    public async Task<Result> DeleteResultAsync(string country, string id, CancellationToken ct)
+    {
+        return await documents.DeleteResultAsync(new DocumentKey(country, id), ct);
     }
 }
 ```
 
+### Query Usage
+
+Create page and count queries with `DocumentQueries`.
+
+```csharp
+var pageQuery = DocumentQueries.Query()
+    .ForKey("people", "DE-")
+    .WithRowKeyPrefix()
+    .Take(100)
+    .Build();
+
+var countQuery = DocumentQueries.Count()
+    .ForKey("people", "DE-")
+    .WithRowKeyPrefix()
+    .Build();
+```
+
+Supported query shapes:
+
+- `WithFullMatch()`: Exact `PartitionKey` and exact `RowKey`.
+- `WithRowKeyPrefix()`: Exact `PartitionKey` and row keys starting with the provided `RowKey`.
+- `WithRowKeySuffix()`: Exact `PartitionKey` and row keys ending with the provided `RowKey`, when the provider supports it.
+- `AllowFullScan()`: Allows a type-wide scan for this query. Full scans also require `DocumentStoreOptions.AllowFullScans = true`.
+
+Paging:
+
+- `Take(n)` sets the requested page size.
+- If `Take` is not specified, the provider uses `DocumentStoreOptions.DefaultTake`.
+- `DocumentStoreOptions.MaxTake` caps all page sizes.
+- `ContinueWith(token)` retrieves the next page for the same query shape.
+- Continuation tokens are provider-bound and query-bound. Treat them as opaque strings.
+
+### Reading One Page
+
+```csharp
+var query = DocumentQueries.Query()
+    .ForKey("DE", "customer-")
+    .WithRowKeyPrefix()
+    .Take(50)
+    .Build();
+
+var result = await documents.FindPageResultAsync(query, cancellationToken);
+
+if (result.IsSuccess)
+{
+    foreach (var person in result.Value.Items)
+    {
+        // process person
+    }
+
+    var nextToken = result.Value.ContinuationToken;
+}
+```
+
+### Reading All Pages
+
+```csharp
+var people = new List<Person>();
+string continuationToken = null;
+
+do
+{
+    var builder = DocumentQueries.Query()
+        .ForKey("DE", "customer-")
+        .WithRowKeyPrefix()
+        .Take(100);
+
+    if (!string.IsNullOrWhiteSpace(continuationToken))
+    {
+        builder.ContinueWith(continuationToken);
+    }
+
+    var pageResult = await documents.FindPageResultAsync(builder.Build(), cancellationToken);
+    if (pageResult.IsFailure)
+    {
+        return pageResult.Map(_ => people);
+    }
+
+    people.AddRange(pageResult.Value.Items);
+    continuationToken = pageResult.Value.ContinuationToken;
+}
+while (!string.IsNullOrWhiteSpace(continuationToken));
+```
+
+### Key-Only Listing
+
+Use `ListPageResultAsync` when you only need keys. Providers with key-only projection support avoid payload materialization.
+
+```csharp
+var keysResult = await documents.ListPageResultAsync(
+    DocumentQueries.Query()
+        .ForKey("DE", "customer-")
+        .WithRowKeyPrefix()
+        .Take(100)
+        .Build(),
+    cancellationToken);
+
+if (keysResult.IsSuccess)
+{
+    foreach (var key in keysResult.Value.Items)
+    {
+        // process key.PartitionKey and key.RowKey
+    }
+}
+```
+
+### Counting
+
+```csharp
+var countResult = await documents.CountResultAsync(
+    DocumentQueries.Count()
+        .ForKey("DE", "customer-")
+        .WithRowKeyPrefix()
+        .Build(),
+    cancellationToken);
+```
+
+### Explicit Full Scans
+
+Full scans are intentionally guarded. The query must opt in, and provider options must allow them.
+
+```csharp
+var options = new DocumentStoreOptions
+{
+    AllowFullScans = true,
+    DefaultTake = 100,
+    MaxTake = 1000
+};
+
+var query = DocumentQueries.Query()
+    .AllowFullScan()
+    .Take(100)
+    .Build();
+```
+
+Use full scans for administrative and maintenance workloads. Prefer partitioned exact or prefix queries for regular application paths.
+
 ## Operations & Semantics
 
-- **FindAsync()**: Fetch all entities of type `T`.
-- **FindAsync(DocumentKey)**: Fetch entities for an exact key. Both `PartitionKey` and `RowKey` must be provided.
-- **FindAsync(DocumentKey, DocumentKeyFilter)**:
+- **GetResultAsync(DocumentKey)**: Fetches one exact document. Both `PartitionKey` and `RowKey` must be provided.
+- **FindPageResultAsync(DocumentQuery)**:
   - `FullMatch`: Exact `PartitionKey` and `RowKey`.
-  - `RowKeyPrefixMatch`: Exact `PartitionKey` and entities where `RowKey` starts with the provided value.
-  - `RowKeySuffixMatch`: Exact `PartitionKey` and entities where `RowKey` ends with the provided value.
-- **ListAsync()**: List all `DocumentKey`s for type `T`.
-- **ListAsync(DocumentKey)** and **ListAsync(DocumentKey, DocumentKeyFilter)**: Same filter semantics as `FindAsync`, returning keys only.
-- **CountAsync()**: Total count for type `T`.
-- **ExistsAsync(DocumentKey)**: Exact match existence check.
-- **UpsertAsync(DocumentKey, T)**: Insert/update a single entity.
-- **UpsertAsync(IEnumerable<(DocumentKey, T)>)**: Insert/update a batch; provider may optimize for fewer writes.
-- **DeleteAsync(DocumentKey)**: Remove exact entity.
+  - `RowKeyPrefixMatch`: Exact `PartitionKey` and documents where `RowKey` starts with the provided value.
+  - `RowKeySuffixMatch`: Exact `PartitionKey` and documents where `RowKey` ends with the provided value, when supported.
+  - Full scan: Type-wide page read only when both query and options allow it.
+- **ListPageResultAsync(DocumentQuery)**: Returns document keys only for the same query shapes.
+- **CountResultAsync(DocumentCountQuery)**: Counts documents matching the query shape.
+- **ExistsResultAsync(DocumentKey)**: Exact-key existence check.
+- **UpsertResultAsync(DocumentKey, T)**: Inserts or updates a single document.
+- **UpsertResultAsync(IEnumerable<(DocumentKey, T)>)**: Inserts or updates a batch; provider may optimize for fewer writes.
+- **DeleteResultAsync(DocumentKey)**: Removes one exact document.
 
-### Entity Framework mutation semantics
+### Query Safety And Errors
+
+Document Storage returns typed Result failures for recoverable failures, including:
+
+- invalid query shape
+- requested page size above `MaxTake`
+- full scan not allowed
+- unsupported provider query shape
+- client-side filtering rejected
+- malformed continuation token
+- continuation token/query mismatch
+- document not found
+- provider failure
+- serialization failure
+- concurrency failure
+
+Caller cancellation continues to use normal .NET cancellation behavior and is not converted into a Result failure.
+
+Recommended Result handling:
+
+```csharp
+var result = await documents.GetResultAsync(new DocumentKey("DE", "42"), cancellationToken);
+
+if (result.IsFailure)
+{
+    return result;
+}
+
+var person = result.Value;
+```
+
+### Entity Framework Mutation Semantics
 
 - Exact-key writes and deletes use a unique logical identity plus lease ownership, so concurrent writers do not create duplicate rows for the same `(Type, PartitionKey, RowKey)`.
-- Delivery semantics are **last-writer-wins with at-least-once retries**, not compare-and-swap. If several hosts update the same document concurrently, one committed payload wins and callers should treat upserts as idempotent.
+- Delivery semantics are last-writer-wins with at-least-once retries, not compare-and-swap. If several hosts update the same document concurrently, one committed payload wins and callers should treat upserts as idempotent.
 - Leases are intentionally short-lived and replay-safe. SQL Server and PostgreSQL use conditional set-based updates for lease claims; SQLite uses an optimistic fallback path.
 - Reads are non-blocking and ignore transient leases. A leased row is still queryable until the owning mutation commits or rolls back.
 
-### Multi-host deployment guidance
+### Multi-Host Deployment Guidance
 
-- **SQL Server** and **PostgreSQL** are the recommended EF providers for active multi-host document mutations.
-- **SQLite** is supported for development, tests, and lightweight single-node deployments, but it is not the recommended storage engine for distributed write-heavy document workloads.
+- SQL Server and PostgreSQL are the recommended EF providers for active multi-host document mutations.
+- SQLite is supported for development, tests, and lightweight single-node deployments, but it is not the recommended storage engine for distributed write-heavy document workloads.
 - If you register the EF document store client as a singleton, use the built-in DI registration so each operation resolves a fresh scoped `DbContext`.
 
-### Entity Framework schema notes
+### Entity Framework Schema Notes
 
 - The provider expects the consuming `DbContext` to expose `DbSet<StorageDocument>` through `IDocumentStoreContext`.
-- The raw EF columns `Type`, `PartitionKey`, and `RowKey` are all fixed at a maximum length of **256 characters**.
+- The raw EF columns `Type`, `PartitionKey`, and `RowKey` are all fixed at a maximum length of 256 characters.
 - The document table uses hashed lookup columns (`TypeHash`, `PartitionKeyHash`, `RowKeyHash`) to keep indexes narrow enough for relational providers while still validating the original key values. These hashes exist only in the EF persistence model.
 - The main relational indexes are:
   - unique logical-key index on `(TypeHash, PartitionKeyHash, RowKeyHash)`
   - lookup index on `(TypeHash, PartitionKeyHash, RowKey)`
-- The library does **not** ship migrations for consuming applications. After upgrading, the owning application must update its schema to include the new document-store columns and indexes.
+- The library does not ship migrations for consuming applications. The owning application updates its schema to include the document-store columns and indexes.
 
 ## Behaviors (Client Decorators)
 
-Behaviors are composable decorators applied to `IDocumentStoreClient<T>`. Registration order defines wrapping (outermost first). See [src/Application.Storage/Documents/DocumentStoreBuilderContext.cs](src/Application.Storage/Documents/DocumentStoreBuilderContext.cs).
+Behaviors are composable decorators applied to `IDocumentStoreClient<T>`. Registration order defines wrapping, with the first registered behavior becoming the outermost wrapper. See [src/Application.Storage/Documents/DocumentStoreBuilderContext.cs](src/Application.Storage/Documents/DocumentStoreBuilderContext.cs).
 
 - Logging: [LoggingDocumentStoreClientBehavior.cs](src/Application.Storage/Documents/Behaviors/LoggingDocumentStoreClientBehavior.cs)
-  - Purpose: Structured logs for CRUD and filter operations.
+  - Purpose: Structured operation logs without raw payloads or continuation-token values.
 - Retry: [RetryDocumentStoreClientBehavior.cs](src/Application.Storage/Documents/Behaviors/RetryDocumentStoreClientBehavior.cs)
-  - Purpose: Polly-based retries for transient failures; configure attempts/backoff.
+  - Purpose: Retry transient exceptions while returning typed validation failures as-is.
 - Timeout: [TimeoutDocumentStoreClientBehavior.cs](src/Application.Storage/Documents/Behaviors/TimeoutDocumentStoreClientBehavior.cs)
-  - Purpose: Enforce time budgets with Polly timeout.
+  - Purpose: Enforce time budgets while preserving caller cancellation behavior.
 - Cache: [CacheDocumentStoreClientBehavior.cs](src/Application.Storage/Documents/Behaviors/CacheDocumentStoreClientBehavior.cs)
-  - Purpose: Cache common reads; invalidates on writes and deletes.
+  - Purpose: Cache successful exact-key reads and invalidate on writes and deletes.
 - Chaos: [ChaosDocumentStoreClientBehavior.cs](src/Application.Storage/Documents/Behaviors/ChaosDocumentStoreClientBehavior.cs)
-  - Purpose: Fault injection for resilience testing (use in test/staging only).
+  - Purpose: Fault injection for resilience testing.
 
-### Built-in behavior matrix (brief)
+### Built-In Behavior Matrix
 
 | Behavior | Purpose | Recommended use |
 |---|---|---|
 | Logging | Emit operation logs and parameters | Always, for observability |
 | Retry | Retry transient failures | External dependencies or intermittent stores |
 | Timeout | Bound execution time | Prevent runaway calls; set sensible defaults |
-| Cache | Cache read operations | Hot paths; ensure invalidation via behavior |
+| Cache | Cache exact-key reads | Hot exact-key paths; rely on invalidation via behavior |
 | Chaos | Inject failures | Test/staging only for resilience checks |
 
 ## Best Practices
 
-- Keys: Always supply non-empty `PartitionKey`; supply `RowKey` for `FullMatch` and when using prefix/suffix filters.
-- Filters: Prefer prefix filter for hierarchical keys (e.g., `user:`) and suffix for versioned or trailing identifiers.
-- Batching: Use batch `UpsertAsync` for multiple writes to reduce overhead.
-- Caching: Add cache behavior for hot read paths; rely on behavior invalidation after writes.
-- Resilience: Combine Retry + Timeout behaviors for resilient clients; keep handlers idempotent because EF mutations may be retried after transient contention.
-- Serialization: EF provider uses System.Text.Json by default; ensure types are compatible and stable.
-- Provider choice: Prefer SQL Server or PostgreSQL when you need multiple hosts to mutate the same document set concurrently.
+- Keys: Always supply a non-empty `PartitionKey`; supply `RowKey` for exact, prefix, and suffix query shapes.
+- Query shape: Prefer prefix filters for hierarchical keys, for example `customer:{id}` or `order:{date}:{id}`.
+- Paging: Keep `Take` values modest and let `DocumentStoreOptions` protect application paths.
+- Key-only reads: Use `ListPageResultAsync` when only keys are needed.
+- Full scans: Keep full scans disabled for normal request paths.
+- Client-side filtering: Enable it only when the data volume and provider behavior are acceptable.
+- Batching: Use batch `UpsertResultAsync` for multiple writes.
+- Caching: Add cache behavior for hot exact-key read paths.
+- Resilience: Combine Retry + Timeout behaviors for resilient clients; keep handlers idempotent because mutations may be retried after transient contention.
+- Continuation tokens: Persist continuation tokens only as opaque values and only for the matching query/provider context.
+- Serialization: Ensure document types are compatible with the configured serializer and stable over time.
+- Provider choice: Prefer SQL Server or PostgreSQL when multiple hosts mutate the same EF document set concurrently.
 
 ## Testing
 
-- The EF document-store provider has relational integration coverage for **SQLite**, **SQL Server**, and **PostgreSQL** in `tests/Infrastructure.IntegrationTests/EntityFramework/Storage/Documents`.
-- The shared suite covers:
-  - exact, prefix, and suffix query semantics
-  - key listing and counting
-  - exact-key existence checks
-  - single-row upsert behavior
-  - hashed lookup population and lease cleanup
-  - competing-writer behavior for the same logical document
-- The EF DI registration path is also covered by `DocumentStoreClientBuilderContextTests`, including singleton lifetime resolution with scoped `DbContext` creation.
+Document Storage coverage includes:
+
+- client delegation for the Result-native API
+- in-memory exact reads, paging, key listing, counts, existence, upserts, deletes, and continuation tokens
+- EF document-provider behavior across SQLite, SQL Server, and PostgreSQL
+- Azure Blob and Azure Table provider query semantics
+- Cosmos key-only projection, paging, count, and existence paths
+- DI registration and singleton-safe EF client resolution
 
 ## Appendix A — Behaviors
 
-Behaviors are decorators that wrap `IDocumentStoreClient<T>` to add cross-cutting concerns like logging, retries, timeouts, caching, or chaos engineering. Registration order defines wrapping (outermost first). The inner-most component is the provider-backed client (e.g., Entity Framework or In-Memory).
+Behaviors are decorators that wrap `IDocumentStoreClient<T>` to add cross-cutting concerns. Registration order defines wrapping. The inner-most component is the provider-backed client.
 
 ### Pipeline Model
 
@@ -419,10 +597,11 @@ flowchart LR
   E --> F[Provider-backed Client]
 ```
 
-- Outermost behavior sees every call first; each behavior should call through to the inner client and optionally act before/after.
+- Outermost behavior sees every call first.
+- Each behavior should call through to the inner client and optionally act before or after the call.
 - Registration uses `DocumentStoreBuilderContext<T>.WithBehavior<TBehavior>()` and composes in the order behaviors are added.
 
-### Creating a Custom Behavior
+### Creating A Custom Behavior
 
 Implement `IDocumentStoreClient<T>` and wrap an inner client. Keep methods thin, call the inner client, and add your concern around the call.
 
@@ -430,54 +609,50 @@ Implement `IDocumentStoreClient<T>` and wrap an inner client. Keep methods thin,
 using BridgingIT.DevKit.Application.Storage;
 
 public sealed class MetricsDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
-  where T : class, new()
+    where T : class, new()
 {
-  private readonly IDocumentStoreClient<T> inner;
-  private readonly IMetrics metrics;
+    private readonly IDocumentStoreClient<T> inner;
+    private readonly IMetrics metrics;
 
-  public MetricsDocumentStoreClientBehavior(IDocumentStoreClient<T> inner, IMetrics metrics)
-  {
-    this.inner = inner;
-    this.metrics = metrics;
-  }
+    public MetricsDocumentStoreClientBehavior(IDocumentStoreClient<T> inner, IMetrics metrics)
+    {
+        this.inner = inner;
+        this.metrics = metrics;
+    }
 
-  public async Task<IEnumerable<T>> FindAsync(CancellationToken ct)
-  {
-    var start = Stopwatch.GetTimestamp();
-    var result = await inner.FindAsync(ct);
-    metrics.Observe("documents.find", Stopwatch.GetElapsedTime(start));
-    return result;
-  }
+    public async Task<Result<DocumentPage<T>>> FindPageResultAsync(
+        DocumentQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        var start = Stopwatch.GetTimestamp();
+        var result = await this.inner.FindPageResultAsync(query, cancellationToken);
+        this.metrics.Observe("documents.find_page", Stopwatch.GetElapsedTime(start));
 
-  public Task<IEnumerable<T>> FindAsync(DocumentKey key, CancellationToken ct = default)
-    => inner.FindAsync(key, ct);
+        return result;
+    }
 
-  public Task<IEnumerable<T>> FindAsync(DocumentKey key, DocumentKeyFilter filter, CancellationToken ct = default)
-    => inner.FindAsync(key, filter, ct);
+    public Task<Result<T>> GetResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.inner.GetResultAsync(documentKey, cancellationToken);
 
-  public Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken ct)
-    => inner.ListAsync(ct);
+    public Task<Result<DocumentKeyPage>> ListPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
+        this.inner.ListPageResultAsync(query, cancellationToken);
 
-  public Task<IEnumerable<DocumentKey>> ListAsync(DocumentKey key, CancellationToken ct = default)
-    => inner.ListAsync(key, ct);
+    public Task<Result<long>> CountResultAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) =>
+        this.inner.CountResultAsync(query, cancellationToken);
 
-  public Task<IEnumerable<DocumentKey>> ListAsync(DocumentKey key, DocumentKeyFilter filter, CancellationToken ct = default)
-    => inner.ListAsync(key, filter, ct);
+    public Task<Result<bool>> ExistsResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.inner.ExistsResultAsync(documentKey, cancellationToken);
 
-  public Task<long> CountAsync(CancellationToken ct = default)
-    => inner.CountAsync(ct);
+    public Task<Result> UpsertResultAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default) =>
+        this.inner.UpsertResultAsync(documentKey, entity, cancellationToken);
 
-  public Task<bool> ExistsAsync(DocumentKey key, CancellationToken ct = default)
-    => inner.ExistsAsync(key, ct);
+    public Task<Result> UpsertResultAsync(
+        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
+        CancellationToken cancellationToken = default) =>
+        this.inner.UpsertResultAsync(entities, cancellationToken);
 
-  public Task UpsertAsync(DocumentKey key, T entity, CancellationToken ct = default)
-    => inner.UpsertAsync(key, entity, ct);
-
-  public Task UpsertAsync(IEnumerable<(DocumentKey DocumentKey, T Entity)> entities, CancellationToken ct = default)
-    => inner.UpsertAsync(entities, ct);
-
-  public Task DeleteAsync(DocumentKey key, CancellationToken ct = default)
-    => inner.DeleteAsync(key, ct);
+    public Task<Result> DeleteResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
+        this.inner.DeleteResultAsync(documentKey, cancellationToken);
 }
 ```
 
@@ -485,19 +660,21 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : IDocumentStoreClient
 
 Behaviors are applied so that the first registered ends up as the outermost wrapper.
 
-- Type-based decorator:
+Type-based decorator:
 
 ```csharp
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
-  .WithBehavior<LoggingDocumentStoreClientBehavior<Person>>()
-  .WithBehavior<RetryDocumentStoreClientBehavior<Person>>()
-  .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>();
+    .WithBehavior<LoggingDocumentStoreClientBehavior<Person>>()
+    .WithBehavior<RetryDocumentStoreClientBehavior<Person>>()
+    .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>();
 ```
 
-- Factory-based decorator (dependencies from DI):
+Factory-based decorator:
 
 ```csharp
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
-  .WithBehavior((inner, sp) =>
-    new MetricsDocumentStoreClientBehavior<Person>(inner, sp.GetRequiredService<IMetrics>()));
+    .WithBehavior((inner, sp) =>
+        new MetricsDocumentStoreClientBehavior<Person>(
+            inner,
+            sp.GetRequiredService<IMetrics>()));
 ```

@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.JobScheduling;
 
 using BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -15,6 +16,7 @@ using Quartz;
 using Shouldly;
 using Xunit;
 
+[Collection(nameof(TestEnvironmentCollection))]
 public class JobSchedulingTests
 {
     private readonly ILoggerFactory loggerFactory;
@@ -31,6 +33,7 @@ public class JobSchedulingTests
 
         var builder = Host.CreateApplicationBuilder();
         builder.Services.AddLogging();
+        builder.Services.TryAddSingleton<TestJobRecorder>();
         configure(builder.Services);
 
         return builder.Build();
@@ -71,7 +74,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task ScopedJob_ExecutesWithData()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -83,11 +85,12 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
+        var executed = recorder.Executed;
         executed.ShouldNotBeEmpty();
         executed.Count.ShouldBeGreaterThanOrEqualTo(2);
         executed.All(e => e.Name == "TestJob").ShouldBeTrue();
@@ -97,7 +100,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task SingletonJob_ExecutesWithMultipleData()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -109,11 +111,12 @@ public class JobSchedulingTests
                     .RegisterSingleton();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
+        var executed = recorder.Executed;
         executed.ShouldNotBeEmpty();
         executed.Count.ShouldBeGreaterThanOrEqualTo(2);
         executed.All(e => e.Data["key1"] == "value1").ShouldBeTrue();
@@ -123,7 +126,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task DisabledJob_DoesNotExecute()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -134,18 +136,17 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
-        executed.ShouldBeEmpty();
+        recorder.Executed.ShouldBeEmpty();
     }
 
     [Fact]
     public async Task MultipleJobs_ExecuteCorrectly()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -162,11 +163,12 @@ public class JobSchedulingTests
                     .RegisterSingleton();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
+        var executed = recorder.Executed;
         executed.ShouldNotBeEmpty();
         executed.Count(e => e.Name == "ScopedJob").ShouldBeGreaterThanOrEqualTo(2);
         executed.Count(e => e.Name == "SingletonJob").ShouldBeGreaterThanOrEqualTo(2);
@@ -203,7 +205,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task JobData_PersistsDataAcrossExecutions()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -214,11 +215,12 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
+        var executed = recorder.Executed;
         executed.ShouldNotBeEmpty();
         executed.All(e => e.Data["persistent"] == "data").ShouldBeTrue();
     }
@@ -226,7 +228,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task CronExpression_TriggersCorrectly()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -237,11 +238,12 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(5000);
         await host.StopAsync();
 
+        var executed = recorder.Executed;
         executed.Count.ShouldBeInRange(2, 3);
         executed.All(e => e.Name == "CronTest").ShouldBeTrue();
     }
@@ -249,7 +251,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task InvalidCronExpression_DoesNotCrash()
     {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
         using var host = CreateHost(services =>
         {
             services
@@ -266,11 +267,12 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
+        var executed = recorder.Executed;
         executed.ShouldNotBeEmpty();
         executed.All(e => e.Name == "ValidJob").ShouldBeTrue();
         executed.All(e => e.Name != "InvalidCronJob").ShouldBeTrue();
@@ -305,7 +307,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task NonConcurrentJob_DoesNotOverlap()
     {
-        var executed = new List<(string Name, DateTime StartTime, DateTime EndTime)>();
         using var host = CreateHost(services =>
         {
             services
@@ -316,11 +317,12 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        NonConcurrentTestJob.OnExecute = (name, start, end) => executed.Add((name, start, end));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(3500); // Allow multiple triggers
         await host.StopAsync();
 
+        var executed = recorder.NonConcurrentExecuted;
         executed.ShouldNotBeEmpty();
         executed.Count.ShouldBeGreaterThanOrEqualTo(2);
 
@@ -335,7 +337,6 @@ public class JobSchedulingTests
     [Fact]
     public async Task FailingJob_DoesNotCrashScheduler()
     {
-        var executed = new List<(string Name, int Attempt)>();
         using var host = CreateHost(services =>
         {
             services
@@ -346,11 +347,12 @@ public class JobSchedulingTests
                     .RegisterScoped();
         });
 
-        FailingTestJob.OnExecute = (name, attempt) => executed.Add((name, attempt));
+        var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500); // Allow a couple attempts
         await host.StopAsync();
 
+        var executed = recorder.FailingExecuted;
         executed.ShouldNotBeEmpty();
         executed.Count.ShouldBeGreaterThanOrEqualTo(2); // Should retry
         executed.All(e => e.Name == "FailingJob").ShouldBeTrue();
@@ -363,9 +365,76 @@ public static class CronExpressions
     public const string EverySecond = "0/1 * * * * ?";
 }
 
-public class TestJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
+public sealed class TestJobRecorder
 {
-    public static Action<string, Dictionary<string, string>> OnExecute;
+    private readonly object sync = new();
+    private readonly List<(string Name, Dictionary<string, string> Data)> executed = [];
+    private readonly List<(string Name, DateTime StartTime, DateTime EndTime)> nonConcurrentExecuted = [];
+    private readonly List<(string Name, int Attempt)> failingExecuted = [];
+    private int failingAttemptCount;
+
+    public IReadOnlyList<(string Name, Dictionary<string, string> Data)> Executed
+    {
+        get
+        {
+            lock (this.sync)
+            {
+                return this.executed.ToList();
+            }
+        }
+    }
+
+    public IReadOnlyList<(string Name, DateTime StartTime, DateTime EndTime)> NonConcurrentExecuted
+    {
+        get
+        {
+            lock (this.sync)
+            {
+                return this.nonConcurrentExecuted.ToList();
+            }
+        }
+    }
+
+    public IReadOnlyList<(string Name, int Attempt)> FailingExecuted
+    {
+        get
+        {
+            lock (this.sync)
+            {
+                return this.failingExecuted.ToList();
+            }
+        }
+    }
+
+    public void Record(string name, Dictionary<string, string> data)
+    {
+        lock (this.sync)
+        {
+            this.executed.Add((name, data));
+        }
+    }
+
+    public void RecordNonConcurrent(string name, DateTime start, DateTime end)
+    {
+        lock (this.sync)
+        {
+            this.nonConcurrentExecuted.Add((name, start, end));
+        }
+    }
+
+    public int RecordFailing(string name)
+    {
+        lock (this.sync)
+        {
+            var attempt = ++this.failingAttemptCount;
+            this.failingExecuted.Add((name, attempt));
+            return attempt;
+        }
+    }
+}
+
+public class TestJob(ILoggerFactory loggerFactory, TestJobRecorder recorder) : JobBase(loggerFactory)
+{
 
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
@@ -373,7 +442,7 @@ public class TestJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
         var data = context.JobDetail.JobDataMap.Keys
             .ToDictionary(k => k, k => context.JobDetail.JobDataMap[k]?.ToString() ?? string.Empty);
 
-        OnExecute?.Invoke(name, data);
+        recorder.Record(name, data);
         await Task.Delay(100, cancellationToken);
     }
 }
@@ -394,10 +463,8 @@ public class CancellableTestJob(ILoggerFactory loggerFactory) : JobBase(loggerFa
 }
 
 [DisallowConcurrentExecution]
-public class NonConcurrentTestJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
+public class NonConcurrentTestJob(ILoggerFactory loggerFactory, TestJobRecorder recorder) : JobBase(loggerFactory)
 {
-    public static Action<string, DateTime, DateTime> OnExecute;
-
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         var name = context.JobDetail.Description ?? context.JobDetail.Key.Name;
@@ -405,23 +472,19 @@ public class NonConcurrentTestJob(ILoggerFactory loggerFactory) : JobBase(logger
         await Task.Delay(1500, cancellationToken); // Longer than trigger interval
         var endTime = DateTime.UtcNow;
 
-        OnExecute?.Invoke(name, startTime, endTime);
+        recorder.RecordNonConcurrent(name, startTime, endTime);
     }
 }
 
-public class FailingTestJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
+public class FailingTestJob(ILoggerFactory loggerFactory, TestJobRecorder recorder) : JobBase(loggerFactory)
 {
-    public static Action<string, int> OnExecute;
-    private static int attemptCount = 0;
-
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         var name = context.JobDetail.Description ?? context.JobDetail.Key.Name;
-        attemptCount++;
-        OnExecute?.Invoke(name, attemptCount);
+        var attempt = recorder.RecordFailing(name);
 
         await Task.Delay(100, cancellationToken);
-        if (attemptCount <= 2) // Fail on first two attempts
+        if (attempt <= 2) // Fail on first two attempts
         {
             throw new Exception("Simulated job failure");
         }

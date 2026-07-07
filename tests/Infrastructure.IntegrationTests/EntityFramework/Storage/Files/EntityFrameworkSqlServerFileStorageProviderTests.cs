@@ -20,10 +20,10 @@ public class EntityFrameworkSqlServerFileStorageProviderTests : EntityFrameworkF
     public EntityFrameworkSqlServerFileStorageProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
         this.fixture = fixture.WithOutput(output);
-        _ = this.fixture.EnsureSqlServerDbContext(output);
+        var connectionString = this.fixture.CreateSqlConnectionString($"FileStorage_{Guid.NewGuid():N}");
         this.support = new EntityFrameworkRelationalFileStorageTestSupport(
             output,
-            options => options.UseSqlServer(this.fixture.SqlConnectionString));
+            options => options.UseSqlServer(connectionString));
     }
 
     protected override EntityFrameworkFileStorageOptions DefaultOptions => this.support.DefaultOptions;

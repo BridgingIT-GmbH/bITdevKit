@@ -23,6 +23,10 @@ using CosmosClientOptions = Microsoft.Azure.Cosmos.CosmosClientOptions;
 
 public class TestEnvironmentFixture : IAsyncLifetime
 {
+    private readonly string networkName = "test-" + Guid.NewGuid().ToString("N");
+    private readonly string sqlServerDatabaseName = $"{nameof(StubDbContext)}_{Guid.NewGuid():N}";
+    private readonly string sqliteDatabasePath = Path.Combine(AppContext.BaseDirectory, $"_tests_{nameof(StubDbContext)}_{Guid.NewGuid():N}_sqlite.db");
+    private readonly string inMemoryDatabaseName = $"{nameof(StubDbContext)}_{Guid.NewGuid():N}";
     private IServiceProvider serviceProvider;
     private CosmosSqlProvider<PersonStub> cosmosSqlProviderPersonStub;
     private CosmosDocumentStoreProvider cosmosDocumentStoreProvider;
@@ -117,13 +121,13 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public ITestOutputHelper Output { get; private set; }
 
-    public string NetworkName => HashHelper.Compute(DateTime.UtcNow.Ticks);
+    public string NetworkName => this.networkName;
 
     public string SqlConnectionString => this.SqlContainer.GetConnectionString();
 
     public string PostgresConnectionString => this.PostgresContainer.GetConnectionString();
 
-    public string SqliteConnectionString => $"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db";
+    public string SqliteConnectionString => $"Data Source={this.sqliteDatabasePath}";
 
     public string AzuriteConnectionString => this.AzuriteContainer.GetConnectionString();
 
@@ -224,6 +228,26 @@ public class TestEnvironmentFixture : IAsyncLifetime
         return this;
     }
 
+    public string CreateSqlConnectionString(string databaseName)
+    {
+        var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(this.SqlConnectionString)
+        {
+            InitialCatalog = databaseName
+        };
+
+        return builder.ConnectionString;
+    }
+
+    public string CreatePostgresConnectionString(string databaseName)
+    {
+        var builder = new Npgsql.NpgsqlConnectionStringBuilder(this.PostgresConnectionString)
+        {
+            Database = databaseName
+        };
+
+        return builder.ConnectionString;
+    }
+
     public async Task InitializeAsync()
     {
         await this.Network.CreateAsync().AnyContext();
@@ -275,6 +299,11 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
         try
         {
+            if (File.Exists(this.sqliteDatabasePath))
+            {
+                File.Delete(this.sqliteDatabasePath);
+            }
+
             if (File.Exists(this.ServiceBusEmulatorConfigPath))
             {
                 File.Delete(this.ServiceBusEmulatorConfigPath);
@@ -300,7 +329,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //        .LogTo(output.WriteLine);
             //}
 
-            optionsBuilder.UseSqlServer(this.SqlConnectionString);
+            optionsBuilder.UseSqlServer(this.CreateSqlConnectionString(this.sqlServerDatabaseName));
             var context = new StubDbContext(optionsBuilder.Options);
             //context.Database.Migrate();
             context.Database.EnsureCreated();
@@ -439,7 +468,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //        .LogTo(output.WriteLine);
             //}
 
-            optionsBuilder.UseInMemoryDatabase(nameof(StubDbContext));
+            optionsBuilder.UseInMemoryDatabase(this.inMemoryDatabaseName);
             var context = new StubDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 

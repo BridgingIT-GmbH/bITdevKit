@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.Linq.Expressions;
+using Common;
 
 /// <summary>
 /// Interface defining the contract for a provider working with Azure Cosmos DB SQL API.
@@ -120,6 +121,112 @@ public interface ICosmosSqlProvider<TItem>
         Expression<Func<TItem, object>> orderExpression = null,
         bool orderDescending = false,
         object partitionKeyValue = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reads one Cosmos feed page without draining the whole query result.
+    /// </summary>
+    /// <param name="expression">The expression used to filter items.</param>
+    /// <param name="take">The maximum item count hint for the feed page.</param>
+    /// <param name="orderExpression">The expression used to order items.</param>
+    /// <param name="orderDescending">A value indicating whether to order descending.</param>
+    /// <param name="partitionKeyValue">The optional Cosmos partition key value.</param>
+    /// <param name="continuationToken">The provider-native Cosmos continuation token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A Result containing one Cosmos feed page.</returns>
+    /// <example>
+    /// <code>
+    /// var page = await provider.ReadItemsPageResultAsync(x => x.Type == "type", take: 100);
+    /// </code>
+    /// </example>
+    Task<Result<CosmosSqlPage<TItem>>> ReadItemsPageResultAsync(
+        Expression<Func<TItem, bool>> expression,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reads one Cosmos feed page without draining the whole query result.
+    /// </summary>
+    /// <param name="expressions">The expressions used to filter items.</param>
+    /// <param name="take">The maximum item count hint for the feed page.</param>
+    /// <param name="orderExpression">The expression used to order items.</param>
+    /// <param name="orderDescending">A value indicating whether to order descending.</param>
+    /// <param name="partitionKeyValue">The optional Cosmos partition key value.</param>
+    /// <param name="continuationToken">The provider-native Cosmos continuation token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A Result containing one Cosmos feed page.</returns>
+    /// <example>
+    /// <code>
+    /// var page = await provider.ReadItemsPageResultAsync(expressions, take: 100);
+    /// </code>
+    /// </example>
+    Task<Result<CosmosSqlPage<TItem>>> ReadItemsPageResultAsync(
+        IEnumerable<Expression<Func<TItem, bool>>> expressions = null,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reads one projected Cosmos feed page without loading unneeded item fields.
+    /// </summary>
+    /// <typeparam name="TResult">The projection result type.</typeparam>
+    /// <param name="expression">The expression used to filter items.</param>
+    /// <param name="projection">The projection expression.</param>
+    /// <param name="take">The maximum item count hint for the feed page.</param>
+    /// <param name="orderExpression">The expression used to order items.</param>
+    /// <param name="orderDescending">A value indicating whether to order descending.</param>
+    /// <param name="partitionKeyValue">The optional Cosmos partition key value.</param>
+    /// <param name="continuationToken">The provider-native Cosmos continuation token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A Result containing one projected Cosmos feed page.</returns>
+    /// <example>
+    /// <code>
+    /// var page = await provider.ReadItemsPageResultAsync(x => x.Type == "type", x => new { x.Id });
+    /// </code>
+    /// </example>
+    Task<Result<CosmosSqlPage<TResult>>> ReadItemsPageResultAsync<TResult>(
+        Expression<Func<TItem, bool>> expression,
+        Expression<Func<TItem, TResult>> projection,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reads one projected Cosmos feed page without loading unneeded item fields.
+    /// </summary>
+    /// <typeparam name="TResult">The projection result type.</typeparam>
+    /// <param name="expressions">The expressions used to filter items.</param>
+    /// <param name="projection">The projection expression.</param>
+    /// <param name="take">The maximum item count hint for the feed page.</param>
+    /// <param name="orderExpression">The expression used to order items.</param>
+    /// <param name="orderDescending">A value indicating whether to order descending.</param>
+    /// <param name="partitionKeyValue">The optional Cosmos partition key value.</param>
+    /// <param name="continuationToken">The provider-native Cosmos continuation token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A Result containing one projected Cosmos feed page.</returns>
+    /// <example>
+    /// <code>
+    /// var page = await provider.ReadItemsPageResultAsync(expressions, x => new { x.Id });
+    /// </code>
+    /// </example>
+    Task<Result<CosmosSqlPage<TResult>>> ReadItemsPageResultAsync<TResult>(
+        IEnumerable<Expression<Func<TItem, bool>>> expressions,
+        Expression<Func<TItem, TResult>> projection,
+        int? take = null,
+        Expression<Func<TItem, object>> orderExpression = null,
+        bool orderDescending = false,
+        object partitionKeyValue = null,
+        string continuationToken = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

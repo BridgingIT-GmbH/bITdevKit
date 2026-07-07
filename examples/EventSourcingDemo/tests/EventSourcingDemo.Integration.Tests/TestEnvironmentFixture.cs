@@ -38,7 +38,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public ITestOutputHelper Output { get; private set; }
 
-    public string NetworkName => "bit_devkit_eventsourcing_demo";
+    public string NetworkName => HashHelper.Compute(DateTime.UtcNow.Ticks);
 
     public string SqlConnectionString => this.SqlContainer.GetConnectionString();
 

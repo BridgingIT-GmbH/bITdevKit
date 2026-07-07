@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -9,7 +9,7 @@ using Domain.Repositories;
 using DotNet.Testcontainers.Containers;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection4))] // https://xunit.net/docs/shared-context#collection-fixture
+[Collection(nameof(EntityFrameworkCosmosRepositoryTestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGenericRepositoryTestsBase
 {
     private readonly TestEnvironmentFixture fixture;

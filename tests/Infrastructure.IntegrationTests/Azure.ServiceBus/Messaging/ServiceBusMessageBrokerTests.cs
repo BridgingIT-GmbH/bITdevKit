@@ -12,15 +12,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))]
-public class ServiceBusMessageBrokerTests
+public class ServiceBusMessageBrokerTests : IDisposable
 {
     private static readonly MessageState MessageState = new();
     private readonly TestEnvironmentFixture fixture;
+    private readonly ServiceProvider serviceProvider;
 
     public ServiceBusMessageBrokerTests(TestEnvironmentFixture fixture)
     {
         this.fixture = fixture;
-        this.fixture.Services.AddSingleton(MessageState);
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton(MessageState);
+        services.AddTransient<MessageStubHandler>();
+        services.AddTransient<AnotherMessageStubHandler>();
+        this.serviceProvider = services.BuildServiceProvider();
     }
 
     [SkippableFact]
@@ -30,7 +37,7 @@ public class ServiceBusMessageBrokerTests
 
         // Scenario 1: Single handler
         MessageState.Reset();
-        var sut = this.CreateMessageBroker();
+        var sut = this.CreateMessageBroker(this.serviceProvider);
         await sut.Subscribe<MessageStub, MessageStubHandler>();
         await Task.Delay(2000);
 
@@ -46,7 +53,7 @@ public class ServiceBusMessageBrokerTests
 
         // Scenario 2: No subscriber
         MessageState.Reset();
-        sut = this.CreateMessageBroker();
+        sut = this.CreateMessageBroker(this.serviceProvider);
 
         var message2 = new MessageStub { FirstName = "Jane", LastName = "Doe" };
         await sut.Publish(message2);
@@ -59,7 +66,7 @@ public class ServiceBusMessageBrokerTests
 
         // Scenario 3: Multiple handlers
         MessageState.Reset();
-        sut = this.CreateMessageBroker();
+        sut = this.CreateMessageBroker(this.serviceProvider);
         await sut.Subscribe<MessageStub, MessageStubHandler>();
         await sut.Subscribe<MessageStub, AnotherMessageStubHandler>();
         await Task.Delay(2000);
@@ -217,6 +224,11 @@ public class ServiceBusMessageBrokerTests
             .HandlerFactory(new ServiceProviderMessageHandlerFactory(serviceProvider))
             .Serializer(new SystemTextJsonSerializer())
             .ProcessDelay(0));
+    }
+
+    public void Dispose()
+    {
+        this.serviceProvider.Dispose();
     }
 
     private static async Task<bool> WaitForAsync(Func<Task<bool>> condition, int attempts = 80, int delayMilliseconds = 250)

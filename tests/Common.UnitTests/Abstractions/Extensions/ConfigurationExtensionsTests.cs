@@ -99,13 +99,13 @@ public class ConfigurationExtensionsTests
     public void GetSection_WithMultiplePlaceholdersInValues_ReplacesAllPlaceholdersWithCorrectValues()
     {
         // Arrange
-        var key = this.faker.Random.Word();
-        var childKey1 = this.faker.Random.Word();
-        var childKey2 = this.faker.Random.Word();
-        var childKey3 = this.faker.Random.Word();
-        var placeholderKey1 = this.faker.Random.Word();
-        var placeholderKey2 = this.faker.Random.Word();
-        var placeholderKey3 = this.faker.Random.Word();
+        var key = "section";
+        var childKey1 = "child1";
+        var childKey2 = "child2";
+        var childKey3 = "child3";
+        var placeholderKey1 = "placeholder1";
+        var placeholderKey2 = "placeholder2";
+        var placeholderKey3 = "placeholder3";
         var placeholderValue1 = this.faker.Random.Word();
         var placeholderValue2 = this.faker.Random.Word();
         var placeholderValue3 = this.faker.Random.Word();

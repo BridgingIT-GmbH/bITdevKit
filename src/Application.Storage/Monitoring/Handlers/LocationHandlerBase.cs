@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 /// Integrates real-time watching, on-demand scanning, and a processor chain with rate limiting.
 /// </summary>
 [DebuggerDisplay("Name={options.Name}")]
-public abstract class LocationHandlerBase : ILocationHandler
+public abstract class LocationHandlerBase : ILocationHandler, IDisposable
 {
     protected readonly ILogger logger;
     private readonly TypedLogger loggerTyped;
@@ -110,7 +110,7 @@ public abstract class LocationHandlerBase : ILocationHandler
     public virtual Task StopAsync(CancellationToken cancellationToken = default)
     {
         this.loggerTyped.LogInformationStoppingHandler(this.options.LocationName);
-        //this.cts.Cancel();
+        this.cts.Cancel();
 
         if (this.processingTask != null)
         {
@@ -122,6 +122,13 @@ public abstract class LocationHandlerBase : ILocationHandler
         this.logger.LogInformation($"Handler stopped for location: {this.options.LocationName}");
 
         return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        this.StopAsync().GetAwaiter().GetResult();
+        this.cts.Dispose();
+        this.eventQueue.Dispose();
     }
 
     /// <summary>

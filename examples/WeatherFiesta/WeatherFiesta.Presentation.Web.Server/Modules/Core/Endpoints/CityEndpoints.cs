@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 using System.Text;
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
@@ -162,6 +163,7 @@ public class CityEndpoints : EndpointsBase
 
     private static async Task<Microsoft.AspNetCore.Http.IResult> ExportWeatherForecastsAsync(
         [FromServices] IDataExporter exporter,
+        [FromServices] ICurrentUserAccessor currentUserAccessor,
         [FromRoute] string cityId,
         CancellationToken cancellationToken)
     {
@@ -171,6 +173,18 @@ public class CityEndpoints : EndpointsBase
         }
 
         var selectedCityId = CityId.Create(cityIdValue);
+        var subscriptionResult = await GetOrCreateSubscriptionAsync(currentUserAccessor.UserId, cancellationToken);
+        if (subscriptionResult.IsFailure)
+        {
+            return subscriptionResult.MapHttpNoContent();
+        }
+
+        var exportAllowedResult = Rule.Check(new SubscriptionExportAllowedRule(subscriptionResult.Value));
+        if (exportAllowedResult.IsFailure)
+        {
+            return exportAllowedResult.MapHttpNoContent();
+        }
+
         var cityResult = await City.FindOneAsync(
             selectedCityId,
             new FindOptions<City> { NoTracking = true },
@@ -212,6 +226,52 @@ public class CityEndpoints : EndpointsBase
             cancellationToken);
 
         return exportResult.MapHttpFile();
+    }
+
+    private static async Task<Result<UserSubscription>> GetOrCreateSubscriptionAsync(
+        string userId,
+        CancellationToken cancellationToken)
+    {
+        var result = await UserSubscription.FindAllAsync(
+            new SubscriptionByUserSpecification(userId),
+            null,
+            cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result<UserSubscription>.Failure(result);
+        }
+
+        var subscriptions = result.Value;
+        if (subscriptions.Any())
+        {
+            var subscription = subscriptions
+                .OrderBy(s => s.AuditState.IsDeleted())
+                .ThenBy(s => s.StartDate)
+                .First();
+
+            if (subscription.AuditState.IsDeleted())
+            {
+                subscription.Reactivate();
+                var updateResult = await subscription.UpsertAsync(cancellationToken);
+                if (updateResult.IsFailure)
+                {
+                    return updateResult.Wrap<UserSubscription>();
+                }
+
+                subscription = updateResult.Value.entity;
+            }
+
+            if (!subscription.IsActive)
+            {
+                return Result<UserSubscription>.Failure(new DomainPolicyError(["Subscription is not active."]));
+            }
+
+            return Result<UserSubscription>.Success(subscription);
+        }
+
+        var newSubscription = UserSubscription.CreateFree(userId);
+        var insertResult = await newSubscription.InsertAsync(cancellationToken);
+        return insertResult;
     }
 
     private static string CreateForecastExportFileName(City city)

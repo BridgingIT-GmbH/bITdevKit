@@ -184,6 +184,31 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
     }
 
     /// <summary>
+    /// Returns deterministic snapshots of stored documents for type <typeparamref name="T" />.
+    /// </summary>
+    public virtual IEnumerable<(DocumentKey DocumentKey, T Content)> Query<T>()
+        where T : class, new()
+    {
+        this.@lock.EnterReadLock();
+
+        try
+        {
+            return this.Entities
+                .Where(e => e.Type == typeof(T).FullName)
+                .OrderBy(e => e.PartitionKey, StringComparer.Ordinal)
+                .ThenBy(e => e.RowKey, StringComparer.Ordinal)
+                .Select(e => (new DocumentKey(e.PartitionKey, e.RowKey), e.Content as T))
+                .Where(e => e.Item2 is not null)
+                .Select(e => (e.Item1, e.Item2))
+                .ToList();
+        }
+        finally
+        {
+            this.@lock.ExitReadLock();
+        }
+    }
+
+    /// <summary>
     /// Adds a new document or replaces the existing document stored under the supplied key.
     /// </summary>
     public virtual void AddOrUpdate<T>(T content, DocumentKey documentKey)

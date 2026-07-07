@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.SqlServer;
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shouldly;
@@ -19,26 +20,34 @@ using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class LogEntryServiceTests
+public class LogEntryServiceTests : IDisposable
 {
     private readonly TestEnvironmentFixture fixture;
     private readonly ITestOutputHelper output;
     private readonly StubDbContext context;
+    private readonly ServiceProvider serviceProvider;
 
     public LogEntryServiceTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
     {
         this.fixture = fixture.WithOutput(output);
         this.output = output;
+        var connectionString = this.fixture.CreateSqlConnectionString($"LogEntries_{Guid.NewGuid():N}");
 
         // register the services
-        this.fixture.Services.AddSingleton<LogEntryMaintenanceQueue>();
-        this.fixture.Services.AddScoped<ILogEntryService, LogEntryService<StubDbContext>>();
+        var services = new ServiceCollection();
+        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(output)));
+        services.AddSingleton<LogEntryMaintenanceQueue>();
+        services.AddScoped<ILogEntryService, LogEntryService<StubDbContext>>();
         //this.fixture.Services.AddHostedService<LogEntryPurgeService<StubDbContext>>();
 
-        this.fixture.Services.AddSqlServerDbContext<StubDbContext>(this.fixture.SqlConnectionString)
-            .WithDatabaseCreatorService(o => o.DeleteOnStartup());
+        services.AddSqlServerDbContext<StubDbContext>(connectionString);
+        this.serviceProvider = services.BuildServiceProvider();
 
-        this.context = this.fixture.EnsureSqlServerDbContext();
+        var options = new DbContextOptionsBuilder<StubDbContext>()
+            .UseSqlServer(connectionString)
+            .Options;
+        this.context = new StubDbContext(options);
+        this.context.Database.EnsureCreated();
         this.context.SaveChanges();
     }
 
@@ -101,7 +110,7 @@ public class LogEntryServiceTests
     {
         // Arrange
         // Act
-        var sut = this.fixture.ServiceProvider.GetService<ILogEntryService>();
+        var sut = this.serviceProvider.GetService<ILogEntryService>();
 
         // Assert
         sut.ShouldNotBeNull();
@@ -112,7 +121,7 @@ public class LogEntryServiceTests
     {
         // Arrange
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { PageSize = 100 };
 
         // Act
@@ -127,7 +136,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterByLevel()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { Level = LogLevel.Error, PageSize = 100 };
 
         var result = await sut.QueryAsync(request);
@@ -140,7 +149,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterByTimeRange()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var now = DateTimeOffset.UtcNow;
         var request = new LogEntryQueryRequest
         {
@@ -163,7 +172,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterBySearchText()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { SearchText = "special search", PageSize = 100 };
 
         var result = await sut.QueryAsync(request);
@@ -177,7 +186,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldPaginateResults()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { PageSize = 10 };
 
         var firstPage = await sut.QueryAsync(request);
@@ -204,7 +213,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterByTraceId()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { TraceId = "trace-1", PageSize = 100 };
 
         var result = await sut.QueryAsync(request);
@@ -219,7 +228,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldFilterBySpanId()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { SpanId = "span-1", PageSize = 100 };
 
         var result = await sut.QueryAsync(request);
@@ -232,7 +241,7 @@ public class LogEntryServiceTests
     public async Task QueryLogEntriesAsync_ShouldReturnNewerEntries_WhenAfterIdProvided()
     {
         this.SeedLogEntries();
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var all = await sut.QueryAsync(new LogEntryQueryRequest { PageSize = 100 });
         var pivot = all.Items[10].Id;
 
@@ -246,9 +255,15 @@ public class LogEntryServiceTests
     [Fact]
     public async Task QueryLogEntriesAsync_ShouldRejectAfterIdWithContinuationToken()
     {
-        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var sut = this.serviceProvider.GetRequiredService<ILogEntryService>();
         var request = new LogEntryQueryRequest { AfterId = 1, ContinuationToken = "1" };
 
         await Should.ThrowAsync<ArgumentException>(() => sut.QueryAsync(request));
+    }
+
+    public void Dispose()
+    {
+        this.context.Dispose();
+        this.serviceProvider.Dispose();
     }
 }

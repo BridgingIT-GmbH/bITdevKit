@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
+using Microsoft.EntityFrameworkCore;
+
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkSqlServerGenericRepositoryTypedIdTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
@@ -12,6 +14,7 @@ public class EntityFrameworkSqlServerGenericRepositoryTypedIdTests(ITestOutputHe
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
+    private readonly string connectionString = fixture.CreateSqlConnectionString($"Repositories_TypedId_{Guid.NewGuid():N}");
 
     [Fact]
     public override async Task DeleteAsync_ByEntity_EntityDeleted()
@@ -153,6 +156,12 @@ public class EntityFrameworkSqlServerGenericRepositoryTypedIdTests(ITestOutputHe
 
     protected override StubDbContext GetContext(string connectionString = null, bool forceNew = false)
     {
-        return this.fixture.EnsureSqlServerDbContext(this.output, forceNew);
+        var optionsBuilder = new DbContextOptionsBuilder<StubDbContext>();
+        optionsBuilder.UseSqlServer(connectionString ?? this.connectionString);
+
+        var context = new StubDbContext(optionsBuilder.Options);
+        context.Database.EnsureCreated();
+
+        return context;
     }
 }

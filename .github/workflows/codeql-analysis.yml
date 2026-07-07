@@ -1,18 +1,20 @@
 name: "CodeQL" # https://learn.microsoft.com/en-us/dotnet/devops/dotnet-secure-github-action
 
-on:
-  push:
-    branches: [main]
-    paths:
-    - '**.cs'
-    - '**.csproj'
-  pull_request:
-    branches: [main]
-    paths:
-    - '**.cs'
-    - '**.csproj'
-  # schedule:
-  #   - cron: '0 8 * * *'
+on: [ push ]
+
+# on:
+#   push:
+#     branches: [main]
+#     paths:
+#     - '**.cs'
+#     - '**.csproj'
+#   pull_request:
+#     branches: [main]
+#     paths:
+#     - '**.cs'
+#     - '**.csproj'
+#   schedule:
+#     - cron: '0 8 * * *'
 
 jobs:
   analyze:

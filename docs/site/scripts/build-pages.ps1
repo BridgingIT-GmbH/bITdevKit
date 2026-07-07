@@ -12,6 +12,8 @@ $docfxConfig = Join-Path $repoRoot 'docs\api\docfx.json'
 $docfxObjRoot = Join-Path $repoRoot 'docs\api\obj'
 $apiAssemblyRoot = Join-Path $docfxObjRoot 'assemblies'
 $apiMetadataRoot = Join-Path $docfxObjRoot 'api'
+$apiAgentIndexScript = Join-Path $repoRoot 'docs\api\scripts\build-agent-index.ps1'
+$apiPagesRoot = Join-Path $repoRoot '.github\pages\api'
 
 & (Join-Path $PSScriptRoot 'sync-docs.ps1')
 
@@ -76,3 +78,7 @@ foreach ($sourceProject in $sourceProjects) {
 Write-Host "Staged $($sourceProjects.Count) API reference assemblies to $apiAssemblyRoot"
 
 dotnet docfx $docfxConfig --logLevel Error
+
+& $apiAgentIndexScript `
+    -MetadataRoot $apiMetadataRoot `
+    -OutputRoot $apiPagesRoot

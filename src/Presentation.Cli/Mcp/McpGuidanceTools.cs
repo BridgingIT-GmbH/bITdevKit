@@ -525,6 +525,27 @@ public sealed class McpGuidanceTools
         new("dashboard", ["dashboard", "dashboard page", "razor dashboard", "developer dashboard"])
     ];
 
+    private static readonly ISet<string> ApiReferenceTopics = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "results",
+        "rules",
+        "repositories",
+        "specifications",
+        "domain",
+        "domain_events",
+        "requester_notifier",
+        "commands_queries",
+        "application_events",
+        "jobs",
+        "queueing",
+        "messaging",
+        "orchestration",
+        "document_storage",
+        "file_storage",
+        "monitoring",
+        "caching"
+    };
+
     /// <summary>
     /// Lists available guidance topics.
     /// </summary>
@@ -616,16 +637,11 @@ public sealed class McpGuidanceTools
                     guidance.Docs,
                     query,
                     steps = guidance.Steps,
-                    recommendedTools = guidance.RecommendedTools,
+                    recommendedTools = GetRecommendedTools(guidance),
                     prompt = guidance.Prompt,
-                    workflow = new[] { "guidance", "docs", "code", "runtime verification" }
+                    workflow = GetWorkflow(guidance)
                 },
-                next:
-                [
-                    new McpNextCall("bdk_docs_search", new { query = guidance.Topic }),
-                    new McpNextCall("bdk_docs_get", new { source = guidance.Docs }),
-                    new McpNextCall("bdk_project_summary", new { })
-                ]);
+                next: GetNextCalls(guidance));
         }
 
         return McpResponse.Success(
@@ -639,21 +655,51 @@ public sealed class McpGuidanceTools
                     guidance.Summary,
                     guidance.Docs,
                     steps = guidance.Steps,
-                    recommendedTools = guidance.RecommendedTools,
+                    recommendedTools = GetRecommendedTools(guidance),
                     prompt = guidance.Prompt
                 }).ToArray(),
-                workflow = new[] { "guidance", "docs", "code", "runtime verification" }
+                workflow = guidanceTopics.Any(UsesApiReference)
+                    ? new[] { "guidance", "docs", "api reference", "code", "runtime verification" }
+                    : new[] { "guidance", "docs", "code", "runtime verification" }
             },
             next:
             guidanceTopics
-                .SelectMany(guidance => new McpNextCall[]
-                {
-                    new("bdk_docs_search", new { query = guidance.Topic }),
-                    new("bdk_docs_get", new { source = guidance.Docs })
-                })
+                .SelectMany(GetNextCalls)
                 .Append(new McpNextCall("bdk_project_summary", new { }))
+                .DistinctBy(call => call.Tool + JsonSerializer.Serialize(call.Arguments, CliJson.Options))
                 .ToArray());
     }
+
+    private static IReadOnlyList<string> GetRecommendedTools(GuidanceTopic guidance)
+        => UsesApiReference(guidance) && !guidance.RecommendedTools.Contains("bdk_api_search", StringComparer.OrdinalIgnoreCase)
+            ? guidance.RecommendedTools.Concat(["bdk_api_search"]).ToArray()
+            : guidance.RecommendedTools;
+
+    private static IReadOnlyList<string> GetWorkflow(GuidanceTopic guidance)
+        => UsesApiReference(guidance)
+            ? ["guidance", "docs", "api reference", "code", "runtime verification"]
+            : ["guidance", "docs", "code", "runtime verification"];
+
+    private static IReadOnlyList<McpNextCall> GetNextCalls(GuidanceTopic guidance)
+    {
+        var calls = new List<McpNextCall>
+        {
+            new("bdk_docs_search", new { query = guidance.Topic }),
+            new("bdk_docs_get", new { source = guidance.Docs })
+        };
+
+        if (UsesApiReference(guidance))
+        {
+            calls.Add(new McpNextCall("bdk_api_search", new { query = guidance.Topic, topic = guidance.Topic }));
+        }
+
+        calls.Add(new McpNextCall("bdk_project_summary", new { }));
+
+        return calls;
+    }
+
+    private static bool UsesApiReference(GuidanceTopic guidance)
+        => ApiReferenceTopics.Contains(guidance.Topic);
 
     private static IReadOnlyList<GuidanceTopic> InferTopics(string query)
     {

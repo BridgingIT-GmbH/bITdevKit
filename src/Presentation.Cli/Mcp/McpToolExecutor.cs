@@ -15,6 +15,7 @@ public sealed class McpToolExecutor(
     McpToolCatalog catalog,
     McpRuntimeTools runtimeTools,
     McpDocumentationTools documentationTools,
+    McpApiReferenceTools apiReferenceTools,
     McpGuidanceTools guidanceTools)
 {
     private static readonly IReadOnlyDictionary<string, ForwardedOperation> ForwardedOperations =
@@ -128,6 +129,10 @@ public sealed class McpToolExecutor(
                 return await documentationTools.SearchAsync(arguments, cancellationToken).ConfigureAwait(false);
             case "bdk_docs_get":
                 return await documentationTools.GetAsync(arguments, cancellationToken).ConfigureAwait(false);
+            case "bdk_api_search":
+                return await apiReferenceTools.SearchAsync(arguments, cancellationToken).ConfigureAwait(false);
+            case "bdk_api_get":
+                return await apiReferenceTools.GetAsync(arguments, cancellationToken).ConfigureAwait(false);
             case "bdk_guidance_list":
                 return guidanceTools.List(arguments);
             case "bdk_guidance_get":

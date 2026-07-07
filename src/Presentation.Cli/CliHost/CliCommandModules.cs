@@ -120,7 +120,9 @@ public sealed class McpCliCommandModule : ICliCommandModule
         services.AddSingleton<McpRuntimeTools>();
         services.AddSingleton<HttpClient>();
         services.AddSingleton<IMcpDocumentationSource, GitHubMcpDocumentationSource>();
+        services.AddSingleton<IMcpApiReferenceSource, GitHubPagesMcpApiReferenceSource>();
         services.AddSingleton<McpDocumentationTools>();
+        services.AddSingleton<McpApiReferenceTools>();
         services.AddSingleton<McpGuidanceTools>();
         services.AddSingleton<McpToolExecutor>();
         services.AddSingleton<McpServerSessionPublisher>();

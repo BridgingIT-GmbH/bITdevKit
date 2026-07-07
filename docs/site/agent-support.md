@@ -23,9 +23,10 @@ Common workflows include:
 - inspect orchestration instances, history, signals and timers
 - call project-owned diagnostics exposed by the application
 - search official DevKit documentation from the consuming project
+- search official DevKit API reference symbols from the consuming project
 - request curated implementation guidance for common DevKit feature work
 - summarize the selected runtime, registered modules and advertised MCP capabilities
-- use DevKit docs while implementing jobs, queues, handlers, modules, endpoints or project-owned MCP tools
+- use DevKit docs and API reference while implementing jobs, queues, handlers, modules, endpoints or project-owned MCP tools
 
 ## Three agent angles
 
@@ -35,12 +36,13 @@ DevKit MCP gives agents three complementary sources of context:
 | --- | --- | --- |
 | Guidance | `bdk_guidance_list`, `bdk_guidance_get` | Get a concise implementation checklist for common DevKit work. |
 | Documentation | `bdk_docs_search`, `bdk_docs_get` | Read official DevKit feature docs while coding in a consuming project. |
+| API reference | `bdk_api_search`, `bdk_api_get` | Find exact DevKit types, members, overloads, extension methods and signatures. |
 | Runtime | `bdk_project_summary`, `bdk_capabilities_get`, feature tools | Inspect the selected app, its modules, capabilities and live operational state. |
 
 For feature work, prefer this flow:
 
 ```text
-Guidance -> Docs -> Code -> Runtime verification
+Guidance -> Docs -> API reference -> Code -> Runtime verification
 ```
 
 Guidance is intentionally one generic operation. When a prompt asks for "guidance", "how to implement", "add", "create" or "build" DevKit-specific code, ask the agent to call `bdk_guidance_get` with the natural-language request as `query`. The tool infers the relevant guidance topics, including combined cases such as a job that triggers an orchestration.
@@ -57,22 +59,25 @@ Guidance topics cover major DevKit areas such as jobs, messaging, queueing, orch
 
 ## Docs-aware coding
 
-`bdk mcp` exposes documentation tools directly to the agent:
+`bdk mcp` exposes documentation and API reference tools directly to the agent:
 
 | Tool | Purpose |
 | --- | --- |
 | `bdk_docs_search` | Search official DevKit documentation by topic. |
 | `bdk_docs_get` | Load a bounded markdown source returned by search. |
+| `bdk_api_search` | Search official DevKit API reference symbols by type, member, namespace, topic or keyword. |
+| `bdk_api_get` | Load bounded API reference details for a symbol uid returned by search. |
 
-These tools read the official DevKit documentation from GitHub, not the consuming project's local `docs` folder. That means a customer project can use `bdk` as a development assistant without vendoring the DevKit source repository.
+The docs tools read the official DevKit documentation from GitHub. The API tools read generated API reference metadata from GitHub Pages. They do not depend on the consuming project's local `docs` folder, so a customer project can use `bdk` as a development assistant without vendoring the DevKit source repository.
 
 A useful agent workflow is:
 
 1. Search the DevKit docs for the feature being changed.
 2. Summarize the expected pattern.
-3. Inspect the existing project code for matching conventions.
-4. Make the implementation change.
-5. Use runtime MCP tools to verify the app advertises or executes the feature.
+3. Search the API reference for the concrete types and members involved.
+4. Inspect the existing project code for matching conventions.
+5. Make the implementation change.
+6. Use runtime MCP tools to verify the app advertises or executes the feature.
 
 Example:
 
@@ -80,6 +85,10 @@ Example:
 Use the bdk MCP docs tools to read the DevKit Jobs guidance first.
 Then implement a nightly customer cleanup job following the documented pattern.
 After the change, use bdk_jobs_list to verify the running app advertises the job.
+```
+
+```text
+Use bdk_guidance_get for results, read the linked docs, then use bdk_api_search and bdk_api_get for Result before changing error handling code.
 ```
 
 ## How it works
@@ -213,6 +222,7 @@ Built-in areas include:
 | Project summary | selected runtime, registered modules, MCP capability groups and project-owned operations |
 | Guidance | curated implementation checklists for jobs, messaging, queueing, orchestration, pipelines and dashboard pages |
 | Documentation | official DevKit docs search and retrieval for implementation guidance |
+| API reference | official DevKit API symbols, signatures, summaries and DocFX links |
 
 Operations are grouped into toolsets:
 
@@ -298,6 +308,10 @@ Use bdk_guidance_get for jobs, then use the linked docs and bdk_project_summary 
 
 ```text
 Use bdk_project_summary to orient on this app's modules and MCP capabilities. Then choose the right DevKit guidance topic before proposing code changes.
+```
+
+```text
+Use bdk_api_search for IRepository and Specification, then call bdk_api_get for the exact symbols you plan to use before editing repository code.
 ```
 
 ### Admin and destructive operations

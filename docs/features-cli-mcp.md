@@ -6,12 +6,13 @@
 
 ## Overview
 
-The DevKit MCP feature exposes a local Model Context Protocol server through the `bdk` CLI. Developers configure their MCP-capable IDE or agent to start `bdk mcp` over STDIO. The CLI can return curated implementation guidance, search official DevKit documentation, discover running DevKit web hosts in the current workspace, and forward runtime-bound tool calls to the selected host over local IPC.
+The DevKit MCP feature exposes a local Model Context Protocol server through the `bdk` CLI. Developers configure their MCP-capable IDE or agent to start `bdk mcp` over STDIO. The CLI can return curated implementation guidance, search official DevKit documentation and API reference symbols, discover running DevKit web hosts in the current workspace, and forward runtime-bound tool calls to the selected host over local IPC.
 
 Use MCP when you want a coding agent to understand DevKit patterns and inspect a running application while it works on code:
 
 - search official DevKit documentation before implementing a feature
 - load bounded DevKit docs content into the coding session
+- search DevKit API reference symbols before using concrete types or members
 - request curated DevKit guidance for common implementation tasks
 - summarize the selected project runtime, modules and advertised MCP capabilities
 - check local runtime availability and health
@@ -19,6 +20,7 @@ Use MCP when you want a coding agent to understand DevKit patterns and inspect a
 - follow a correlation id across logs, jobs, messaging, queueing and orchestrations
 - inspect, retry, pause, resume, signal or trigger supported runtime features
 - search official DevKit documentation from any consuming project
+- inspect generated DevKit API reference details from any consuming project
 - call project-owned diagnostics exposed by the application
 
 MCP is a local development feature. It is not an HTTP endpoint, not a production administration API and not a replacement for application authorization.
@@ -35,6 +37,7 @@ flowchart LR
     Handler["Feature or project IMcpHandler"]
     Service["Application service"]
     Docs["Official DevKit docs"]
+    Api["API reference metadata"]
 
     Developer --> Agent
     Agent -->|"tools/list and tools/call"| Cli
@@ -43,6 +46,7 @@ flowchart LR
     Host --> Handler
     Handler --> Service
     Cli -->|"docs tools"| Docs
+    Cli -->|"api reference tools"| Api
 ```
 
 The application must run separately. `bdk mcp` does not start the app. It only discovers hosts that already wrote a local descriptor through `DevKitWebApplication.CreateBuilder(args)`.
@@ -51,22 +55,24 @@ Guidance and documentation tools are available even before a runtime is selected
 
 ## Agent Context Model
 
-MCP gives an agent three complementary angles while it codes:
+MCP gives an agent four complementary angles while it codes:
 
 ```mermaid
 flowchart LR
     Guidance["Guidance tools\nbdk_guidance_*"]
     Docs["Docs tools\nbdk_docs_*"]
+    Api["API reference tools\nbdk_api_*"]
     Code["Code changes"]
     Runtime["Runtime tools\nbdk_project_summary + feature tools"]
 
     Guidance --> Docs
-    Docs --> Code
+    Docs --> Api
+    Api --> Code
     Code --> Runtime
     Runtime --> Code
 ```
 
-Use guidance for compact task checklists, docs for official detail, and runtime tools to verify the selected application after changes.
+Use guidance for compact task checklists, docs for official concepts, API reference for exact symbols and signatures, and runtime tools to verify the selected application after changes.
 
 ## Prerequisites
 
@@ -193,6 +199,10 @@ Use bdk_docs_search to find the DevKit guidance for modules and endpoints. Use t
 ```
 
 ```text
+Use bdk_guidance_get for results, read the linked docs, then use bdk_api_search and bdk_api_get for Result before changing error handling code.
+```
+
+```text
 Use the bdk MCP self-test and tell me whether the selected runtime is healthy.
 ```
 
@@ -234,6 +244,7 @@ The MCP catalog is stable. Tools can return structured unavailable responses whe
 | Investigation      | `bdk_investigate_recent_errors`, `bdk_investigate_correlation`, `bdk_investigate_job_run`, `bdk_investigate_orchestration_instance`        |
 | Guidance           | `bdk_guidance_list`, `bdk_guidance_get`                                                                                                   |
 | Documentation      | `bdk_docs_search`, `bdk_docs_get`                                                                                                       |
+| API reference      | `bdk_api_search`, `bdk_api_get`                                                                                                        |
 | Project summary    | `bdk_project_summary`                                                                                                                    |
 | Project operations | `bdk_project_operations`, `bdk_project_call`                                                                                            |
 
@@ -309,7 +320,7 @@ Additional examples:
 
 ## Documentation-Aware Development
 
-`bdk_docs_search` and `bdk_docs_get` let an agent consult official DevKit documentation while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs lookup works even when the app is not running yet.
+`bdk_docs_search`, `bdk_docs_get`, `bdk_api_search` and `bdk_api_get` let an agent consult official DevKit documentation and API reference metadata while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs and API lookup work even when the app is not running yet.
 
 Use this when the agent is implementing or refactoring DevKit-specific code:
 
@@ -318,18 +329,30 @@ Use this when the agent is implementing or refactoring DevKit-specific code:
 - Modules and endpoints: read module and endpoint conventions before adding presentation features.
 - Project-owned MCP tools: read MCP handler guidance before exposing application diagnostics.
 - Dashboards: read dashboard guidance before adding a developer page.
+- Exact DevKit APIs: use API search and get before writing code against concrete types, overloads, extension methods or interfaces.
 
 Typical flow:
 
 ```text
-Docs -> Code -> Runtime
+Docs -> API reference -> Code -> Runtime
 ```
 
 1. `bdk_docs_search` finds the relevant DevKit feature page.
 2. `bdk_docs_get` loads the bounded markdown source.
-3. The agent compares the documented pattern with the current code.
-4. The agent implements the change.
-5. Runtime tools such as `bdk_capabilities_get`, `bdk_jobs_list`, `bdk_queueing_summary` or project-owned operations verify the running app.
+3. `bdk_api_search` finds concrete DevKit symbols involved in the implementation.
+4. `bdk_api_get` loads bounded symbol details for the chosen uid.
+5. The agent compares the documented pattern and API shape with the current code.
+6. The agent implements the change.
+7. Runtime tools such as `bdk_capabilities_get`, `bdk_jobs_list`, `bdk_queueing_summary` or project-owned operations verify the running app.
+
+Example API reference call:
+
+```json
+{
+  "query": "Result",
+  "topic": "results"
+}
+```
 
 ## Project Summary
 
@@ -429,9 +452,9 @@ Example prompt:
 Use bdk_project_operations to inspect project-owned operations, then call the operation that checks whether customer CUST-10042 has recent failed orders or account warnings.
 ```
 
-## Documentation Tools
+## Documentation And API Tools
 
-`bdk_docs_search` and `bdk_docs_get` use official online DevKit documentation sources. They do not read the local repository docs.
+`bdk_docs_search` and `bdk_docs_get` use official online DevKit documentation sources. `bdk_api_search` and `bdk_api_get` use generated API reference metadata published with the DevKit GitHub Pages site. They do not read the local repository docs.
 
 This matters because most developers use `bdk mcp` from consuming application repositories, not from the DevKit source repository. The local repository may have no DevKit docs at all.
 

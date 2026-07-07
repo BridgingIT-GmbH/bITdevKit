@@ -87,6 +87,8 @@ public sealed class McpToolCatalog
         Tool("bdk_orchestrations_purge", "Purges retained orchestration data when the admin toolset is enabled and confirmation is supplied.", OrchestrationPurgeSchema()),
         Tool("bdk_docs_search", "Searches bounded official DevKit documentation.", new { type = "object", additionalProperties = false, required = new[] { "query" }, properties = new { query = String("Search query."), limit = Integer("Maximum result count.") } }),
         Tool("bdk_docs_get", "Gets bounded DevKit documentation content by source path or URL.", new { type = "object", additionalProperties = false, required = new[] { "source" }, properties = new { source = String("Documentation source path or URL."), maxChars = Integer("Maximum characters to return.") } }),
+        Tool("bdk_api_search", "Searches bounded official DevKit API reference symbols.", ApiSearchSchema()),
+        Tool("bdk_api_get", "Gets bounded DevKit API reference content by symbol uid.", new { type = "object", additionalProperties = false, required = new[] { "uid" }, properties = new { uid = String("DocFX API reference symbol uid."), maxChars = Integer("Maximum characters to return.") } }),
         Tool("bdk_guidance_list", "Lists curated DevKit agentic coding guidance topics.", EmptySchema),
         Tool("bdk_guidance_get", "Gets curated DevKit agentic coding guidance. Use when the user asks for guidance, how to implement, add, create or build DevKit jobs, messaging, queueing, orchestration, pipelines, dashboards or project dashboard pages.", GuidanceSchema()),
         Tool("bdk_project_summary", "Summarizes the selected runtime, advertised project shape, MCP capabilities, and suggested next calls.", EmptySchema),
@@ -169,6 +171,22 @@ public sealed class McpToolCatalog
                     "dashboard",
                     "project_dashboard_page"),
                 query = String("Natural-language guidance request, for example 'how to implement a new job that triggers an orchestration'.")
+            }
+        };
+
+    private static object ApiSearchSchema()
+        => new
+        {
+            type = "object",
+            additionalProperties = false,
+            required = new[] { "query" },
+            properties = new
+            {
+                query = String("Type, member, namespace or feature keyword to search for."),
+                topic = String("Optional inferred topic filter, for example results, jobs, queueing or repositories."),
+                kind = String("Optional DocFX kind filter, for example Class, Interface, Method, Property, Struct or Enum."),
+                @namespace = String("Optional namespace filter."),
+                limit = Integer("Maximum result count.")
             }
         };
 

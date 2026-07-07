@@ -862,6 +862,8 @@ public sealed class CliFoundationTests
             output.ShouldContain("\"bdk_queueing_pause_queue\"");
             output.ShouldContain("\"bdk_jobs_purge_runs\"");
             output.ShouldContain("\"bdk_orchestrations_purge\"");
+            output.ShouldContain("\"bdk_api_search\"");
+            output.ShouldContain("\"bdk_api_get\"");
             output.ShouldContain("\"bdk_project_call\"");
         }
         finally
@@ -1019,6 +1021,178 @@ public sealed class CliFoundationTests
     }
 
     [Fact]
+    public async Task McpApiReferenceTools_WhenSearchIsCalled_RanksExactSymbolFirst()
+    {
+        // Arrange
+        var source = new FakeMcpApiReferenceSource(CreateApiIndex([
+            CreateApiIndexSymbol("BridgingIT.DevKit.Common.Result", "Result", "Struct", "results"),
+            CreateApiIndexSymbol("BridgingIT.DevKit.Common.ResultMessage", "ResultMessage", "Class", "results")
+        ]));
+        var sut = new McpApiReferenceTools(source);
+        var arguments = JsonDocument.Parse("{\"query\":\"Result\",\"limit\":2}").RootElement;
+
+        // Act
+        var response = await sut.SearchAsync(arguments, CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        var json = JsonSerializer.Serialize(response.Data);
+        json.IndexOf("\"Uid\":\"BridgingIT.DevKit.Common.Result\"", StringComparison.Ordinal)
+            .ShouldBeLessThan(json.IndexOf("\"Uid\":\"BridgingIT.DevKit.Common.ResultMessage\"", StringComparison.Ordinal));
+        response.Next.Select(next => next.Tool).ShouldContain("bdk_api_get");
+    }
+
+    [Fact]
+    public async Task McpApiReferenceTools_WhenFiltersAreSupplied_ReturnsMatchingSymbols()
+    {
+        // Arrange
+        var source = new FakeMcpApiReferenceSource(CreateApiIndex([
+            CreateApiIndexSymbol("BridgingIT.DevKit.Application.Queues.IQueueHandler", "IQueueHandler", "Interface", "queueing", "BridgingIT.DevKit.Application.Queues"),
+            CreateApiIndexSymbol("BridgingIT.DevKit.Application.Messaging.IMessageHandler", "IMessageHandler", "Interface", "messaging", "BridgingIT.DevKit.Application.Messaging")
+        ]));
+        var sut = new McpApiReferenceTools(source);
+        var arguments = JsonDocument.Parse("{\"query\":\"handler\",\"topic\":\"queueing\",\"kind\":\"Interface\",\"namespace\":\"Application.Queues\"}").RootElement;
+
+        // Act
+        var response = await sut.SearchAsync(arguments, CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("IQueueHandler");
+        json.ShouldNotContain("IMessageHandler");
+    }
+
+    [Fact]
+    public async Task McpApiReferenceTools_WhenGetIsCalled_ReturnsBoundedSymbolContent()
+    {
+        // Arrange
+        var symbol = new McpApiReferenceSymbol
+        {
+            Uid = "BridgingIT.DevKit.Common.Result",
+            Name = "Result",
+            FullName = "BridgingIT.DevKit.Common.Result",
+            Kind = "Struct",
+            Namespace = "BridgingIT.DevKit.Common",
+            Assembly = "BridgingIT.DevKit.Common.Results",
+            Summary = "Represents an operation result.",
+            Url = "https://bridgingit-gmbh.github.io/bITdevKit/api/obj/api/BridgingIT.DevKit.Common.Result.html",
+            Topics = ["results", "common"]
+        };
+        var source = new FakeMcpApiReferenceSource(
+            CreateApiIndex([CreateApiIndexSymbol(symbol.Uid, symbol.Name, symbol.Kind, "results")]),
+            new Dictionary<string, McpApiReferenceSymbol>(StringComparer.OrdinalIgnoreCase) { [symbol.Uid] = symbol });
+        var sut = new McpApiReferenceTools(source);
+        var arguments = JsonDocument.Parse("{\"uid\":\"BridgingIT.DevKit.Common.Result\",\"maxChars\":80}").RootElement;
+
+        // Act
+        var response = await sut.GetAsync(arguments, CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        response.Truncated.ShouldBeTrue();
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("BridgingIT.DevKit.Common.Result");
+        json.ShouldContain("truncated");
+    }
+
+    [Fact]
+    public async Task McpApiReferenceTools_WhenSymbolIsMissing_ReturnsDocumentationUnavailable()
+    {
+        // Arrange
+        var source = new FakeMcpApiReferenceSource(CreateApiIndex([]));
+        var sut = new McpApiReferenceTools(source);
+        var arguments = JsonDocument.Parse("{\"uid\":\"missing\"}").RootElement;
+
+        // Act
+        var response = await sut.GetAsync(arguments, CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeFalse();
+        response.Code.ShouldBe(McpErrorCode.DocumentationUnavailable);
+        response.Next.Select(next => next.Tool).ShouldContain("bdk_api_search");
+    }
+
+    [Fact]
+    public async Task GitHubPagesMcpApiReferenceSource_WhenLocalPageDetailExists_ResolvesRequestedSymbol()
+    {
+        // Arrange
+        var workspacePath = CreateTempDirectory();
+        var apiRoot = Path.Combine(workspacePath, ".github", "pages", "api");
+        var symbolRoot = Path.Combine(apiRoot, "agent-symbols");
+        Directory.CreateDirectory(symbolRoot);
+
+        const string uid = "BridgingIT.DevKit.Common.Result.Bind(System.Action)";
+        File.WriteAllText(
+            Path.Combine(apiRoot, "agent-index.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                siteUrl = "https://bridgingit-gmbh.github.io/bITdevKit/api/",
+                source = "docfx-mref",
+                symbols = new[]
+                {
+                    new
+                    {
+                        uid,
+                        name = "Bind(Action)",
+                        fullName = uid,
+                        kind = "Method",
+                        @namespace = "BridgingIT.DevKit.Common",
+                        assembly = "BridgingIT.DevKit.Common.Results",
+                        summary = "Creates a Result from an operation.",
+                        href = "obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+                        detail = "agent-symbols/result-page.json",
+                        topics = new[] { "results", "common" }
+                    }
+                }
+            }));
+        File.WriteAllText(
+            Path.Combine(symbolRoot, "result-page.json"),
+            JsonSerializer.Serialize(new
+            {
+                schemaVersion = 1,
+                source = "docfx-mref-page",
+                file = "BridgingIT.DevKit.Common.Result.yml",
+                symbols = new[]
+                {
+                    new
+                    {
+                        uid,
+                        name = "Bind(Action)",
+                        fullName = uid,
+                        kind = "Method",
+                        @namespace = "BridgingIT.DevKit.Common",
+                        assembly = "BridgingIT.DevKit.Common.Results",
+                        summary = "Creates a Result from an operation.",
+                        syntax = new { content = "public static Result Bind(Action operation)" },
+                        parameters = new[] { new { id = "operation", type = "System.Action", description = "The operation." } },
+                        returns = new { type = "BridgingIT.DevKit.Common.Result", description = "The result." },
+                        url = "https://bridgingit-gmbh.github.io/bITdevKit/api/obj/api/BridgingIT.DevKit.Common.Result.html#Bind",
+                        topics = new[] { "results", "common" }
+                    }
+                }
+            }));
+
+        using var httpClient = new HttpClient();
+        var workspace = new WorkspaceResolver().Resolve(workspacePath);
+        var context = new CliRuntimeContext(
+            workspace,
+            new CliOutputSettings { Format = CliOutputFormat.Json },
+            new HostRegistryOptions { RuntimePath = CreateTempDirectory(), SelectionPath = CreateTempDirectory() });
+        var sut = new GitHubPagesMcpApiReferenceSource(httpClient, context);
+
+        // Act
+        var symbol = await sut.GetSymbolAsync(uid, CancellationToken.None);
+
+        // Assert
+        symbol.ShouldNotBeNull();
+        symbol.Uid.ShouldBe(uid);
+        symbol.Parameters.Single().Id.ShouldBe("operation");
+        symbol.Returns.Type.ShouldBe("BridgingIT.DevKit.Common.Result");
+    }
+
+    [Fact]
     public void McpGuidanceTools_WhenTopicIsKnown_ReturnsGuidanceWithDocsAndNextCalls()
     {
         // Arrange
@@ -1031,9 +1205,11 @@ public sealed class CliFoundationTests
         // Assert
         response.Available.ShouldBeTrue();
         response.Next.Select(next => next.Tool).ShouldContain("bdk_docs_search");
+        response.Next.Select(next => next.Tool).ShouldContain("bdk_api_search");
         var json = JsonSerializer.Serialize(response.Data);
         json.ShouldContain("features-jobs.md");
         json.ShouldContain("bdk_jobs_list");
+        json.ShouldContain("bdk_api_search");
     }
 
     [Fact]
@@ -1160,6 +1336,35 @@ public sealed class CliFoundationTests
             }
         };
 
+    private static McpApiReferenceIndex CreateApiIndex(IReadOnlyList<McpApiReferenceIndexSymbol> symbols)
+        => new()
+        {
+            SchemaVersion = 1,
+            SiteUrl = "https://bridgingit-gmbh.github.io/bITdevKit/api/",
+            Source = "docfx-mref",
+            Symbols = symbols
+        };
+
+    private static McpApiReferenceIndexSymbol CreateApiIndexSymbol(
+        string uid,
+        string name,
+        string kind,
+        string topic,
+        string ns = "BridgingIT.DevKit.Common")
+        => new()
+        {
+            Uid = uid,
+            Name = name,
+            FullName = uid,
+            Kind = kind,
+            Namespace = ns,
+            Assembly = ns.Replace("BridgingIT.DevKit.", "BridgingIT.DevKit."),
+            Summary = $"{name} helps with {topic} implementation.",
+            Href = $"obj/api/{uid}.html",
+            Detail = $"agent-symbols/{uid}.json",
+            Topics = [topic]
+        };
+
     private sealed class FakeHostProcessManager : IHostProcessManager
     {
         public List<int> KilledProcessIds { get; } = [];
@@ -1180,5 +1385,39 @@ public sealed class CliFoundationTests
 
         public Task<McpDocumentationDocument> GetAsync(string source, CancellationToken cancellationToken)
             => Task.FromResult(documents.FirstOrDefault(document => string.Equals(document.Source, source, StringComparison.OrdinalIgnoreCase)));
+    }
+
+    private sealed class FakeMcpApiReferenceSource(
+        McpApiReferenceIndex index,
+        IReadOnlyDictionary<string, McpApiReferenceSymbol> symbols = null) : IMcpApiReferenceSource
+    {
+        public string Name => "official test API reference";
+
+        public Task<McpApiReferenceIndex> GetIndexAsync(CancellationToken cancellationToken)
+            => Task.FromResult(index);
+
+        public Task<McpApiReferenceSymbol> GetSymbolAsync(string uid, CancellationToken cancellationToken)
+        {
+            if (symbols is not null && symbols.TryGetValue(uid, out var symbol))
+            {
+                return Task.FromResult(symbol);
+            }
+
+            var entry = index.Symbols.FirstOrDefault(symbol => string.Equals(symbol.Uid, uid, StringComparison.OrdinalIgnoreCase));
+            return Task.FromResult(entry is null
+                ? null
+                : new McpApiReferenceSymbol
+                {
+                    Uid = entry.Uid,
+                    Name = entry.Name,
+                    FullName = entry.FullName,
+                    Kind = entry.Kind,
+                    Namespace = entry.Namespace,
+                    Assembly = entry.Assembly,
+                    Summary = entry.Summary,
+                    Url = "https://bridgingit-gmbh.github.io/bITdevKit/api/" + entry.Href,
+                    Topics = entry.Topics
+                });
+        }
     }
 }

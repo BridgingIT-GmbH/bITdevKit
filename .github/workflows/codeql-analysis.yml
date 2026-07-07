@@ -1,48 +1,121 @@
 name: "CodeQL" # https://learn.microsoft.com/en-us/dotnet/devops/dotnet-secure-github-action
 
-on: [ push ]
+on: [push]
 
 # on:
 #   push:
-#     branches: [main]
+#     branches: [ main ]
 #     paths:
-#     - '**.cs'
-#     - '**.csproj'
+#       - '**.cs'
+#       - '**.csproj'
+#       - '**.slnx'
+#       - 'Directory.Build.props'
+#       - 'Directory.Packages.props'
+#       - 'global.json'
+#       - 'nuget.config'
 #   pull_request:
-#     branches: [main]
+#     branches: [ main ]
 #     paths:
-#     - '**.cs'
-#     - '**.csproj'
-#   schedule:
-#     - cron: '0 8 * * *'
+#       - '**.cs'
+#       - '**.csproj'
+#       - '**.slnx'
+#       - 'Directory.Build.props'
+#       - 'Directory.Packages.props'
+#       - 'global.json'
+#       - 'nuget.config'
 
 jobs:
   analyze:
-
     name: analyze
     runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
 
     strategy:
       fail-fast: false
       matrix:
-        language: ['csharp']
+        language: ["csharp"]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6.0.3
-      with:
-        fetch-depth: 2
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.3
+        with:
+          fetch-depth: 2
 
-    - run: git checkout HEAD^2
-      if: ${{ github.event_name == 'pull_request' }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: manual
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v4
+      - name: Generate CodeQL solution
+        shell: bash
+        run: |
+          set -euo pipefail
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+          python3 <<'PY'
+          from copy import deepcopy
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          input_path = Path("bITdevKit.slnx")
+          output_path = Path(".codeql.slnx")
+
+          tree = ET.parse(input_path)
+          source_root = tree.getroot()
+
+          output_root = ET.Element(source_root.tag, source_root.attrib)
+
+          configurations = source_root.find("Configurations")
+          if configurations is not None:
+              output_root.append(deepcopy(configurations))
+
+          src_folder = ET.SubElement(output_root, "Folder", {"Name": "/src/"})
+
+          projects = [
+              project
+              for project in source_root.iter("Project")
+              if project.attrib.get("Path", "").startswith("src/")
+          ]
+
+          if not projects:
+              raise SystemExit("No src/** projects found in the input .slnx")
+
+          for project in projects:
+              src_folder.append(deepcopy(project))
+
+          ET.indent(output_root, space="  ")
+
+          output_tree = ET.ElementTree(output_root)
+          output_tree.write(
+              output_path,
+              encoding="unicode",
+              xml_declaration=False,
+              short_empty_elements=True,
+          )
+
+          print(f"Generated {output_path} with {len(projects)} src projects")
+          PY
+
+          echo "Generated CodeQL solution:"
+          cat .codeql.slnx
+
+      - name: Restore production projects
+        run: dotnet restore ./.codeql.slnx
+
+      - name: Build production projects
+        run: dotnet build ./.codeql.slnx --configuration Release --no-restore
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"

@@ -11,8 +11,8 @@ on:
     paths:
     - '**.cs'
     - '**.csproj'
-  schedule:
-    - cron: '0 8 * * *'
+  # schedule:
+  #   - cron: '0 8 * * *'
 
 jobs:
   analyze:

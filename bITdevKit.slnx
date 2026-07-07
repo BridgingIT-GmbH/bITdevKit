@@ -119,8 +119,10 @@
     <Project Path="examples/DoFiesta/DoFiesta.Application/DoFiesta.Application.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Domain/DoFiesta.Domain.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Infrastructure/DoFiesta.Infrastructure.csproj" />
-    <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj" />
-    <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj" />
+    <Project
+      Path="examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj" />
+    <Project
+      Path="examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj" />
   </Folder>
   <Folder Name="/examples/EventSourcingDemo/" />
   <Folder Name="/examples/EventSourcingDemo/assets/">
@@ -128,13 +130,18 @@
     <File Path="examples/EventSourcingDemo/EventSourcingDemo-REST.http" />
   </Folder>
   <Folder Name="/examples/EventSourcingDemo/src/">
-    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Application/EventSourcingDemo.Application.csproj" />
-    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Domain/EventSourcingDemo.Domain.csproj" />
-    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Infrastructure/EventSourcingDemo.Infrastructure.csproj" />
-    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Presentation.Web/EventSourcingDemo.Presentation.Web.csproj" />
+    <Project
+      Path="examples/EventSourcingDemo/EventSourcingDemo.Application/EventSourcingDemo.Application.csproj" />
+    <Project
+      Path="examples/EventSourcingDemo/EventSourcingDemo.Domain/EventSourcingDemo.Domain.csproj" />
+    <Project
+      Path="examples/EventSourcingDemo/EventSourcingDemo.Infrastructure/EventSourcingDemo.Infrastructure.csproj" />
+    <Project
+      Path="examples/EventSourcingDemo/EventSourcingDemo.Presentation.Web/EventSourcingDemo.Presentation.Web.csproj" />
   </Folder>
   <Folder Name="/examples/EventSourcingDemo/tests/">
-    <Project Path="examples/EventSourcingDemo/tests/EventSourcingDemo.Integration.Tests/EventSourcing.IntegrationTests.csproj" />
+    <Project
+      Path="examples/EventSourcingDemo/tests/EventSourcingDemo.Integration.Tests/EventSourcing.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/examples/WeatherFiesta/" />
   <Folder Name="/examples/WeatherFiesta/assets/">
@@ -142,13 +149,17 @@
     <File Path="examples/WeatherFiesta/WeatherFiesta-REST.http" />
   </Folder>
   <Folder Name="/examples/WeatherFiesta/src/">
-    <Project Path="examples/WeatherFiesta/WeatherFiesta.Application/WeatherFiesta.Application.csproj" />
+    <Project
+      Path="examples/WeatherFiesta/WeatherFiesta.Application/WeatherFiesta.Application.csproj" />
     <Project Path="examples/WeatherFiesta/WeatherFiesta.Domain/WeatherFiesta.Domain.csproj" />
-    <Project Path="examples/WeatherFiesta/WeatherFiesta.Infrastructure/WeatherFiesta.Infrastructure.csproj" />
-    <Project Path="examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj" />
+    <Project
+      Path="examples/WeatherFiesta/WeatherFiesta.Infrastructure/WeatherFiesta.Infrastructure.csproj" />
+    <Project
+      Path="examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj" />
   </Folder>
   <Folder Name="/examples/WeatherFiesta/tests/">
-    <Project Path="examples/WeatherFiesta/WeatherFiesta.IntegrationTests/WeatherFiesta.IntegrationTests.csproj" />
+    <Project
+      Path="examples/WeatherFiesta/WeatherFiesta.IntegrationTests/WeatherFiesta.IntegrationTests.csproj" />
     <Project Path="examples/WeatherFiesta/WeatherFiesta.UnitTests/WeatherFiesta.UnitTests.csproj" />
   </Folder>
   <Folder Name="/src/">
@@ -160,10 +171,7 @@
     <Project Path="src/Application.Entities.Messaging/Application.Entities.Messaging.csproj" />
     <Project Path="src/Application.Entities/Application.Entities.csproj" />
     <Project Path="src/Application.Identity/Application.Identity.csproj" />
-    <Project Path="src/Application.Jobs/Application.Jobs.csproj">
-      <Build Solution="Debug|x64" Project="false" />
-      <Build Solution="Debug|x86" Project="false" />
-    </Project>
+    <Project Path="src/Application.Jobs/Application.Jobs.csproj" />
     <Project Path="src/Application.JobScheduling/Application.JobScheduling.csproj" />
     <Project Path="src/Application.Messaging/Application.Messaging.csproj" />
     <Project Path="src/Application.Notifications/Application.Notifications.csproj" />
@@ -197,13 +205,20 @@
     <Project Path="src/Infrastructure.Azure.Cosmos/Infrastructure.Azure.Cosmos.csproj" />
     <Project Path="src/Infrastructure.Azure.ServiceBus/Infrastructure.Azure.ServiceBus.csproj" />
     <Project Path="src/Infrastructure.Azure.Storage/Infrastructure.Azure.Storage.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.Cosmos/Infrastructure.EntityFramework.Cosmos.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.EventSourcing.SqlServer/Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.EventSourcing/Infrastructure.EntityFramework.EventSourcing.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.Outbox/Infrastructure.EntityFramework.Outbox.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.Postgres/Infrastructure.EntityFramework.Postgres.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.Sqlite/Infrastructure.EntityFramework.Sqlite.csproj" />
-    <Project Path="src/Infrastructure.EntityFramework.SqlServer/Infrastructure.EntityFramework.SqlServer.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.Cosmos/Infrastructure.EntityFramework.Cosmos.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.EventSourcing.SqlServer/Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.EventSourcing/Infrastructure.EntityFramework.EventSourcing.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.Outbox/Infrastructure.EntityFramework.Outbox.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.Postgres/Infrastructure.EntityFramework.Postgres.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.Sqlite/Infrastructure.EntityFramework.Sqlite.csproj" />
+    <Project
+      Path="src/Infrastructure.EntityFramework.SqlServer/Infrastructure.EntityFramework.SqlServer.csproj" />
     <Project Path="src/Infrastructure.EntityFramework/Infrastructure.EntityFramework.csproj" />
     <Project Path="src/Infrastructure.EventSourcing/Infrastructure.EventSourcing.csproj" />
     <Project Path="src/Infrastructure.LiteDB/Infrastructure.LiteDB.csproj" />
@@ -214,10 +229,7 @@
     <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
     <Project Path="src/Presentation.Web.EntityFramework/Presentation.Web.EntityFramework.csproj" />
-    <Project Path="src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj">
-      <Build Solution="Debug|x64" Project="false" />
-      <Build Solution="Debug|x86" Project="false" />
-    </Project>
+    <Project Path="src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj" />
     <Project Path="src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj" />
     <Project Path="src/Presentation.Web.Messaging/Presentation.Web.Messaging.csproj" />
     <Project Path="src/Presentation.Web.Notifications/Presentation.Web.Notifications.csproj" />

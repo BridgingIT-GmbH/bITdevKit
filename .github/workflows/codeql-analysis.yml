@@ -109,10 +109,10 @@ jobs:
           echo "Generated CodeQL solution:"
           cat .codeql.slnx
 
-      - name: Restore production projects
+      - name: Restore CodeQL solution
         run: dotnet restore ./.codeql.slnx
 
-      - name: Build production projects
+      - name: Build CodeQL solution
         run: dotnet build ./.codeql.slnx --configuration Release --no-restore
 
       - name: Perform CodeQL Analysis

@@ -108,11 +108,11 @@ jobs:
       - name: Build solution
         run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo
 
-      # - name: Vulnerability scan (nuget)
-      #   run: |
-      #     dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
-      #     echo "Analyze dotnet list package command log output..."
-      #     grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
+      - name: Vulnerability scan (nuget)
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+          # echo "Analyze dotnet list package command log output..."
+          # grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
       - name: Publish build artifacts
         uses: actions/upload-artifact@v7.0.1

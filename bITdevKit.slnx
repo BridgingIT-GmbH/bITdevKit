@@ -153,24 +153,6 @@
   </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
-  </Folder>
-  <Folder Name="/src/0. Common/">
-    <Project Path="src/Common.Abstractions/Common.Abstractions.csproj" />
-    <Project Path="src/Common.Caching/Common.Caching.csproj" />
-    <Project Path="src/Common.Extensions.Web/Common.Extensions.Web.csproj" />
-    <Project Path="src/Common.Extensions/Common.Extensions.csproj" />
-    <Project Path="src/Common.Mapping/Common.Mapping.csproj" />
-    <Project Path="src/Common.Modules/Common.Modules.csproj" />
-    <Project Path="src/Common.Options/Common.Options.csproj" />
-    <Project Path="src/Common.Results/Common.Results.csproj" />
-    <Project Path="src/Common.Rules/Common.Rules.csproj" />
-    <Project Path="src/Common.Serialization/Common.Serialization.csproj" />
-    <Project Path="src/Common.Utilities.CodeGen/Common.Utilities.CodeGen.csproj" />
-    <Project Path="src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj" />
-    <Project Path="src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
-    <Project Path="src/Common.Utilities/Common.Utilities.csproj" />
-  </Folder>
-  <Folder Name="/src/1. Application/">
     <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />
     <Project Path="src/Application.Commands.Outbox/Application.Commands.Outbox.csproj" />
     <Project Path="src/Application.Commands/Application.Commands.csproj" />
@@ -191,8 +173,20 @@
     <Project Path="src/Application.Storage.Jobs/Application.Storage.Jobs.csproj" />
     <Project Path="src/Application.Storage/Application.Storage.csproj" />
     <Project Path="src/Application.Utilities/Application.Utilities.csproj" />
-  </Folder>
-  <Folder Name="/src/2. Domain/">
+    <Project Path="src/Common.Abstractions/Common.Abstractions.csproj" />
+    <Project Path="src/Common.Caching/Common.Caching.csproj" />
+    <Project Path="src/Common.Extensions.Web/Common.Extensions.Web.csproj" />
+    <Project Path="src/Common.Extensions/Common.Extensions.csproj" />
+    <Project Path="src/Common.Mapping/Common.Mapping.csproj" />
+    <Project Path="src/Common.Modules/Common.Modules.csproj" />
+    <Project Path="src/Common.Options/Common.Options.csproj" />
+    <Project Path="src/Common.Results/Common.Results.csproj" />
+    <Project Path="src/Common.Rules/Common.Rules.csproj" />
+    <Project Path="src/Common.Serialization/Common.Serialization.csproj" />
+    <Project Path="src/Common.Utilities.CodeGen/Common.Utilities.CodeGen.csproj" />
+    <Project Path="src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj" />
+    <Project Path="src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
+    <Project Path="src/Common.Utilities/Common.Utilities.csproj" />
     <Project Path="src/Domain.CodeGen/Domain.CodeGen.csproj" />
     <Project Path="src/Domain.EventSourcing.Mediator/Domain.EventSourcing.Mediator.csproj" />
     <Project Path="src/Domain.EventSourcing.Outbox/Domain.EventSourcing.Outbox.csproj" />
@@ -200,8 +194,6 @@
     <Project Path="src/Domain.Mediator/Domain.Mediator.csproj" />
     <Project Path="src/Domain.Outbox/Domain.Outbox.csproj" />
     <Project Path="src/Domain/Domain.csproj" />
-  </Folder>
-  <Folder Name="/src/3. Infrastructure/">
     <Project Path="src/Infrastructure.Azure.Cosmos/Infrastructure.Azure.Cosmos.csproj" />
     <Project Path="src/Infrastructure.Azure.ServiceBus/Infrastructure.Azure.ServiceBus.csproj" />
     <Project Path="src/Infrastructure.Azure.Storage/Infrastructure.Azure.Storage.csproj" />
@@ -217,8 +209,7 @@
     <Project Path="src/Infrastructure.LiteDB/Infrastructure.LiteDB.csproj" />
     <Project Path="src/Infrastructure.RabbitMQ/Infrastructure.RabbitMQ.csproj" />
     <Project Path="src/Infrastructure.Windows/Infrastructure.Windows.csproj" />
-  </Folder>
-  <Folder Name="/src/4. Presentation/">
+    <Project Path="src/Presentation.Cli/Presentation.Cli.csproj" />
     <Project Path="src/Presentation.Configuration/Presentation.Configuration.csproj" />
     <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
@@ -235,25 +226,15 @@
     <Project Path="src/Presentation.Web.Storage/Presentation.Web.Storage.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />
-    <Project Path="src/Presentation.Cli/Presentation.Cli.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
-  <Folder Name="/tests/0. Common/">
-    <Project Path="tests/Common.UnitTests/Common.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/tests/1. Application/">
+  <Folder Name="/tests/">
     <Project Path="tests/Application.IntegrationTests/Application.IntegrationTests.csproj" />
     <Project Path="tests/Application.UnitTests/Application.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/tests/2. Domain/">
+    <Project Path="tests/Common.UnitTests/Common.UnitTests.csproj" />
     <Project Path="tests/Domain.IntegrationTests/Domain.IntegrationTests.csproj" />
     <Project Path="tests/Domain.UnitTests/Domain.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/tests/3. Infrastructure/">
     <Project Path="tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/tests/4. Presentation/">
     <Project Path="tests/Presentation.UnitTests/Presentation.UnitTests.csproj" />
   </Folder>
 </Solution>

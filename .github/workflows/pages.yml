@@ -33,6 +33,7 @@ jobs:
     name: Build and publish landing site
     if: github.repository == 'BridgingIT-GmbH/bITdevKit'
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.3

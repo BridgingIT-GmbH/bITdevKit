@@ -26,7 +26,8 @@ on: [push]
 
 jobs:
   analyze:
-    name: analyze
+    name: Perform CodeQL Analysis
+    if: github.repository == 'bit-intern/bITdevKit'
     runs-on: ubuntu-latest
 
     permissions:

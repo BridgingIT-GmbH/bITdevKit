@@ -3090,9 +3090,10 @@
 <li>inspect orchestration instances, history, signals and timers</li>
 <li>call project-owned diagnostics exposed by the application</li>
 <li>search official DevKit documentation from the consuming project</li>
+<li>search official DevKit API reference symbols from the consuming project</li>
 <li>request curated implementation guidance for common DevKit feature work</li>
 <li>summarize the selected runtime, registered modules and advertised MCP capabilities</li>
-<li>use DevKit docs while implementing jobs, queues, handlers, modules, endpoints or project-owned MCP tools</li>
+<li>use DevKit docs and API reference while implementing jobs, queues, handlers, modules, endpoints or project-owned MCP tools</li>
 </ul>
 <h2 id="three-agent-angles">Three agent angles<a class="headerlink" href="#three-agent-angles" title="Permanent link">&para;</a></h2>
 <p>DevKit MCP gives agents three complementary sources of context:</p>
@@ -3116,6 +3117,11 @@
 <td>Read official DevKit feature docs while coding in a consuming project.</td>
 </tr>
 <tr>
+<td>API reference</td>
+<td><code>bdk_api_search</code>, <code>bdk_api_get</code></td>
+<td>Find exact DevKit types, members, overloads, extension methods and signatures.</td>
+</tr>
+<tr>
 <td>Runtime</td>
 <td><code>bdk_project_summary</code>, <code>bdk_capabilities_get</code>, feature tools</td>
 <td>Inspect the selected app, its modules, capabilities and live operational state.</td>
@@ -3123,7 +3129,7 @@
 </tbody>
 </table>
 <p>For feature work, prefer this flow:</p>
-<div class="highlight"><pre><span></span><code>Guidance -&gt; Docs -&gt; Code -&gt; Runtime verification
+<div class="highlight"><pre><span></span><code>Guidance -&gt; Docs -&gt; API reference -&gt; Code -&gt; Runtime verification
 </code></pre></div>
 <p>Guidance is intentionally one generic operation. When a prompt asks for "guidance", "how to implement", "add", "create" or "build" DevKit-specific code, ask the agent to call <code>bdk_guidance_get</code> with the natural-language request as <code>query</code>. The tool infers the relevant guidance topics, including combined cases such as a job that triggers an orchestration.</p>
 <p>Example guidance call:</p>
@@ -3133,7 +3139,7 @@
 </code></pre></div>
 <p>Guidance topics cover major DevKit areas such as jobs, messaging, queueing, orchestration, pipelines, caching, mapping, serialization, utilities, commands and queries, application events, ActiveEntity, domain events, repositories, specifications, domain modeling, filtering, modules, requester/notifier, results, rules, startup tasks, document storage, file storage, storage monitoring and dashboard pages.</p>
 <h2 id="docs-aware-coding">Docs-aware coding<a class="headerlink" href="#docs-aware-coding" title="Permanent link">&para;</a></h2>
-<p><code>bdk mcp</code> exposes documentation tools directly to the agent:</p>
+<p><code>bdk mcp</code> exposes documentation and API reference tools directly to the agent:</p>
 <table>
 <thead>
 <tr>
@@ -3150,13 +3156,22 @@
 <td><code>bdk_docs_get</code></td>
 <td>Load a bounded markdown source returned by search.</td>
 </tr>
+<tr>
+<td><code>bdk_api_search</code></td>
+<td>Search official DevKit API reference symbols by type, member, namespace, topic or keyword.</td>
+</tr>
+<tr>
+<td><code>bdk_api_get</code></td>
+<td>Load bounded API reference details for a symbol uid returned by search.</td>
+</tr>
 </tbody>
 </table>
-<p>These tools read the official DevKit documentation from GitHub, not the consuming project's local <code>docs</code> folder. That means a customer project can use <code>bdk</code> as a development assistant without vendoring the DevKit source repository.</p>
+<p>The docs tools read the official DevKit documentation from GitHub. The API tools read generated API reference metadata from GitHub Pages. They do not depend on the consuming project's local <code>docs</code> folder, so a customer project can use <code>bdk</code> as a development assistant without vendoring the DevKit source repository.</p>
 <p>A useful agent workflow is:</p>
 <ol>
 <li>Search the DevKit docs for the feature being changed.</li>
 <li>Summarize the expected pattern.</li>
+<li>Search the API reference for the concrete types and members involved.</li>
 <li>Inspect the existing project code for matching conventions.</li>
 <li>Make the implementation change.</li>
 <li>Use runtime MCP tools to verify the app advertises or executes the feature.</li>
@@ -3165,6 +3180,8 @@
 <div class="highlight"><pre><span></span><code>Use the bdk MCP docs tools to read the DevKit Jobs guidance first.
 Then implement a nightly customer cleanup job following the documented pattern.
 After the change, use bdk_jobs_list to verify the running app advertises the job.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk_guidance_get for results, read the linked docs, then use bdk_api_search and bdk_api_get for Result before changing error handling code.
 </code></pre></div>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart LR
@@ -3293,6 +3310,10 @@ After the change, use bdk_jobs_list to verify the running app advertises the job
 <td>Documentation</td>
 <td>official DevKit docs search and retrieval for implementation guidance</td>
 </tr>
+<tr>
+<td>API reference</td>
+<td>official DevKit API symbols, signatures, summaries and DocFX links</td>
+</tr>
 </tbody>
 </table>
 <p>Operations are grouped into toolsets:</p>
@@ -3340,6 +3361,8 @@ After the change, use bdk_jobs_list to verify the running app advertises the job
 <div class="highlight"><pre><span></span><code>Use bdk_guidance_get for jobs, then use the linked docs and bdk_project_summary before editing. After implementation, verify with bdk_jobs_list.
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Use bdk_project_summary to orient on this app&#39;s modules and MCP capabilities. Then choose the right DevKit guidance topic before proposing code changes.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk_api_search for IRepository and Specification, then call bdk_api_get for the exact symbols you plan to use before editing repository code.
 </code></pre></div>
 <h3 id="admin-and-destructive-operations">Admin and destructive operations<a class="headerlink" href="#admin-and-destructive-operations" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>Use bdk MCP to inspect retained local test data older than yesterday. Do not purge anything. If cleanup is appropriate, show the exact admin call and wait for my approval.

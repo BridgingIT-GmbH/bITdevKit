@@ -2114,10 +2114,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#documentation-tools" class="md-nav__link">
+  <a href="#documentation-and-api-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Documentation Tools
+        Documentation And API Tools
       
     </span>
   </a>
@@ -2942,10 +2942,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#documentation-tools" class="md-nav__link">
+  <a href="#documentation-and-api-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Documentation Tools
+        Documentation And API Tools
       
     </span>
   </a>
@@ -3086,7 +3086,7 @@
 <li><a href="#documentation-aware-development">Documentation-Aware Development</a></li>
 <li><a href="#project-summary">Project Summary</a></li>
 <li><a href="#project-owned-operations">Project-Owned Operations</a></li>
-<li><a href="#documentation-tools">Documentation Tools</a></li>
+<li><a href="#documentation-and-api-tools">Documentation And API Tools</a></li>
 <li><a href="#safety-model">Safety Model</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a><ul>
 <li><a href="#the-agent-says-no-runtime-was-found">The Agent Says No Runtime Was Found</a></li>
@@ -3102,11 +3102,12 @@
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The DevKit MCP feature exposes a local Model Context Protocol server through the <code>bdk</code> CLI. Developers configure their MCP-capable IDE or agent to start <code>bdk mcp</code> over STDIO. The CLI can return curated implementation guidance, search official DevKit documentation, discover running DevKit web hosts in the current workspace, and forward runtime-bound tool calls to the selected host over local IPC.</p>
+<p>The DevKit MCP feature exposes a local Model Context Protocol server through the <code>bdk</code> CLI. Developers configure their MCP-capable IDE or agent to start <code>bdk mcp</code> over STDIO. The CLI can return curated implementation guidance, search official DevKit documentation and API reference symbols, discover running DevKit web hosts in the current workspace, and forward runtime-bound tool calls to the selected host over local IPC.</p>
 <p>Use MCP when you want a coding agent to understand DevKit patterns and inspect a running application while it works on code:</p>
 <ul>
 <li>search official DevKit documentation before implementing a feature</li>
 <li>load bounded DevKit docs content into the coding session</li>
+<li>search DevKit API reference symbols before using concrete types or members</li>
 <li>request curated DevKit guidance for common implementation tasks</li>
 <li>summarize the selected project runtime, modules and advertised MCP capabilities</li>
 <li>check local runtime availability and health</li>
@@ -3114,6 +3115,7 @@
 <li>follow a correlation id across logs, jobs, messaging, queueing and orchestrations</li>
 <li>inspect, retry, pause, resume, signal or trigger supported runtime features</li>
 <li>search official DevKit documentation from any consuming project</li>
+<li>inspect generated DevKit API reference details from any consuming project</li>
 <li>call project-owned diagnostics exposed by the application</li>
 </ul>
 <p>MCP is a local development feature. It is not an HTTP endpoint, not a production administration API and not a replacement for application authorization.</p>
@@ -3127,6 +3129,7 @@
     Handler["Feature or project IMcpHandler"]
     Service["Application service"]
     Docs["Official DevKit docs"]
+    Api["API reference metadata"]
 
     Developer --&gt; Agent
     Agent --&gt;|"tools/list and tools/call"| Cli
@@ -3134,22 +3137,25 @@
     Cli --&gt;|"runtime-bound tools"| Host
     Host --&gt; Handler
     Handler --&gt; Service
-    Cli --&gt;|"docs tools"| Docs</code></pre>
+    Cli --&gt;|"docs tools"| Docs
+    Cli --&gt;|"api reference tools"| Api</code></pre>
 <p>The application must run separately. <code>bdk mcp</code> does not start the app. It only discovers hosts that already wrote a local descriptor through <code>DevKitWebApplication.CreateBuilder(args)</code>.</p>
 <p>Guidance and documentation tools are available even before a runtime is selected. Runtime tools require a running DevKit host.</p>
 <h2 id="agent-context-model">Agent Context Model<a class="headerlink" href="#agent-context-model" title="Permanent link">&para;</a></h2>
-<p>MCP gives an agent three complementary angles while it codes:</p>
+<p>MCP gives an agent four complementary angles while it codes:</p>
 <pre class="mermaid"><code>flowchart LR
     Guidance["Guidance tools\nbdk_guidance_*"]
     Docs["Docs tools\nbdk_docs_*"]
+    Api["API reference tools\nbdk_api_*"]
     Code["Code changes"]
     Runtime["Runtime tools\nbdk_project_summary + feature tools"]
 
     Guidance --&gt; Docs
-    Docs --&gt; Code
+    Docs --&gt; Api
+    Api --&gt; Code
     Code --&gt; Runtime
     Runtime --&gt; Code</code></pre>
-<p>Use guidance for compact task checklists, docs for official detail, and runtime tools to verify the selected application after changes.</p>
+<p>Use guidance for compact task checklists, docs for official concepts, API reference for exact symbols and signatures, and runtime tools to verify the selected application after changes.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Install or restore the <code>bdk</code> CLI.</li>
@@ -3288,6 +3294,8 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> 
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Use bdk_docs_search to find the DevKit guidance for modules and endpoints. Use that guidance while adding this new endpoint, then run the relevant tests.
 </code></pre></div>
+<div class="highlight"><pre><span></span><code>Use bdk_guidance_get for results, read the linked docs, then use bdk_api_search and bdk_api_get for Result before changing error handling code.
+</code></pre></div>
 <div class="highlight"><pre><span></span><code>Use the bdk MCP self-test and tell me whether the selected runtime is healthy.
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Use the bdk MCP to inspect the latest errors. For the newest error, follow the correlation id and summarize the related logs.
@@ -3350,6 +3358,10 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> 
 <tr>
 <td>Documentation</td>
 <td><code>bdk_docs_search</code>, <code>bdk_docs_get</code></td>
+</tr>
+<tr>
+<td>API reference</td>
+<td><code>bdk_api_search</code>, <code>bdk_api_get</code></td>
 </tr>
 <tr>
 <td>Project summary</td>
@@ -3416,7 +3428,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> 
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="documentation-aware-development">Documentation-Aware Development<a class="headerlink" href="#documentation-aware-development" title="Permanent link">&para;</a></h2>
-<p><code>bdk_docs_search</code> and <code>bdk_docs_get</code> let an agent consult official DevKit documentation while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs lookup works even when the app is not running yet.</p>
+<p><code>bdk_docs_search</code>, <code>bdk_docs_get</code>, <code>bdk_api_search</code> and <code>bdk_api_get</code> let an agent consult official DevKit documentation and API reference metadata while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs and API lookup work even when the app is not running yet.</p>
 <p>Use this when the agent is implementing or refactoring DevKit-specific code:</p>
 <ul>
 <li>Jobs: read the Jobs docs before adding handlers, triggers, batches or run-history integration.</li>
@@ -3424,17 +3436,26 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> 
 <li>Modules and endpoints: read module and endpoint conventions before adding presentation features.</li>
 <li>Project-owned MCP tools: read MCP handler guidance before exposing application diagnostics.</li>
 <li>Dashboards: read dashboard guidance before adding a developer page.</li>
+<li>Exact DevKit APIs: use API search and get before writing code against concrete types, overloads, extension methods or interfaces.</li>
 </ul>
 <p>Typical flow:</p>
-<div class="highlight"><pre><span></span><code>Docs -&gt; Code -&gt; Runtime
+<div class="highlight"><pre><span></span><code>Docs -&gt; API reference -&gt; Code -&gt; Runtime
 </code></pre></div>
 <ol>
 <li><code>bdk_docs_search</code> finds the relevant DevKit feature page.</li>
 <li><code>bdk_docs_get</code> loads the bounded markdown source.</li>
-<li>The agent compares the documented pattern with the current code.</li>
+<li><code>bdk_api_search</code> finds concrete DevKit symbols involved in the implementation.</li>
+<li><code>bdk_api_get</code> loads bounded symbol details for the chosen uid.</li>
+<li>The agent compares the documented pattern and API shape with the current code.</li>
 <li>The agent implements the change.</li>
 <li>Runtime tools such as <code>bdk_capabilities_get</code>, <code>bdk_jobs_list</code>, <code>bdk_queueing_summary</code> or project-owned operations verify the running app.</li>
 </ol>
+<p>Example API reference call:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Result&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;results&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="project-summary">Project Summary<a class="headerlink" href="#project-summary" title="Permanent link">&para;</a></h2>
 <p><code>bdk_project_summary</code> is the quickest runtime orientation tool. It returns selected runtime metadata, registered modules, MCP operation counts grouped by feature/toolset/owner, and project-owned operations. Use it before feature work so an agent can understand the app shape without scanning unrelated files.</p>
 <p>Typical prompts:</p>
@@ -3505,8 +3526,8 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> 
 <p>Example prompt:</p>
 <div class="highlight"><pre><span></span><code>Use bdk_project_operations to inspect project-owned operations, then call the operation that checks whether customer CUST-10042 has recent failed orders or account warnings.
 </code></pre></div>
-<h2 id="documentation-tools">Documentation Tools<a class="headerlink" href="#documentation-tools" title="Permanent link">&para;</a></h2>
-<p><code>bdk_docs_search</code> and <code>bdk_docs_get</code> use official online DevKit documentation sources. They do not read the local repository docs.</p>
+<h2 id="documentation-and-api-tools">Documentation And API Tools<a class="headerlink" href="#documentation-and-api-tools" title="Permanent link">&para;</a></h2>
+<p><code>bdk_docs_search</code> and <code>bdk_docs_get</code> use official online DevKit documentation sources. <code>bdk_api_search</code> and <code>bdk_api_get</code> use generated API reference metadata published with the DevKit GitHub Pages site. They do not read the local repository docs.</p>
 <p>This matters because most developers use <code>bdk mcp</code> from consuming application repositories, not from the DevKit source repository. The local repository may have no DevKit docs at all.</p>
 <h2 id="safety-model">Safety Model<a class="headerlink" href="#safety-model" title="Permanent link">&para;</a></h2>
 <ul>

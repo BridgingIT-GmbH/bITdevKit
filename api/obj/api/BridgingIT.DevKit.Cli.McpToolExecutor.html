@@ -262,8 +262,8 @@ Class McpToolExecutor
 
   <a id="BridgingIT_DevKit_Cli_McpToolExecutor__ctor_" data-uid="BridgingIT.DevKit.Cli.McpToolExecutor.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Cli_McpToolExecutor__ctor_BridgingIT_DevKit_Cli_McpToolCatalog_BridgingIT_DevKit_Cli_McpRuntimeTools_BridgingIT_DevKit_Cli_McpDocumentationTools_BridgingIT_DevKit_Cli_McpGuidanceTools_" data-uid="BridgingIT.DevKit.Cli.McpToolExecutor.#ctor(BridgingIT.DevKit.Cli.McpToolCatalog,BridgingIT.DevKit.Cli.McpRuntimeTools,BridgingIT.DevKit.Cli.McpDocumentationTools,BridgingIT.DevKit.Cli.McpGuidanceTools)">
-  McpToolExecutor(McpToolCatalog, McpRuntimeTools, McpDocumentationTools, McpGuidanceTools)
+  <h3 id="BridgingIT_DevKit_Cli_McpToolExecutor__ctor_BridgingIT_DevKit_Cli_McpToolCatalog_BridgingIT_DevKit_Cli_McpRuntimeTools_BridgingIT_DevKit_Cli_McpDocumentationTools_BridgingIT_DevKit_Cli_McpApiReferenceTools_BridgingIT_DevKit_Cli_McpGuidanceTools_" data-uid="BridgingIT.DevKit.Cli.McpToolExecutor.#ctor(BridgingIT.DevKit.Cli.McpToolCatalog,BridgingIT.DevKit.Cli.McpRuntimeTools,BridgingIT.DevKit.Cli.McpDocumentationTools,BridgingIT.DevKit.Cli.McpApiReferenceTools,BridgingIT.DevKit.Cli.McpGuidanceTools)">
+  McpToolExecutor(McpToolCatalog, McpRuntimeTools, McpDocumentationTools, McpApiReferenceTools, McpGuidanceTools)
   
   </h3>
 
@@ -272,7 +272,7 @@ Class McpToolExecutor
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public McpToolExecutor(McpToolCatalog catalog, McpRuntimeTools runtimeTools, McpDocumentationTools documentationTools, McpGuidanceTools guidanceTools)</code></pre>
+    <pre><code class="lang-csharp hljs">public McpToolExecutor(McpToolCatalog catalog, McpRuntimeTools runtimeTools, McpDocumentationTools documentationTools, McpApiReferenceTools apiReferenceTools, McpGuidanceTools guidanceTools)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -282,6 +282,8 @@ Class McpToolExecutor
     <dt><code>runtimeTools</code> <a class="xref" href="BridgingIT.DevKit.Cli.McpRuntimeTools.html">McpRuntimeTools</a></dt>
     <dd></dd>
     <dt><code>documentationTools</code> <a class="xref" href="BridgingIT.DevKit.Cli.McpDocumentationTools.html">McpDocumentationTools</a></dt>
+    <dd></dd>
+    <dt><code>apiReferenceTools</code> <a class="xref" href="BridgingIT.DevKit.Cli.McpApiReferenceTools.html">McpApiReferenceTools</a></dt>
     <dd></dd>
     <dt><code>guidanceTools</code> <a class="xref" href="BridgingIT.DevKit.Cli.McpGuidanceTools.html">McpGuidanceTools</a></dt>
     <dd></dd>
@@ -293,7 +295,7 @@ Class McpToolExecutor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Cli_McpToolExecutor__ctor_BridgingIT_DevKit_Cli_McpToolCatalog_BridgingIT_DevKit_Cli_McpRuntimeTools_BridgingIT_DevKit_Cli_McpDocumentationTools_BridgingIT_DevKit_Cli_McpGuidanceTools__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Cli_McpToolExecutor__ctor_BridgingIT_DevKit_Cli_McpToolCatalog_BridgingIT_DevKit_Cli_McpRuntimeTools_BridgingIT_DevKit_Cli_McpDocumentationTools_BridgingIT_DevKit_Cli_McpApiReferenceTools_BridgingIT_DevKit_Cli_McpGuidanceTools__examples">Examples</h4>
   <pre><code class="lang-csharp">var response = await executor.ExecuteAsync("bdk_mcp_status", arguments, options, ct);</code></pre>
 
 

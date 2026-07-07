@@ -13132,6 +13132,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.GitHubPagesMcpApiReferenceSource.yml\" sourcestartlinenumber=\"1\">Reads DevKit API reference metadata from local Pages output or GitHub Pages.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.HostCommandClient.yml",
       "output": {
         ".html": {
@@ -13496,6 +13510,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.IMcpApiReferenceSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.IMcpApiReferenceSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.IMcpApiReferenceSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.IMcpApiReferenceSource.yml\" sourcestartlinenumber=\"1\">Provides DevKit API reference symbols to MCP API reference tools.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.IMcpDocumentationSource.yml",
       "output": {
         ".html": {
@@ -13507,6 +13535,104 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Cli.IMcpDocumentationSource",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.IMcpDocumentationSource.yml\" sourcestartlinenumber=\"1\">Provides official DevKit documentation documents to MCP documentation tools.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceIndex.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceIndex.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceIndex",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceIndex.yml\" sourcestartlinenumber=\"1\">Represents the generated DevKit API reference index.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceIndexSymbol.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceIndexSymbol.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceIndexSymbol",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceIndexSymbol.yml\" sourcestartlinenumber=\"1\">Represents one searchable API reference symbol index entry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceParameter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceParameter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceParameter",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceParameter.yml\" sourcestartlinenumber=\"1\">Represents a method or constructor parameter in an API reference symbol.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceReturn.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceReturn.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceReturn",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceReturn.yml\" sourcestartlinenumber=\"1\">Represents return information in an API reference symbol.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceSymbol.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceSymbol.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceSymbol",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceSymbol.yml\" sourcestartlinenumber=\"1\">Represents one detailed API reference symbol payload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceSymbolPage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceSymbolPage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceSymbolPage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceSymbolPage.yml\" sourcestartlinenumber=\"1\">Represents a generated API reference page-detail payload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceTools.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Cli.McpApiReferenceTools.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Cli.McpApiReferenceTools",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Cli.McpApiReferenceTools.yml\" sourcestartlinenumber=\"1\">Implements bounded DevKit API reference lookup tools for MCP.</p>\n"
     },
     {
       "type": "ManagedReference",

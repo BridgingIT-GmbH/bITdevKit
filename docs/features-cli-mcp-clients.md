@@ -26,6 +26,10 @@ This repository is the `bdk` CLI source repository, so the checked-in Visual Stu
 
 For applications that consume the packaged CLI as a local .NET tool, use this command instead:
 
+```bash
+dotnet tool install BridgingIT.DevKit.Cli
+```
+
 ```json
 {
   "servers": {

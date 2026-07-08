@@ -1,6 +1,6 @@
 {
   "servers": {
-    "bdk": {
+    "bdk_local": {
       "type": "stdio",
       "command": "dotnet",
       "args": [
@@ -12,6 +12,11 @@
         "--toolset",
         "diagnostics,operations,admin"
       ]
+    },
+    "bdk": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": ["tool", "run", "bdk", "mcp"]
     }
   }
 }

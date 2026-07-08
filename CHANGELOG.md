@@ -4,6 +4,12 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
+## [10.0.109] - 2026-07-09
+
+- Added local .NET tool manifest support for `bridgingit.devkit.cli` and updated the DevKit CLI documentation.
+- Updated the package baseline to .NET 10.0.109, refreshed OpenTelemetry packages to 1.16.0, and upgraded Microsoft.OpenApi to 2.10.0 for improved security and dependency freshness.
+- Improved document storage paging and query pipeline behavior across storage providers.
+
 ## [10.0.108] - 2026-07-03
 
 - Generate API Reference documentation for the devkit assembly set.

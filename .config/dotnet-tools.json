@@ -59,7 +59,7 @@
       "rollForward": false
     },
     "bridgingit.devkit.cli": {
-      "version": "10.0.108",
+      "version": "10.0.109",
       "commands": [
         "bdk"
       ],

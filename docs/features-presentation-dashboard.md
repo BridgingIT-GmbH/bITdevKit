@@ -36,6 +36,7 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
   - `AuthorizationMode`: Controls dashboard authorization behavior. Defaults to `Auto`.
   - `RequireRoles`, `RequirePolicy`, `RequireAuthenticationSchemes`: Inherited endpoint authorization requirements that can be configured through `Authorize(...)`.
   - `SignOutAuthenticationSchemes`: Authentication schemes used by the dashboard sign-out route. If empty, sign-out uses the dashboard authentication schemes.
+  - `DisabledPageKeys`: Stable page keys hidden from sidebar navigation and dashboard index cards.
   - `PluginAssemblies`: Additional assemblies to scan for dashboard plugins.
 - `DashboardAuthorizationOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
   - `UseCookie(...)`: Reuses an existing host cookie scheme for dashboard access.
@@ -150,6 +151,48 @@ builder.Services.AddDashboard(options =>
 {
     options.WithGroupPath("/_bdk/dashboard");
 });
+```
+
+Hide auto-discovered feature pages by stable page key when a host wants to keep the feature registered but remove its dashboard navigation and index card:
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .DisablePages("metrics", "storage.documents"));
+```
+
+The final argument may be a boolean switch, which is useful for environment-specific setup:
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .DisablePages("metrics", "storage.documents", !builder.Environment.IsDevelopment()));
+```
+
+Built-in page keys:
+
+| Page | Key |
+| --- | --- |
+| Overview | `dashboard.overview` |
+| System | `dashboard.system` |
+| Health | `health` |
+| Metrics | `metrics` |
+| Identity | `identity` |
+| Console | `console` |
+| MCP | `mcp` |
+| Logs | `logging.logs` |
+| Errors | `logging.errors` |
+| Logs Stream | `logging.stream` |
+| Jobs | `jobs` |
+| Messaging | `messaging` |
+| Queueing | `queueing` |
+| Orchestrations | `orchestrations` |
+| File Storage | `storage.files` |
+| Document Storage | `storage.documents` |
+
+Project-specific pages declared with `DashboardPageSet` use the key passed to `.Page(...)`. For example, a page declared as `.Page("customer-management", "/app/core/customers")` can be hidden with:
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .DisablePages("customer-management"));
 ```
 
 Map registered endpoints once during application startup.
@@ -328,6 +371,8 @@ The dashboard shell uses fixed built-in routes below the configured `GroupPath`.
 | Metrics content fragment | `/_bdk/dashboard/metrics/content` |
 | Identity page | `/_bdk/dashboard/identity` |
 | Identity client credentials login | `/_bdk/dashboard/identity/client-credentials/login` |
+| File storage explorer | `/_bdk/dashboard/storage/files` |
+| Document storage explorer | `/_bdk/dashboard/storage/documents` |
 
 ## Built-In Pages
 
@@ -369,6 +414,12 @@ If `AddHealthChecks()` is not registered, the page and card show an unavailable 
 ### Identity
 
 The identity page displays current user information using the current user accessor and request principal. When the fake identity provider is registered, the page can show a client credentials login action. If the fake provider is not available, fake-provider-specific UI is hidden.
+
+### Document Storage
+
+The document storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddDocumentStorage(...)` is active and at least one typed document client is registered. The page is server-rendered and uses the existing `IDocumentStoreClient<T>` instances for the selected document type.
+
+The page lets operators switch between registered document clients on the fly, page through document keys with selectable page sizes of 100, 250, 500, or 1000 items remembered in browser storage, filter by partition and row key, reset filters, create a new document from keyed pasted or written JSON, download a document from the table, open exact documents in a details dialog, edit payload JSON with syntax validation, and delete one or more checked documents after a browser confirmation alert that includes the affected keys. New-document creation checks the selected client first and reports a conflict instead of overwriting an existing key. Paging, filtering, and reset actions clear row selections so stale checked rows are not reused. It does not expose a separate REST admin API; dashboard-local fragment and form-action routes serve the rendered page workflow.
 
 ## Adding Project-Specific Dashboard Pages
 
@@ -554,7 +605,7 @@ The sidebar groups pages by `DashboardPage.Group`. Groups are visually separated
 Use `GroupOrder` to place groups predictably:
 
 ```csharp
-new DashboardPage("Orders", "receipt", "/_bdk/dashboard/orders")
+new DashboardPage("orders", "Orders", "receipt", "/_bdk/dashboard/orders")
 {
     Group = "Application",
     GroupOrder = 100,

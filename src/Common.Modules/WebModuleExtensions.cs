@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
+using AspNetCore.Builder;
 using AspNetCore.Hosting;
 using AspNetCore.Mvc.ApplicationParts;
 using AspNetCore.Mvc.Controllers;
@@ -68,6 +69,26 @@ public static class WebModuleExtensions
                 module.Priority);
             module.Map(app, configuration, environment);
         }
+
+        return app;
+    }
+
+    /// <summary>
+    /// Maps registered web modules using the application's configuration and environment.
+    /// </summary>
+    /// <param name="app">The web application to map module endpoints on.</param>
+    /// <returns>The same web application instance.</returns>
+    /// <example>
+    /// <code>
+    /// var app = builder.Build();
+    /// app.MapModules();
+    /// </code>
+    /// </example>
+    public static WebApplication MapModules(this WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+
+        MapModules(app, app.Configuration, app.Environment);
 
         return app;
     }

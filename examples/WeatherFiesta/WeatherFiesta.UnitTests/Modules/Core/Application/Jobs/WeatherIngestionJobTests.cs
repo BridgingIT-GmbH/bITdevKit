@@ -28,6 +28,8 @@ public class WeatherIngestionJobTests
                 Arg.Any<CancellationToken>())
             .Returns(Result<WeatherIngestionResult>.Success(new WeatherIngestionResult
             {
+                ProviderName = "openmeteo",
+                ProviderRetrievedAt = DateTimeOffset.UtcNow,
                 CurrentWeather = new CurrentWeatherData
                 {
                     TemperatureCelsius = 21.5,
@@ -150,6 +152,14 @@ public class WeatherIngestionJobTests
 
         await queueBroker.Received(4).Enqueue(
             Arg.Is<WeatherReportGenerationMessage>(m => m.GetCityId() == city.Id),
+            Arg.Any<CancellationToken>());
+        await queueBroker.Received(1).Enqueue(
+            Arg.Is<OpenMeteoWeatherArchiveMessage>(m =>
+                m.GetCityId() == city.Id &&
+                m.CityName == "London" &&
+                m.CountryCode == "GB" &&
+                m.ProviderName == "openmeteo" &&
+                m.WeatherIngestionResult.CurrentWeather.TemperatureCelsius == 21.5),
             Arg.Any<CancellationToken>());
         await queueBroker.Received(1).Enqueue(
             Arg.Is<WeatherReportGenerationMessage>(m => m.GetCityId() == city.Id && m.ReportType == WeatherReportType.Today),

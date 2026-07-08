@@ -107,6 +107,61 @@ public class DashboardEndpointsOptionsBuilder
     }
 
     /// <summary>
+    ///     Hides dashboard pages by stable page key.
+    /// </summary>
+    /// <param name="pageKeys">The page keys to hide, optionally followed by a final <see cref="bool" /> that enables or disables this operation.</param>
+    /// <returns>The same builder instance.</returns>
+    /// <remarks>
+    ///     When the final argument is <c>false</c>, the supplied keys are removed from the disabled set. This supports
+    ///     environment-specific configuration such as <c>DisablePages("metrics", !env.IsDevelopment())</c>.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// options.DisablePages("metrics", "storage.documents", !builder.Environment.IsDevelopment());
+    /// </code>
+    /// </example>
+    public DashboardEndpointsOptionsBuilder DisablePages(params object[] pageKeys)
+    {
+        if (pageKeys is null || pageKeys.Length == 0)
+        {
+            return this;
+        }
+
+        var disabled = true;
+        var length = pageKeys.Length;
+        if (pageKeys[^1] is bool value)
+        {
+            disabled = value;
+            length--;
+        }
+
+        for (var i = 0; i < length; i++)
+        {
+            if (pageKeys[i] is not string key)
+            {
+                throw new ArgumentException("Dashboard page keys must be strings, with an optional boolean as the last argument.", nameof(pageKeys));
+            }
+
+            key = key?.Trim();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                continue;
+            }
+
+            if (disabled)
+            {
+                this.options.DisabledPageKeys.Add(key);
+            }
+            else
+            {
+                this.options.DisabledPageKeys.Remove(key);
+            }
+        }
+
+        return this;
+    }
+
+    /// <summary>
     ///     Configures dashboard authorization and marks the dashboard as requiring authorization.
     /// </summary>
     /// <param name="configure">An optional delegate for configuring dashboard authorization requirements.</param>

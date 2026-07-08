@@ -17,7 +17,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -82,6 +82,14 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<FileStorageFileContentEntity> StorageFileContents { get; set; }
 
     public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
+
+    /// <summary>Gets or sets the document-store rows DbSet.</summary>
+    /// <example>
+    /// <code>
+    /// var rows = dbContext.StorageDocuments;
+    /// </code>
+    /// </example>
+    public DbSet<StorageDocument> StorageDocuments { get; set; }
 
     public DbSet<LogEntry> LogEntries { get; set; }
 

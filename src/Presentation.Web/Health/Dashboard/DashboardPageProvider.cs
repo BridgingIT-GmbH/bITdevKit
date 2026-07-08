@@ -24,7 +24,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Health", "heart-pulse", DashboardEndpoints.BuildHealthPath(options))
+        yield return new DashboardPage("health", "Health", "heart-pulse", DashboardEndpoints.BuildHealthPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

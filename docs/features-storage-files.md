@@ -152,6 +152,14 @@ public class FileService
 
 This registers "inMemory", "local", "network", and "azureBlob" providers with behaviors and lifetimes, resolved by `IFileStorageProviderFactory`.
 
+`AddFileStorage(...)` also registers a single standard ASP.NET Core health check for all configured providers:
+
+```text
+FileStorage
+```
+
+The check resolves every provider name from `IFileStorageProviderFactory`, calls each provider's `CheckHealthAsync(...)`, and reports failures with the failed provider names and error details in the health-check data. The health check is tagged with `ready`, `storage`, and `files`.
+
 ### Setting Up the Entity Framework Provider
 
 Use the Entity Framework provider when files should live in the same relational database as the rest of your application state.

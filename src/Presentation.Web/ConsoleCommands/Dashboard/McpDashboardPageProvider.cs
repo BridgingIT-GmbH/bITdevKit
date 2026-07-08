@@ -29,7 +29,7 @@ public sealed class McpDashboardPageProvider(DashboardEndpointsOptions options) 
             yield break;
         }
 
-        yield return new DashboardPage("MCP", "diagram-3", McpDashboardEndpoints.BuildMcpPath(options))
+        yield return new DashboardPage("mcp", "MCP", "diagram-3", McpDashboardEndpoints.BuildMcpPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

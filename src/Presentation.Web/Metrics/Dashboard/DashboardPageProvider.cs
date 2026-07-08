@@ -23,7 +23,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Metrics", "people", DashboardPath.Combine(options.GroupPath, options.EndpointPaths.Metrics))
+        yield return new DashboardPage("metrics", "Metrics", "people", DashboardPath.Combine(options.GroupPath, options.EndpointPaths.Metrics))
         {
             Group = "bdk",
             GroupOrder = 0,

@@ -1,6 +1,7 @@
 @using BridgingIT.DevKit.Presentation.Web
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Hosting
 @using Microsoft.Extensions.Logging
 @inherits RazorSlice
 
@@ -191,6 +192,67 @@
                 </table>
             </div>
         </section>
+
+        <section class="card dashboard-system-span-4">
+            <div class="card-body p-3">
+                <h6 class="card-title">Environment</h6>
+                <table class="table table-sm align-middle mb-0">
+                    <tbody>
+                    @foreach (var check in model.EnvironmentChecks)
+                    {
+                        <tr>
+                            <td class="dashboard-system-env-key">@check.Name</td>
+                            <td class="text-end">
+                                @if (check.Value is bool boolValue)
+                                {
+                                    @RenderBooleanBadge(boolValue)
+                                }
+                                else
+                                {
+                                    <span class="dashboard-system-env-value">@DisplayValue(check.Value?.ToString())</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-8">
+            <div class="card-body p-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                    <h6 class="card-title mb-0">Environment Variables</h6>
+                    <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+                        <input type="search"
+                               class="form-control form-control-sm dashboard-system-env-filter"
+                               placeholder="Filter variables"
+                               autocomplete="off"
+                               data-system-env-filter>
+                        <span class="text-muted small" data-system-env-count>@(model.EnvironmentVariables.Count) variable(s)</span>
+                    </div>
+                </div>
+                <div class="dashboard-system-env-scroll">
+                    <table class="table table-sm align-middle mb-0 dashboard-system-env-table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var variable in model.EnvironmentVariables)
+                        {
+                            <tr data-system-env-row data-system-env-search="@($"{variable.Name} {variable.Value}")">
+                                <td class="dashboard-system-env-key">@variable.Name</td>
+                                <td class="dashboard-system-env-value">@DisplayValue(variable.Value)</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
 
@@ -199,6 +261,7 @@
     {
         var dotNetSnapshotService = this.HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
         var aspNetSnapshotService = this.HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
+        var environment = this.HttpContext.RequestServices.GetService<IHostEnvironment>();
         var logger = this.HttpContext.RequestServices.GetService<ILogger<DashboardSystemViewModel>>();
         var result = new DashboardSystemViewModel { CapturedAtUtc = DateTimeOffset.UtcNow };
 
@@ -240,6 +303,8 @@
         result.MemoryScaleMb = Math.Max(128, Math.Max(result.DotNet.WorkingSetMb, Math.Max(result.DotNet.PrivateMemoryMb, result.DotNet.TotalAllocatedMb)));
         result.RequestScale = Math.Max(10, result.AspNet.RequestsPerMinute);
         result.LatencyScale = Math.Max(100, result.AspNet.AverageLatencyMs);
+        result.EnvironmentChecks = CreateEnvironmentChecks(environment);
+        result.EnvironmentVariables = CreateEnvironmentVariables();
         return result;
     }
 
@@ -308,6 +373,45 @@
                 </svg>
             </div>
             """);
+    }
+
+    private IHtmlContent RenderBooleanBadge(bool value)
+    {
+        var cssClass = value ? "text-bg-success" : "text-bg-secondary";
+        var label = value ? "True" : "False";
+
+        return new HtmlString($"""<span class="badge {cssClass}">{label}</span>""");
+    }
+
+    private static IReadOnlyList<DashboardEnvironmentCheckModel> CreateEnvironmentChecks(IHostEnvironment environment)
+    {
+        return
+        [
+            new("Name", environment?.EnvironmentName ?? "-"),
+            new("IsDevelopment", environment?.IsDevelopment() == true),
+            new("IsLocalDevelopment", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsLocalDevelopment(environment)),
+            new("IsTesting", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsTesting(environment)),
+            new("IsStaging", environment?.IsStaging() == true),
+            new("IsProduction", environment?.IsProduction() == true),
+            new("IsDocker", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsDocker()),
+            new("IsKubernetes", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsKubernetes()),
+            new("IsCloud", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsCloud()),
+            new("IsAzure", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzure()),
+            new("IsContainerized", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsContainerized())
+            @* new("IsAzureFunctions", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsAzureFunctions()), *@
+            @* new("IsBuildTimeOpenApiGeneration", BridgingIT.DevKit.Presentation.EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) *@
+        ];
+    }
+
+    private static IReadOnlyList<DashboardEnvironmentVariableModel> CreateEnvironmentVariables()
+    {
+        return global::System.Environment.GetEnvironmentVariables()
+            .Cast<System.Collections.DictionaryEntry>()
+            .Select(entry => new DashboardEnvironmentVariableModel(
+                entry.Key?.ToString() ?? string.Empty,
+                entry.Value?.ToString() ?? string.Empty))
+            .OrderBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
     }
 
     private static double PercentOf(double value, double max)
@@ -379,6 +483,15 @@
         return System.Net.WebUtility.HtmlEncode(value ?? string.Empty);
     }
 
+    private static string DisplayValue(string value)
+    {
+        return string.IsNullOrEmpty(value) ? "-" : value;
+    }
+
+    private sealed record DashboardEnvironmentCheckModel(string Name, object Value);
+
+    private sealed record DashboardEnvironmentVariableModel(string Name, string Value);
+
     private sealed class DashboardSystemViewModel
     {
         public DateTimeOffset CapturedAtUtc { get; init; }
@@ -392,6 +505,10 @@
         public List<string> UnavailableServices { get; } = [];
 
         public List<string> Errors { get; } = [];
+
+        public IReadOnlyList<DashboardEnvironmentCheckModel> EnvironmentChecks { get; set; } = [];
+
+        public IReadOnlyList<DashboardEnvironmentVariableModel> EnvironmentVariables { get; set; } = [];
 
         public double MemoryScaleMb { get; set; } = 128;
 

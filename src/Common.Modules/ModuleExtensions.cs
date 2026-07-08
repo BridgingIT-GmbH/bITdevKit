@@ -71,15 +71,49 @@ public static class ModuleExtensions
 
         RegisterActivityListener();
 
-        return new ModuleBuilderContext(services, configuration)
+        return new ModuleBuilderContext(services, configuration, environment)
             .WithModuleContextAccessors()
             .WithRequestModuleContextAccessors();
     }
 
+    /// <summary>
+    /// Registers modules using an explicit builder callback.
+    /// </summary>
+    /// <param name="services">The service collection to which module services will be added.</param>
+    /// <param name="configuration">The application configuration used by module registration.</param>
+    /// <param name="optionsAction">The callback that selects and configures modules.</param>
+    /// <returns>The module builder context used by the registration callback.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddModules(configuration, modules =&gt; modules.WithModule&lt;CoreModule&gt;());
+    /// </code>
+    /// </example>
     public static ModuleBuilderContext AddModules(
         this IServiceCollection services,
         IConfiguration configuration = null,
         Action<ModuleBuilderContext> optionsAction = null)
+    {
+        return AddModules(services, configuration, null, optionsAction);
+    }
+
+    /// <summary>
+    /// Registers modules using an explicit builder callback and web host environment.
+    /// </summary>
+    /// <param name="services">The service collection to which module services will be added.</param>
+    /// <param name="configuration">The application configuration used by module registration.</param>
+    /// <param name="environment">The web host environment passed to registered modules.</param>
+    /// <param name="optionsAction">The callback that selects and configures modules.</param>
+    /// <returns>The module builder context used by the registration callback.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddModules(configuration, environment, modules =&gt; modules.WithModule&lt;CoreModule&gt;());
+    /// </code>
+    /// </example>
+    public static ModuleBuilderContext AddModules(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IWebHostEnvironment environment,
+        Action<ModuleBuilderContext> optionsAction)
     {
         EnsureArg.IsNotNull(services, nameof(services));
 
@@ -88,7 +122,7 @@ public static class ModuleExtensions
         services.AddSingleton(new ActivitySource("default"));
         services.AddSingleton(new ActivitySource(ServiceName));
 
-        var context = new ModuleBuilderContext(services, configuration)
+        var context = new ModuleBuilderContext(services, configuration, environment)
             .WithModuleContextAccessors()
             .WithRequestModuleContextAccessors();
         optionsAction?.Invoke(context);
@@ -135,7 +169,7 @@ public static class ModuleExtensions
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
-            module.Register(context.Services, context.Configuration);
+            module.Register(context.Services, context.Configuration, context.Environment);
             module.IsRegistered = true;
         }
 
@@ -159,7 +193,7 @@ public static class ModuleExtensions
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
-            module.Register(context.Services, context.Configuration);
+            module.Register(context.Services, context.Configuration, context.Environment);
             module.IsRegistered = true;
         }
 
@@ -197,6 +231,26 @@ public static class ModuleExtensions
             Log.Logger.Information("[{LogKey}] use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             module.Use(app, configuration, environment);
         }
+
+        return app;
+    }
+
+    /// <summary>
+    /// Applies registered modules to a web application using the application's configuration and environment.
+    /// </summary>
+    /// <param name="app">The web application to configure.</param>
+    /// <returns>The same web application instance.</returns>
+    /// <example>
+    /// <code>
+    /// var app = builder.Build();
+    /// app.UseModules();
+    /// </code>
+    /// </example>
+    public static WebApplication UseModules(this WebApplication app)
+    {
+        EnsureArg.IsNotNull(app, nameof(app));
+
+        UseModules(app, app.Configuration, app.Environment);
 
         return app;
     }

@@ -103,17 +103,14 @@ public class WeatherEndpointsTests
     }
 
     [Fact]
-    public async Task ExportWeatherForecast_WhenFreePlan_ReturnsOk()
+    public async Task ExportWeatherForecast_WhenFreePlan_ReturnsBadRequest()
     {
         // Act
         var response = await this.client.GetAsync(
             $"/api/core/cities/{TestData.LondonCityGuid}/weather/export?days=3");
 
         // Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var csv = await response.Content.ReadAsStringAsync();
-        csv.ShouldNotBeNullOrWhiteSpace();
-        csv.ShouldContain("ForecastDate");
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]

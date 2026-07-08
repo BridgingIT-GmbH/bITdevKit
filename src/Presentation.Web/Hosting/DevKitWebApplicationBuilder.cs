@@ -41,6 +41,7 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
         this.properties[DevKitWebApplicationBuilderProperties.LocalToolingDecision] = this.LocalToolingDecision;
         this.properties[DevKitBuilderProperties.ApplicationName] = inner.Environment.ApplicationName;
         this.properties[DevKitBuilderProperties.ContentRootPath] = inner.Environment.ContentRootPath;
+        this.properties[DevKitBuilderProperties.HostEnvironment] = inner.Environment;
         this.properties[DevKitBuilderProperties.HostBuilder] = inner.Host;
         this.properties[DevKitBuilderProperties.LoggingBuilder] = inner.Logging;
 

@@ -6,6 +6,7 @@
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using System.Text.Json;
@@ -62,6 +63,7 @@ builder.Services.AddQueueing(builder.Configuration, o => o
     .WithBehavior<MetricsQueueEnqueuerBehavior>()
     .WithBehavior<MetricsQueueHandlerBehavior>()
     .WithSubscription<WeatherHelloWorldQueueMessage, WeatherHelloWorldQueueMessageHandler>()
+    .WithSubscription<OpenMeteoWeatherArchiveMessage, OpenMeteoWeatherArchiveHandler>()
     .WithSubscription<WeatherReportGenerationMessage, WeatherReportGenerationHandler>()
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
@@ -92,6 +94,14 @@ builder.Services.AddFileStorage(factory => factory
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithLifetime(ServiceLifetime.Singleton)))
         .AddEndpoints(options => options.RequireAuthorization());
+
+builder.Services.AddDocumentStorage(o => o.Enabled(true))
+    .WithBehavior<LoggingDocumentStoreClientBehavior<OpenMeteoWeatherArchiveDocument>>()
+    .WithEntityFrameworkClient<OpenMeteoWeatherArchiveDocument, CoreDbContext>(
+        documentStoreOptions: new DocumentStoreOptions
+        {
+            AllowFullScans = true
+        });
 
 builder.Services.AddMapping().WithMapster();
 

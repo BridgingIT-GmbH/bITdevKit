@@ -24,7 +24,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Files", "folder2-open", DashboardEndpoints.BuildFilesPath(options))
+        yield return new DashboardPage("storage.files", "Files", "folder2-open", DashboardEndpoints.BuildFilesPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

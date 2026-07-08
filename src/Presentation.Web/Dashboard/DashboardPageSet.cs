@@ -83,7 +83,7 @@ public abstract class DashboardPageSet(DashboardEndpointsOptions options)
     {
         foreach (var page in this.GetDefinitions())
         {
-            yield return new DashboardPage(page.Title, page.Icon, this.GetUrl(page.Key))
+            yield return new DashboardPage(page.Key, page.Title, page.Icon, this.GetUrl(page.Key))
             {
                 Group = page.Group,
                 GroupOrder = page.GroupOrder,

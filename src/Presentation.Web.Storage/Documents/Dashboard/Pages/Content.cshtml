@@ -1,0 +1,553 @@
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+}
+
+<style>
+    #documents-dashboard-root {
+        height: calc(100vh - 7.75rem);
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        overflow: hidden;
+    }
+
+    #documents-dashboard-root .documents-toolbar,
+    #documents-dashboard-root .documents-panel {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .1rem;
+        background: transparent;
+    }
+
+    #documents-dashboard-root .documents-toolbar {
+        flex: 0 0 auto;
+        padding: .55rem;
+    }
+
+    #documents-dashboard-root .documents-layout {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: .5rem;
+        overflow: hidden;
+    }
+
+    #documents-dashboard-root .documents-panel {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #documents-dashboard-root .documents-panel-header {
+        padding: .48rem .6rem;
+        border-bottom: 1px solid var(--bs-border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        gap: .5rem;
+    }
+
+    #documents-dashboard-root .documents-panel-body {
+        min-height: 0;
+        overflow: auto;
+        padding: .45rem;
+    }
+
+    #documents-dashboard-root .documents-key-cell {
+        max-width: 24rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #documents-dashboard-root .documents-editor {
+        min-height: 22rem;
+        resize: vertical;
+    }
+
+    #documents-dashboard-root .form-label {
+        color: var(--bs-secondary-color);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        font-size: .68rem;
+    }
+
+    @@media (max-width: 991.98px) {
+        #documents-dashboard-root {
+            height: auto;
+            overflow: visible;
+        }
+
+        #documents-dashboard-root .documents-layout {
+            grid-template-columns: 1fr;
+            overflow: visible;
+        }
+
+        #documents-dashboard-root .documents-panel {
+            max-height: none;
+        }
+    }
+</style>
+
+<div id="documents-dashboard-root"
+     data-client-id="@vm.SelectedClientId"
+     data-partition-key="@vm.PartitionKey"
+     data-row-key="@vm.RowKey"
+     data-row-key-mode="@vm.RowKeyMode"
+     data-page-size="@vm.PageSize"
+     data-continuation-token="@vm.ContinuationToken"
+     data-selected-partition-key="@vm.SelectedPartitionKey"
+     data-selected-row-key="@vm.SelectedRowKey">
+    @if (!vm.IsAvailable)
+    {
+        <div class="alert alert-warning py-2 mb-0">
+            Document storage is not registered. Call <code>AddDocumentStorage()</code> and register at least one client.
+        </div>
+    }
+    else
+    {
+        @if (vm.Errors.Count > 0)
+        {
+            <div class="alert alert-danger py-2 mb-0">
+                @foreach (var error in vm.Errors)
+                {
+                    <div>@error</div>
+                }
+            </div>
+        }
+
+        <form class="documents-toolbar" data-documents-filter-form>
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-lg-2">
+                    <label class="form-label small mb-1" for="documents-client">Type</label>
+                    <select id="documents-client" class="form-select form-select-sm" name="clientId" data-documents-filter>
+                        @foreach (var client in vm.Clients)
+                        {
+                            <option value="@client.ClientId"
+                                    title="@client.ProviderName"
+                                    @(string.Equals(client.ClientId, vm.SelectedClientId, StringComparison.OrdinalIgnoreCase) ? "selected" : null)>
+                                @client.DocumentTypeName
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <label class="form-label small mb-1" for="documents-partition">Partition</label>
+                    <input id="documents-partition" class="form-control form-control-sm" name="partitionKey" value="@vm.PartitionKey" list="documents-partition-history" autocomplete="off" data-documents-filter>
+                    <datalist id="documents-partition-history"></datalist>
+                </div>
+                <div class="col-12 col-lg-2">
+                    <label class="form-label small mb-1" for="documents-row">Row key</label>
+                    <input id="documents-row" class="form-control form-control-sm" name="rowKey" value="@vm.RowKey" list="documents-row-history" autocomplete="off" data-documents-filter>
+                    <datalist id="documents-row-history"></datalist>
+                </div>
+                <div class="col-6 col-lg-1">
+                    <label class="form-label small mb-1" for="documents-row-mode">Mode</label>
+                    <select id="documents-row-mode" class="form-select form-select-sm" name="rowKeyMode" data-documents-filter>
+                        @if (SupportsRowKeyPrefix(vm.SelectedClient))
+                        {
+                            <option value="prefix" @(vm.RowKeyMode == "prefix" ? "selected" : null)>Prefix</option>
+                        }
+                        @if (SupportsRowKeySuffix(vm.SelectedClient))
+                        {
+                            <option value="suffix" @(vm.RowKeyMode == "suffix" ? "selected" : null)>Suffix</option>
+                        }
+                        @if (SupportsFullMatch(vm.SelectedClient))
+                        {
+                            <option value="exact" @(vm.RowKeyMode == "exact" ? "selected" : null)>Exact</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-lg-1">
+                    <label class="form-label small mb-1" for="documents-page-size">Size</label>
+                    <select id="documents-page-size" class="form-select form-select-sm" name="pageSize" data-documents-filter>
+                        @foreach (var pageSize in PageSizeOptions)
+                        {
+                            <option value="@pageSize" @(vm.PageSize == pageSize ? "selected" : null)>@pageSize</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-lg-1 d-grid">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Apply
+                    </button>
+                </div>
+                <div class="col-6 col-lg-1 d-grid">
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm"
+                            data-documents-command="reset-filters"
+                            title="Reset filters and clear selections"
+                            aria-label="Reset filters and clear selections">
+                        <i class="bi bi-x-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="documents-layout">
+            <section class="documents-panel">
+                <div class="documents-panel-header">
+                    <span>Documents</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small">@DisplayCount(vm.TotalCount) · @vm.Keys.Count row(s)</span>
+                        <button type="button"
+                                class="btn btn-primary btn-sm"
+                                data-documents-command="new">
+                            <i class="bi bi-plus-lg me-1"></i>New
+                        </button>
+                        @if (vm.Keys.Count > 0)
+                        {
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-documents-command="delete-selected"
+                                    disabled>
+                                <i class="bi bi-trash me-1"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+                <div class="documents-panel-body">
+                    @if (vm.Keys.Count == 0)
+                    {
+                        <div class="dashboard-empty">No documents matched this query.</div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 2.5rem;">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   title="Select all documents on this page"
+                                                   data-documents-select-all>
+                                        </th>
+                                        <th>Partition</th>
+                                        <th>Row key</th>
+                                        <th class="text-end"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var key in vm.Keys)
+                                    {
+                                        var active = string.Equals(key.PartitionKey, vm.SelectedPartitionKey, StringComparison.Ordinal) &&
+                                            string.Equals(key.RowKey, vm.SelectedRowKey, StringComparison.Ordinal);
+                                        <tr class="@(active ? "table-active" : null)">
+                                            <td class="text-center">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       title="Select document"
+                                                       data-documents-row-check
+                                                       data-partition-key="@key.PartitionKey"
+                                                       data-row-key="@key.RowKey">
+                                            </td>
+                                            <td class="documents-key-cell" title="@key.PartitionKey">
+                                                <button type="button"
+                                                        class="btn btn-link btn-sm p-0 align-baseline text-start font-monospace"
+                                                        data-documents-command="filter-partition"
+                                                        data-partition-key="@key.PartitionKey"
+                                                        title="Filter by this partition">
+                                                    @key.PartitionKey
+                                                </button>
+                                            </td>
+                                            <td class="documents-key-cell" title="@key.RowKey">@key.RowKey</td>
+                                            <td class="text-end">
+                                                <div class="btn-group btn-group-sm" role="group" aria-label="Document actions">
+                                                    <a class="btn btn-outline-secondary"
+                                                       href="@BuildDownloadUrl(vm, key)"
+                                                       title="Download document"
+                                                       data-documents-download>
+                                                        <i class="bi bi-download"></i>
+                                                    </a>
+                                                    <button type="button"
+                                                            class="btn btn-outline-secondary"
+                                                            data-documents-command="select"
+                                                            data-partition-key="@key.PartitionKey"
+                                                            data-row-key="@key.RowKey"
+                                                            title="Document details">
+                                                        <i class="bi bi-info-circle"></i>
+                                                    </button>
+                                                    <button type="button"
+                                                            class="btn btn-outline-danger"
+                                                            data-documents-command="delete"
+                                                            data-partition-key="@key.PartitionKey"
+                                                            data-row-key="@key.RowKey"
+                                                            title="Delete document">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(vm.NextContinuationToken))
+                    {
+                        <div class="d-flex justify-content-end pt-2">
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm"
+                                    data-documents-command="page"
+                                    data-continuation-token="@vm.NextContinuationToken">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(vm.SelectedPartitionKey) && !string.IsNullOrWhiteSpace(vm.SelectedRowKey))
+        {
+            <div hidden
+                 data-documents-selected-document
+                 data-client-id="@vm.SelectedClientId"
+                 data-client-name="@DisplayClient(vm.SelectedClient)"
+                 data-partition-key="@vm.SelectedPartitionKey"
+                 data-row-key="@vm.SelectedRowKey"></div>
+            <textarea hidden data-documents-selected-content>@vm.SelectedContent</textarea>
+        }
+    }
+</div>
+
+@functions {
+    private static readonly int[] PageSizeOptions = new[] { 100, 250, 500, 1000 };
+
+    private async Task<DashboardDocumentsViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var factory = this.HttpContext.RequestServices.GetService<IDocumentStoreClientFactory>();
+        var model = new DashboardDocumentsViewModel
+        {
+            ActionBase = StorageDashboardEndpoints.BuildDocumentsActionBase(dashboardOptions),
+            DownloadPath = StorageDashboardEndpoints.BuildDocumentsDownloadPath(dashboardOptions),
+            PartitionKey = GetQuery("partitionKey"),
+            RowKey = GetQuery("rowKey"),
+            RowKeyMode = NormalizeMode(GetQuery("rowKeyMode")),
+            ContinuationToken = GetQuery("continuationToken"),
+            SelectedPartitionKey = GetQuery("selectedPartitionKey"),
+            SelectedRowKey = GetQuery("selectedRowKey"),
+            PageSize = NormalizePageSize(GetQuery("pageSize"))
+        };
+
+        if (this.HttpContext.RequestServices.GetService<DocumentStorageFeature>()?.IsEnabled != true || factory is null)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        model.Clients = factory.GetDescriptors();
+        if (model.Clients.Count == 0)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        model.SelectedClientId = ResolveSelectedClientId(model.Clients, GetQuery("clientId"));
+        model.SelectedClient = model.Clients.First(e => string.Equals(e.ClientId, model.SelectedClientId, StringComparison.OrdinalIgnoreCase));
+        model.RowKeyMode = NormalizeMode(model.RowKeyMode, model.SelectedClient);
+
+        var accessor = factory.Create(model.SelectedClientId);
+        if (accessor is null)
+        {
+            model.Errors.Add("The selected document client could not be loaded.");
+            return model;
+        }
+
+        var pageQuery = BuildPageQuery(model);
+        var pageResult = await accessor.ListPageResultAsync(pageQuery, this.HttpContext.RequestAborted);
+        if (pageResult.IsSuccess)
+        {
+            model.Keys = pageResult.Value.Items.ToArray();
+            model.NextContinuationToken = pageResult.Value.ContinuationToken;
+        }
+        else
+        {
+            model.Errors.Add(GetFailureMessage(pageResult, "Documents could not be listed."));
+        }
+
+        var countResult = await accessor.CountResultAsync(BuildCountQuery(model), this.HttpContext.RequestAborted);
+        if (countResult.IsSuccess)
+        {
+            model.TotalCount = countResult.Value;
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.SelectedPartitionKey) && !string.IsNullOrWhiteSpace(model.SelectedRowKey))
+        {
+            var documentResult = await accessor.GetJsonResultAsync(new DocumentKey(model.SelectedPartitionKey, model.SelectedRowKey), this.HttpContext.RequestAborted);
+            if (documentResult.IsSuccess)
+            {
+                model.SelectedContent = documentResult.Value;
+            }
+            else
+            {
+                model.Errors.Add(GetFailureMessage(documentResult, "Document could not be loaded."));
+            }
+        }
+
+        return model;
+    }
+
+    private string GetQuery(string key) =>
+        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+
+    private static string ResolveSelectedClientId(IReadOnlyList<DocumentStoreClientDescriptor> clients, string requestedClientId)
+    {
+        if (!string.IsNullOrWhiteSpace(requestedClientId) &&
+            clients.Any(e => string.Equals(e.ClientId, requestedClientId, StringComparison.OrdinalIgnoreCase)))
+        {
+            return requestedClientId;
+        }
+
+        return clients.First().ClientId;
+    }
+
+    private static DocumentQuery BuildPageQuery(DashboardDocumentsViewModel model)
+    {
+        var builder = DocumentQueries.Query().Take(model.PageSize);
+        if (!string.IsNullOrWhiteSpace(model.ContinuationToken))
+        {
+            builder.ContinueWith(model.ContinuationToken);
+        }
+
+        ApplyKey(builder, model);
+
+        return builder.Build();
+    }
+
+    private static DocumentCountQuery BuildCountQuery(DashboardDocumentsViewModel model)
+    {
+        var builder = DocumentQueries.Count();
+        ApplyKey(builder, model);
+
+        return builder.Build();
+    }
+
+    private static void ApplyKey(DocumentQueryBuilder builder, DashboardDocumentsViewModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.PartitionKey))
+        {
+            builder.AllowFullScan();
+            return;
+        }
+
+        builder.ForKey(model.PartitionKey, model.RowKey ?? string.Empty);
+        ApplyMode(builder, model.RowKeyMode);
+    }
+
+    private static void ApplyKey(DocumentCountQueryBuilder builder, DashboardDocumentsViewModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.PartitionKey))
+        {
+            builder.AllowFullScan();
+            return;
+        }
+
+        builder.ForKey(model.PartitionKey, model.RowKey ?? string.Empty);
+        ApplyMode(builder, model.RowKeyMode);
+    }
+
+    private static void ApplyMode(DocumentQueryBuilder builder, string mode)
+    {
+        switch (mode)
+        {
+            case "exact":
+                builder.WithFullMatch();
+                break;
+            case "suffix":
+                builder.WithRowKeySuffix();
+                break;
+            default:
+                builder.WithRowKeyPrefix();
+                break;
+        }
+    }
+
+    private static void ApplyMode(DocumentCountQueryBuilder builder, string mode)
+    {
+        switch (mode)
+        {
+            case "exact":
+                builder.WithFullMatch();
+                break;
+            case "suffix":
+                builder.WithRowKeySuffix();
+                break;
+            default:
+                builder.WithRowKeyPrefix();
+                break;
+        }
+    }
+
+    private static string NormalizeMode(string value) =>
+        value is "exact" or "suffix" ? value : "prefix";
+
+    private static string NormalizeMode(string value, DocumentStoreClientDescriptor descriptor)
+    {
+        var requested = NormalizeMode(value);
+        if (requested == "prefix" && SupportsRowKeyPrefix(descriptor))
+        {
+            return "prefix";
+        }
+
+        if (requested == "suffix" && SupportsRowKeySuffix(descriptor))
+        {
+            return "suffix";
+        }
+
+        if (requested == "exact" && SupportsFullMatch(descriptor))
+        {
+            return "exact";
+        }
+
+        if (SupportsRowKeyPrefix(descriptor))
+        {
+            return "prefix";
+        }
+
+        if (SupportsRowKeySuffix(descriptor))
+        {
+            return "suffix";
+        }
+
+        return SupportsFullMatch(descriptor) ? "exact" : "prefix";
+    }
+
+    private static bool SupportsFullMatch(DocumentStoreClientDescriptor descriptor) =>
+        descriptor?.Capabilities?.FullMatch != DocumentQuerySupport.Unsupported;
+
+    private static bool SupportsRowKeyPrefix(DocumentStoreClientDescriptor descriptor) =>
+        descriptor?.Capabilities?.RowKeyPrefixMatch != DocumentQuerySupport.Unsupported;
+
+    private static bool SupportsRowKeySuffix(DocumentStoreClientDescriptor descriptor) =>
+        descriptor?.Capabilities?.RowKeySuffixMatch != DocumentQuerySupport.Unsupported;
+
+    private static int NormalizePageSize(string value) =>
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
+        && PageSizeOptions.Contains(parsed)
+            ? parsed
+            : 100;
+
+    private static string DisplayCount(long? value) =>
+        value.HasValue ? $"{value.Value.ToString("N0", CultureInfo.InvariantCulture)} match(es)" : "count unavailable";
+
+    private static string DisplayClient(DocumentStoreClientDescriptor descriptor) =>
+        descriptor is null ? "-" : $"{descriptor.DocumentTypeName} · {descriptor.ProviderName}";
+
+    private static string BuildDownloadUrl(DashboardDocumentsViewModel model, DocumentKey key) =>
+        $"{model.DownloadPath}?clientId={Uri.EscapeDataString(model.SelectedClientId ?? string.Empty)}" +
+        $"&partitionKey={Uri.EscapeDataString(key.PartitionKey ?? string.Empty)}" +
+        $"&rowKey={Uri.EscapeDataString(key.RowKey ?? string.Empty)}";
+
+    private static string GetFailureMessage(BridgingIT.DevKit.Common.IResult result, string fallback) =>
+        result.Messages?.LastOrDefault()
+        ?? result.Errors?.FirstOrDefault()?.Message
+        ?? fallback;
+}

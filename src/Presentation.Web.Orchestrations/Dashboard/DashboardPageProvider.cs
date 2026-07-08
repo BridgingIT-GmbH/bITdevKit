@@ -25,7 +25,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Orchestrations", "diagram-3", DashboardEndpoints.BuildOrchestrationsPath(options))
+        yield return new DashboardPage("orchestrations", "Orchestrations", "diagram-3", DashboardEndpoints.BuildOrchestrationsPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

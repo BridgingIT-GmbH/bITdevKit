@@ -1,6 +1,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using BridgingIT.DevKit.Common;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,7 +64,11 @@ public static class ConfigurationDevKitWebApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(configure);
 
-        builder.Services.AddModules(builder.Configuration, configure);
+        var environment = builder.Properties.TryGetValue(DevKitBuilderProperties.HostEnvironment, out var value)
+            ? value as IWebHostEnvironment
+            : null;
+
+        builder.Services.AddModules(builder.Configuration, environment, configure);
 
         return builder;
     }

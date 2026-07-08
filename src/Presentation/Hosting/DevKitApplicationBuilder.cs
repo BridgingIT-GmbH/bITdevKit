@@ -33,6 +33,7 @@ public sealed class DevKitApplicationBuilder : IDevKitHostApplicationBuilder
 
         this.properties[DevKitBuilderProperties.ApplicationName] = inner.Environment.ApplicationName;
         this.properties[DevKitBuilderProperties.ContentRootPath] = inner.Environment.ContentRootPath;
+        this.properties[DevKitBuilderProperties.HostEnvironment] = inner.Environment;
         this.properties[DevKitBuilderProperties.HostApplicationBuilder] = inner;
         this.properties[DevKitBuilderProperties.LoggingBuilder] = inner.Logging;
 

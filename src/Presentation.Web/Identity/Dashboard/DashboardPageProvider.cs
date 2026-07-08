@@ -21,7 +21,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Identity", "person-badge", DashboardPath.Combine(options.GroupPath, options.EndpointPaths.Identity))
+        yield return new DashboardPage("identity", "Identity", "person-badge", DashboardPath.Combine(options.GroupPath, options.EndpointPaths.Identity))
         {
             Group = "bdk",
             GroupOrder = 0,

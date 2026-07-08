@@ -25,7 +25,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Queueing", "inboxes", DashboardEndpoints.BuildQueueingPath(options))
+        yield return new DashboardPage("queueing", "Queueing", "inboxes", DashboardEndpoints.BuildQueueingPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

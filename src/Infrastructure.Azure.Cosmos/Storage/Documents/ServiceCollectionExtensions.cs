@@ -20,6 +20,89 @@ using Scrutor;
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
+    /// Registers a Cosmos DB backed document-store client within a top-level document-storage registration flow.
+    /// </summary>
+    /// <typeparam name="T">The document payload type.</typeparam>
+    /// <param name="context">The document-storage builder context.</param>
+    /// <param name="providerOptionsBuilder">The provider options builder used to configure the Cosmos SQL provider.</param>
+    /// <param name="lifetime">The optional client lifetime override.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <returns>The current document-storage builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStorage(o => o.Enabled(true))
+    ///     .WithBehavior&lt;LoggingDocumentStoreClientBehavior&lt;Customer&gt;&gt;()
+    ///     .WithCosmosClient&lt;Customer&gt;(o => o
+    ///         .Container("storage_documents")
+    ///         .PartitionKey(e => e.Type));
+    /// </code>
+    /// </example>
+    public static DocumentStorageBuilderContext WithCosmosClient<T>(
+        this DocumentStorageBuilderContext context,
+        Builder<CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>, CosmosSqlProviderOptions<CosmosStorageDocument>>
+            providerOptionsBuilder = null,
+        ServiceLifetime? lifetime = null,
+        DocumentStoreOptions documentStoreOptions = null)
+        where T : class, new()
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (!context.Options.IsEnabled)
+        {
+            return context;
+        }
+
+        context.Services.AddCosmosDocumentStoreClient<T>(
+            providerOptionsBuilder ?? (o => o),
+            lifetime ?? context.Lifetime,
+            documentStoreOptions);
+
+        return context.RegisterClient<T>(
+            "Cosmos DB",
+            capabilities: CreateCosmosCapabilities());
+    }
+
+    /// <summary>
+    /// Registers a Cosmos DB backed document-store client within a top-level document-storage registration flow using an existing Cosmos client.
+    /// </summary>
+    /// <typeparam name="T">The document payload type.</typeparam>
+    /// <param name="context">The document-storage builder context.</param>
+    /// <param name="cosmosClient">The Cosmos client used by the provider.</param>
+    /// <param name="lifetime">The optional client lifetime override.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <returns>The current document-storage builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStorage()
+    ///     .WithCosmosClient&lt;Customer&gt;(cosmosClient);
+    /// </code>
+    /// </example>
+    public static DocumentStorageBuilderContext WithCosmosClient<T>(
+        this DocumentStorageBuilderContext context,
+        CosmosClient cosmosClient,
+        ServiceLifetime? lifetime = null,
+        DocumentStoreOptions documentStoreOptions = null)
+        where T : class, new()
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+        EnsureArg.IsNotNull(cosmosClient, nameof(cosmosClient));
+
+        if (!context.Options.IsEnabled)
+        {
+            return context;
+        }
+
+        context.Services.AddCosmosDocumentStoreClient<T>(
+            cosmosClient,
+            lifetime ?? context.Lifetime,
+            documentStoreOptions);
+
+        return context.RegisterClient<T>(
+            "Cosmos DB",
+            capabilities: CreateCosmosCapabilities());
+    }
+
+    /// <summary>
     /// Registers a Cosmos DB backed document-store client for <typeparamref name="T" />.
     /// </summary>
     /// <typeparam name="T">The document payload type.</typeparam>
@@ -194,6 +277,18 @@ public static partial class ServiceCollectionExtensions
 
         return new CosmosDocumentStoreClientBuilderContext<T>(services, lifetime);
     }
+
+    private static DocumentStoreProviderCapabilities CreateCosmosCapabilities() => new()
+    {
+        FullMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
+        RowKeySuffixMatch = DocumentQuerySupport.SupportedServerSide,
+        FullScan = DocumentQuerySupport.SupportedServerSide,
+        KeyListing = DocumentQuerySupport.SupportedServerSide,
+        SupportsContinuationPaging = true,
+        SupportsServerSideCount = false,
+        SupportsKeyOnlyProjection = true
+    };
 }
 
 /// <summary>

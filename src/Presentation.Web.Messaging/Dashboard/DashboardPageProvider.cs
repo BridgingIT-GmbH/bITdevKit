@@ -25,7 +25,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Messaging", "envelope-paper", DashboardEndpoints.BuildMessagingPath(options))
+        yield return new DashboardPage("messaging", "Messaging", "envelope-paper", DashboardEndpoints.BuildMessagingPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

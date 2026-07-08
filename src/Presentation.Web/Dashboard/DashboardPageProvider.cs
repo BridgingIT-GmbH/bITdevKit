@@ -23,7 +23,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Overview", "house", DashboardPath.Combine(options.GroupPath, "/"))
+        yield return new DashboardPage("dashboard.overview", "Overview", "house", DashboardPath.Combine(options.GroupPath, "/"))
         {
             Group = "bdk",
             GroupOrder = 0,
@@ -32,7 +32,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             ShowOnIndex = false
         };
 
-        yield return new DashboardPage("System", "speedometer2", DashboardPath.Combine(options.GroupPath, options.EndpointPaths.System))
+        yield return new DashboardPage("dashboard.system", "System", "speedometer2", DashboardPath.Combine(options.GroupPath, options.EndpointPaths.System))
         {
             Group = "bdk",
             GroupOrder = 0,

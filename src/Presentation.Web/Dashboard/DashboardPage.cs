@@ -12,14 +12,19 @@ using Microsoft.AspNetCore.Http;
 /// </summary>
 /// <example>
 /// <code>
-/// var page = new DashboardPage("Cities", "cloud-sun", "/_bdk/dashboard/weatherfiesta/cities")
+/// var page = new DashboardPage("weatherfiesta.cities", "Cities", "cloud-sun", "/_bdk/dashboard/weatherfiesta/cities")
 /// {
 ///     Group = "WeatherFiesta"
 /// };
 /// </code>
 /// </example>
-public class DashboardPage(string title, string icon, string url)
+public class DashboardPage(string key, string title, string icon, string url)
 {
+    /// <summary>
+    /// Gets or sets the stable key used for host-level dashboard page filtering.
+    /// </summary>
+    public string Key { get; init; } = key;
+
     /// <summary>
     /// Gets or sets the sidebar and card title.
     /// </summary>

@@ -187,11 +187,13 @@ sequenceDiagram
   - Register: [src/Infrastructure.Azure.Cosmos/Storage/Documents/ServiceCollectionExtensions.cs](src/Infrastructure.Azure.Cosmos/Storage/Documents/ServiceCollectionExtensions.cs)
 
 ```csharp
-services.AddCosmosDocumentStoreClient<Person>(cosmosClient);
+services.AddDocumentStorage()
+    .WithCosmosClient<Person>(cosmosClient);
 
-services.AddCosmosDocumentStoreClient<Person>(o => o
-    .Container("storage_documents")
-    .PartitionKey(e => e.Type));
+services.AddDocumentStorage()
+    .WithCosmosClient<Person>(o => o
+        .Container("storage_documents")
+        .PartitionKey(e => e.Type));
 ```
 
 ### Azure Blob Storage
@@ -205,8 +207,11 @@ services.AddCosmosDocumentStoreClient<Person>(o => o
   - Register: [src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs](src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs)
 
 ```csharp
-services.AddAzureBlobDocumentStoreClient<Person>();
-services.AddAzureBlobDocumentStoreClient<Person>(blobServiceClient);
+services.AddDocumentStorage()
+    .WithAzureBlobClient<Person>();
+
+services.AddDocumentStorage()
+    .WithAzureBlobClient<Person>(blobServiceClient);
 ```
 
 ### Azure Table Storage
@@ -219,8 +224,11 @@ services.AddAzureBlobDocumentStoreClient<Person>(blobServiceClient);
   - Register: [src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs](src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs)
 
 ```csharp
-services.AddAzureTableDocumentStoreClient<Person>();
-services.AddAzureTableDocumentStoreClient<Person>(tableServiceClient);
+services.AddDocumentStorage()
+    .WithAzureTableClient<Person>();
+
+services.AddDocumentStorage()
+    .WithAzureTableClient<Person>(tableServiceClient);
 ```
 
 ## Getting Started
@@ -230,51 +238,101 @@ services.AddAzureTableDocumentStoreClient<Person>(tableServiceClient);
 Register a client for your document type and choose a provider.
 
 ```csharp
-services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>();
+services.AddDocumentStorage(o => o.Enabled(true))
+    .WithEntityFrameworkClient<Person, AppDbContext>();
 ```
 
 Register with provider tuning and document-query safety options:
 
 ```csharp
-services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>(
-    configure: options =>
-    {
-        options.LeaseDuration = TimeSpan.FromSeconds(15);
-        options.RetryCount = 5;
-        options.RetryDelay = TimeSpan.FromMilliseconds(100);
-    },
-    documentStoreOptions: new DocumentStoreOptions
-    {
-        DefaultTake = 100,
-        MaxTake = 1000,
-        AllowFullScans = false,
-        RejectClientSideFilteredQueries = true
-    });
+services.AddDocumentStorage(o => o.Enabled(true))
+    .WithEntityFrameworkClient<Person, AppDbContext>(
+        configure: options =>
+        {
+            options.LeaseDuration = TimeSpan.FromSeconds(15);
+            options.RetryCount = 5;
+            options.RetryDelay = TimeSpan.FromMilliseconds(100);
+        },
+        documentStoreOptions: new DocumentStoreOptions
+        {
+            DefaultTake = 100,
+            MaxTake = 1000,
+            AllowFullScans = false,
+            RejectClientSideFilteredQueries = true
+        });
 ```
 
 Register a custom provider:
 
 ```csharp
-services.AddDocumentStoreClient<Person>(sp =>
-{
-    var provider = new InMemoryDocumentStoreProvider(
-        sp.GetRequiredService<ILoggerFactory>());
+services.AddDocumentStorage()
+    .WithClient<Person>(sp =>
+    {
+        var provider = new InMemoryDocumentStoreProvider(
+            sp.GetRequiredService<ILoggerFactory>());
 
-    return new DocumentStoreClient<Person>(provider);
-});
+        return new DocumentStoreClient<Person>(provider);
+    });
 ```
+
+The document-storage builder registers a single standard ASP.NET Core health check for all configured typed clients:
+
+```text
+DocumentStorage
+```
+
+The check probes every registered `IDocumentStoreClient<T>` with a non-mutating exact-key existence check for `__bdk/healthcheck` / `probe`. A missing probe document is healthy; provider failures are reported as unhealthy with the failed client ids and error details in the health-check data. The health check is tagged with `ready`, `storage`, and `documents`.
 
 Add optional client behaviors:
 
 ```csharp
-services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
+services.AddDocumentStorage(o => o.Enabled(true))
     .WithBehavior<LoggingDocumentStoreClientBehavior<Person>>()
     .WithBehavior<RetryDocumentStoreClientBehavior<Person>>()
-    .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>();
+    .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>()
+    .WithEntityFrameworkClient<Person, AppDbContext>();
 
-services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
+services.AddDocumentStorage()
+    .WithEntityFrameworkClient<Person, AppDbContext>()
     .WithBehavior<CacheDocumentStoreClientBehavior<Person>>();
 ```
+
+### Dashboard Explorer
+
+When the host also registers the Presentation Dashboard, Document Storage contributes a server-rendered dashboard page at:
+
+```text
+/_bdk/dashboard/storage/documents
+```
+
+The page is available only when `AddDocumentStorage(...)` is enabled and at least one typed document client is registered through the top-level document-storage builder. It does not expose a general-purpose REST admin API. The page renders server-side and uses dashboard-local fragment/action routes for the current browser workflow.
+
+The explorer works through the existing `IDocumentStoreClient<T>` contract:
+
+- first select the registered document type/client
+- list document keys with bounded continuation paging and selectable page sizes of 100, 250, 500, or 1000 items remembered in browser storage
+- filter by exact partition key plus row-key prefix, suffix, or exact match when the selected provider supports that mode
+- reset filters without leaving the page
+- create a new document for the selected client by entering partition key, row key, and pasted or written JSON
+- view an exact document by key in a details dialog
+- download an individual document directly from the table
+- edit the serialized payload with JSON validation before it is deserialized back to `T` and saved through `UpsertResultAsync(...)`
+- reject new-document creation when the entered key already exists so existing documents are not overwritten accidentally
+- delete one exact document from the details dialog or delete checked documents after a browser confirmation alert that includes the affected keys
+- show lightweight busy and result states while server-rendered fragments and form actions complete
+
+Provider-specific raw storage APIs are not required. EF, Cosmos DB, Azure Blob Storage, Azure Table Storage, and custom clients can all appear in the selector when they are registered through `AddDocumentStorage(...).With...Client<T>()`.
+
+```csharp
+builder.Services.AddDocumentStorage(o => o.Enabled(true))
+    .WithBehavior<LoggingDocumentStoreClientBehavior<Person>>()
+    .WithEntityFrameworkClient<Person, AppDbContext>()
+    .WithCosmosClient<Customer>(o => o
+        .Container("storage_documents")
+        .PartitionKey(e => e.Type));
+```
+
+The listing behavior still follows each selected client's `DocumentStoreOptions`. For example, a type-wide list requires full scans to be allowed by that client's provider options. When full scans are disabled, enter an exact partition key and use row-key prefix paging. The row-key mode selector defaults to prefix and only offers suffix or exact when the selected provider advertises support for that query shape.
 
 ### Using Document Storage As A Persistent Cache Backend
 
@@ -599,7 +657,7 @@ flowchart LR
 
 - Outermost behavior sees every call first.
 - Each behavior should call through to the inner client and optionally act before or after the call.
-- Registration uses `DocumentStoreBuilderContext<T>.WithBehavior<TBehavior>()` and composes in the order behaviors are added.
+- Registration uses the top-level `AddDocumentStorage()` builder. Behaviors can be registered before or after provider clients and compose in the order they are added.
 
 ### Creating A Custom Behavior
 
@@ -663,18 +721,20 @@ Behaviors are applied so that the first registered ends up as the outermost wrap
 Type-based decorator:
 
 ```csharp
-services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
+services.AddDocumentStorage()
     .WithBehavior<LoggingDocumentStoreClientBehavior<Person>>()
     .WithBehavior<RetryDocumentStoreClientBehavior<Person>>()
-    .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>();
+    .WithBehavior<TimeoutDocumentStoreClientBehavior<Person>>()
+    .WithEntityFrameworkClient<Person, AppDbContext>();
 ```
 
 Factory-based decorator:
 
 ```csharp
-services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
-    .WithBehavior((inner, sp) =>
+services.AddDocumentStorage()
+    .WithBehavior<Person, MetricsDocumentStoreClientBehavior<Person>>((inner, sp) =>
         new MetricsDocumentStoreClientBehavior<Person>(
             inner,
-            sp.GetRequiredService<IMetrics>()));
+            sp.GetRequiredService<IMetrics>()))
+    .WithEntityFrameworkClient<Person, AppDbContext>();
 ```

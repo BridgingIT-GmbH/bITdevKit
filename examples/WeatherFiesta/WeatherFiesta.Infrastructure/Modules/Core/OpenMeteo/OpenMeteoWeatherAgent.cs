@@ -20,6 +20,7 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
 {
     private const string DefaultTimeZone = "auto";
     private const int DefaultForecastDays = 7;
+    private const string ProviderName = "openmeteo";
 
     private readonly IOpenMeteoClient openMeteoClient;
     private readonly ILogger<OpenMeteoWeatherAgent> logger;
@@ -83,9 +84,12 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
                 return Result<WeatherIngestionResult>.Failure().WithError("No weather data returned from provider.");
             }
 
+            var providerRetrievedAt = DateTimeOffset.UtcNow;
             var result = new WeatherIngestionResult
             {
-                CurrentWeather = MapCurrentWeather(weatherData.Current),
+                ProviderName = ProviderName,
+                ProviderRetrievedAt = providerRetrievedAt,
+                CurrentWeather = MapCurrentWeather(weatherData.Current, providerRetrievedAt.UtcDateTime),
                 Forecasts = weatherData.Daily?.Select(d => MapDailyForecast(d, weatherData.Hourly)).ToList() ?? []
             };
 
@@ -106,7 +110,8 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
     }
 
     private static AppCurrentWeather MapCurrentWeather(
-        CurrentWeatherData source)
+        CurrentWeatherData source,
+        DateTime retrievedAt)
     {
         if (source is null)
         {
@@ -125,7 +130,7 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
             PressureHpa = (double)source.Pressure,
             CloudCoverPercent = source.CloudCover,
             PrecipitationMm = (double)source.Precipitation,
-            RetrievedAt = DateTime.UtcNow
+            RetrievedAt = retrievedAt
         };
     }
 

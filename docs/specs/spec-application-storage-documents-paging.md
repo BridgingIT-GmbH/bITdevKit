@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Document Storage Continuation Paging

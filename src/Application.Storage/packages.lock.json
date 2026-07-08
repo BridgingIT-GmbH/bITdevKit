@@ -14,6 +14,18 @@
         "resolved": "3.0.10",
         "contentHash": "yZIhtw8sYuvsONzQbZxWpR60tMWYHXoo0DL6nyOqSFiU5POjBTSEyWFpTQtJEZuy+oqiYTXKXY/Mjx7KnqIQFw=="
       },
+      "Microsoft.Extensions.Diagnostics.HealthChecks": {
+        "type": "Direct",
+        "requested": "[10.0.9, )",
+        "resolved": "10.0.9",
+        "contentHash": "I3mmGlsR73z+7SJJ1ngUG6JfH+UEVTm/42leXxzzr6OKC9DqYIqwZKAjumoH3HEcRqfGPOpo/lfECifQN7qgUA==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "10.0.9",
+          "Microsoft.Extensions.Hosting.Abstractions": "10.0.9",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.9",
+          "Microsoft.Extensions.Options": "10.0.9"
+        }
+      },
       "Microsoft.Extensions.Logging": {
         "type": "Direct",
         "requested": "[10.0.9, )",
@@ -278,18 +290,6 @@
         "requested": "[10.0.9, )",
         "resolved": "10.0.9",
         "contentHash": "g41l/30G3K4B/d/L8kjux0+30e27c8D0FVQ/PFCpbekgfDpj9mnDhieP67EqXWvl1EWNeZh2rpR4F5B/jcDOHA=="
-      },
-      "Microsoft.Extensions.Diagnostics.HealthChecks": {
-        "type": "CentralTransitive",
-        "requested": "[10.0.9, )",
-        "resolved": "10.0.9",
-        "contentHash": "I3mmGlsR73z+7SJJ1ngUG6JfH+UEVTm/42leXxzzr6OKC9DqYIqwZKAjumoH3HEcRqfGPOpo/lfECifQN7qgUA==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "10.0.9",
-          "Microsoft.Extensions.Hosting.Abstractions": "10.0.9",
-          "Microsoft.Extensions.Logging.Abstractions": "10.0.9",
-          "Microsoft.Extensions.Options": "10.0.9"
-        }
       },
       "Microsoft.Extensions.Hosting.Abstractions": {
         "type": "CentralTransitive",

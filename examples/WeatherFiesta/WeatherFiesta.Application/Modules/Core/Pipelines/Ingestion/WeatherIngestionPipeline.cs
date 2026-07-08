@@ -17,6 +17,7 @@ public sealed class WeatherIngestionPipeline : PipelineDefinition<WeatherIngesti
             .AddStep<IngestWeatherForCityStep>()
             .AddStep<PersistCurrentWeatherStep>()
             .AddStep<PersistWeatherForecastsStep>()
+            .AddStep<EnqueueOpenMeteoWeatherArchiveStep>()
             .AddStep<ResolveWeatherReportPeriodsStep>()
             .AddStep<EnqueueWeatherReportGenerationStep>();
     }

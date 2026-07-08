@@ -26,7 +26,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Jobs", "calendar2-check", DashboardEndpoints.BuildJobsPath(options))
+        yield return new DashboardPage("jobs", "Jobs", "calendar2-check", DashboardEndpoints.BuildJobsPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

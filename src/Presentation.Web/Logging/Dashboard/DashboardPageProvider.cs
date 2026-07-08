@@ -25,7 +25,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     /// <inheritdoc />
     public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
     {
-        yield return new DashboardPage("Logs", "journal-text", DashboardEndpoints.BuildLogEntriesPath(options))
+        yield return new DashboardPage("logging.logs", "Logs", "journal-text", DashboardEndpoints.BuildLogEntriesPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,
@@ -34,7 +34,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Card = GetCardAsync
         };
 
-        yield return new DashboardPage("Errors", "exclamation-octagon", DashboardEndpoints.BuildErrorsPath(options))
+        yield return new DashboardPage("logging.errors", "Errors", "exclamation-octagon", DashboardEndpoints.BuildErrorsPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,
@@ -43,7 +43,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Card = GetErrorsCardAsync
         };
 
-        yield return new DashboardPage("Logs Stream", "terminal", DashboardEndpoints.BuildLogEntriesStreamPath(options))
+        yield return new DashboardPage("logging.stream", "Logs Stream", "terminal", DashboardEndpoints.BuildLogEntriesStreamPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

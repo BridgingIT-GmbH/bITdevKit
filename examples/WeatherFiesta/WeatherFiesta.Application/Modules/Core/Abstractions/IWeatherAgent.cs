@@ -45,6 +45,26 @@ public interface IWeatherAgent
 /// </summary>
 public class WeatherIngestionResult
 {
+    /// <summary>
+    /// Gets or sets the normalized provider name that produced this result.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// result.ProviderName = "openmeteo";
+    /// </code>
+    /// </example>
+    public string ProviderName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC timestamp when the provider data was retrieved.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// result.ProviderRetrievedAt = DateTimeOffset.UtcNow;
+    /// </code>
+    /// </example>
+    public DateTimeOffset ProviderRetrievedAt { get; set; } = DateTimeOffset.UtcNow;
+
     /// <summary>Gets or sets the current weather data.</summary>
     public CurrentWeatherData CurrentWeather { get; set; }
 

@@ -160,7 +160,7 @@
                 Duration = entry.Value.Duration,
                 Exception = entry.Value.Exception?.Message,
                 Tags = entry.Value.Tags?.ToArray() ?? [],
-                Data = entry.Value.Data.ToDictionary(item => item.Key, item => item.Value?.ToString())
+                Data = entry.Value.Data.ToDictionary(item => item.Key, item => FormatDataValue(item.Value))
             }));
         }
         catch (OperationCanceledException) when (this.HttpContext.RequestAborted.IsCancellationRequested)
@@ -184,6 +184,36 @@
     private static string DisplayTags(IReadOnlyCollection<string> tags)
     {
         return tags is null || tags.Count == 0 ? "-" : string.Join(", ", tags);
+    }
+
+    private static string FormatDataValue(object value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        if (value is string text)
+        {
+            return text;
+        }
+
+        if (value is System.Collections.IEnumerable values)
+        {
+            return string.Join(", ", values.Cast<object>().Select(FormatScalarDataValue));
+        }
+
+        return FormatScalarDataValue(value);
+    }
+
+    private static string FormatScalarDataValue(object value)
+    {
+        return value switch
+        {
+            null => string.Empty,
+            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+            _ => value.ToString()
+        };
     }
 
     private static string SerializeEntryContext(DashboardHealthEntryViewModel entry)

@@ -27,13 +27,16 @@ public static class DashboardPageProviderExtensions
     public static IReadOnlyList<DashboardPage> GetDashboardPages(this HttpContext httpContext)
     {
         var logger = httpContext.RequestServices.GetService<ILogger<IDashboardPageProvider>>();
+        var options = httpContext.RequestServices.GetService<DashboardEndpointsOptions>();
         var pages = new List<DashboardPage>();
 
         foreach (var provider in httpContext.RequestServices.GetServices<IDashboardPageProvider>())
         {
             try
             {
-                pages.AddRange(provider.GetPages(httpContext).Where(page => page is not null));
+                pages.AddRange(provider.GetPages(httpContext)
+                    .Where(page => page is not null)
+                    .Where(page => IsEnabled(options, page)));
             }
             catch (Exception ex)
             {
@@ -42,6 +45,11 @@ public static class DashboardPageProviderExtensions
         }
 
         return pages;
+    }
+
+    private static bool IsEnabled(DashboardEndpointsOptions options, DashboardPage page)
+    {
+        return options?.DisabledPageKeys?.Contains(page.Key) != true;
     }
 
     /// <summary>

@@ -143,6 +143,38 @@
         padding: .25rem .5rem;
     }
 
+    .dashboard-system-env-scroll {
+        max-height: 28rem;
+        overflow: auto;
+    }
+
+    .dashboard-system-env-table {
+        table-layout: fixed;
+    }
+
+    .dashboard-system-env-table th:first-child,
+    .dashboard-system-env-table td:first-child {
+        width: clamp(16rem, 32%, 30rem);
+    }
+
+    .dashboard-system-env-key {
+        font-family: var(--bs-font-monospace);
+        font-size: .82rem;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-system-env-value {
+        font-family: var(--bs-font-monospace);
+        font-size: .82rem;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+
+    .dashboard-system-env-filter {
+        max-width: 22rem;
+        min-width: 16rem;
+    }
+
     .dashboard-system-db-grid {
         display: grid;
         gap: .75rem;
@@ -405,6 +437,46 @@
             point.setAttribute('opacity', '1');
         }
 
+        function applyEnvironmentFilter(contentElement) {
+            const filter = contentElement?.querySelector('[data-system-env-filter]');
+            const rows = Array.from(contentElement?.querySelectorAll('[data-system-env-row]') || []);
+            const count = contentElement?.querySelector('[data-system-env-count]');
+            if (!filter || rows.length === 0) {
+                return;
+            }
+
+            const query = filter.value.trim().toLowerCase();
+            let visible = 0;
+
+            rows.forEach(row => {
+                const isMatch = !query || (row.dataset.systemEnvSearch || '').toLowerCase().includes(query);
+                row.hidden = !isMatch;
+                if (isMatch) {
+                    visible++;
+                }
+            });
+
+            if (count) {
+                count.textContent = query
+                    ? `${visible} of ${rows.length} variable(s)`
+                    : `${rows.length} variable(s)`;
+            }
+        }
+
+        function bindEnvironmentFilter(contentElement) {
+            const filter = contentElement?.querySelector('[data-system-env-filter]');
+            if (!filter) {
+                return;
+            }
+
+            filter.value = sessionStorage.getItem('bdk.dashboard.system.envFilter') || '';
+            filter.addEventListener('input', () => {
+                sessionStorage.setItem('bdk.dashboard.system.envFilter', filter.value);
+                applyEnvironmentFilter(contentElement);
+            });
+            applyEnvironmentFilter(contentElement);
+        }
+
         window.bdkDashboard.updateSystemOverview = function(contentElement) {
             const snapshot = contentElement?.querySelector('.dashboard-system-snapshot');
             if (!snapshot) {
@@ -430,6 +502,7 @@
             drawChart('system-memory-history', current, 'memory');
             drawChart('system-request-history', current, 'rpm');
             drawChart('system-latency-history', current, 'latency');
+            bindEnvironmentFilter(contentElement);
         };
 
         const refresher = window.bdkDashboard.createRefresher({

@@ -1,0 +1,827 @@
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = StorageDashboardEndpoints.BuildDocumentsContentPath(dashboardOptions);
+    var actionBase = StorageDashboardEndpoints.BuildDocumentsActionBase(dashboardOptions);
+}
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <span id="documents-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <button type="button" id="documents-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh documents">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-documents-shell">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Content>())
+</div>
+
+<style>
+    #dashboard-documents-shell.documents-busy {
+        opacity: .72;
+        cursor: progress;
+        pointer-events: none;
+        transition: opacity .15s ease-in-out;
+    }
+
+    #documents-details-modal .documents-editor {
+        min-height: 28rem;
+        resize: vertical;
+    }
+</style>
+
+<div class="modal fade" id="documents-details-modal" tabindex="-1" aria-labelledby="documents-details-title" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <form id="documents-details-form" class="modal-content" method="post" action="@($"{actionBase}/save")" data-documents-action="@($"{actionBase}/save")">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="documents-details-title">Document Details</h5>
+                    <div class="text-muted small font-monospace text-break" id="documents-details-subtitle">-</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="clientId">
+                <input type="hidden" name="mode">
+                <div id="documents-details-alert" class="alert d-none py-2 mb-3" role="alert"></div>
+                <div class="mb-3">
+                    <label class="form-label small mb-1">Client</label>
+                    <div class="small" id="documents-details-client">-</div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-12 col-lg-6">
+                        <label class="form-label small mb-1" for="documents-details-partition">Partition</label>
+                        <input id="documents-details-partition"
+                               class="form-control form-control-sm font-monospace"
+                               name="partitionKey"
+                               autocomplete="off"
+                               required>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <label class="form-label small mb-1" for="documents-details-row">Row key</label>
+                        <input id="documents-details-row"
+                               class="form-control form-control-sm font-monospace"
+                               name="rowKey"
+                               autocomplete="off"
+                               required>
+                    </div>
+                </div>
+                <label class="form-label small mb-1" for="documents-details-content">Payload JSON</label>
+                <textarea id="documents-details-content"
+                          class="form-control font-monospace documents-editor"
+                          name="content"
+                          spellcheck="false"
+                          aria-describedby="documents-details-content-feedback"></textarea>
+                <div id="documents-details-content-feedback" class="invalid-feedback"></div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="submit"
+                        class="btn btn-outline-danger btn-sm"
+                        formaction="@($"{actionBase}/delete")"
+                        data-documents-action="@($"{actionBase}/delete")"
+                        data-documents-delete-button>
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm" data-documents-save-button>
+                        <i class="bi bi-save me-1"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const shellElement = document.getElementById('dashboard-documents-shell');
+        const baseContentUrl = '@contentPath';
+        const deleteActionUrl = '@($"{actionBase}/delete")';
+        const bulkDeleteActionUrl = '@($"{actionBase}/delete-batch")';
+        const pageSizeStorageKey = 'bdk.documentStorage.pageSize';
+        const clientStorageKey = 'bdk.documentStorage.clientId';
+        const partitionHistoryStorageKey = 'bdk.documentStorage.partitionKeyHistory';
+        const rowHistoryStorageKey = 'bdk.documentStorage.rowKeyHistory';
+        const filterHistoryLimit = 20;
+        const allowedPageSizes = ['100', '250', '500', '1000'];
+        const detailsModalElement = document.getElementById('documents-details-modal');
+        const detailsModal = detailsModalElement && window.bootstrap
+            ? window.bootstrap.Modal.getOrCreateInstance(detailsModalElement)
+            : null;
+        const detailsForm = document.getElementById('documents-details-form');
+        const detailsTitle = document.getElementById('documents-details-title');
+        const detailsSubtitle = document.getElementById('documents-details-subtitle');
+        const detailsClient = document.getElementById('documents-details-client');
+        const detailsPartitionKey = document.getElementById('documents-details-partition');
+        const detailsRowKey = document.getElementById('documents-details-row');
+        const detailsContent = document.getElementById('documents-details-content');
+        const detailsContentFeedback = document.getElementById('documents-details-content-feedback');
+        const detailsAlert = document.getElementById('documents-details-alert');
+        const detailsDeleteButton = detailsForm?.querySelector('[data-documents-delete-button]');
+        const detailsSaveButton = detailsForm?.querySelector('[data-documents-save-button]');
+
+        function currentRoot() {
+            return shellElement?.querySelector('#documents-dashboard-root');
+        }
+
+        function buildContentUrl(state) {
+            const url = new URL(baseContentUrl, window.location.origin);
+            Object.entries(state || {}).forEach(([key, value]) => {
+                if (value !== undefined && value !== null && value !== '') {
+                    url.searchParams.set(key, value);
+                }
+            });
+
+            return url;
+        }
+
+        function setBusy(isBusy, message = null) {
+            shellElement.classList.toggle('documents-busy', isBusy);
+            shellElement.setAttribute('aria-busy', isBusy ? 'true' : 'false');
+            document.querySelectorAll('[data-documents-command], [data-documents-filter], [data-documents-row-check], [data-documents-select-all]')
+                .forEach(element => {
+                    element.disabled = isBusy;
+                });
+
+            if (message) {
+                document.getElementById('documents-refresh-status').textContent = message;
+            }
+        }
+
+        function showDetailsAlert(kind, message) {
+            if (!detailsAlert) {
+                window.alert(message);
+                return;
+            }
+
+            detailsAlert.className = `alert alert-${kind} py-2 mb-3`;
+            detailsAlert.textContent = message;
+        }
+
+        function clearDetailsAlert() {
+            if (!detailsAlert) {
+                return;
+            }
+
+            detailsAlert.className = 'alert d-none py-2 mb-3';
+            detailsAlert.textContent = '';
+        }
+
+        async function readResponseMessage(response, fallback) {
+            try {
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    const body = await response.json();
+                    return body.detail || body.title || body.message || fallback;
+                }
+
+                const text = await response.text();
+                return text || fallback;
+            } catch {
+                return fallback;
+            }
+        }
+
+        function stateFromRoot() {
+            const root = currentRoot();
+            return {
+                clientId: root?.dataset.clientId || '',
+                partitionKey: root?.dataset.partitionKey || '',
+                rowKey: root?.dataset.rowKey || '',
+                rowKeyMode: root?.dataset.rowKeyMode || 'prefix',
+                pageSize: normalizePageSize(root?.dataset.pageSize),
+                continuationToken: root?.dataset.continuationToken || '',
+                selectedPartitionKey: root?.dataset.selectedPartitionKey || '',
+                selectedRowKey: root?.dataset.selectedRowKey || ''
+            };
+        }
+
+        function normalizePageSize(value) {
+            const stringValue = `${value || ''}`;
+            return allowedPageSizes.includes(stringValue) ? stringValue : '100';
+        }
+
+        function getFilterState(form) {
+            const data = Object.fromEntries(new FormData(form).entries());
+            data.pageSize = normalizePageSize(data.pageSize);
+            return clearPagingAndSelection(data);
+        }
+
+        function rememberPageSize(value) {
+            localStorage.setItem(pageSizeStorageKey, normalizePageSize(value));
+        }
+
+        function rememberClient(value) {
+            if (value) {
+                localStorage.setItem(clientStorageKey, value);
+            }
+        }
+
+        function historyScope(clientId) {
+            return clientId || 'default';
+        }
+
+        function readHistoryMap(storageKey) {
+            try {
+                const value = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                if (Array.isArray(value)) {
+                    return { default: value };
+                }
+
+                return value && typeof value === 'object' ? value : {};
+            } catch {
+                return {};
+            }
+        }
+
+        function historyValues(storageKey, clientId) {
+            const values = readHistoryMap(storageKey)[historyScope(clientId)] || [];
+            return Array.isArray(values)
+                ? values.filter(value => typeof value === 'string' && value.trim().length > 0)
+                : [];
+        }
+
+        function rememberHistoryValue(storageKey, clientId, value) {
+            const text = `${value || ''}`.trim();
+            if (!text) {
+                return;
+            }
+
+            const map = readHistoryMap(storageKey);
+            const scope = historyScope(clientId);
+            const values = Array.isArray(map[scope]) ? map[scope] : [];
+            map[scope] = [text, ...values.filter(item => item !== text)]
+                .slice(0, filterHistoryLimit);
+            localStorage.setItem(storageKey, JSON.stringify(map));
+        }
+
+        function rememberFilterHistory(state) {
+            rememberHistoryValue(partitionHistoryStorageKey, state.clientId, state.partitionKey);
+            rememberHistoryValue(rowHistoryStorageKey, state.clientId, state.rowKey);
+        }
+
+        function populateHistoryList(listId, values) {
+            const list = currentRoot()?.querySelector(`#${listId}`);
+            if (!list) {
+                return;
+            }
+
+            list.innerHTML = '';
+            values.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                list.appendChild(option);
+            });
+        }
+
+        function populateFilterHistory() {
+            const state = stateFromRoot();
+            populateHistoryList('documents-partition-history', historyValues(partitionHistoryStorageKey, state.clientId));
+            populateHistoryList('documents-row-history', historyValues(rowHistoryStorageKey, state.clientId));
+        }
+
+        function knownClientIds() {
+            return Array.from(currentRoot()?.querySelectorAll('select[name="clientId"] option') || [])
+                .map(option => option.value);
+        }
+
+        function clearSelectedDocument(state) {
+            state.selectedPartitionKey = '';
+            state.selectedRowKey = '';
+            return state;
+        }
+
+        function clearPagingAndSelection(state) {
+            state.continuationToken = '';
+            state.selectedPartitionKey = '';
+            state.selectedRowKey = '';
+            return state;
+        }
+
+        function currentFilterForm() {
+            return currentRoot()?.querySelector('[data-documents-filter-form]');
+        }
+
+        function currentClientName() {
+            const selected = currentRoot()?.querySelector('select[name="clientId"] option:checked');
+            return selected?.textContent?.trim() || stateFromRoot().clientId || '-';
+        }
+
+        function resetFilterForm(form) {
+            if (!form) {
+                return null;
+            }
+
+            const selectedClient = form.elements.clientId?.value || stateFromRoot().clientId;
+            form.elements.partitionKey.value = '';
+            form.elements.rowKey.value = '';
+            form.elements.rowKeyMode.value = 'prefix';
+            form.elements.pageSize.value = normalizePageSize(localStorage.getItem(pageSizeStorageKey));
+
+            return clearPagingAndSelection({
+                clientId: selectedClient,
+                partitionKey: '',
+                rowKey: '',
+                rowKeyMode: 'prefix',
+                pageSize: form.elements.pageSize.value,
+                continuationToken: '',
+                selectedPartitionKey: '',
+                selectedRowKey: ''
+            });
+        }
+
+        function getSelectedDocument() {
+            const root = currentRoot();
+            const metadata = root?.querySelector('[data-documents-selected-document]');
+            const content = root?.querySelector('[data-documents-selected-content]');
+            if (!metadata || !content) {
+                return null;
+            }
+
+            return {
+                clientId: metadata.dataset.clientId || '',
+                clientName: metadata.dataset.clientName || '',
+                partitionKey: metadata.dataset.partitionKey || '',
+                rowKey: metadata.dataset.rowKey || '',
+                content: content.value || ''
+            };
+        }
+
+        function showDetailsDialog() {
+            const document = getSelectedDocument();
+            if (!document || !detailsForm || !detailsModal) {
+                return;
+            }
+
+            detailsForm.dataset.documentsMode = 'edit';
+            clearDetailsAlert();
+            detailsForm.elements.mode.value = 'edit';
+            detailsForm.elements.clientId.value = document.clientId;
+            detailsForm.elements.partitionKey.value = document.partitionKey;
+            detailsForm.elements.rowKey.value = document.rowKey;
+            detailsTitle.textContent = 'Document Details';
+            detailsSubtitle.textContent = `${document.partitionKey} / ${document.rowKey}`;
+            detailsClient.textContent = document.clientName || '-';
+            detailsPartitionKey.readOnly = true;
+            detailsRowKey.readOnly = true;
+            detailsDeleteButton?.classList.remove('d-none');
+            detailsContent.value = document.content;
+            validateDetailsForm();
+            detailsModal.show();
+        }
+
+        function showNewDocumentDialog() {
+            const state = stateFromRoot();
+            if (!state.clientId || !detailsForm || !detailsModal) {
+                window.alert('Select a document client before creating a document.');
+                return;
+            }
+
+            detailsForm.dataset.documentsMode = 'new';
+            clearDetailsAlert();
+            detailsForm.elements.mode.value = 'new';
+            detailsForm.elements.clientId.value = state.clientId;
+            detailsForm.elements.partitionKey.value = state.partitionKey || '';
+            detailsForm.elements.rowKey.value = state.rowKey || '';
+            detailsTitle.textContent = 'New Document';
+            detailsSubtitle.textContent = 'Create document for selected client';
+            detailsClient.textContent = currentClientName();
+            detailsPartitionKey.readOnly = false;
+            detailsRowKey.readOnly = false;
+            detailsDeleteButton?.classList.add('d-none');
+            detailsContent.value = '{\n  \n}';
+            validateDetailsForm();
+            detailsModal.show();
+            detailsPartitionKey.focus();
+        }
+
+        function validateDetailsKeys() {
+            const partitionKey = detailsPartitionKey?.value?.trim() || '';
+            const rowKey = detailsRowKey?.value?.trim() || '';
+            detailsPartitionKey?.classList.toggle('is-invalid', partitionKey.length === 0);
+            detailsRowKey?.classList.toggle('is-invalid', rowKey.length === 0);
+
+            return partitionKey.length > 0 && rowKey.length > 0;
+        }
+
+        function validateDetailsJson() {
+            if (!detailsContent) {
+                return true;
+            }
+
+            try {
+                JSON.parse(detailsContent.value);
+                detailsContent.classList.remove('is-invalid');
+                detailsContent.classList.add('is-valid');
+                if (detailsContentFeedback) {
+                    detailsContentFeedback.textContent = '';
+                }
+
+                return true;
+            } catch (error) {
+                detailsContent.classList.add('is-invalid');
+                detailsContent.classList.remove('is-valid');
+                if (detailsContentFeedback) {
+                    detailsContentFeedback.textContent = `Invalid JSON: ${error.message}`;
+                }
+
+                return false;
+            }
+        }
+
+        function validateDetailsForm() {
+            const keysValid = validateDetailsKeys();
+            const jsonValid = validateDetailsJson();
+            const isValid = keysValid && jsonValid;
+            if (detailsSaveButton) {
+                detailsSaveButton.disabled = !isValid;
+            }
+
+            return isValid;
+        }
+
+        function getCheckedRows() {
+            return Array.from(shellElement.querySelectorAll('[data-documents-row-check]:checked'));
+        }
+
+        function updateBulkDeleteState() {
+            const checkedRows = getCheckedRows();
+            const rowChecks = Array.from(shellElement.querySelectorAll('[data-documents-row-check]'));
+            const bulkDeleteButton = shellElement.querySelector('[data-documents-command="delete-selected"]');
+            const selectAll = shellElement.querySelector('[data-documents-select-all]');
+
+            if (bulkDeleteButton) {
+                bulkDeleteButton.disabled = checkedRows.length === 0;
+                bulkDeleteButton.innerHTML = '<i class="bi bi-trash me-1"></i>'
+            }
+
+            if (selectAll) {
+                selectAll.checked = rowChecks.length > 0 && checkedRows.length === rowChecks.length;
+                selectAll.indeterminate = checkedRows.length > 0 && checkedRows.length < rowChecks.length;
+            }
+        }
+
+        async function deleteSelectedDocuments() {
+            const checkedRows = getCheckedRows();
+            if (checkedRows.length === 0) {
+                window.alert('Select at least one document to delete.');
+                return;
+            }
+
+            const preview = checkedRows
+                .slice(0, 5)
+                .map(row => `${row.dataset.partitionKey || ''} / ${row.dataset.rowKey || ''}`)
+                .join('\n');
+            const overflow = checkedRows.length > 5 ? `\n...and ${checkedRows.length - 5} more visible selected document(s).` : '';
+            if (!window.confirm(`Delete ${checkedRows.length} selected document(s) from this page?\n\n${preview}${overflow}\n\nThis cannot be undone.`)) {
+                return;
+            }
+
+            const state = clearSelectedDocument(stateFromRoot());
+            const formData = new FormData();
+            formData.append('clientId', state.clientId);
+            checkedRows.forEach(row => {
+                formData.append('partitionKey', row.dataset.partitionKey || '');
+                formData.append('rowKey', row.dataset.rowKey || '');
+            });
+
+            setBusy(true, 'Deleting selected documents...');
+
+            try {
+                const response = await fetch(bulkDeleteActionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    window.alert(await readResponseMessage(response, 'Selected documents could not be deleted.'));
+                    return;
+                }
+
+                await refresh(state);
+            } finally {
+                setBusy(false);
+            }
+        }
+
+        async function deleteDocument(partitionKey, rowKey) {
+            const state = stateFromRoot();
+            if (!window.confirm(`Delete this document?\n\n${partitionKey} / ${rowKey}\n\nThis cannot be undone.`)) {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('clientId', state.clientId);
+            formData.append('partitionKey', partitionKey || '');
+            formData.append('rowKey', rowKey || '');
+
+            if (state.selectedPartitionKey === partitionKey && state.selectedRowKey === rowKey) {
+                clearSelectedDocument(state);
+            }
+
+            setBusy(true, 'Deleting document...');
+
+            try {
+                const response = await fetch(deleteActionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    window.alert(await readResponseMessage(response, 'Document could not be deleted.'));
+                    return;
+                }
+
+                await refresh(state);
+            } finally {
+                setBusy(false);
+            }
+        }
+
+        async function submitDocumentAction(actionForm, submitter) {
+            clearDetailsAlert();
+            const actionUrl = submitter?.dataset.documentsAction ||
+                submitter?.getAttribute('formaction') ||
+                actionForm.dataset.documentsAction ||
+                actionForm.getAttribute('action');
+            const isDeleteAction = actionUrl.endsWith('/delete');
+            if (actionForm === detailsForm && !isDeleteAction && !validateDetailsForm()) {
+                if (!detailsPartitionKey?.value?.trim()) {
+                    detailsPartitionKey?.focus();
+                } else if (!detailsRowKey?.value?.trim()) {
+                    detailsRowKey?.focus();
+                } else {
+                    detailsContent?.focus();
+                }
+
+                return;
+            }
+
+            if (isDeleteAction) {
+                const partitionKey = actionForm.elements.partitionKey?.value || '';
+                const rowKey = actionForm.elements.rowKey?.value || '';
+                if (!window.confirm(`Delete this document?\n\n${partitionKey} / ${rowKey}\n\nThis cannot be undone.`)) {
+                    return;
+                }
+            }
+
+            const button = submitter || actionForm.querySelector('[type="submit"]');
+            if (button) {
+                button.disabled = true;
+            }
+
+            setBusy(true, isDeleteAction ? 'Deleting document...' : 'Saving document...');
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: new FormData(actionForm),
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    const message = await readResponseMessage(response, 'Document action failed.');
+                    if (actionForm === detailsForm) {
+                        showDetailsAlert('danger', message);
+                    } else {
+                        window.alert(message);
+                    }
+
+                    return;
+                }
+
+                const state = stateFromRoot();
+                if (isDeleteAction) {
+                    clearSelectedDocument(state);
+                }
+
+                detailsModal?.hide();
+                await refresh(state);
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                }
+                setBusy(false);
+            }
+        }
+
+        function setPageUrl(state) {
+            const url = new URL(window.location.href);
+            ['clientId', 'partitionKey', 'rowKey', 'rowKeyMode', 'pageSize', 'continuationToken', 'selectedPartitionKey', 'selectedRowKey']
+                .forEach(key => {
+                    if (state[key]) {
+                        url.searchParams.set(key, state[key]);
+                    } else {
+                        url.searchParams.delete(key);
+                    }
+                });
+            window.history.replaceState({}, '', url);
+        }
+
+        async function refresh(state, updateUrl = true) {
+            setBusy(true, 'Loading documents...');
+
+            try {
+                const response = await fetch(buildContentUrl(state).toString(), {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (response.ok) {
+                    shellElement.innerHTML = await response.text();
+                    if (updateUrl) {
+                        setPageUrl(state);
+                    }
+                    updateBulkDeleteState();
+                    populateFilterHistory();
+                    document.getElementById('documents-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+                } else {
+                    window.alert(await readResponseMessage(response, 'Documents could not be loaded.'));
+                }
+            } finally {
+                setBusy(false);
+                updateBulkDeleteState();
+            }
+        }
+
+        document.getElementById('documents-refresh-now').addEventListener('click', async () => {
+            await refresh(stateFromRoot(), false);
+        });
+
+        shellElement.addEventListener('change', async event => {
+            if (event.target.closest('[data-documents-select-all]')) {
+                const checked = event.target.checked;
+                shellElement.querySelectorAll('[data-documents-row-check]').forEach(row => {
+                    row.checked = checked;
+                });
+                updateBulkDeleteState();
+                return;
+            }
+
+            if (event.target.closest('[data-documents-row-check]')) {
+                updateBulkDeleteState();
+                return;
+            }
+
+            if (!event.target.closest('[data-documents-filter]')) {
+                return;
+            }
+
+            const form = event.target.closest('form');
+            if (event.target.name === 'clientId') {
+                rememberClient(event.target.value);
+                form.elements.partitionKey.value = '';
+                form.elements.rowKey.value = '';
+                form.elements.rowKeyMode.value = 'prefix';
+            }
+
+            if (event.target.name === 'pageSize') {
+                rememberPageSize(event.target.value);
+            }
+
+            if (event.target.name === 'clientId' || event.target.name === 'pageSize') {
+                await refresh(getFilterState(form));
+            }
+        });
+
+        shellElement.addEventListener('submit', async event => {
+            const filterForm = event.target.closest('[data-documents-filter-form]');
+            if (filterForm) {
+                event.preventDefault();
+                const data = getFilterState(filterForm);
+                rememberPageSize(data.pageSize);
+                rememberClient(data.clientId);
+                rememberFilterHistory(data);
+                await refresh(data);
+                return;
+            }
+
+            const actionForm = event.target.closest('[data-documents-action]');
+            if (!actionForm) {
+                return;
+            }
+
+            event.preventDefault();
+            await submitDocumentAction(actionForm, event.submitter);
+        });
+
+        detailsForm?.addEventListener('submit', async event => {
+            event.preventDefault();
+            await submitDocumentAction(event.currentTarget, event.submitter);
+        });
+
+        detailsContent?.addEventListener('input', validateDetailsForm);
+        detailsPartitionKey?.addEventListener('input', validateDetailsForm);
+        detailsRowKey?.addEventListener('input', validateDetailsForm);
+
+        shellElement.addEventListener('click', async event => {
+            const download = event.target.closest('[data-documents-download]');
+            if (download) {
+                document.getElementById('documents-refresh-status').textContent = 'Download started';
+                return;
+            }
+
+            const target = event.target.closest('[data-documents-command]');
+            if (!target) {
+                return;
+            }
+
+            const state = stateFromRoot();
+            if (target.dataset.documentsCommand === 'new') {
+                showNewDocumentDialog();
+                return;
+            }
+
+            if (target.dataset.documentsCommand === 'reset-filters') {
+                const resetState = resetFilterForm(currentFilterForm());
+                if (resetState) {
+                    await refresh(resetState);
+                }
+                return;
+            }
+
+            if (target.dataset.documentsCommand === 'select') {
+                state.selectedPartitionKey = target.dataset.partitionKey || '';
+                state.selectedRowKey = target.dataset.rowKey || '';
+                await refresh(state);
+                showDetailsDialog();
+                return;
+            }
+
+            if (target.dataset.documentsCommand === 'filter-partition') {
+                state.partitionKey = target.dataset.partitionKey || '';
+                state.rowKey = '';
+                state.rowKeyMode = 'prefix';
+                clearPagingAndSelection(state);
+                rememberFilterHistory(state);
+                await refresh(state);
+                return;
+            }
+
+            if (target.dataset.documentsCommand === 'delete-selected') {
+                await deleteSelectedDocuments();
+                return;
+            }
+
+            if (target.dataset.documentsCommand === 'delete') {
+                await deleteDocument(target.dataset.partitionKey || '', target.dataset.rowKey || '');
+                return;
+            }
+
+            if (target.dataset.documentsCommand === 'page') {
+                state.continuationToken = target.dataset.continuationToken || '';
+                state.selectedPartitionKey = '';
+                state.selectedRowKey = '';
+                await refresh(state);
+            }
+        });
+
+        const state = stateFromRoot();
+        const url = new URL(window.location.href);
+        const urlClientId = url.searchParams.get('clientId');
+        const urlPageSize = url.searchParams.get('pageSize');
+        if (urlClientId) {
+            rememberClient(urlClientId);
+        }
+
+        if (urlPageSize) {
+            rememberPageSize(urlPageSize);
+        } else {
+            const storedPageSize = normalizePageSize(localStorage.getItem(pageSizeStorageKey));
+            if (storedPageSize !== state.pageSize) {
+                state.pageSize = storedPageSize;
+                state.continuationToken = '';
+                state.selectedPartitionKey = '';
+                state.selectedRowKey = '';
+                refresh(state);
+            }
+        }
+
+        if (!urlClientId) {
+            const storedClientId = localStorage.getItem(clientStorageKey);
+            if (storedClientId && knownClientIds().includes(storedClientId) && storedClientId !== state.clientId) {
+                state.clientId = storedClientId;
+                state.partitionKey = '';
+                state.rowKey = '';
+                state.rowKeyMode = 'prefix';
+                clearPagingAndSelection(state);
+                refresh(state);
+            }
+        }
+
+        updateBulkDeleteState();
+        populateFilterHistory();
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Documents" };
+}

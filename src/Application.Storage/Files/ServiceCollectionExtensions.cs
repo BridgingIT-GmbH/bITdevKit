@@ -100,6 +100,7 @@ public static partial class ServiceCollectionExtensions
 
             return factory;
         });
+        services.TryAddFileStorageHealthCheck(tags: ["ready", "storage", "files"]);
 
         return new FileStorageBuilderContext(services);
     }

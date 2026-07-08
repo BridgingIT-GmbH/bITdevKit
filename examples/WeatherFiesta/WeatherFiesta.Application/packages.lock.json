@@ -258,6 +258,23 @@
           "FluentValidation": "[12.1.1, )"
         }
       },
+      "BridgingIT.DevKit.Application.Storage": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "[10.0.9, )",
+          "Microsoft.Extensions.Logging": "[10.0.9, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )",
+          "Scrutor": "[4.2.2, 5.0.0)",
+          "SharpCompress": "[0.49.1, )"
+        }
+      },
       "BridgingIT.DevKit.Common.Abstractions": {
         "type": "Project",
         "dependencies": {
@@ -692,6 +709,12 @@
         "requested": "[4.3.1, )",
         "resolved": "4.3.1",
         "contentHash": "savYe7h5yRlkqBVOwP8cIRDOdqKiPmYCU4W87JH38sBmcKD5EBoXvQIw6bNEvZ/pTe1gsiye3VFCzBsoppGkXQ=="
+      },
+      "SharpCompress": {
+        "type": "CentralTransitive",
+        "requested": "[0.49.1, )",
+        "resolved": "0.49.1",
+        "contentHash": "Meygd8HAnUgqYzxvCsaYR5XnZAG2xBmxkQHVGi/HkCjrvEq+tiM+VPQRvYLxsbse3KUmec65ccdMiOXv8CkjsA=="
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",

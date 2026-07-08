@@ -91,6 +91,16 @@ public class DashboardEndpointsOptions : EndpointsOptionsBase
     public string Title { get; set; }
 
     /// <summary>
+    ///     Gets the stable dashboard page keys that should be hidden from navigation and dashboard index cards.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// options.DisabledPageKeys.Add("storage.documents");
+    /// </code>
+    /// </example>
+    public HashSet<string> DisabledPageKeys { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
     ///     Gets the assemblies that are scanned for dashboard endpoint and page provider plugins.
     /// </summary>
     /// <example>

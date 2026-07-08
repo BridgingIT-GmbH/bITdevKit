@@ -5,12 +5,16 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using AspNetCore.Hosting;
 using Configuration;
 
 /// <summary>
 ///     Provides context for building modules with dependencies and configuration.
 /// </summary>
-public class ModuleBuilderContext(IServiceCollection services, IConfiguration configuration = null)
+public class ModuleBuilderContext(
+    IServiceCollection services,
+    IConfiguration configuration = null,
+    IWebHostEnvironment environment = null)
 {
     /// <summary>
     ///     Gets the collection of services that can be used to configure the application's dependencies.
@@ -25,4 +29,17 @@ public class ModuleBuilderContext(IServiceCollection services, IConfiguration co
     ///     Provides access to application configuration such as settings from appsettings.json or environment variables.
     /// </summary>
     public IConfiguration Configuration { get; } = configuration;
+
+    /// <summary>
+    ///     Gets the web hosting environment available during module registration.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// if (context.Environment?.EnvironmentName == "Development")
+    /// {
+    ///     context.Services.AddSingleton&lt;DevelopmentOnlyService&gt;();
+    /// }
+    /// </code>
+    /// </example>
+    public IWebHostEnvironment Environment { get; } = environment;
 }

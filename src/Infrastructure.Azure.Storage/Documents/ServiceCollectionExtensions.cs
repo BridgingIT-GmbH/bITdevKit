@@ -13,6 +13,163 @@ using BridgingIT.DevKit.Infrastructure.Azure;
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
+    /// Registers an Azure Blob Storage backed document-store client within a top-level document-storage registration flow.
+    /// </summary>
+    /// <typeparam name="T">The document payload type.</typeparam>
+    /// <param name="context">The document-storage builder context.</param>
+    /// <param name="provider">An optional pre-built Azure Blob provider.</param>
+    /// <param name="lifetime">The optional client lifetime override.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <returns>The current document-storage builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStorage()
+    ///     .WithBehavior&lt;LoggingDocumentStoreClientBehavior&lt;Person&gt;&gt;()
+    ///     .WithAzureBlobClient&lt;Person&gt;();
+    /// </code>
+    /// </example>
+    public static DocumentStorageBuilderContext WithAzureBlobClient<T>(
+        this DocumentStorageBuilderContext context,
+        AzureBlobDocumentStoreProvider provider = null,
+        ServiceLifetime? lifetime = null,
+        DocumentStoreOptions documentStoreOptions = null)
+        where T : class, new()
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (!context.Options.IsEnabled)
+        {
+            return context;
+        }
+
+        context.Services.AddAzureBlobDocumentStoreClient<T>(
+            provider,
+            lifetime ?? context.Lifetime,
+            documentStoreOptions);
+
+        return context.RegisterClient<T>(
+            "Azure Blob Storage",
+            capabilities: provider?.Capabilities ?? CreateAzureBlobCapabilities());
+    }
+
+    /// <summary>
+    /// Registers an Azure Blob Storage backed document-store client within a top-level document-storage registration flow.
+    /// </summary>
+    /// <typeparam name="T">The document payload type.</typeparam>
+    /// <param name="context">The document-storage builder context.</param>
+    /// <param name="serviceClient">The optional blob service client. When null, the client is resolved from services.</param>
+    /// <param name="lifetime">The optional client lifetime override.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <returns>The current document-storage builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStorage()
+    ///     .WithAzureBlobClient&lt;Person&gt;(blobServiceClient);
+    /// </code>
+    /// </example>
+    public static DocumentStorageBuilderContext WithAzureBlobClient<T>(
+        this DocumentStorageBuilderContext context,
+        BlobServiceClient serviceClient,
+        ServiceLifetime? lifetime = null,
+        DocumentStoreOptions documentStoreOptions = null)
+        where T : class, new()
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (!context.Options.IsEnabled)
+        {
+            return context;
+        }
+
+        context.Services.AddAzureBlobDocumentStoreClient<T>(
+            serviceClient,
+            lifetime ?? context.Lifetime,
+            documentStoreOptions);
+
+        return context.RegisterClient<T>(
+            "Azure Blob Storage",
+            capabilities: CreateAzureBlobCapabilities());
+    }
+
+    /// <summary>
+    /// Registers an Azure Table Storage backed document-store client within a top-level document-storage registration flow.
+    /// </summary>
+    /// <typeparam name="T">The document payload type.</typeparam>
+    /// <param name="context">The document-storage builder context.</param>
+    /// <param name="provider">An optional pre-built Azure Table provider.</param>
+    /// <param name="lifetime">The optional client lifetime override.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <returns>The current document-storage builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStorage()
+    ///     .WithAzureTableClient&lt;Person&gt;();
+    /// </code>
+    /// </example>
+    public static DocumentStorageBuilderContext WithAzureTableClient<T>(
+        this DocumentStorageBuilderContext context,
+        AzureTableDocumentStoreProvider provider = null,
+        ServiceLifetime? lifetime = null,
+        DocumentStoreOptions documentStoreOptions = null)
+        where T : class, new()
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (!context.Options.IsEnabled)
+        {
+            return context;
+        }
+
+        context.Services.AddAzureTableDocumentStoreClient<T>(
+            provider,
+            lifetime ?? context.Lifetime,
+            documentStoreOptions);
+
+        return context.RegisterClient<T>(
+            "Azure Table Storage",
+            capabilities: provider?.Capabilities ?? CreateAzureTableCapabilities());
+    }
+
+    /// <summary>
+    /// Registers an Azure Table Storage backed document-store client within a top-level document-storage registration flow.
+    /// </summary>
+    /// <typeparam name="T">The document payload type.</typeparam>
+    /// <param name="context">The document-storage builder context.</param>
+    /// <param name="serviceClient">The optional table service client. When null, the client is resolved from services.</param>
+    /// <param name="lifetime">The optional client lifetime override.</param>
+    /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <returns>The current document-storage builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStorage()
+    ///     .WithAzureTableClient&lt;Person&gt;(tableServiceClient);
+    /// </code>
+    /// </example>
+    public static DocumentStorageBuilderContext WithAzureTableClient<T>(
+        this DocumentStorageBuilderContext context,
+        TableServiceClient serviceClient,
+        ServiceLifetime? lifetime = null,
+        DocumentStoreOptions documentStoreOptions = null)
+        where T : class, new()
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (!context.Options.IsEnabled)
+        {
+            return context;
+        }
+
+        context.Services.AddAzureTableDocumentStoreClient<T>(
+            serviceClient,
+            lifetime ?? context.Lifetime,
+            documentStoreOptions);
+
+        return context.RegisterClient<T>(
+            "Azure Table Storage",
+            capabilities: CreateAzureTableCapabilities());
+    }
+
+    /// <summary>
     /// Registers an Azure Blob Storage backed document-store client for <typeparamref name="T" />.
     /// </summary>
     /// <typeparam name="T">The document payload type.</typeparam>
@@ -223,4 +380,28 @@ public static partial class ServiceCollectionExtensions
 
         return new DocumentStoreBuilderContext<T>(services, lifetime);
     }
+
+    private static DocumentStoreProviderCapabilities CreateAzureBlobCapabilities() => new()
+    {
+        FullMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeyPrefixMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeySuffixMatch = DocumentQuerySupport.SupportedClientSide,
+        FullScan = DocumentQuerySupport.SupportedServerSide,
+        KeyListing = DocumentQuerySupport.SupportedEfficiently,
+        SupportsContinuationPaging = true,
+        SupportsServerSideCount = false,
+        SupportsKeyOnlyProjection = true
+    };
+
+    private static DocumentStoreProviderCapabilities CreateAzureTableCapabilities() => new()
+    {
+        FullMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeyPrefixMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeySuffixMatch = DocumentQuerySupport.Unsupported,
+        FullScan = DocumentQuerySupport.SupportedServerSide,
+        KeyListing = DocumentQuerySupport.SupportedEfficiently,
+        SupportsContinuationPaging = true,
+        SupportsServerSideCount = false,
+        SupportsKeyOnlyProjection = true
+    };
 }

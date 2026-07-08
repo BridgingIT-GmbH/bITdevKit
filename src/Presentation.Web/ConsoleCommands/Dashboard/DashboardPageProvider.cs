@@ -28,7 +28,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             yield break;
         }
 
-        yield return new DashboardPage("Console", "terminal", DashboardEndpoints.BuildConsolePath(options))
+        yield return new DashboardPage("console", "Console", "terminal", DashboardEndpoints.BuildConsolePath(options))
         {
             Group = "bdk",
             GroupOrder = 0,

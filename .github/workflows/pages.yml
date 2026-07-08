@@ -11,6 +11,7 @@ on:
       - 'Directory.Packages.props'
       - '.config/dotnet-tools.json'
       - 'docs/site/**'
+      - 'docs/assets/**'
       - 'docs/api/**'
       - 'docs/INDEX.md'
       - 'docs/introduction-ddd-guide.md'

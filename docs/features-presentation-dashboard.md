@@ -169,24 +169,24 @@ builder.Services.AddDashboard(options => options
 
 Built-in page keys:
 
-| Page | Key |
-| --- | --- |
-| Overview | `dashboard.overview` |
-| System | `dashboard.system` |
-| Health | `health` |
-| Metrics | `metrics` |
-| Identity | `identity` |
-| Console | `console` |
-| MCP | `mcp` |
-| Logs | `logging.logs` |
-| Errors | `logging.errors` |
-| Logs Stream | `logging.stream` |
-| Jobs | `jobs` |
-| Messaging | `messaging` |
-| Queueing | `queueing` |
-| Orchestrations | `orchestrations` |
-| File Storage | `storage.files` |
-| Document Storage | `storage.documents` |
+| Page | Key | Screenshot |
+| --- | --- | --- |
+| Overview | `dashboard.overview` | [Overview](assets/dashboard/01-overview-overview.png) |
+| System | `dashboard.system` | [System](assets/dashboard/03-system-system.png) |
+| Health | `health` | [Health](assets/dashboard/05-health-health.png) |
+| Metrics | `metrics` | [Metrics](assets/dashboard/04-metrics-metrics.png) |
+| Identity | `identity` | [Identity](assets/dashboard/02-identity-identity.png) |
+| Console | `console` | [Console](assets/dashboard/15-console-console.png) |
+| MCP | `mcp` | [MCP](assets/dashboard/16-mcp-mcp.png) |
+| Logs | `logging.logs` | [Logs](assets/dashboard/07-logentries-logs.png) |
+| Errors | `logging.errors` | [Errors](assets/dashboard/08-errors-errors.png) |
+| Logs Stream | `logging.stream` | [Logs Stream](assets/dashboard/09-logentries-stream-logs-stream.png) |
+| Jobs | `jobs` | [Jobs](assets/dashboard/06-jobs-jobs.png) |
+| Messaging | `messaging` | [Messaging](assets/dashboard/10-messaging-messaging.png) |
+| Queueing | `queueing` | [Queueing](assets/dashboard/11-queueing-queueing.png) |
+| Orchestrations | `orchestrations` | [Orchestrations](assets/dashboard/12-orchestrations-orchestrations.png) |
+| File Storage | `storage.files` | [Files](assets/dashboard/13-storage-files-files.png) |
+| Document Storage | `storage.documents` | [Documents](assets/dashboard/14-storage-documents-documents.png) |
 
 Project-specific pages declared with `DashboardPageSet` use the key passed to `.Page(...)`. For example, a page declared as `.Page("customer-management", "/app/core/customers")` can be hidden with:
 

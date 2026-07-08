@@ -517,6 +517,264 @@ orderDescending: true
 
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_System_Collections_Generic_IEnumerable_System_Linq_Expressions_Expression_System_Func__0_System_Boolean____System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync(System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}}},System.Nullable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean,System.Object,System.String,System.Threading.CancellationToken)">
+  ReadItemsPageResultAsync(IEnumerable&lt;Expression&lt;Func&lt;TItem, bool&gt;&gt;&gt;, int?, Expression&lt;Func&lt;TItem, object&gt;&gt;, bool, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads one Cosmos feed page without draining the whole query result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;CosmosSqlPage&lt;TItem&gt;&gt;&gt; ReadItemsPageResultAsync(IEnumerable&lt;Expression&lt;Func&lt;TItem, bool&gt;&gt;&gt; expressions = null, int? take = null, Expression&lt;Func&lt;TItem, object&gt;&gt; orderExpression = null, bool orderDescending = false, object partitionKeyValue = null, string continuationToken = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expressions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The expressions used to filter items.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>The maximum item count hint for the feed page.</p>
+</dd>
+    <dt><code>orderExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression used to order items.</p>
+</dd>
+    <dt><code>orderDescending</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether to order descending.</p>
+</dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The optional Cosmos partition key value.</p>
+</dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd><p>The provider-native Cosmos continuation token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.html">CosmosSqlPage</a>&lt;TItem&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing one Cosmos feed page.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_System_Collections_Generic_IEnumerable_System_Linq_Expressions_Expression_System_Func__0_System_Boolean____System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.ReadItemsPageResultAsync(expressions, take: 100);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_System_Linq_Expressions_Expression_System_Func__0_System_Boolean___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Nullable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean,System.Object,System.String,System.Threading.CancellationToken)">
+  ReadItemsPageResultAsync(Expression&lt;Func&lt;TItem, bool&gt;&gt;, int?, Expression&lt;Func&lt;TItem, object&gt;&gt;, bool, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads one Cosmos feed page without draining the whole query result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;CosmosSqlPage&lt;TItem&gt;&gt;&gt; ReadItemsPageResultAsync(Expression&lt;Func&lt;TItem, bool&gt;&gt; expression, int? take = null, Expression&lt;Func&lt;TItem, object&gt;&gt; orderExpression = null, bool orderDescending = false, object partitionKeyValue = null, string continuationToken = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression used to filter items.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>The maximum item count hint for the feed page.</p>
+</dd>
+    <dt><code>orderExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression used to order items.</p>
+</dd>
+    <dt><code>orderDescending</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether to order descending.</p>
+</dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The optional Cosmos partition key value.</p>
+</dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd><p>The provider-native Cosmos continuation token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.html">CosmosSqlPage</a>&lt;TItem&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing one Cosmos feed page.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_System_Linq_Expressions_Expression_System_Func__0_System_Boolean___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.ReadItemsPageResultAsync(x =&gt; x.Type == "type", take: 100);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync__1_System_Collections_Generic_IEnumerable_System_Linq_Expressions_Expression_System_Func__0_System_Boolean____System_Linq_Expressions_Expression_System_Func__0___0___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync``1(System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}}},System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Nullable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean,System.Object,System.String,System.Threading.CancellationToken)">
+  ReadItemsPageResultAsync&lt;TResult&gt;(IEnumerable&lt;Expression&lt;Func&lt;TItem, bool&gt;&gt;&gt;, Expression&lt;Func&lt;TItem, TResult&gt;&gt;, int?, Expression&lt;Func&lt;TItem, object&gt;&gt;, bool, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads one projected Cosmos feed page without loading unneeded item fields.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;CosmosSqlPage&lt;TResult&gt;&gt;&gt; ReadItemsPageResultAsync&lt;TResult&gt;(IEnumerable&lt;Expression&lt;Func&lt;TItem, bool&gt;&gt;&gt; expressions, Expression&lt;Func&lt;TItem, TResult&gt;&gt; projection, int? take = null, Expression&lt;Func&lt;TItem, object&gt;&gt; orderExpression = null, bool orderDescending = false, object partitionKeyValue = null, string continuationToken = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expressions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">bool</span>&gt;&gt;&gt;</dt>
+    <dd><p>The expressions used to filter items.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, TResult&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>The maximum item count hint for the feed page.</p>
+</dd>
+    <dt><code>orderExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression used to order items.</p>
+</dd>
+    <dt><code>orderDescending</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether to order descending.</p>
+</dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The optional Cosmos partition key value.</p>
+</dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd><p>The provider-native Cosmos continuation token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.html">CosmosSqlPage</a>&lt;TResult&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing one projected Cosmos feed page.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The projection result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync__1_System_Collections_Generic_IEnumerable_System_Linq_Expressions_Expression_System_Func__0_System_Boolean____System_Linq_Expressions_Expression_System_Func__0___0___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.ReadItemsPageResultAsync(expressions, x =&gt; new { x.Id });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync__1_System_Linq_Expressions_Expression_System_Func__0_System_Boolean___System_Linq_Expressions_Expression_System_Func__0___0___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.ReadItemsPageResultAsync``1(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Nullable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean,System.Object,System.String,System.Threading.CancellationToken)">
+  ReadItemsPageResultAsync&lt;TResult&gt;(Expression&lt;Func&lt;TItem, bool&gt;&gt;, Expression&lt;Func&lt;TItem, TResult&gt;&gt;, int?, Expression&lt;Func&lt;TItem, object&gt;&gt;, bool, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads one projected Cosmos feed page without loading unneeded item fields.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;CosmosSqlPage&lt;TResult&gt;&gt;&gt; ReadItemsPageResultAsync&lt;TResult&gt;(Expression&lt;Func&lt;TItem, bool&gt;&gt; expression, Expression&lt;Func&lt;TItem, TResult&gt;&gt; projection, int? take = null, Expression&lt;Func&lt;TItem, object&gt;&gt; orderExpression = null, bool orderDescending = false, object partitionKeyValue = null, string continuationToken = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>The expression used to filter items.</p>
+</dd>
+    <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, TResult&gt;&gt;</dt>
+    <dd><p>The projection expression.</p>
+</dd>
+    <dt><code>take</code> <span class="xref">int</span>?</dt>
+    <dd><p>The maximum item count hint for the feed page.</p>
+</dd>
+    <dt><code>orderExpression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, <span class="xref">object</span>&gt;&gt;</dt>
+    <dd><p>The expression used to order items.</p>
+</dd>
+    <dt><code>orderDescending</code> <span class="xref">bool</span></dt>
+    <dd><p>A value indicating whether to order descending.</p>
+</dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The optional Cosmos partition key value.</p>
+</dd>
+    <dt><code>continuationToken</code> <span class="xref">string</span></dt>
+    <dd><p>The provider-native Cosmos continuation token.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.html">CosmosSqlPage</a>&lt;TResult&gt;&gt;&gt;</dt>
+    <dd><p>A Result containing one projected Cosmos feed page.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TResult</code></dt>
+    <dd><p>The projection result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync__1_System_Linq_Expressions_Expression_System_Func__0_System_Boolean___System_Linq_Expressions_Expression_System_Func__0___0___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.ReadItemsPageResultAsync(x =&gt; x.Type == "type", x =&gt; new { x.Id });</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_UpsertItemAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.UpsertItemAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_UpsertItemAsync__0_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.UpsertItemAsync(`0,System.Object,System.Threading.CancellationToken)">

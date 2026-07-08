@@ -251,7 +251,7 @@ Class DashboardPage
 
 
   <h2 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage_examples">Examples</h2>
-  <pre><code class="lang-csharp">var page = new DashboardPage("Cities", "cloud-sun", "/_bdk/dashboard/weatherfiesta/cities")
+  <pre><code class="lang-csharp">var page = new DashboardPage("weatherfiesta.cities", "Cities", "cloud-sun", "/_bdk/dashboard/weatherfiesta/cities")
 {
     Group = "WeatherFiesta"
 };</code></pre>
@@ -265,8 +265,8 @@ Class DashboardPage
 
   <a id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardPage.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage__ctor_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardPage.#ctor(System.String,System.String,System.String)">
-  DashboardPage(string, string, string)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage__ctor_System_String_System_String_System_String_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardPage.#ctor(System.String,System.String,System.String,System.String)">
+  DashboardPage(string, string, string, string)
   
   </h3>
 
@@ -275,11 +275,13 @@ Class DashboardPage
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DashboardPage(string title, string icon, string url)</code></pre>
+    <pre><code class="lang-csharp hljs">public DashboardPage(string key, string title, string icon, string url)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
     <dt><code>title</code> <span class="xref">string</span></dt>
     <dd></dd>
     <dt><code>icon</code> <span class="xref">string</span></dt>
@@ -294,8 +296,8 @@ Class DashboardPage
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage__ctor_System_String_System_String_System_String__examples">Examples</h4>
-  <pre><code class="lang-csharp">var page = new DashboardPage("Cities", "cloud-sun", "/_bdk/dashboard/weatherfiesta/cities")
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage__ctor_System_String_System_String_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = new DashboardPage("weatherfiesta.cities", "Cities", "cloud-sun", "/_bdk/dashboard/weatherfiesta/cities")
 {
     Group = "WeatherFiesta"
 };</code></pre>
@@ -482,6 +484,38 @@ Class DashboardPage
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public string Icon { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage_Key_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardPage.Key*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardPage_Key" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardPage.Key">
+  Key
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the stable key used for host-level dashboard page filtering.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Key { get; init; }</code></pre>
   </div>
 
 

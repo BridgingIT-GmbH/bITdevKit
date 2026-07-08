@@ -8,6 +8,7 @@ $siteRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 $sourceRoot = Join-Path $repoRoot 'docs'
 $targetRoot = Join-Path $siteRoot 'reference'
+$siteAssetsRoot = Join-Path $siteRoot 'assets'
 $repoBaseUrl = 'https://github.com/bridgingIT/bITdevKit/blob/main'
 
 $includedPatterns = @(
@@ -31,6 +32,10 @@ $excludedDirectories = @(
 $destinationNames = @{
     'INDEX.md' = 'index.md'
 }
+
+$syncedAssetDirectories = @(
+    'dashboard'
+)
 
 function Get-GitHubBlobUrl {
     param(
@@ -80,6 +85,10 @@ function Rewrite-MarkdownLinks {
             $normalized.StartsWith('mailto:') -or
             $normalized.StartsWith('#')) {
             return $match.Value
+        }
+
+        if ($normalized.StartsWith('assets/dashboard/')) {
+            return $match.Groups['prefix'].Value + '../' + $normalized + $match.Groups['suffix'].Value
         }
 
         if ($normalized.StartsWith('/f:/projects/bit/bIT.bITdevKit/') -or
@@ -150,8 +159,20 @@ function Transform-ImportedContent {
 }
 
 New-Item -ItemType Directory -Force -Path $targetRoot | Out-Null
+New-Item -ItemType Directory -Force -Path $siteAssetsRoot | Out-Null
 
 Get-ChildItem -Path $targetRoot -File | Remove-Item -Force
+
+foreach ($assetDirectory in $syncedAssetDirectories) {
+    $sourceAssetDirectory = Join-Path (Join-Path $sourceRoot 'assets') $assetDirectory
+    $targetAssetDirectory = Join-Path $siteAssetsRoot $assetDirectory
+
+    Remove-Item -Path $targetAssetDirectory -Recurse -Force -ErrorAction SilentlyContinue
+
+    if (Test-Path $sourceAssetDirectory) {
+        Copy-Item -Path $sourceAssetDirectory -Destination $targetAssetDirectory -Recurse -Force
+    }
+}
 
 $sourceFiles = Get-ChildItem -Path $sourceRoot -File | Where-Object {
     $name = $_.Name

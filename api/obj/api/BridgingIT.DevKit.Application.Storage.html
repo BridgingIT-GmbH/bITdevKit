@@ -109,7 +109,7 @@ Intended for inheritance by concrete providers, ensuring testability and consist
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior-1.html">CacheDocumentStoreClientBehavior&lt;T&gt;</a></dt>
-      <dd><p>Adds read-through caching and write invalidation to an <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a>.</p>
+      <dd><p>Adds exact-key read-through caching and write invalidation to an <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -133,8 +133,88 @@ Intended for inheritance by concrete providers, ensuring testability and consist
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentContinuationToken.html">DocumentContinuationToken</a></dt>
+      <dd><p>Represents the provider-agnostic continuation token envelope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.html">DocumentContinuationTokenSerializer</a></dt>
+      <dd><p>Serializes and deserializes opaque document-store continuation tokens.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html">DocumentCountQuery</a></dt>
+      <dd><p>Describes a document-store count query.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQueryBuilder.html">DocumentCountQueryBuilder</a></dt>
+      <dd><p>Builds <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html">DocumentCountQuery</a> instances without executing them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQueryValidation.html">DocumentCountQueryValidation</a></dt>
+      <dd><p>Represents normalized count-query validation output.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntity.html">DocumentEntity</a></dt>
       <dd><p>Represents a document persisted in the in-memory document-store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyPage.html">DocumentKeyPage</a></dt>
+      <dd><p>Represents one bounded page of document keys.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentPage-1.html">DocumentPage&lt;T&gt;</a></dt>
+      <dd><p>Represents one bounded page of document payload instances.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQueries.html">DocumentQueries</a></dt>
+      <dd><p>Provides fluent factories for document-store query models.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+      <dd><p>Describes a bounded document-store query for payload or key page reads.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQueryBuilder.html">DocumentQueryBuilder</a></dt>
+      <dd><p>Builds <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a> instances without executing them.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQueryHash.html">DocumentQueryHash</a></dt>
+      <dd><p>Computes stable hashes for logical document-store queries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQueryValidation.html">DocumentQueryValidation</a></dt>
+      <dd><p>Represents normalized page-query validation output.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQueryValidator.html">DocumentQueryValidator</a></dt>
+      <dd><p>Validates provider-agnostic document query rules.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStorageFeature.html">DocumentStorageFeature</a></dt>
+      <dd><p>Marks the document-storage feature as active in the current service collection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStorageHealthCheck.html">DocumentStorageHealthCheck</a></dt>
+      <dd><p>Checks whether all registered document-store clients can execute an exact-key existence probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.html">DocumentStorageOptions</a></dt>
+      <dd><p>Configures top-level document-storage client registration.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -153,13 +233,33 @@ Intended for inheritance by concrete providers, ensuring testability and consist
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientResultExtensions.html">DocumentStoreClientResultExtensions</a></dt>
-      <dd><p>Provides result-based extension methods for <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a>.</p>
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.html">DocumentStoreClientAccessor&lt;T&gt;</a></dt>
+      <dd><p>Adapts a typed <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a> for dashboard selection and server rendering.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.html">DocumentStoreClientDescriptor</a></dt>
+      <dd><p>Describes one typed document-store client registered for dashboard selection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientFactory.html">DocumentStoreClientFactory</a></dt>
+      <dd><p>Resolves dashboard adapters for registered typed document-store clients.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClient-1.html">DocumentStoreClient&lt;T&gt;</a></dt>
       <dd><p>Represents the default client implementation for storing and retrieving documents through an <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html">DocumentStoreOptions</a></dt>
+      <dd><p>Configures document-store query safety limits.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html">DocumentStoreProviderCapabilities</a></dt>
+      <dd><p>Describes the query capabilities of a document-store provider.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -272,6 +372,11 @@ Captures the outcome (success/failure) and additional details for storage and au
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageHealthCheck.html">FileStorageHealthCheck</a></dt>
+      <dd><p>Checks whether all registered file-storage providers report healthy.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.html">FileStorageProviderCompressionExtensions</a></dt>
       <dd><p>Extension methods for <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileStorageProvider.html">IFileStorageProvider</a> to add compression and decompression functionality using SharpCompress.</p>
 </dd>
@@ -362,11 +467,6 @@ Integrates real-time watching, on-demand scanning, and a processor chain with ra
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.html">LoggingDocumentStoreClientBehavior&lt;T&gt;</a></dt>
       <dd><p>Logs document-store operations before forwarding them to the inner client.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.TypedLogger.html">LoggingDocumentStoreClientBehavior&lt;T&gt;.TypedLogger</a></dt>
-      <dd><p>Provides strongly typed logger-message helpers for document-store operations.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -491,13 +591,23 @@ Structs
 Interfaces
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.html">IDocumentStoreClientAccessor</a></dt>
+      <dd><p>Provides non-generic dashboard access to one selected typed document-store client.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.html">IDocumentStoreClientFactory</a></dt>
+      <dd><p>Creates dashboard accessors for registered typed document-store clients.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient&lt;T&gt;</a></dt>
-      <dd><p>Defines the public API used by application code to query and mutate typed documents.</p>
+      <dd><p>Defines the public Result-native API used by application code to query and mutate typed documents.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a></dt>
-      <dd><p>Defines the backend contract implemented by document-store providers.</p>
+      <dd><p>Defines the Result-native backend contract implemented by document-store providers.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -566,6 +676,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyFilter.html">DocumentKeyFilter</a></dt>
       <dd><p>Defines how a <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a> should be interpreted when filtering document queries.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuerySupport.html">DocumentQuerySupport</a></dt>
+      <dd><p>Describes how a provider supports a document query shape.</p>
 </dd>
     </dl>
     <dl class="jumplist">

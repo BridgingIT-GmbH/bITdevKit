@@ -639,6 +639,43 @@ Class InMemoryDocumentStoreContext
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_InMemoryDocumentStoreContext_Query_" data-uid="BridgingIT.DevKit.Application.Storage.InMemoryDocumentStoreContext.Query*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_InMemoryDocumentStoreContext_Query__1" data-uid="BridgingIT.DevKit.Application.Storage.InMemoryDocumentStoreContext.Query``1">
+  Query&lt;T&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns deterministic snapshots of stored documents for type <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual IEnumerable&lt;(DocumentKey DocumentKey, T Content)&gt; Query&lt;T&gt;() where T : class, new()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IEnumerable</span>&lt;(<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a> <span class="xref">DocumentKey</span>, T <span class="xref">Entity</span>)&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
 
 </article>
 

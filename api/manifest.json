@@ -11336,7 +11336,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior<T>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior-1.yml\" sourcestartlinenumber=\"1\">Adds read-through caching and write invalidation to an <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreClient%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.CacheDocumentStoreClientBehavior-1.yml\" sourcestartlinenumber=\"1\">Adds exact-key read-through caching and write invalidation to an <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreClient%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11424,6 +11424,76 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentContinuationToken.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentContinuationToken.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentContinuationToken",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentContinuationToken.yml\" sourcestartlinenumber=\"1\">Represents the provider-agnostic continuation token envelope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.yml\" sourcestartlinenumber=\"1\">Serializes and deserializes opaque document-store continuation tokens.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentCountQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQuery.yml\" sourcestartlinenumber=\"1\">Describes a document-store count query.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQueryBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQueryBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentCountQueryBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQueryBuilder.yml\" sourcestartlinenumber=\"1\">Builds <xref href=\"BridgingIT.DevKit.Application.Storage.DocumentCountQuery\" data-throw-if-not-resolved=\"false\"></xref> instances without executing them.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQueryValidation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQueryValidation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentCountQueryValidation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentCountQueryValidation.yml\" sourcestartlinenumber=\"1\">Represents normalized count-query validation output.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentEntity.yml",
       "output": {
         ".html": {
@@ -11463,6 +11533,174 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.DocumentKeyFilter",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentKeyFilter.yml\" sourcestartlinenumber=\"1\">Defines how a <xref href=\"BridgingIT.DevKit.Application.Storage.DocumentKey\" data-throw-if-not-resolved=\"false\"></xref> should be interpreted when filtering document queries.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentKeyPage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentKeyPage.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentKeyPage",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentKeyPage.yml\" sourcestartlinenumber=\"1\">Represents one bounded page of document keys.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentPage-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentPage-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentPage<T>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentPage-1.yml\" sourcestartlinenumber=\"1\">Represents one bounded page of document payload instances.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueries.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueries.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQueries",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueries.yml\" sourcestartlinenumber=\"1\">Provides fluent factories for document-store query models.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQuery.yml\" sourcestartlinenumber=\"1\">Describes a bounded document-store query for payload or key page reads.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQueryBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryBuilder.yml\" sourcestartlinenumber=\"1\">Builds <xref href=\"BridgingIT.DevKit.Application.Storage.DocumentQuery\" data-throw-if-not-resolved=\"false\"></xref> instances without executing them.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryHash.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryHash.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQueryHash",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryHash.yml\" sourcestartlinenumber=\"1\">Computes stable hashes for logical document-store queries.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQuerySupport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQuerySupport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQuerySupport",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQuerySupport.yml\" sourcestartlinenumber=\"1\">Describes how a provider supports a document query shape.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryValidation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryValidation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQueryValidation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryValidation.yml\" sourcestartlinenumber=\"1\">Represents normalized page-query validation output.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryValidator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryValidator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentQueryValidator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentQueryValidator.yml\" sourcestartlinenumber=\"1\">Validates provider-agnostic document query rules.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageFeature.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageFeature.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStorageFeature",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageFeature.yml\" sourcestartlinenumber=\"1\">Marks the document-storage feature as active in the current service collection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageHealthCheck.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageHealthCheck.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStorageHealthCheck",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageHealthCheck.yml\" sourcestartlinenumber=\"1\">Checks whether all registered document-store clients can execute an exact-key existence probe.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStorageOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.yml\" sourcestartlinenumber=\"1\">Configures top-level document-storage client registration.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11522,17 +11760,73 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientResultExtensions.yml",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.yml",
       "output": {
         ".html": {
-          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientResultExtensions.html"
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.html"
         }
       },
       "version": "",
       "Uid": null,
       "IsMRef": true,
-      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreClientResultExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientResultExtensions.yml\" sourcestartlinenumber=\"1\">Provides result-based extension methods for <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreClient%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor<T>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientAccessor-1.yml\" sourcestartlinenumber=\"1\">Adapts a typed <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreClient%601\" data-throw-if-not-resolved=\"false\"></xref> for dashboard selection and server rendering.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.yml\" sourcestartlinenumber=\"1\">Describes one typed document-store client registered for dashboard selection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientFactory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreClientFactory",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreClientFactory.yml\" sourcestartlinenumber=\"1\">Resolves dashboard adapters for registered typed document-store clients.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.yml\" sourcestartlinenumber=\"1\">Configures document-store query safety limits.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.yml\" sourcestartlinenumber=\"1\">Describes the query capabilities of a document-store provider.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -11886,6 +12180,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.FileStorageHealthCheck.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.FileStorageHealthCheck.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.FileStorageHealthCheck",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.FileStorageHealthCheck.yml\" sourcestartlinenumber=\"1\">Checks whether all registered file-storage providers report healthy.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.FileStorageProviderCompressionExtensions.yml",
       "output": {
         ".html": {
@@ -11994,7 +12302,35 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.IDocumentStoreClient<T>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.yml\" sourcestartlinenumber=\"1\">Defines the public API used by application code to query and mutate typed documents.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.yml\" sourcestartlinenumber=\"1\">Defines the public Result-native API used by application code to query and mutate typed documents.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.yml\" sourcestartlinenumber=\"1\">Provides non-generic dashboard access to one selected typed document-store client.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.yml\" sourcestartlinenumber=\"1\">Creates dashboard accessors for registered typed document-store clients.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12008,7 +12344,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.yml\" sourcestartlinenumber=\"1\">Defines the backend contract implemented by document-store providers.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.yml\" sourcestartlinenumber=\"1\">Defines the Result-native backend contract implemented by document-store providers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12303,20 +12639,6 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.LoggingBehavior",
       "Summary": null
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.TypedLogger.yml",
-      "output": {
-        ".html": {
-          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.TypedLogger.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior<T>.TypedLogger",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.LoggingDocumentStoreClientBehavior-1.TypedLogger.yml\" sourcestartlinenumber=\"1\">Provides strongly typed logger-message helpers for document-store operations.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15831,6 +16153,146 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.DictionaryExtensions",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreClientSideFilteringRejectedError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreClientSideFilteringRejectedError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreClientSideFilteringRejectedError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreClientSideFilteringRejectedError.yml\" sourcestartlinenumber=\"1\">Represents a rejected document-store query that would require client-side filtering.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreContinuationTokenQueryMismatchError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreContinuationTokenQueryMismatchError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreContinuationTokenQueryMismatchError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreContinuationTokenQueryMismatchError.yml\" sourcestartlinenumber=\"1\">Represents a continuation token that does not match the current document-store query.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreFullScanNotAllowedError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreFullScanNotAllowedError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreFullScanNotAllowedError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreFullScanNotAllowedError.yml\" sourcestartlinenumber=\"1\">Represents a rejected document-store full scan.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreInvalidContinuationTokenError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreInvalidContinuationTokenError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreInvalidContinuationTokenError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreInvalidContinuationTokenError.yml\" sourcestartlinenumber=\"1\">Represents an invalid document-store continuation token.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreInvalidQueryError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreInvalidQueryError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreInvalidQueryError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreInvalidQueryError.yml\" sourcestartlinenumber=\"1\">Represents an invalid document-store query error.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreNotFoundError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreNotFoundError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreNotFoundError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreNotFoundError.yml\" sourcestartlinenumber=\"1\">Represents a missing document error.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStorePageSizeExceededError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStorePageSizeExceededError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStorePageSizeExceededError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStorePageSizeExceededError.yml\" sourcestartlinenumber=\"1\">Represents a document-store page size limit violation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreProviderError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreProviderError.yml\" sourcestartlinenumber=\"1\">Represents a provider-specific document-store failure.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreQueryNotSupportedError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreQueryNotSupportedError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreQueryNotSupportedError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreQueryNotSupportedError.yml\" sourcestartlinenumber=\"1\">Represents an unsupported document-store query shape.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreSerializationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DocumentStoreSerializationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DocumentStoreSerializationError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DocumentStoreSerializationError.yml\" sourcestartlinenumber=\"1\">Represents a document-store serialization failure.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29186,7 +29648,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.yml\" sourcestartlinenumber=\"1\">Implements <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider\" data-throw-if-not-resolved=\"false\"></xref> using Azure Blob Storage.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29410,7 +29872,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.Azure.AzureTableDocumentStoreProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureTableDocumentStoreProvider.yml\" sourcestartlinenumber=\"1\">Implements <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider\" data-throw-if-not-resolved=\"false\"></xref> using Azure Table Storage.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29522,7 +29984,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.Azure.CosmosDocumentStoreProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.Azure.CosmosDocumentStoreProvider.yml\" sourcestartlinenumber=\"1\">Implements <xref href=\"BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider\" data-throw-if-not-resolved=\"false\"></xref> using Azure Cosmos DB SQL API.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29593,6 +30055,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepositoryOptionsBuilder<TEntity>",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage<TItem>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlPage-1.yml\" sourcestartlinenumber=\"1\">Represents one Cosmos SQL feed page.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -41156,6 +41632,104 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.StatusConsoleCommand",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints.yml\" sourcestartlinenumber=\"1\">Maps the Document Storage dashboard pages and dashboard-local document actions.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardPageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardPageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardPageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardPageProvider.yml\" sourcestartlinenumber=\"1\">Provides the Document Storage dashboard page descriptor and index card.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Content.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Content.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Content",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Content.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Documents/Dashboard/Pages/Content.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.DashboardDocumentsViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.DashboardDocumentsViewModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.DashboardDocumentsViewModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.DashboardDocumentsViewModel.yml\" sourcestartlinenumber=\"1\">View model for the server-rendered document storage dashboard content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Index.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Index.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Index",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.Index.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Documents/Dashboard/Pages/Index.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.Pages",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard",
       "Summary": null
     },
     {

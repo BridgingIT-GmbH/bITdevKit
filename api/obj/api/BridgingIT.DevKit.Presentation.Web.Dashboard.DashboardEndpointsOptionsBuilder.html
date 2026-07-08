@@ -419,6 +419,52 @@ Class DashboardEndpointsOptionsBuilder
 
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptionsBuilder_DisablePages_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptionsBuilder.DisablePages*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptionsBuilder_DisablePages_System_Object___" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptionsBuilder.DisablePages(System.Object[])">
+  DisablePages(params object[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Hides dashboard pages by stable page key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DashboardEndpointsOptionsBuilder DisablePages(params object[] pageKeys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>pageKeys</code> <span class="xref">object</span>[]</dt>
+    <dd><p>The page keys to hide, optionally followed by a final <span class="xref">bool</span> that enables or disables this operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptionsBuilder.html">DashboardEndpointsOptionsBuilder</a></dt>
+    <dd><p>The same builder instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptionsBuilder_DisablePages_System_Object____examples">Examples</h4>
+  <pre><code class="lang-csharp">options.DisablePages("metrics", "storage.documents", !builder.Environment.IsDevelopment());</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptionsBuilder_DisablePages_System_Object____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>When the final argument is <code>false</code>, the supplied keys are removed from the disabled set. This supports
+environment-specific configuration such as <code>DisablePages(&quot;metrics&quot;, !env.IsDevelopment())</code>.</p>
+</div>
+
+
+
+
   <a id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptionsBuilder_Enabled_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptionsBuilder.Enabled*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptionsBuilder_Enabled_System_Boolean_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptionsBuilder.Enabled(System.Boolean)">

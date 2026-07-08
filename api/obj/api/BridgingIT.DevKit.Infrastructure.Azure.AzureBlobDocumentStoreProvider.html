@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AzureBlobDocumentStoreProvider | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Implements  using Azure Blob Storage.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class AzureBlobDocumentStoreProvider
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.Azure.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Implements <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a> using Azure Blob Storage.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -255,6 +256,10 @@ Class AzureBlobDocumentStoreProvider
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_examples">Examples</h2>
+  <pre><code class="lang-csharp">var provider = new AzureBlobDocumentStoreProvider(loggerFactory, blobServiceClient);
+await provider.UpsertResultAsync(new DocumentKey("people", "42"), person, cancellationToken);</code></pre>
+
 
 
 
@@ -264,28 +269,36 @@ Class AzureBlobDocumentStoreProvider
 
   <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_Microsoft_Extensions_Logging_ILoggerFactory_Azure_Storage_Blobs_BlobServiceClient_System_String_BridgingIT_DevKit_Common_ISerializer_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,Azure.Storage.Blobs.BlobServiceClient,System.String,BridgingIT.DevKit.Common.ISerializer)">
-  AzureBlobDocumentStoreProvider(ILoggerFactory, BlobServiceClient, string, ISerializer)
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_Microsoft_Extensions_Logging_ILoggerFactory_Azure_Storage_Blobs_BlobServiceClient_System_String_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,Azure.Storage.Blobs.BlobServiceClient,System.String,BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Application.Storage.DocumentStoreOptions)">
+  AzureBlobDocumentStoreProvider(ILoggerFactory, BlobServiceClient, string, ISerializer, DocumentStoreOptions)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.html">AzureBlobDocumentStoreProvider</a> class from an existing blob service client.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AzureBlobDocumentStoreProvider(ILoggerFactory loggerFactory, BlobServiceClient serviceClient, string tableNamePrefix = null, ISerializer serializer = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public AzureBlobDocumentStoreProvider(ILoggerFactory loggerFactory, BlobServiceClient serviceClient, string tableNamePrefix = null, ISerializer serializer = null, DocumentStoreOptions options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The logger factory used to create the provider logger.</p>
+</dd>
     <dt><code>serviceClient</code> <span class="xref">BlobServiceClient</span></dt>
-    <dd></dd>
+    <dd><p>The Azure Blob Storage service client.</p>
+</dd>
     <dt><code>tableNamePrefix</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional prefix added to generated container names.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The optional serializer used for document payloads.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html">DocumentStoreOptions</a></dt>
+    <dd><p>The optional document-store query safety options.</p>
+</dd>
   </dl>
 
 
@@ -301,30 +314,39 @@ Class AzureBlobDocumentStoreProvider
 
   <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_Microsoft_Extensions_Logging_ILoggerFactory_System_String_System_String_Azure_Storage_Blobs_BlobClientOptions_BridgingIT_DevKit_Common_ISerializer_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.String,System.String,Azure.Storage.Blobs.BlobClientOptions,BridgingIT.DevKit.Common.ISerializer)">
-  AzureBlobDocumentStoreProvider(ILoggerFactory, string, string, BlobClientOptions, ISerializer)
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_Microsoft_Extensions_Logging_ILoggerFactory_System_String_System_String_Azure_Storage_Blobs_BlobClientOptions_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.String,System.String,Azure.Storage.Blobs.BlobClientOptions,BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Application.Storage.DocumentStoreOptions)">
+  AzureBlobDocumentStoreProvider(ILoggerFactory, string, string, BlobClientOptions, ISerializer, DocumentStoreOptions)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.html">AzureBlobDocumentStoreProvider</a> class from a connection string.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AzureBlobDocumentStoreProvider(ILoggerFactory loggerFactory, string connectionString, string containerNamePrefix = null, BlobClientOptions clientOptions = null, ISerializer serializer = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public AzureBlobDocumentStoreProvider(ILoggerFactory loggerFactory, string connectionString, string containerNamePrefix = null, BlobClientOptions clientOptions = null, ISerializer serializer = null, DocumentStoreOptions options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The logger factory used to create the provider logger.</p>
+</dd>
     <dt><code>connectionString</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The Azure Blob Storage connection string.</p>
+</dd>
     <dt><code>containerNamePrefix</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional prefix added to generated container names.</p>
+</dd>
     <dt><code>clientOptions</code> <span class="xref">BlobClientOptions</span></dt>
-    <dd></dd>
+    <dd><p>The optional blob client options.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The optional serializer used for document payloads.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html">DocumentStoreOptions</a></dt>
+    <dd><p>The optional document-store query safety options.</p>
+</dd>
   </dl>
 
 
@@ -340,34 +362,45 @@ Class AzureBlobDocumentStoreProvider
 
   <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_Microsoft_Extensions_Logging_ILoggerFactory_System_String_System_String_System_String_System_String_Azure_Storage_Blobs_BlobClientOptions_BridgingIT_DevKit_Common_ISerializer_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.String,System.String,System.String,System.String,Azure.Storage.Blobs.BlobClientOptions,BridgingIT.DevKit.Common.ISerializer)">
-  AzureBlobDocumentStoreProvider(ILoggerFactory, string, string, string, string, BlobClientOptions, ISerializer)
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider__ctor_Microsoft_Extensions_Logging_ILoggerFactory_System_String_System_String_System_String_System_String_Azure_Storage_Blobs_BlobClientOptions_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Application_Storage_DocumentStoreOptions_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.String,System.String,System.String,System.String,Azure.Storage.Blobs.BlobClientOptions,BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Application.Storage.DocumentStoreOptions)">
+  AzureBlobDocumentStoreProvider(ILoggerFactory, string, string, string, string, BlobClientOptions, ISerializer, DocumentStoreOptions)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.html">AzureBlobDocumentStoreProvider</a> class from shared key credentials.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AzureBlobDocumentStoreProvider(ILoggerFactory loggerFactory, string storageUri, string accountName, string storageAccountKey, string tableNamePrefix = null, BlobClientOptions clientOptions = null, ISerializer serializer = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public AzureBlobDocumentStoreProvider(ILoggerFactory loggerFactory, string storageUri, string accountName, string storageAccountKey, string tableNamePrefix = null, BlobClientOptions clientOptions = null, ISerializer serializer = null, DocumentStoreOptions options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The logger factory used to create the provider logger.</p>
+</dd>
     <dt><code>storageUri</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The Azure Blob Storage account URI.</p>
+</dd>
     <dt><code>accountName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The storage account name.</p>
+</dd>
     <dt><code>storageAccountKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The storage account key.</p>
+</dd>
     <dt><code>tableNamePrefix</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional prefix added to generated container names.</p>
+</dd>
     <dt><code>clientOptions</code> <span class="xref">BlobClientOptions</span></dt>
-    <dd></dd>
+    <dd><p>The optional blob client options.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The optional serializer used for document payloads.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreOptions.html">DocumentStoreOptions</a></dt>
+    <dd><p>The optional document-store query safety options.</p>
+</dd>
   </dl>
 
 
@@ -385,6 +418,38 @@ Class AzureBlobDocumentStoreProvider
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_Capabilities_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.Capabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_Capabilities" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.Capabilities">
+  Capabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider query capabilities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentStoreProviderCapabilities Capabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html">DocumentStoreProviderCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_Logger_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.Logger*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_Logger" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.Logger">
@@ -392,7 +457,8 @@ Class AzureBlobDocumentStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the logger used by the provider.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -420,105 +486,128 @@ Class AzureBlobDocumentStoreProvider
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_CountAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.CountAsync*"></a>
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_CountResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.CountResultAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_CountAsync__1_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.CountAsync``1(System.Threading.CancellationToken)">
-  CountAsync&lt;T&gt;(CancellationToken)
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_CountResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.CountResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentCountQuery,System.Threading.CancellationToken)">
+  CountResultAsync&lt;T&gt;(DocumentCountQuery, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Counts the number of entities of type T in the document store</p>
+  <div class="markdown level1 summary"><p>Counts documents matching a query.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;long&gt; CountAsync&lt;T&gt;(CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;long&gt;&gt; CountResultAsync&lt;T&gt;(DocumentCountQuery query, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html">DocumentCountQuery</a></dt>
+    <dd><p>The count query describing key filters and full-scan intent.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
-    <dd></dd>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
+    <dd><p>A result containing the number of matching documents.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The document payload type whose documents should be counted.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_CountResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = await provider.CountResultAsync&lt;Person&gt;(
+    DocumentQueries.Count()
+        .ForKey("people", "DE-")
+        .WithRowKeyPrefix()
+        .Build(),
+    cancellationToken);</code></pre>
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_DeleteAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.DeleteAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_DeleteAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.DeleteAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
-  DeleteAsync&lt;T&gt;(DocumentKey, CancellationToken)
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_DeleteResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.DeleteResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_DeleteResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.DeleteResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  DeleteResultAsync&lt;T&gt;(DocumentKey, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store</p>
+  <div class="markdown level1 summary"><p>Deletes a document by exact key.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task DeleteAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteResultAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd></dd>
+    <dd><p>The exact partition and row key of the document to delete.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A result indicating whether the delete completed successfully.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The document payload type.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_DeleteResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.DeleteResultAsync&lt;Person&gt;(
+    new DocumentKey("people", "42"),
+    cancellationToken);</code></pre>
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ExistsAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ExistsAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ExistsAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ExistsAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
-  ExistsAsync&lt;T&gt;(DocumentKey, CancellationToken)
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ExistsResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ExistsResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ExistsResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ExistsResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  ExistsResultAsync&lt;T&gt;(DocumentKey, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Checks whether a document exists for the supplied exact key.</p>
+  <div class="markdown level1 summary"><p>Checks exact-key existence.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; ExistsAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsResultAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -527,21 +616,21 @@ Class AzureBlobDocumentStoreProvider
     <dd><p>The exact partition and row key to check.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to observe while waiting for the lookup to complete.</p>
+    <dd><p>The token used to cancel the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a document exists for the supplied key; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A result containing <code>true</code> when the document exists; otherwise <code>false</code>.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The document type to query.</p>
+    <dd><p>The document payload type.</p>
 </dd>
   </dl>
 
@@ -549,371 +638,287 @@ Class AzureBlobDocumentStoreProvider
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ExistsResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var exists = await provider.ExistsResultAsync&lt;Person&gt;(
+    new DocumentKey("people", "42"),
+    cancellationToken);</code></pre>
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentKeyFilter_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.DocumentKeyFilter,System.Threading.CancellationToken)">
-  FindAsync&lt;T&gt;(DocumentKey, DocumentKeyFilter, CancellationToken)
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindPageResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindPageResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindPageResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindPageResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentQuery,System.Threading.CancellationToken)">
+  FindPageResultAsync&lt;T&gt;(DocumentQuery, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Searches for entities of type T by the whole partitionKey and startswith rowKey</p>
+  <div class="markdown level1 summary"><p>Retrieves one bounded page of document payloads.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;T&gt;&gt; FindAsync&lt;T&gt;(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentPage&lt;T&gt;&gt;&gt; FindPageResultAsync&lt;T&gt;(DocumentQuery query, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The query describing key filters, page size, continuation token, and full-scan intent.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentPage-1.html">DocumentPage</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>A result containing one page of documents and an optional continuation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The document payload type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindPageResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await provider.FindPageResultAsync&lt;Person&gt;(
+    DocumentQueries.Query()
+        .ForKey("people", "DE-")
+        .WithRowKeyPrefix()
+        .Take(50)
+        .Build(),
+    cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_GetResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.GetResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_GetResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.GetResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  GetResultAsync&lt;T&gt;(DocumentKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Retrieves one document by exact key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;T&gt;&gt; GetResultAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd></dd>
-    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyFilter.html">DocumentKeyFilter</a></dt>
-    <dd></dd>
+    <dd><p>The exact partition and row key of the document to retrieve.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>A result containing the document, or a failure when the document was not found or the provider failed.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The document payload type.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_GetResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.GetResultAsync&lt;Person&gt;(
+    new DocumentKey("people", "42"),
+    cancellationToken);</code></pre>
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
-  FindAsync&lt;T&gt;(DocumentKey, CancellationToken)
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListPageResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListPageResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListPageResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListPageResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentQuery,System.Threading.CancellationToken)">
+  ListPageResultAsync&lt;T&gt;(DocumentQuery, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Retrieves entities of type T filtered by the whole partitionKey and whole rowKey</p>
+  <div class="markdown level1 summary"><p>Retrieves one bounded page of document keys only.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;T&gt;&gt; FindAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;DocumentKeyPage&gt;&gt; ListPageResultAsync&lt;T&gt;(DocumentQuery query, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The query describing key filters, page size, continuation token, and full-scan intent.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyPage.html">DocumentKeyPage</a>&gt;&gt;</dt>
+    <dd><p>A result containing one page of document keys and an optional continuation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The document payload type whose keys should be listed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListPageResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var keys = await provider.ListPageResultAsync&lt;Person&gt;(
+    DocumentQueries.Query()
+        .ForKey("people", "DE-")
+        .WithRowKeyPrefix()
+        .Take(100)
+        .Build(),
+    cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey___0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertResultAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,``0,System.Threading.CancellationToken)">
+  UpsertResultAsync&lt;T&gt;(DocumentKey, T, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inserts or updates one document.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; UpsertResultAsync&lt;T&gt;(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>T</code></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_FindAsync__1_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.FindAsync``1(System.Threading.CancellationToken)">
-  FindAsync&lt;T&gt;(CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Retrieves entities of type T from document store asynchronously</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;T&gt;&gt; FindAsync&lt;T&gt;(CancellationToken cancellationToken = default) where T : class, new()</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>T</code></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentKeyFilter_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.DocumentKeyFilter,System.Threading.CancellationToken)">
-  ListAsync&lt;T&gt;(DocumentKey, DocumentKeyFilter, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Lists document keys using the supplied key and filter semantics.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;DocumentKey&gt;&gt; ListAsync&lt;T&gt;(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd><p>The key values that seed the query.</p>
+    <dd><p>The exact partition and row key to store the document under.</p>
 </dd>
-    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyFilter.html">DocumentKeyFilter</a></dt>
-    <dd><p>The filter semantics to apply to the supplied key.</p>
-</dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to observe while waiting for the query to complete.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;&gt;</dt>
-    <dd><p>The matching document keys.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>T</code></dt>
-    <dd><p>The document type to query.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
-  ListAsync&lt;T&gt;(DocumentKey, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Lists document keys for an exact <code class="paramref">documentKey</code>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;DocumentKey&gt;&gt; ListAsync&lt;T&gt;(DocumentKey documentKey, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd><p>The exact partition and row key to query.</p>
-</dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to observe while waiting for the query to complete.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;&gt;</dt>
-    <dd><p>The matching document keys.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>T</code></dt>
-    <dd><p>The document type to query.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_ListAsync__1_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.ListAsync``1(System.Threading.CancellationToken)">
-  ListAsync&lt;T&gt;(CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Lists all document keys for documents of type <code class="typeparamref">T</code>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;DocumentKey&gt;&gt; ListAsync&lt;T&gt;(CancellationToken cancellationToken = default) where T : class, new()</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to observe while waiting for the query to complete.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;&gt;</dt>
-    <dd><p>The matching document keys.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>T</code></dt>
-    <dd><p>The document type to query.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey___0_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertAsync``1(BridgingIT.DevKit.Application.Storage.DocumentKey,``0,System.Threading.CancellationToken)">
-  UpsertAsync&lt;T&gt;(DocumentKey, T, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Inserts or updates an entity of type T in the document store</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task UpsertAsync&lt;T&gt;(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd></dd>
     <dt><code>entity</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The document payload to insert or replace.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A result indicating whether the upsert completed successfully.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The document payload type.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertResultAsync__1_BridgingIT_DevKit_Application_Storage_DocumentKey___0_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.UpsertResultAsync(
+    new DocumentKey("people", "42"),
+    person,
+    cancellationToken);</code></pre>
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertAsync__1_System_Collections_Generic_IEnumerable_System_ValueTuple_BridgingIT_DevKit_Application_Storage_DocumentKey___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertAsync``1(System.Collections.Generic.IEnumerable{System.ValueTuple{BridgingIT.DevKit.Application.Storage.DocumentKey,``0}},System.Threading.CancellationToken)">
-  UpsertAsync&lt;T&gt;(IEnumerable&lt;(DocumentKey DocumentKey, T Entity)&gt;, CancellationToken)
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertResultAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertResultAsync__1_System_Collections_Generic_IEnumerable_System_ValueTuple_BridgingIT_DevKit_Application_Storage_DocumentKey___0___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.UpsertResultAsync``1(System.Collections.Generic.IEnumerable{System.ValueTuple{BridgingIT.DevKit.Application.Storage.DocumentKey,``0}},System.Threading.CancellationToken)">
+  UpsertResultAsync&lt;T&gt;(IEnumerable&lt;(DocumentKey DocumentKey, T Entity)&gt;, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Inserts or updates multiple entities of type T in the document store</p>
+  <div class="markdown level1 summary"><p>Inserts or updates multiple documents.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task UpsertAsync&lt;T&gt;(IEnumerable&lt;(DocumentKey DocumentKey, T Entity)&gt; entities, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; UpsertResultAsync&lt;T&gt;(IEnumerable&lt;(DocumentKey DocumentKey, T Entity)&gt; entities, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;(<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a> <span class="xref">DocumentKey</span>, T <span class="xref">Entity</span>)&gt;</dt>
-    <dd></dd>
+    <dd><p>The document keys and payloads to insert or replace.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A result indicating whether all upserts completed successfully.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The document payload type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobDocumentStoreProvider_UpsertResultAsync__1_System_Collections_Generic_IEnumerable_System_ValueTuple_BridgingIT_DevKit_Application_Storage_DocumentKey___0___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await provider.UpsertResultAsync(
+    people.Select(person =&gt; (new DocumentKey("people", person.Id), person)),
+    cancellationToken);</code></pre>
 
 
 

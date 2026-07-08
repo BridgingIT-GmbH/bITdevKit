@@ -3765,6 +3765,10 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>This registers "inMemory", "local", "network", and "azureBlob" providers with behaviors and lifetimes, resolved by <code>IFileStorageProviderFactory</code>.</p>
+<p><code>AddFileStorage(...)</code> also registers a single standard ASP.NET Core health check for all configured providers:</p>
+<div class="highlight"><pre><span></span><code>FileStorage
+</code></pre></div>
+<p>The check resolves every provider name from <code>IFileStorageProviderFactory</code>, calls each provider's <code>CheckHealthAsync(...)</code>, and reports failures with the failed provider names and error details in the health-check data. The health check is tagged with <code>ready</code>, <code>storage</code>, and <code>files</code>.</p>
 <h3 id="setting-up-the-entity-framework-provider">Setting Up the Entity Framework Provider<a class="headerlink" href="#setting-up-the-entity-framework-provider" title="Permanent link">&para;</a></h3>
 <p>Use the Entity Framework provider when files should live in the same relational database as the rest of your application state.</p>
 <ol>

@@ -185,8 +185,8 @@ Built-in page keys:
 | Messaging | `messaging` | [Messaging](assets/dashboard/10-messaging-messaging.png) |
 | Queueing | `queueing` | [Queueing](assets/dashboard/11-queueing-queueing.png) |
 | Orchestrations | `orchestrations` | [Orchestrations](assets/dashboard/12-orchestrations-orchestrations.png) |
-| File Storage | `storage.files` | [Files](assets/dashboard/13-storage-files-files.png) |
-| Document Storage | `storage.documents` | [Documents](assets/dashboard/14-storage-documents-documents.png) |
+| Files | `storage.files` | [Files](assets/dashboard/13-storage-files-files.png) |
+| Documents | `storage.documents` | [Documents](assets/dashboard/14-storage-documents-documents.png) |
 
 Project-specific pages declared with `DashboardPageSet` use the key passed to `.Page(...)`. For example, a page declared as `.Page("customer-management", "/app/core/customers")` can be hidden with:
 

@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Jobs Feature (Application.Jobs)

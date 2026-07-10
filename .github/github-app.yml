@@ -1,0 +1,12 @@
+scripts:
+  - name: solution-restore
+    command: dotnet restore bITdevKit.slnx --nologo
+  - name: solution-clean
+    command: dotnet clean bITdevKit.slnx --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary
+  - name: solution-build
+    command: dotnet build bITdevKit.slnx --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary
+  - name: weatherfiesta-run
+    command: dotnet run --project examples\WeatherFiesta\WeatherFiesta.Presentation.Web.Server\WeatherFiesta.Presentation.Web.Server.csproj --nologo
+automation:
+  auto_issue_session: true
+  remote_control: true

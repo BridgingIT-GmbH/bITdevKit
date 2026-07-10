@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Composition Building Blocks (Common.Utilities.Composition)

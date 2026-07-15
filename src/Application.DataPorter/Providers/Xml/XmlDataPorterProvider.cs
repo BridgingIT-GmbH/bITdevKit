@@ -514,7 +514,7 @@ public sealed class XmlDataPorterProvider(
             importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count, skippedRows: skippedRows);
         }
 
-        return new ImportResult<TTarget>
+        var importResult = new ImportResult<TTarget>
         {
             Data = results,
             TotalRows = totalRows,
@@ -525,6 +525,8 @@ public sealed class XmlDataPorterProvider(
             Errors = errors,
             Warnings = warnings
         };
+
+        return await executor.CompleteImportAsync(importResult, this.Format, importConfiguration.SheetName, false, importConfiguration, cancellationToken);
     }
 
     /// <inheritdoc/>

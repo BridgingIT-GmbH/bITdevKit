@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -254,6 +255,21 @@ public partial class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<
         entity.AuditState.SetCreated(this.GetByValue());
 
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
+    }
+
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+
+        foreach (var entity in items)
+        {
+            entity.AuditState ??= new AuditState();
+            entity.AuditState.SetCreated(this.GetByValue());
+        }
+
+        return await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)

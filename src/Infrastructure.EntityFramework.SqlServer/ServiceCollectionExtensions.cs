@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Database.Command;
 using EntityFrameworkCore.Diagnostics;
@@ -27,6 +28,8 @@ public static class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
+        TryAddSqlServerEntityBulkInsertProvider(services);
+
         return services.AddSqlServerDbContext<TContext>(
             optionsBuilder(new SqlServerOptionsBuilder()).Build(), sqlServerOptionsBuilder, lifetime);
     }
@@ -52,6 +55,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqlServerOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.SqlServer);
         services.AddScoped<IDbContextResolver, DbContextResolver>(); // needed for DatabaseTransactionPipelineBehavior to resolve DbContext by name (e.g., "Core" or "CoreDbContext")
+        TryAddSqlServerEntityBulkInsertProvider(services);
 
         return new SqlServerDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -136,6 +140,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<TContext>(o => o.UseSqlServer(connectionString, sqlServerOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.SqlServer);
+        TryAddSqlServerEntityBulkInsertProvider(services);
 
         return new SqlServerDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -226,5 +231,10 @@ public static class ServiceCollectionExtensions
                     break;
             }
         }
+    }
+
+    private static void TryAddSqlServerEntityBulkInsertProvider(IServiceCollection services)
+    {
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEntityBulkInsertProvider, SqlServerEntityBulkInsertProvider>());
     }
 }

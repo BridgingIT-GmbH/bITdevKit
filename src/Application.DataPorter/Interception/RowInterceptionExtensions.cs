@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Provides helpers for accessing configured row interception executors.
 /// </summary>
@@ -32,5 +34,57 @@ public static class RowInterceptionExtensions
         where TSource : class
     {
         return configuration.RowInterceptionExecutor as IExportRowInterceptionExecutor<TSource>;
+    }
+
+    internal static async Task<ImportResult<TTarget>> CompleteImportAsync<TTarget>(
+        this IImportRowInterceptionExecutor<TTarget> executor,
+        ImportResult<TTarget> result,
+        Format format,
+        string sheetName,
+        bool isStreaming,
+        ImportConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TTarget : class
+    {
+        if (executor is null)
+        {
+            return result;
+        }
+
+        var completionResult = await executor.CompleteAsync(result, format, sheetName, isStreaming, cancellationToken);
+        if (completionResult.IsSuccess)
+        {
+            return result;
+        }
+
+        var errors = result.Errors.ToList();
+        var completionErrors = completionResult.Errors.SafeNull().ToList();
+        if (completionErrors.Count == 0)
+        {
+            ImportErrorLimit.TryAdd(errors, new ImportRowError
+            {
+                RowNumber = 0,
+                Column = "N/A",
+                Message = completionResult.Messages.FirstOrDefault() ?? "Import completion interceptor failed.",
+                Severity = ErrorSeverity.Critical
+            }, configuration);
+        }
+
+        foreach (var error in completionErrors)
+        {
+            ImportErrorLimit.TryAdd(errors, new ImportRowError
+            {
+                RowNumber = 0,
+                Column = "N/A",
+                Message = error.Message,
+                Severity = ErrorSeverity.Critical
+            }, configuration);
+        }
+
+        return result with
+        {
+            FailedRows = result.FailedRows + Math.Max(1, completionErrors.Count),
+            Errors = errors
+        };
     }
 }

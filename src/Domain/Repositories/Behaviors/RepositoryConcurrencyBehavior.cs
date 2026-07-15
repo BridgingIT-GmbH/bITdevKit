@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
 ///     <para>
@@ -191,6 +193,20 @@ public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> 
         entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
 
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
+    }
+
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+
+        foreach (var entity in items)
+        {
+            entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
+        }
+
+        return await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)

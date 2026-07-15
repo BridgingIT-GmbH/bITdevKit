@@ -272,6 +272,120 @@ var deleted = await repository.DeleteSetAsync(filter, cancellationToken: cancell
 - Other repository implementations expose the same API for consistency but currently throw `NotImplementedException`.
 - With Entity Framework, set-based operations execute directly in the database and do not synchronize already tracked entities in the current `DbContext`. If you need the updated database state immediately afterwards, re-query using `NoTracking` or use a fresh context/repository instance.
 
+### Explicit Provider Bulk Inserts
+
+`InsertSetAsync` keeps normal repository semantics: repository behaviors, domain-event/outbox behavior, audit behavior, EF tracking, and `SaveChangesAsync` still participate. For high-volume import paths where the caller intentionally accepts different semantics, use the explicit infrastructure-facing `IEntityBulkInserter<TEntity>` port.
+
+The registration has two responsibilities:
+
+- `AddSqlServerDbContext<TContext>()` registers the stateless SQL Server native strategy automatically.
+- `.WithBulkInsert()` registers the typed, provider-neutral orchestrator for one entity and DbContext pair. At runtime it selects the strategy using `DbContext.Database.ProviderName`.
+
+```csharp
+services.AddSqlServerDbContext<CoreDbContext>(options => options
+    .UseConnectionString(connectionString));
+
+services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
+    .WithBulkInsert(new SqlServerEntityBulkInsertOptions
+    {
+        BatchSize = 5_000,
+        SqlBulkCopyOptions = SqlBulkCopyOptions.TableLock
+    })
+    .WithTransactions()
+    .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>();
+```
+
+`.WithTransactions()` configures repository operations such as `InsertSetAsync`, `UpdateSetAsync`, and normal `SaveChanges` flows. Direct `IEntityBulkInserter<TEntity>` calls bypass repository decorators. The current SQL Server strategy participates in an ambient EF transaction when one exists and otherwise uses an internal SQL Server transaction.
+
+Then use `IEntityBulkInserter<TEntity>` from infrastructure-facing code, for example a DataPorter completion interceptor:
+
+```csharp
+public sealed class TodoItemBulkImportInterceptor(
+    IMapper mapper,
+    ICurrentUserAccessor currentUserAccessor,
+    IEntityBulkInserter<TodoItem> bulkInserter)
+    : IImportRowInterceptor<TodoItemModel>
+{
+    public Task<RowInterceptionDecision> BeforeImportAsync(
+        ImportRowContext<TodoItemModel> context,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(RowInterceptionDecision.Continue());
+    }
+
+    public async Task<Result> AfterImportCompletedAsync(
+        ImportCompletionContext<TodoItemModel> context,
+        CancellationToken cancellationToken = default)
+    {
+        if (context.Result.HasErrors || context.Result.SuccessfulRows == 0)
+        {
+            return Result.Success();
+        }
+
+        var entities = context.Result.Data
+            .Select(model =>
+            {
+                var entity = mapper.Map<TodoItemModel, TodoItem>(model);
+                entity.UserId = currentUserAccessor.UserId;
+                return entity;
+            })
+            .ToList();
+
+        var bulkResult = await bulkInserter.InsertAsync(entities, cancellationToken);
+
+        return bulkResult.IsSuccess
+            ? Result.Success()
+            : Result.Failure().WithErrors(bulkResult.Errors);
+    }
+}
+```
+
+The DoFiesta sample uses this pattern in a DataPorter `AfterImportCompletedAsync` interceptor: the file is parsed and validated first, then the successful todo rows are mapped to `TodoItem` entities and written with `IEntityBulkInserter<TodoItem>`.
+
+#### Options
+
+`EntityBulkInsertOptions` is provider-neutral and applies to every current or future strategy:
+
+- `BatchSize`
+- `CommandTimeout`
+- `AssignSequentialGuidKeys`
+- `AssignConcurrencyVersions`
+- `KeepGeneratedIdentityValues`
+
+For SQL Server, pass the optional derived `SqlServerEntityBulkInsertOptions` to `.WithBulkInsert()`. Its `SqlBulkCopyOptions` keeps SQL Server-specific flags such as `TableLock`. Do not configure `KeepIdentity` or `UseInternalTransaction`: `KeepGeneratedIdentityValues` controls identity preservation and the SQL Server strategy chooses the transaction flag from the active EF transaction.
+
+#### Failure Behavior
+
+The DevKit provider setup method is required for automatic native-strategy registration. This raw EF setup intentionally does not discover assemblies or fall back to row-by-row inserts:
+
+```csharp
+services.AddDbContext<CoreDbContext>(options => options.UseSqlServer(connectionString));
+services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
+    .WithBulkInsert();
+```
+
+When `IEntityBulkInserter<TodoItem>.InsertAsync(...)` runs, it returns a failed `Result<long>` containing an actionable `NotSupportedException`: the message names the entity type, the active EF provider name, and the registered provider names. Register the context through `AddSqlServerDbContext<CoreDbContext>()` instead.
+
+#### Key Points For Explicit Bulk Inserts
+
+- The current SQL Server strategy uses `Microsoft.Data.SqlClient.SqlBulkCopy`; no commercial bulk-insert package is required.
+- Bulk insert is opt-in and provider-native. It does not replace `IGenericRepository<TEntity>.InsertSetAsync`.
+- Repository decorators, domain event publishing, outbox storage, EF change tracking, and `SaveChanges` interceptors are intentionally bypassed.
+- The shared mapper writes aggregate-root table columns, flattens same-table owned reference values, generates primitive or typed GUID ids when needed, and rejects owned collections that contain rows. Owned collection rows must be persisted separately.
+- The shared orchestrator dispatches by exact `DbContext.Database.ProviderName`; it never infers a provider from a connection string.
+- Prefer this API for imports, seed data, generated records, queue/log batches, or other large inserts where the caller owns the trade-off.
+
+#### Create A New Provider
+
+To add PostgreSQL, SQLite, or another relational provider without modifying the shared orchestrator:
+
+1. Create or update the provider assembly so it references `Infrastructure.EntityFramework` and its EF Core/ADO.NET provider packages.
+2. Implement the stateless non-generic `IEntityBulkInsertProvider`. Set `ProviderName` to the provider's exact `DbContext.Database.ProviderName` value and implement native writing from `EntityBulkInsertBatch<TEntity>`.
+3. Keep provider-native connections, transactions, identifier quoting, wire formats, and provider-specific option enums in that provider assembly. Do not duplicate EF metadata mapping, generated-value assignment, or `Result<long>` conversion from the shared layer.
+4. Update every DevKit `Add*DbContext<TContext>` overload for that provider to use `TryAddEnumerable` and register one singleton `IEntityBulkInsertProvider` implementation.
+5. Add a derived options type only when native options are needed; derive it from `EntityBulkInsertOptions` and keep the shared options provider-neutral.
+6. Add dispatcher contract tests with a test provider plus provider integration tests for mappings, value conversion, generated values, transactions, identities, native options, and registration.
+
 ## Appendix A: Optimistic Concurrency Support
 
 ### Overview

@@ -239,6 +239,15 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY InsertSet {this.type}",
+            async (a, c) => await this.Inner.InsertSetAsync(entities, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await Activity.Current.StartActvity($"REPOSITORY Update {this.type}",

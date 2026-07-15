@@ -153,9 +153,11 @@ public class CoreDataPorterEndpoints : EndpointsBase
                     {
                         success = false,
                         totalRows = importResult.TotalRows,
-                        successfulRows = importResult.SuccessfulRows,
+                        successfulRows = 0,
+                        validRows = importResult.SuccessfulRows,
                         failedRows = importResult.FailedRows,
                         errorCount = importResult.Errors.Count,
+                        message = "Import validation or persistence failed. Valid rows were not persisted.",
                         errors = importResult.Errors.Select(e => new
                         {
                             row = e.RowNumber,

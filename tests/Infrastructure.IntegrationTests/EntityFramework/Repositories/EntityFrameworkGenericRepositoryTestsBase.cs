@@ -738,6 +738,31 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         existingEntity.Locations.Count.ShouldBe(4);
     }
 
+    public virtual async Task InsertSetAsync_NewEntities_EntitiesInserted()
+    {
+        // Arrange
+        var ticks = DateTime.UtcNow.Ticks;
+        var entities = new[]
+        {
+            new PersonStub($"John {ticks}", $"Range {ticks}", $"John.Range{ticks}@gmail.com", 24, Status.Active),
+            new PersonStub($"Jane {ticks}", $"Range {ticks}", $"Jane.Range{ticks}@gmail.com", 25, Status.Active)
+        };
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = (await sut.InsertSetAsync(entities)).ToList();
+
+        // Assert
+        result.Count.ShouldBe(2);
+        result.ShouldAllBe(e => e.Id != Guid.Empty);
+
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        var stored = (await verifySut.FindAllAsync(new Specification<PersonStub>(e => e.LastName == $"Range {ticks}"))).ToList();
+        stored.Count.ShouldBe(2);
+        stored.ShouldContain(e => e.FirstName == $"John {ticks}");
+        stored.ShouldContain(e => e.FirstName == $"Jane {ticks}");
+    }
+
     public virtual async Task UpsertAsync_ExistingEntity_EntityUpdated()
     {
         // Arrange

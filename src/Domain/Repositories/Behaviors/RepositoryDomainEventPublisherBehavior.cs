@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Linq.Expressions;
@@ -219,6 +220,23 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
         await entity.DomainEvents.GetAll()
             .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); }, cancellationToken);
         entity.DomainEvents.Clear();
+
+        return result;
+    }
+
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+        var result = await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
+
+        foreach (var entity in items)
+        {
+            await entity.DomainEvents.GetAll()
+                .ForEachAsync(async e => { await this.Publisher.Send(e, cancellationToken).AnyContext(); }, cancellationToken);
+            entity.DomainEvents.Clear();
+        }
 
         return result;
     }

@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Database.Command;
 using EntityFrameworkCore.Diagnostics;
@@ -27,6 +28,8 @@ public static class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
+        TryAddSqliteEntityBulkInsertProvider(services);
+
         return services.AddSqliteDbContext<TContext>(optionsBuilder(new SqliteOptionsBuilder()).Build(),
             sqliteOptionsBuilder,
             lifetime);
@@ -51,6 +54,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqliteOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.Sqlite);
+        TryAddSqliteEntityBulkInsertProvider(services);
 
         return new SqliteDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -137,6 +141,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<TContext>(o => o.UseSqlite(connectionString, sqliteOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.Sqlite);
+        TryAddSqliteEntityBulkInsertProvider(services);
 
         return new SqliteDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -227,5 +232,10 @@ public static class ServiceCollectionExtensions
                     break;
             }
         }
+    }
+
+    private static void TryAddSqliteEntityBulkInsertProvider(IServiceCollection services)
+    {
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEntityBulkInsertProvider, SqliteEntityBulkInsertProvider>());
     }
 }

@@ -16,6 +16,7 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using Common;
@@ -198,7 +199,9 @@ public class CoreModule : WebModuleBase
         }).WithEntityFrameworkStore<CoreDbContext>();
 
         // repositories
+        // AddSqlServerDbContext above registers the SQL Server strategy; WithBulkInsert registers the shared TodoItem dispatcher.
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
+            .WithBulkInsert()
             .WithTransactions()
             .WithBehavior<RepositoryMetricsBehavior<TodoItem>>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
@@ -259,7 +262,7 @@ public class CoreModule : WebModuleBase
             })
             .AddExportProfile<TodoItemExportProfile>()
             .AddImportProfile<TodoItemImportProfile>()
-            .AddImportRowInterceptor<TodoItemImportPersistenceInterceptor>();
+            .AddImportRowInterceptor<TodoItemBulkImportPersistenceInterceptor>();
 
         // endpoints
         services.AddEndpoints<CoreTodoItemEndpoints>();

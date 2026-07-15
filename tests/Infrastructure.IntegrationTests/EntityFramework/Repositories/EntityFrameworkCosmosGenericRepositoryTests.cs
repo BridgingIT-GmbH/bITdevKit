@@ -203,6 +203,14 @@ public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGeneri
     }
 
     [SkippableFact]
+    public override async Task InsertSetAsync_NewEntities_EntitiesInserted()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.InsertSetAsync_NewEntities_EntitiesInserted();
+    }
+
+    [SkippableFact]
     public override async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");

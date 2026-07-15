@@ -711,7 +711,7 @@ public sealed class CsvTypedDataPorterProvider(
             }
         }
 
-        return new ImportResult<TTarget>
+        var importResult = new ImportResult<TTarget>
         {
             Data = accepted,
             TotalRows = rows.Count,
@@ -722,6 +722,8 @@ public sealed class CsvTypedDataPorterProvider(
             Errors = errors,
             Warnings = warnings
         };
+
+        return await executor.CompleteImportAsync(importResult, this.Format, importConfiguration.SheetName, false, importConfiguration, cancellationToken);
     }
 
     /// <inheritdoc/>

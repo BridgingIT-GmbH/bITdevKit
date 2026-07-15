@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -41,6 +42,22 @@ public interface IImportRowInterceptionExecutor<TTarget>
     /// <returns>A task that completes when post-processing has finished.</returns>
     Task AfterAsync(
         ImportRowInterceptionState<TTarget> state,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Executes the import completion callbacks after all rows have been processed.
+    /// </summary>
+    /// <param name="result">The completed import result.</param>
+    /// <param name="format">The import format.</param>
+    /// <param name="sheetName">The sheet or section name when available.</param>
+    /// <param name="isStreaming">Indicates whether the operation is streaming.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The aggregated completion result.</returns>
+    Task<Result> CompleteAsync(
+        ImportResult<TTarget> result,
+        Format format,
+        string sheetName,
+        bool isStreaming,
         CancellationToken cancellationToken = default);
 }
 
@@ -174,5 +191,46 @@ public sealed class ImportRowInterceptionExecutor<TTarget>(
         {
             await interceptor.AfterImportAsync(state.Context, cancellationToken);
         }
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result> CompleteAsync(
+        ImportResult<TTarget> result,
+        Format format,
+        string sheetName,
+        bool isStreaming,
+        CancellationToken cancellationToken = default)
+    {
+        if (this.interceptors.Count == 0)
+        {
+            return Result.Success();
+        }
+
+        var context = new ImportCompletionContext<TTarget>
+        {
+            Result = result,
+            Format = format,
+            SheetName = sheetName,
+            IsStreaming = isStreaming
+        };
+        var completionResults = new List<Result>(this.interceptors.Count);
+
+        foreach (var interceptor in this.interceptors)
+        {
+            var completionResult = await interceptor.AfterImportCompletedAsync(context, cancellationToken);
+            completionResults.Add(completionResult);
+
+            if (completionResult.IsFailure)
+            {
+                this.logger.LogWarning("[{LogKey}] import completion interceptor failed (interceptor={InterceptorType}, format={Format}, sheetName={SheetName}, errors={Errors})",
+                    Constants.LogKeyImport,
+                    interceptor.GetType().Name,
+                    format,
+                    sheetName,
+                    string.Join(", ", completionResult.Errors.Select(e => e.Message)));
+            }
+        }
+
+        return Result.Merge(completionResults.ToArray());
     }
 }

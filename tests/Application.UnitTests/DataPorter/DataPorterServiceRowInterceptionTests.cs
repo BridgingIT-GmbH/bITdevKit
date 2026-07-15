@@ -153,6 +153,67 @@ public class DataPorterServiceRowInterceptionTests
     }
 
     [Fact]
+    public async Task ImportAsync_WithTypedInterceptors_CallsCompletionAfterAllRows()
+    {
+        // Arrange
+        ImportCompletionContext<SimpleEntity> completionContext = null;
+        var interceptor = new TestImportRowInterceptor(
+            _ => RowInterceptionDecision.Continue(),
+            completion: context =>
+            {
+                completionContext = context;
+                return Result.Success();
+            });
+        var interceptors = new TestRowInterceptorsProvider()
+            .AddImport(interceptor);
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger, interceptors);
+        var payload = JsonSerializer.Serialize(new[]
+        {
+            new SimpleEntity { Id = 1, Name = "Item 1" },
+            new SimpleEntity { Id = 2, Name = "Item 2" }
+        });
+        await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(payload));
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(stream, new ImportOptions { Format = Format.Json });
+
+        // Assert
+        result.ShouldBeSuccess();
+        interceptor.CompletionCalls.ShouldBe(1);
+        completionContext.ShouldNotBeNull();
+        completionContext.Format.ShouldBe(Format.Json);
+        completionContext.IsStreaming.ShouldBeFalse();
+        completionContext.Result.SuccessfulRows.ShouldBe(2);
+        completionContext.Result.Data.Select(e => e.Name).ShouldBe(["Item 1", "Item 2"]);
+    }
+
+    [Fact]
+    public async Task ImportAsync_WithCompletionInterceptorFailure_AddsImportError()
+    {
+        // Arrange
+        var interceptor = new TestImportRowInterceptor(
+            _ => RowInterceptionDecision.Continue(),
+            completion: _ => Result.Failure().WithError(new Error("bulk insert failed")));
+        var interceptors = new TestRowInterceptorsProvider()
+            .AddImport(interceptor);
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger, interceptors);
+        var payload = JsonSerializer.Serialize(new[] { new SimpleEntity { Id = 1, Name = "Item" } });
+        await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(payload));
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(stream, new ImportOptions { Format = Format.Json });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.HasErrors.ShouldBeTrue();
+        result.Value.FailedRows.ShouldBe(1);
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.Errors[0].RowNumber.ShouldBe(0);
+        result.Value.Errors[0].Message.ShouldBe("bulk insert failed");
+        interceptor.CompletionCalls.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task ImportAsync_WithTypedInterceptors_SkipsRowsAndReportsSkippedProgress()
     {
         // Arrange
@@ -360,13 +421,16 @@ public class DataPorterServiceRowInterceptionTests
     private sealed class TestImportRowInterceptor : IImportRowInterceptor<SimpleEntity>
     {
         private readonly Func<ImportRowContext<SimpleEntity>, RowInterceptionDecision> before;
+        private readonly Func<ImportCompletionContext<SimpleEntity>, Result> completion;
 
         public TestImportRowInterceptor(
             Func<ImportRowContext<SimpleEntity>, RowInterceptionDecision> before,
-            Action<ImportRowContext<SimpleEntity>> after = null)
+            Action<ImportRowContext<SimpleEntity>> after = null,
+            Func<ImportCompletionContext<SimpleEntity>, Result> completion = null)
         {
             this.before = before;
             this.after = after;
+            this.completion = completion;
         }
 
         private readonly Action<ImportRowContext<SimpleEntity>> after;
@@ -374,6 +438,8 @@ public class DataPorterServiceRowInterceptionTests
         public int BeforeCalls { get; private set; }
 
         public int AfterCalls { get; private set; }
+
+        public int CompletionCalls { get; private set; }
 
         public Task<RowInterceptionDecision> BeforeImportAsync(
             ImportRowContext<SimpleEntity> context,
@@ -390,6 +456,14 @@ public class DataPorterServiceRowInterceptionTests
             this.AfterCalls++;
             this.after?.Invoke(context);
             return Task.CompletedTask;
+        }
+
+        public Task<Result> AfterImportCompletedAsync(
+            ImportCompletionContext<SimpleEntity> context,
+            CancellationToken cancellationToken = default)
+        {
+            this.CompletionCalls++;
+            return Task.FromResult(this.completion?.Invoke(context) ?? Result.Success());
         }
     }
 

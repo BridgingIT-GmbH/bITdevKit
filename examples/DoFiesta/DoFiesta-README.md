@@ -58,6 +58,12 @@ the [ApiClient](.\DoFiesta.Presentation.Web.Client\Connected%20Services\DoFiesta
 - The server uses the named `attachments` file-storage provider and stores each todo item's files below a folder named after the todo item id.
 - The Blazor todo page exposes the feature through an attachment dialog on each row, supporting list, upload, download, and delete for text and binary files.
 
+## Todo DataPorter bulk imports
+
+- The todo DataPorter import endpoint parses and validates uploaded rows first, then an `AfterImportCompletedAsync` interceptor writes successful `TodoItem` rows through `IEntityBulkInserter<TodoItem>`.
+- `CoreModule` configures `CoreDbContext` through `AddSqlServerDbContext<CoreDbContext>()`, which automatically registers the SQL Server native strategy. `.WithBulkInsert()` only registers the provider-neutral `IEntityBulkInserter<TodoItem>` orchestrator; it selects SQL Server from `CoreDbContext.Database.ProviderName` when the import runs.
+- The example intentionally keeps normal CRUD on `IGenericRepository<TodoItem>` and uses the bulk inserter only for the explicit import path.
+
 # Development
 
 ### Entity Framework

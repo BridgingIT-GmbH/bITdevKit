@@ -145,6 +145,12 @@ public class EntityFrameworkSqliteGenericRepositoryTests(ITestOutputHelper outpu
     }
 
     [Fact]
+    public override async Task InsertSetAsync_NewEntities_EntitiesInserted()
+    {
+        await base.InsertSetAsync_NewEntities_EntitiesInserted();
+    }
+
+    [Fact]
     public override async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
     {
         await base.UpdateSetAsync_AllEntities_EntitiesUpdated();

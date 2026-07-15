@@ -201,6 +201,17 @@ public class PersonStubDocument
     public int Age { get; set; }
 }
 
+public class BulkInsertPersonStub : Entity<Guid>
+{
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public int Age { get; set; }
+
+    public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+}
+
 /// <summary>
 /// Shared EF Core test context that exposes the repository infrastructure tables used by integration tests.
 /// </summary>
@@ -213,6 +224,8 @@ public class StubDbContext : DbContext,
         : base(options) { }
 
     public DbSet<PersonStub> Persons { get; set; }
+
+    public DbSet<BulkInsertPersonStub> BulkInsertPersons { get; set; }
 
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
@@ -390,6 +403,27 @@ public class PersonStubEntityTypeConfiguration : IEntityTypeConfiguration<Person
                     .IsRequired()
                     .HasMaxLength(128);
             });
+    }
+}
+
+public class BulkInsertPersonStubEntityTypeConfiguration : IEntityTypeConfiguration<BulkInsertPersonStub>
+{
+    public void Configure(EntityTypeBuilder<BulkInsertPersonStub> builder)
+    {
+        builder.ToTable("BulkInsertPersons");
+
+        builder.HasKey(e => e.Id);
+
+        builder.Property(e => e.FirstName)
+            .IsRequired()
+            .HasMaxLength(128);
+
+        builder.Property(e => e.LastName)
+            .IsRequired()
+            .HasMaxLength(128);
+
+        builder.Property(e => e.CreatedOn)
+            .IsRequired();
     }
 }
 

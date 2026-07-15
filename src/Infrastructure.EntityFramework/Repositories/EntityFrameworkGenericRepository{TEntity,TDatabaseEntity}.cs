@@ -94,6 +94,38 @@ public class
         return result.entity;
     }
 
+    /// <inheritdoc />
+    public virtual async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+        if (items.Count == 0)
+        {
+            return [];
+        }
+
+        foreach (var entity in items.OfType<IConcurrency>())
+        {
+            entity.ConcurrencyVersion = this.Options.VersionGenerator();
+        }
+
+        var dbEntities = items.Select(e => this.Options.Mapper.Map<TDatabaseEntity>(e)).ToList();
+        this.Options.DbContext.Set<TDatabaseEntity>().AddRange(dbEntities);
+
+        if (this.Options.Autosave)
+        {
+            await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
+
+            for (var i = 0; i < items.Count; i++)
+            {
+                this.Options.Mapper.Map(dbEntities[i], items[i]);
+            }
+        }
+
+        return items;
+    }
+
     /// <summary>
     /// Updates the provided entity.
     /// </summary>

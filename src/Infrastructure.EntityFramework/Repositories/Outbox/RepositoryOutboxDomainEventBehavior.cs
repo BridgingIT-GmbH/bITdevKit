@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
@@ -235,6 +236,22 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         await this.StoreDomainEvents(entity, cancellationToken);
 
         entity.DomainEvents.Clear();
+
+        return result;
+    }
+
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+        var result = await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
+
+        foreach (var entity in items)
+        {
+            await this.StoreDomainEvents(entity, cancellationToken);
+            entity.DomainEvents.Clear();
+        }
 
         return result;
     }

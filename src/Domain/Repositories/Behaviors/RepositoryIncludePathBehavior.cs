@@ -218,6 +218,13 @@ public class RepositoryIncludePathBehavior<TEntity> : IGenericRepository<TEntity
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.InsertSetAsync(entities, cancellationToken).AnyContext();
+    }
+
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();

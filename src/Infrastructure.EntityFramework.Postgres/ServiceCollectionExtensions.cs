@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Database.Command;
 using EntityFrameworkCore.Diagnostics;
@@ -28,6 +29,8 @@ public static class ServiceCollectionExtensions
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TContext : DbContext
     {
+        TryAddPostgresEntityBulkInsertProvider(services);
+
         return services.AddPostgresDbContext<TContext>(
             optionsBuilder(new PostgresOptionsBuilder()).Build(), postgresOptionsBuilder, lifetime);
     }
@@ -60,6 +63,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, connectionString, postgresOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.Postgres);
+        TryAddPostgresEntityBulkInsertProvider(services);
 
         return new PostgresDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -153,6 +157,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDbContext<TContext>(o => o.UseNpgsql(connectionString, postgresOptionsBuilder), lifetime);
         services.AddDbContextRegistration<TContext>(Provider.Postgres);
+        TryAddPostgresEntityBulkInsertProvider(services);
 
         return new PostgresDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -237,5 +242,10 @@ public static class ServiceCollectionExtensions
                     break;
             }
         }
+    }
+
+    private static void TryAddPostgresEntityBulkInsertProvider(IServiceCollection services)
+    {
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IEntityBulkInsertProvider, PostgresEntityBulkInsertProvider>());
     }
 }

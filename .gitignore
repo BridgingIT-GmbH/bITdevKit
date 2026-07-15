@@ -429,3 +429,4 @@ _tmp**
 .temp**
 *.lscache
 tools/llama/**
+.DS_Store

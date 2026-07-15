@@ -401,6 +401,45 @@ If database persistence fails for a row, the interceptor can either return `Skip
 
 Both `ExportResult` and `ImportResult<T>` expose `SkippedRows` and `Warnings`, and the progress reports also include the current skipped-row count.
 
+For SQL Server imports where throughput matters more than per-row repository behavior, parse and validate first, then persist the successful rows with the explicit bulk insert API:
+
+```csharp
+public sealed class TodoItemBulkImportInterceptor(
+    IMapper mapper,
+    IEntityBulkInserter<TodoItem> bulkInserter)
+    : IImportRowInterceptor<TodoItemModel>
+{
+    public Task<RowInterceptionDecision> BeforeImportAsync(
+        ImportRowContext<TodoItemModel> context,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(RowInterceptionDecision.Continue());
+    }
+
+    public async Task<Result> AfterImportCompletedAsync(
+        ImportCompletionContext<TodoItemModel> context,
+        CancellationToken cancellationToken = default)
+    {
+        if (context.Result.HasErrors || context.Result.SuccessfulRows == 0)
+        {
+            return Result.Success();
+        }
+
+        var entities = context.Result.Data
+            .Select(model => mapper.Map<TodoItemModel, TodoItem>(model))
+            .ToList();
+
+        var bulkResult = await bulkInserter.InsertAsync(entities, cancellationToken);
+
+        return bulkResult.IsSuccess
+            ? Result.Success()
+            : Result.Failure().WithErrors(bulkResult.Errors);
+    }
+}
+```
+
+Use `BeforeImportAsync` and `AfterImportAsync` when each row should be handled independently, for example upserts, validation enrichment, or streaming imports. Use `AfterImportCompletedAsync` with `IEntityBulkInserter<TEntity>` when the import should be accepted as a batch and written with a provider-specific high-performance insert path after all rows are valid.
+
 ### Import Options
 
 `ImportOptions` controls runtime parsing behavior for a specific import request:

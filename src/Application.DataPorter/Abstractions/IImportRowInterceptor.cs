@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Defines a typed interceptor for row-level import processing.
 /// </summary>
@@ -33,5 +35,18 @@ public interface IImportRowInterceptor<TTarget>
         CancellationToken cancellationToken = default)
     {
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Invoked once after all rows have been processed and the import result is available.
+    /// </summary>
+    /// <param name="context">The import completion context.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The completion result.</returns>
+    Task<Result> AfterImportCompletedAsync(
+        ImportCompletionContext<TTarget> context,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Result.Success());
     }
 }

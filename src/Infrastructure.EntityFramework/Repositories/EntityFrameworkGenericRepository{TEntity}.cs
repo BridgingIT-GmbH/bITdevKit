@@ -110,6 +110,37 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         return result.entity;
     }
 
+    /// <inheritdoc />
+    public virtual async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+        if (items.Count == 0)
+        {
+            return [];
+        }
+
+        foreach (var entity in items.OfType<IConcurrency>())
+        {
+            entity.ConcurrencyVersion = this.Options.VersionGenerator();
+        }
+
+        this.Options.DbContext.Set<TEntity>().AddRange(items);
+
+        if (this.Options.Autosave)
+        {
+            foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
+            {
+                TypedLogger.LogEntityState(this.Logger, Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+            }
+
+            await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();
+        }
+
+        return items;
+    }
+
     /// <summary>
     /// Updates the provided entity.
     /// </summary>

@@ -144,6 +144,12 @@ public class EntityFrameworkInMemoryGenericRepositoryTests(ITestOutputHelper out
         await base.InsertAsync_NewEntity_EntityInserted();
     }
 
+    [Fact]
+    public override async Task InsertSetAsync_NewEntities_EntitiesInserted()
+    {
+        await base.InsertSetAsync_NewEntities_EntitiesInserted();
+    }
+
     [Fact(Skip = "EF Core InMemory provider does not support ExecuteUpdateAsync.")]
     public override async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
     {

@@ -23,6 +23,14 @@ public interface IGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntit
     Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
+    ///     Inserts the provided entities.
+    /// </summary>
+    /// <param name="entities">The entities to insert.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task representing the asynchronous operation, with the inserted entities.</returns>
+    Task<IEnumerable<TEntity>> InsertSetAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+
+    /// <summary>
     ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>

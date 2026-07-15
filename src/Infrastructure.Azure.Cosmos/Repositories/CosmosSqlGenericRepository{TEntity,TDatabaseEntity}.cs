@@ -213,6 +213,21 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         return result.entity;
     }
 
+    /// <inheritdoc />
+    public virtual async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var result = new List<TEntity>();
+
+        foreach (var entity in entities.SafeNull())
+        {
+            result.Add(await this.InsertAsync(entity, cancellationToken).AnyContext());
+        }
+
+        return result.Where(e => e is not null);
+    }
+
     /// <summary>
     ///     Updates the provided entity.
     /// </summary>

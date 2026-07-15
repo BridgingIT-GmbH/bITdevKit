@@ -133,6 +133,45 @@ public class InMemoryRepositoryTests
     }
 
     [Fact]
+    public async Task InsertSetAsync_NewEntities_ShouldInsertAllEntities()
+    {
+        // Arrange
+        var sut = new InMemoryRepository<StubEntityString>(o => o
+            .Context(new InMemoryContext<StubEntityString>(this.entities)));
+        var newEntities = new[]
+        {
+            new StubEntityString
+            {
+                FirstName = this.faker.Name.FirstName(),
+                LastName = this.faker.Name.LastName(),
+                Country = "USA",
+                Age = this.faker.Random.Int(18, 80)
+            },
+            new StubEntityString
+            {
+                FirstName = this.faker.Name.FirstName(),
+                LastName = this.faker.Name.LastName(),
+                Country = "USA",
+                Age = this.faker.Random.Int(18, 80)
+            }
+        };
+
+        // Act
+        var result = (await sut.InsertSetAsync(newEntities).AnyContext()).ToList();
+
+        // Assert
+        result.Count.ShouldBe(2);
+        result.ShouldAllBe(e => !e.Id.IsNullOrEmpty());
+
+        foreach (var entity in result)
+        {
+            var findResult = await sut.FindOneAsync(entity.Id).AnyContext();
+            findResult.ShouldNotBeNull();
+            findResult.FirstName.ShouldBe(entity.FirstName);
+        }
+    }
+
+    [Fact]
     public async Task UpsertAsync_ExistingEntity_ShouldUpdateEntity()
     {
         // Arrange

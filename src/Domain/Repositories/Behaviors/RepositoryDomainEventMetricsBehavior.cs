@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
@@ -192,6 +193,20 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
         this.AddMetrics(entity.DomainEvents);
 
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
+    }
+
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+
+        foreach (var entity in items)
+        {
+            this.AddMetrics(entity.DomainEvents);
+        }
+
+        return await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)

@@ -36,6 +36,14 @@ public class RepositoryMetricsBehavior<TEntity>(IMeterFactory meterFactory, IGen
     }
 
     /// <inheritdoc />
+    public Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        return this.TrackAsync("repositories_write", "insert_set", cancellationToken, () => this.Inner.InsertSetAsync(entities, cancellationToken));
+    }
+
+    /// <inheritdoc />
     public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return this.TrackAsync("repositories_write", "update", cancellationToken, () => this.Inner.UpdateAsync(entity, cancellationToken));

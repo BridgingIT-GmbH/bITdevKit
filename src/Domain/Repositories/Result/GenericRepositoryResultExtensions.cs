@@ -42,6 +42,31 @@ public static class GenericRepositoryResultExtensions
     }
 
     /// <summary>
+    /// Inserts entities and returns the result as a Result object.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="source">The source repository.</param>
+    /// <param name="entities">The entities to insert.</param>
+    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the inserted entities.</returns>
+    public static async Task<Result<IEnumerable<TEntity>>> InsertSetResultAsync<TEntity>(
+        this IGenericRepository<TEntity> source,
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        try
+        {
+            var insertedEntities = await source.InsertSetAsync(entities, cancellationToken).AnyContext();
+            return Result<IEnumerable<TEntity>>.Success(insertedEntities);
+        }
+        catch (Exception ex) when (!ex.IsTransientException())
+        {
+            return Result<IEnumerable<TEntity>>.Failure(ex.GetFullMessage(), new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
     /// Updates an entity and returns the result as a Result object.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>

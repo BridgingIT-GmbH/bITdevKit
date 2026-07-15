@@ -1,0 +1,54 @@
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
+
+using Microsoft.EntityFrameworkCore;
+
+/// <summary>
+/// Placeholder for SQLite-native entity bulk insert support.
+/// </summary>
+/// <remarks>
+/// This provider is registered automatically by <c>AddSqliteDbContext</c> so the shared bulk-insert dispatcher
+/// selects it for SQLite contexts. Native SQLite bulk insert support has not been implemented yet.
+/// </remarks>
+/// <example>
+/// <code>
+/// var provider = new SqliteEntityBulkInsertProvider();
+/// </code>
+/// </example>
+public sealed class SqliteEntityBulkInsertProvider : IEntityBulkInsertProvider
+{
+    /// <summary>
+    /// The Entity Framework provider name supported by this strategy.
+    /// </summary>
+    public const string EntityFrameworkProviderName = "Microsoft.EntityFrameworkCore.Sqlite";
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SqliteEntityBulkInsertProvider"/> class.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var provider = new SqliteEntityBulkInsertProvider();
+    /// </code>
+    /// </example>
+    public SqliteEntityBulkInsertProvider()
+    {
+    }
+
+    /// <inheritdoc />
+    public string ProviderName => EntityFrameworkProviderName;
+
+    /// <inheritdoc />
+    /// <exception cref="NotImplementedException">Always thrown until SQLite-native bulk insert support is implemented.</exception>
+    public Task<long> InsertAsync<TEntity>(
+        DbContext context,
+        EntityBulkInsertBatch<TEntity> batch,
+        CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        throw new NotImplementedException("SQLite entity bulk insert is not implemented yet.");
+    }
+}

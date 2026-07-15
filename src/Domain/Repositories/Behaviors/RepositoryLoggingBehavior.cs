@@ -339,6 +339,20 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+
+        foreach (var entity in items)
+        {
+            TypedLogger.LogInsert(this.Logger, Constants.LogKey, this.type, entity.Id);
+        }
+
+        return await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
+    }
+
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogUpdate(this.Logger, Constants.LogKey, this.type, entity?.Id);

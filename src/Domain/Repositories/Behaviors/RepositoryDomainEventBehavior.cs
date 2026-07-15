@@ -218,6 +218,25 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
+    public async Task<IEnumerable<TEntity>> InsertSetAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellationToken = default)
+    {
+        var items = entities.SafeNull().Where(e => e is not null).ToList();
+
+        foreach (var entity in items)
+        {
+            var @event = new EntityCreatedDomainEvent<TEntity>(entity);
+            TypedLogger.LogRegister(this.Logger,
+                Constants.LogKey,
+                @event.EventId.ToString("N"),
+                typeof(EntityInsertedDomainEvent<TEntity>).Name);
+            entity.DomainEvents.Register(@event);
+        }
+
+        return await this.Inner.InsertSetAsync(items, cancellationToken).AnyContext();
+    }
+
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));

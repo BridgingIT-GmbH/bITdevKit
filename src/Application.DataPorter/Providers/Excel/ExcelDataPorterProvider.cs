@@ -555,7 +555,7 @@ public sealed class ExcelDataPorterProvider(
             importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows, skippedRows: skippedRows);
         }
 
-        return await Task.FromResult(new ImportResult<TTarget>
+        var importResult = new ImportResult<TTarget>
         {
             Data = results,
             TotalRows = totalRows,
@@ -565,7 +565,9 @@ public sealed class ExcelDataPorterProvider(
             Duration = TimeSpan.Zero,
             Errors = errors,
             Warnings = warnings
-        });
+        };
+
+        return await executor.CompleteImportAsync(importResult, this.Format, worksheet.Name, false, importConfiguration, cancellationToken);
     }
 
     /// <inheritdoc/>

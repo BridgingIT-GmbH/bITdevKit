@@ -76,6 +76,7 @@ The best entry point into the current documentation set is the
 - [Domain Events](./docs/features-domain-events.md)
 - [Event Sourcing](./docs/features-event-sourcing.md)
 - [Domain Repositories](./docs/features-domain-repositories.md)
+  - Includes the preview Domain-owned entity bulk-insert capability, explicit decorators, and transaction/outbox guidance.
 - [Domain Specifications](./docs/features-domain-specifications.md)
 - [ActiveEntity](./docs/features-domain-activeentity.md)
 - [Domain Policies](./docs/features-domain-policies.md)

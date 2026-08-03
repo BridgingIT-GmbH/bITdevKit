@@ -34,19 +34,24 @@ public sealed class PostgresEntityBulkInsertProvider : IEntityBulkInsertProvider
     /// var provider = new PostgresEntityBulkInsertProvider();
     /// </code>
     /// </example>
-    public PostgresEntityBulkInsertProvider()
-    {
-    }
+    public PostgresEntityBulkInsertProvider() { }
 
     /// <inheritdoc />
     public string ProviderName => EntityFrameworkProviderName;
+
+    /// <inheritdoc />
+    public bool IsSupported => false;
+
+    /// <inheritdoc />
+    public string UnsupportedReason => "PostgreSQL entity bulk insert is not implemented yet.";
 
     /// <inheritdoc />
     /// <exception cref="NotImplementedException">Always thrown until PostgreSQL-native bulk insert support is implemented.</exception>
     public Task<long> InsertAsync<TEntity>(
         DbContext context,
         EntityBulkInsertBatch<TEntity> batch,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TEntity : class
     {
         throw new NotImplementedException("PostgreSQL entity bulk insert is not implemented yet.");

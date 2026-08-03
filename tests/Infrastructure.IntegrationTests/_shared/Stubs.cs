@@ -213,6 +213,22 @@ public class BulkInsertPersonStub : Entity<Guid>
 }
 
 /// <summary>
+/// Aggregate used to verify bulk-insert decorators that require audit, concurrency, and domain-event capabilities.
+/// </summary>
+public class BulkInsertDecoratedPersonStub : AuditableAggregateRoot<Guid>, IConcurrency
+{
+    /// <summary>
+    /// Gets or sets the display name persisted by the SQL Server bulk-insert integration tests.
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optimistic concurrency value assigned during bulk insertion.
+    /// </summary>
+    public Guid ConcurrencyVersion { get; set; }
+}
+
+/// <summary>
 /// Shared EF Core test context that exposes the repository infrastructure tables used by integration tests.
 /// </summary>
 public class StubDbContext : DbContext,
@@ -226,6 +242,11 @@ public class StubDbContext : DbContext,
     public DbSet<PersonStub> Persons { get; set; }
 
     public DbSet<BulkInsertPersonStub> BulkInsertPersons { get; set; }
+
+    /// <summary>
+    /// Gets the aggregate rows used by the bulk-inserter decorator integration tests.
+    /// </summary>
+    public DbSet<BulkInsertDecoratedPersonStub> BulkInsertDecoratedPersons { get; set; }
 
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
@@ -424,6 +445,70 @@ public class BulkInsertPersonStubEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.Property(e => e.CreatedOn)
             .IsRequired();
+    }
+}
+
+public class BulkInsertDecoratedPersonStubEntityTypeConfiguration : IEntityTypeConfiguration<BulkInsertDecoratedPersonStub>
+{
+    public void Configure(EntityTypeBuilder<BulkInsertDecoratedPersonStub> builder)
+    {
+        builder.ToTable("BulkInsertDecoratedPersons");
+
+        builder.HasKey(entity => entity.Id);
+
+        builder.Property(entity => entity.Name)
+            .IsRequired()
+            .HasMaxLength(128);
+
+        builder.Property(entity => entity.ConcurrencyVersion)
+            .IsRequired();
+
+        builder.OwnsOne(entity => entity.AuditState, audit =>
+        {
+            audit.Property(state => state.CreatedBy)
+                .HasColumnName("CreatedBy")
+                .HasMaxLength(256);
+            audit.Property(state => state.CreatedDate)
+                .HasColumnName("CreatedDate")
+                .IsRequired();
+            audit.Property(state => state.UpdatedBy)
+                .HasColumnName("UpdatedBy")
+                .HasMaxLength(256);
+            audit.Property(state => state.UpdatedDate)
+                .HasColumnName("UpdatedDate");
+            audit.Property(state => state.CreatedDescription)
+                .HasColumnName("CreatedDescription")
+                .HasMaxLength(1024);
+            audit.Property(state => state.UpdatedDescription)
+                .HasColumnName("UpdatedDescription")
+                .HasMaxLength(1024);
+            audit.Property(state => state.Deactivated)
+                .HasColumnName("Deactivated");
+            audit.Property(state => state.DeactivatedBy)
+                .HasColumnName("DeactivatedBy")
+                .HasMaxLength(256);
+            audit.Property(state => state.DeactivatedDate)
+                .HasColumnName("DeactivatedDate");
+            audit.Property(state => state.DeactivatedDescription)
+                .HasColumnName("DeactivatedDescription")
+                .HasMaxLength(1024);
+            audit.Property(state => state.Deleted)
+                .HasColumnName("Deleted");
+            audit.Property(state => state.DeletedBy)
+                .HasColumnName("DeletedBy")
+                .HasMaxLength(256);
+            audit.Property(state => state.DeletedDate)
+                .HasColumnName("DeletedDate");
+            audit.Property(state => state.DeletedReason)
+                .HasColumnName("DeletedReason")
+                .HasMaxLength(1024);
+            audit.Property(state => state.DeletedDescription)
+                .HasColumnName("DeletedDescription")
+                .HasMaxLength(1024);
+            audit.Ignore(state => state.UpdatedReasons);
+            audit.Ignore(state => state.DeactivatedReasons);
+            audit.Ignore(state => state.LastActionDate);
+        });
     }
 }
 

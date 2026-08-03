@@ -43,7 +43,44 @@ public sealed class EntityBulkInsertColumn<TEntity>
         string columnName,
         Type providerClrType,
         ValueGenerated valueGenerated,
-        Func<TEntity, object> providerValueAccessor)
+        Func<TEntity, object> providerValueAccessor
+    )
+        : this(
+            property,
+            columnName,
+            providerClrType,
+            valueGenerated,
+            EntityBulkInsertColumnSource.ClrProperty,
+            false,
+            providerValueAccessor
+        ) { }
+
+    /// <summary>
+    /// Initializes a column descriptor with its value source and identity classification.
+    /// </summary>
+    /// <param name="property">The EF property metadata mapped to the column.</param>
+    /// <param name="columnName">The unquoted database column name.</param>
+    /// <param name="providerClrType">The provider CLR type.</param>
+    /// <param name="valueGenerated">The EF value-generation behavior.</param>
+    /// <param name="source">The deterministic value source.</param>
+    /// <param name="isIdentity">Whether this is an actual store identity column.</param>
+    /// <param name="providerValueAccessor">The provider-value accessor.</param>
+    /// <example>
+    /// <code>
+    /// var column = new EntityBulkInsertColumn&lt;Person&gt;(
+    ///     property, "Discriminator", typeof(string), ValueGenerated.Never,
+    ///     EntityBulkInsertColumnSource.MetadataConstant, false, _ => "Person");
+    /// </code>
+    /// </example>
+    public EntityBulkInsertColumn(
+        IProperty property,
+        string columnName,
+        Type providerClrType,
+        ValueGenerated valueGenerated,
+        EntityBulkInsertColumnSource source,
+        bool isIdentity,
+        Func<TEntity, object> providerValueAccessor
+    )
     {
         EnsureArg.IsNotNull(property, nameof(property));
         EnsureArg.IsNotNullOrEmpty(columnName, nameof(columnName));
@@ -54,6 +91,8 @@ public sealed class EntityBulkInsertColumn<TEntity>
         this.ColumnName = columnName;
         this.ProviderClrType = providerClrType;
         this.ValueGenerated = valueGenerated;
+        this.Source = source;
+        this.IsIdentity = isIdentity;
         this.ProviderValueAccessor = providerValueAccessor;
     }
 
@@ -96,6 +135,14 @@ public sealed class EntityBulkInsertColumn<TEntity>
     /// </code>
     /// </example>
     public ValueGenerated ValueGenerated { get; }
+
+    /// <summary>Gets the deterministic source used to obtain this column's value.</summary>
+    /// <example><code>var source = column.Source;</code></example>
+    public EntityBulkInsertColumnSource Source { get; }
+
+    /// <summary>Gets a value indicating whether this is an actual identity column.</summary>
+    /// <example><code>var keepIdentity = column.IsIdentity;</code></example>
+    public bool IsIdentity { get; }
 
     /// <summary>
     /// Gets the accessor that reads an entity value and converts it to the provider value when necessary.

@@ -4,6 +4,10 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
+- Redesigned the preview Entity Framework bulk-insert feature as the Domain-owned `IEntityBulkInserter<TEntity>` capability with independent registration, explicit ordered decorators, root-table mapping preflight, and one-operation transactions.
+- Moved the preview `IEntityBulkInserter<TEntity>` contract from `Infrastructure.EntityFramework` to `Domain.Repositories` without a compatibility alias. This is an intentional preview-breaking namespace change; the feature had no known consumers.
+- Native bulk inserts no longer infer repository decorators or EF interceptors. Providers without a native writer return typed precondition failures; inputs remain detached and database-generated identity/default/computed/rowversion values are not returned.
+
 ## [10.0.109] - 2026-07-09
 
 - Added local .NET tool manifest support for `bridgingit.devkit.cli` and updated the DevKit CLI documentation.

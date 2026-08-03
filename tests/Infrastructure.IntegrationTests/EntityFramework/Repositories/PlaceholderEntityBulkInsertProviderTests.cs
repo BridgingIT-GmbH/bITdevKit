@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ public class PlaceholderEntityBulkInsertProviderTests
         // Assert
         providers.ShouldHaveSingleItem().ShouldBeOfType<PostgresEntityBulkInsertProvider>();
         result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem().ShouldBeOfType<EntityBulkInsertPreconditionError>();
         result.Errors.ShouldContain(error =>
             error.Message.Contains("PostgreSQL entity bulk insert is not implemented yet.", StringComparison.Ordinal));
     }
@@ -47,6 +49,7 @@ public class PlaceholderEntityBulkInsertProviderTests
         // Assert
         providers.ShouldHaveSingleItem().ShouldBeOfType<SqliteEntityBulkInsertProvider>();
         result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem().ShouldBeOfType<EntityBulkInsertPreconditionError>();
         result.Errors.ShouldContain(error =>
             error.Message.Contains("SQLite entity bulk insert is not implemented yet.", StringComparison.Ordinal));
     }
@@ -56,8 +59,7 @@ public class PlaceholderEntityBulkInsertProviderTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddPostgresDbContext<StubDbContext>("Host=localhost;Database=bulk;Username=bulk;Password=bulk");
-        services.AddEntityFrameworkRepository<BulkInsertPersonStub, StubDbContext>()
-            .WithBulkInsert();
+        services.AddEntityFrameworkBulkInserter<BulkInsertPersonStub, StubDbContext>();
 
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     }
@@ -67,8 +69,7 @@ public class PlaceholderEntityBulkInsertProviderTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSqliteDbContext<StubDbContext>("Data Source=:memory:");
-        services.AddEntityFrameworkRepository<BulkInsertPersonStub, StubDbContext>()
-            .WithBulkInsert();
+        services.AddEntityFrameworkBulkInserter<BulkInsertPersonStub, StubDbContext>();
 
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     }

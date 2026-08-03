@@ -1,220 +1,180 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositories.Bulk;
 
+using System.Transactions;
 using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
 
 public class EntityFrameworkEntityBulkInserterTests
 {
     [Fact]
-    public async Task InsertAsync_EmptyEntities_ReturnsZeroWithoutInvokingProvider()
+    public async Task InsertAsync_EmptyOrNullInput_ReturnsZeroWithoutProviderInvocation()
     {
-        // Arrange
         await using var context = CreateContext();
         var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1);
-        var sut = CreateSut(context, [provider]);
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
 
-        // Act
-        var result = await sut.InsertAsync([]);
+        var empty = await sut.InsertAsync([]);
+        var nullInput = await sut.InsertAsync(null);
+        var nullItem = await sut.InsertAsync([null]);
 
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBe(0);
+        empty.Value.ShouldBe(0);
+        nullInput.Value.ShouldBe(0);
+        nullItem.Value.ShouldBe(0);
         provider.CallCount.ShouldBe(0);
     }
 
     [Fact]
-    public async Task InsertAsync_MatchingProvider_UsesMatchingProviderAndReturnsInsertedCount()
+    public async Task InsertAsync_MatchingProvider_InvokesProviderOnceAndReturnsInsertedCount()
     {
-        // Arrange
         await using var context = CreateContext();
-        var matchingProvider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 2);
-        var otherProvider = new TestEntityBulkInsertProvider("Other.Provider", 3);
-        var sut = CreateSut(context, [otherProvider, matchingProvider]);
-
-        // Act
-        var result = await sut.InsertAsync([new DispatchEntity { Name = "Ada" }, new DispatchEntity { Name = "Grace" }]);
-
-        // Assert
-        result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBe(2);
-        matchingProvider.CallCount.ShouldBe(1);
-        matchingProvider.LastContext.ShouldBeSameAs(context);
-        matchingProvider.LastEntityCount.ShouldBe(2);
-        otherProvider.CallCount.ShouldBe(0);
-    }
-
-    [Fact]
-    public async Task InsertAsync_MissingProvider_ReturnsFailureWithProviderDetails()
-    {
-        // Arrange
-        await using var context = CreateContext();
-        var sut = CreateSut(context, [new TestEntityBulkInsertProvider("Other.Provider", 1)]);
-
-        // Act
-        var result = await sut.InsertAsync([new DispatchEntity()]);
-
-        // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(error =>
-            error.Message.Contains(context.Database.ProviderName, StringComparison.Ordinal) &&
-            error.Message.Contains("Other.Provider", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task InsertAsync_DuplicateMatchingProviders_ReturnsFailureWithImplementationDetails()
-    {
-        // Arrange
-        await using var context = CreateContext();
-        var sut = CreateSut(context,
-        [
-            new TestEntityBulkInsertProvider(context.Database.ProviderName, 1),
-            new TestEntityBulkInsertProvider(context.Database.ProviderName, 1)
-        ]);
-
-        // Act
-        var result = await sut.InsertAsync([new DispatchEntity()]);
-
-        // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(error =>
-            error.Message.Contains("multiple registered providers", StringComparison.Ordinal) &&
-            error.Message.Contains(nameof(TestEntityBulkInsertProvider), StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task InsertAsync_ProviderThrows_ReturnsFailure()
-    {
-        // Arrange
-        await using var context = CreateContext();
-        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1)
-        {
-            ExceptionToThrow = new InvalidOperationException("Native provider failure.")
-        };
-        var sut = CreateSut(context, [provider]);
-
-        // Act
-        var result = await sut.InsertAsync([new DispatchEntity()]);
-
-        // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Errors.ShouldContain(error => error.Message.Contains("Native provider failure.", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task InsertAsync_ProviderCancels_RethrowsOperationCanceledException()
-    {
-        // Arrange
-        await using var context = CreateContext();
-        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1)
-        {
-            ExceptionToThrow = new OperationCanceledException()
-        };
-        var sut = CreateSut(context, [provider]);
-
-        // Act
-        // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await sut.InsertAsync([new DispatchEntity()]));
-    }
-
-    [Fact]
-    public void WithBulkInsert_SingletonLifetime_ResolvesSameInserter()
-    {
-        // Arrange
-        using var serviceProvider = CreateServiceProvider(ServiceLifetime.Singleton);
-
-        // Act
-        var first = serviceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-        var second = serviceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-
-        // Assert
-        first.ShouldBeSameAs(second);
-    }
-
-    [Fact]
-    public void WithBulkInsert_TransientLifetime_ResolvesDifferentInserters()
-    {
-        // Arrange
-        using var serviceProvider = CreateServiceProvider(ServiceLifetime.Transient);
-
-        // Act
-        var first = serviceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-        var second = serviceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-
-        // Assert
-        first.ShouldNotBeSameAs(second);
-    }
-
-    [Fact]
-    public void WithBulkInsert_ScopedLifetime_ResolvesSameInserterPerScope()
-    {
-        // Arrange
-        using var serviceProvider = CreateServiceProvider(ServiceLifetime.Scoped);
-        using var firstScope = serviceProvider.CreateScope();
-        using var secondScope = serviceProvider.CreateScope();
-
-        // Act
-        var first = firstScope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-        var firstAgain = firstScope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-        var second = secondScope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
-
-        // Assert
-        first.ShouldBeSameAs(firstAgain);
-        first.ShouldNotBeSameAs(second);
-    }
-
-    [Fact]
-    public async Task WithBulkInsert_TestProviderRegistered_DispatchesWithoutSharedChanges()
-    {
-        // Arrange
-        using var serviceProvider = CreateServiceProvider(ServiceLifetime.Scoped);
-        using var scope = serviceProvider.CreateScope();
-        var testProvider = scope.ServiceProvider
-            .GetServices<IEntityBulkInsertProvider>()
-            .Single()
-            .ShouldBeOfType<TestEntityBulkInsertProvider>();
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 2);
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
         var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
 
-        // Act
-        var result = await sut.InsertAsync([new DispatchEntity { Name = "Provider extension contract" }]);
+        var result = await sut.InsertAsync([new DispatchEntity { Name = "Ada" }, new DispatchEntity { Name = "Grace" }]);
 
-        // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBe(1);
-        testProvider.CallCount.ShouldBe(1);
+        result.Value.ShouldBe(2);
+        provider.CallCount.ShouldBe(1);
+        provider.LastEntityCount.ShouldBe(2);
+        context.Database.CurrentTransaction.ShouldBeNull();
     }
 
-    private static EntityFrameworkEntityBulkInserter<DispatchEntity, DispatchDbContext> CreateSut(
-        DispatchDbContext context,
-        IEnumerable<IEntityBulkInsertProvider> providers)
+    [Fact]
+    public async Task InsertAsync_UnsupportedProvider_ReturnsPreconditionBeforeMappingOrTransaction()
     {
-        return new EntityFrameworkEntityBulkInserter<DispatchEntity, DispatchDbContext>(
-            NullLoggerFactory.Instance,
-            context,
-            new EntityBulkInsertMappingBuilder<DispatchEntity>(),
-            new EntityBulkInsertOptions(),
-            providers);
+        await using var context = CreateContext();
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1)
+        {
+            IsSupported = false,
+            UnsupportedReason = "Native writes are not implemented.",
+        };
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
+        var entity = new DispatchEntity();
+
+        var result = await sut.InsertAsync([entity]);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem().ShouldBeOfType<EntityBulkInsertPreconditionError>();
+        result.Errors[0].Message.ShouldContain("not implemented");
+        provider.CallCount.ShouldBe(0);
+        entity.Id.ShouldBe(Guid.Empty);
     }
 
-    private static ServiceProvider CreateServiceProvider(ServiceLifetime lifetime)
+    [Fact]
+    public async Task InsertAsync_InvalidMapping_ReturnsPreconditionWithoutProviderInvocation()
+    {
+        await using var context = CreateContext();
+        var entity = new DispatchEntity();
+        context.Add(entity);
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1);
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
+
+        var result = await sut.InsertAsync([entity]);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem().ShouldBeOfType<EntityBulkInsertPreconditionError>().Stage.ShouldBe("mapping");
+        provider.CallCount.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task InsertAsync_ProviderFailure_ReturnsProviderErrorAndRollsBackOwnedTransaction()
+    {
+        await using var context = CreateContext();
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1)
+        {
+            ExceptionToThrow = new InvalidOperationException("Native provider failure."),
+        };
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
+
+        var result = await sut.InsertAsync([new DispatchEntity()]);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error =>
+            error is EntityBulkInsertProviderError && ((EntityBulkInsertProviderError)error).Stage == "provider");
+        context.Database.CurrentTransaction.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task InsertAsync_Cancellation_RethrowsAndLeavesNoOwnedTransaction()
+    {
+        await using var context = CreateContext();
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1)
+        {
+            ExceptionToThrow = new OperationCanceledException(),
+        };
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
+
+        await Should.ThrowAsync<OperationCanceledException>(() => sut.InsertAsync([new DispatchEntity()]));
+
+        context.Database.CurrentTransaction.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task InsertAsync_AmbientTransaction_ReturnsPreconditionBeforeProviderInvocation()
+    {
+        await using var context = CreateContext();
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1);
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
+        using var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        var result = await sut.InsertAsync([new DispatchEntity()]);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem().ShouldBeOfType<EntityBulkInsertPreconditionError>().Stage.ShouldBe("transaction.ambient");
+        provider.CallCount.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task InsertAsync_RetryingStrategyWithoutTransaction_ReturnsPreconditionBeforeProviderInvocation()
+    {
+        await using var context = CreateRetryingContext();
+        var provider = new TestEntityBulkInsertProvider(context.Database.ProviderName, 1);
+        using var services = CreateServiceProvider(context, [provider]);
+        using var scope = services.CreateScope();
+        var sut = scope.ServiceProvider.GetRequiredService<IEntityBulkInserter<DispatchEntity>>();
+
+        var result = await sut.InsertAsync([new DispatchEntity()]);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldHaveSingleItem().ShouldBeOfType<EntityBulkInsertPreconditionError>().Stage.ShouldBe("transaction.retry-strategy");
+        provider.CallCount.ShouldBe(0);
+    }
+
+    private static ServiceProvider CreateServiceProvider(DispatchDbContext context, IEnumerable<IEntityBulkInsertProvider> providers)
     {
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddSingleton<IEntityBulkInsertProvider>(new TestEntityBulkInsertProvider("Microsoft.EntityFrameworkCore.InMemory", 1));
-        services.AddDbContext<DispatchDbContext>(
-            options => options.UseInMemoryDatabase(Guid.NewGuid().ToString("N")),
-            lifetime,
-            lifetime);
-        services.AddEntityFrameworkRepository<DispatchEntity, DispatchDbContext>(lifetime)
-            .WithBulkInsert();
+        services.AddScoped(_ => context);
+        foreach (var provider in providers)
+        {
+            services.AddSingleton(typeof(IEntityBulkInsertProvider), provider);
+        }
 
+        services.AddEntityFrameworkBulkInserter<DispatchEntity, DispatchDbContext>();
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     }
 
@@ -222,8 +182,18 @@ public class EntityFrameworkEntityBulkInserterTests
     {
         var options = new DbContextOptionsBuilder<DispatchDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString("N"))
+            .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .Options;
+        return new DispatchDbContext(options);
+    }
 
+    private static DispatchDbContext CreateRetryingContext()
+    {
+        var options = new DbContextOptionsBuilder<DispatchDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString("N"))
+            .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .ReplaceService<IExecutionStrategyFactory, RetryingExecutionStrategyFactory>()
+            .Options;
         return new DispatchDbContext(options);
     }
 
@@ -233,16 +203,24 @@ public class EntityFrameworkEntityBulkInserterTests
         {
             modelBuilder.Entity<DispatchEntity>(builder =>
             {
-                builder.ToTable("DispatchEntities");
                 builder.HasKey(entity => entity.Id);
                 builder.Property(entity => entity.Id).ValueGeneratedOnAdd();
             });
         }
     }
 
-    private sealed class DispatchEntity : Entity<Guid>
+    private sealed class DispatchEntity : AggregateRoot<Guid>
     {
         public string Name { get; set; }
     }
 
+    private sealed class RetryingExecutionStrategyFactory(ExecutionStrategyDependencies dependencies) : IExecutionStrategyFactory
+    {
+        public IExecutionStrategy Create() => new RetryingExecutionStrategy(dependencies);
+    }
+
+    private sealed class RetryingExecutionStrategy(ExecutionStrategyDependencies dependencies) : ExecutionStrategy(dependencies, 1, TimeSpan.Zero)
+    {
+        protected override bool ShouldRetryOn(Exception exception) => true;
+    }
 }

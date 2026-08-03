@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Database.Command;
 using EntityFrameworkCore.Diagnostics;
@@ -129,4 +130,5 @@ public static class ServiceCollectionExtensions
             }
         }
     }
+
 }

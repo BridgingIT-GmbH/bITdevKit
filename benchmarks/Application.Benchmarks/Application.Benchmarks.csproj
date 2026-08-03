@@ -13,5 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Application.Jobs\Application.Jobs.csproj" />
     <ProjectReference Include="..\..\src\Application.Orchestrations\Application.Orchestrations.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
   </ItemGroup>
 </Project>

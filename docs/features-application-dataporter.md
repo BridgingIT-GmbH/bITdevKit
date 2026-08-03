@@ -401,7 +401,7 @@ If database persistence fails for a row, the interceptor can either return `Skip
 
 Both `ExportResult` and `ImportResult<T>` expose `SkippedRows` and `Warnings`, and the progress reports also include the current skipped-row count.
 
-For SQL Server imports where throughput matters more than per-row repository behavior, parse and validate first, then persist the successful rows with the explicit bulk insert API:
+For SQL Server imports where throughput matters more than per-row repository behavior, parse and validate first, then persist the successful rows with the Domain-owned `BridgingIT.DevKit.Domain.Repositories.IEntityBulkInserter<TEntity>` capability. The handler does not reference Entity Framework or SQL Server implementation types:
 
 ```csharp
 public sealed class TodoItemBulkImportInterceptor(
@@ -439,6 +439,8 @@ public sealed class TodoItemBulkImportInterceptor(
 ```
 
 Use `BeforeImportAsync` and `AfterImportAsync` when each row should be handled independently, for example upserts, validation enrichment, or streaming imports. Use `AfterImportCompletedAsync` with `IEntityBulkInserter<TEntity>` when the import should be accepted as a batch and written with a provider-specific high-performance insert path after all rows are valid.
+
+The native capability writes only the aggregate root table (plus same-table owned values). Clear or reject populated child collections explicitly before calling it; the DoFiesta example retains `entity.Steps.Clear()` to make that boundary visible. Inputs stay detached and database-generated values are not populated. Use `InsertSetAsync` instead when the import requires graph persistence, tracking, returned generated values, or a repository semantic that has no native equivalent. Unsupported semantics fail by default unless repository fallback was explicitly enabled during registration.
 
 ### Import Options
 

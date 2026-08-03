@@ -51,16 +51,6 @@ public class EntityBulkInsertOptions
     public bool AssignSequentialGuidKeys { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets whether entities implementing the concurrency contract receive a new concurrency version before insertion.
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// options.AssignConcurrencyVersions = true;
-    /// </code>
-    /// </example>
-    public bool AssignConcurrencyVersions { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets whether caller-supplied values for store-generated identity columns are included in the prepared insert batch.
     /// </summary>
     /// <example>
@@ -69,6 +59,40 @@ public class EntityBulkInsertOptions
     /// </code>
     /// </example>
     public bool KeepGeneratedIdentityValues { get; set; }
+
+    /// <summary>
+    /// Determines whether another options instance represents the same bulk insert registration.
+    /// </summary>
+    /// <param name="other">The options instance to compare.</param>
+    /// <returns><see langword="true"/> when both instances have the same runtime type and configuration.</returns>
+    /// <example>
+    /// <code>
+    /// var equivalent = first.IsEquivalentTo(second);
+    /// </code>
+    /// </example>
+    public bool IsEquivalentTo(EntityBulkInsertOptions other) =>
+        other is not null &&
+        this.GetType() == other.GetType() &&
+        this.BatchSize == other.BatchSize &&
+        this.CommandTimeout == other.CommandTimeout &&
+        this.AssignSequentialGuidKeys == other.AssignSequentialGuidKeys &&
+        this.KeepGeneratedIdentityValues == other.KeepGeneratedIdentityValues &&
+        this.IsProviderConfigurationEquivalentTo(other);
+
+    /// <summary>
+    /// Determines whether provider-specific configuration is equivalent.
+    /// </summary>
+    /// <param name="other">The options instance to compare.</param>
+    /// <returns><see langword="true"/> when provider-specific settings are equivalent.</returns>
+    /// <remarks>
+    /// Derived provider options override this method to participate in repeated-registration validation.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// protected override bool IsProviderConfigurationEquivalentTo(EntityBulkInsertOptions other) => true;
+    /// </code>
+    /// </example>
+    protected virtual bool IsProviderConfigurationEquivalentTo(EntityBulkInsertOptions other) => true;
 
     internal void Validate()
     {

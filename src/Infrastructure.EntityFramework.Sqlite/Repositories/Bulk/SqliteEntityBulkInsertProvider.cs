@@ -34,19 +34,24 @@ public sealed class SqliteEntityBulkInsertProvider : IEntityBulkInsertProvider
     /// var provider = new SqliteEntityBulkInsertProvider();
     /// </code>
     /// </example>
-    public SqliteEntityBulkInsertProvider()
-    {
-    }
+    public SqliteEntityBulkInsertProvider() { }
 
     /// <inheritdoc />
     public string ProviderName => EntityFrameworkProviderName;
+
+    /// <inheritdoc />
+    public bool IsSupported => false;
+
+    /// <inheritdoc />
+    public string UnsupportedReason => "SQLite entity bulk insert is not implemented yet.";
 
     /// <inheritdoc />
     /// <exception cref="NotImplementedException">Always thrown until SQLite-native bulk insert support is implemented.</exception>
     public Task<long> InsertAsync<TEntity>(
         DbContext context,
         EntityBulkInsertBatch<TEntity> batch,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TEntity : class
     {
         throw new NotImplementedException("SQLite entity bulk insert is not implemented yet.");

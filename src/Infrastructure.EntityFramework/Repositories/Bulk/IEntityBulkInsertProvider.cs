@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 /// </summary>
 /// <remarks>
 /// Implementations are stateless provider strategies registered by their provider package. The shared bulk inserter selects the strategy
-/// by <see cref="DbContext.Database"/> provider name and converts non-cancellation failures to the public result type.
+/// by <see cref="DbContext.Database"/> provider name, opens the connection, and supplies an active EF transaction before execution.
+/// Implementations must not create, commit, or roll back an internal transaction.
 /// </remarks>
 /// <example>
 /// <code>
@@ -31,6 +32,14 @@ public interface IEntityBulkInsertProvider
     /// </example>
     string ProviderName { get; }
 
+    /// <summary>Gets a value indicating whether this strategy currently implements native writing.</summary>
+    /// <example><code>var supported = provider.IsSupported;</code></example>
+    bool IsSupported => true;
+
+    /// <summary>Gets the explicit unsupported reason for a placeholder strategy.</summary>
+    /// <example><code>var reason = provider.UnsupportedReason;</code></example>
+    string UnsupportedReason => null;
+
     /// <summary>
     /// Inserts the prepared entity batch using the supplied provider-configured database context.
     /// </summary>
@@ -40,8 +49,9 @@ public interface IEntityBulkInsertProvider
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task whose result is the number of inserted rows.</returns>
     /// <remarks>
-    /// Implementations should throw provider-native failures. The shared orchestrator is responsible for converting those failures to
-    /// <c>Result&lt;long&gt;</c> and for preserving <see cref="OperationCanceledException"/>.
+    /// Relational implementations require an open connection and active transaction supplied through <paramref name="context"/>.
+    /// Implementations should throw provider-native failures. The shared orchestrator converts those failures to <c>Result&lt;long&gt;</c>,
+    /// rolls back only its own transaction, and preserves <see cref="OperationCanceledException"/>.
     /// </remarks>
     /// <example>
     /// <code>
@@ -51,6 +61,7 @@ public interface IEntityBulkInsertProvider
     Task<long> InsertAsync<TEntity>(
         DbContext context,
         EntityBulkInsertBatch<TEntity> batch,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TEntity : class;
 }

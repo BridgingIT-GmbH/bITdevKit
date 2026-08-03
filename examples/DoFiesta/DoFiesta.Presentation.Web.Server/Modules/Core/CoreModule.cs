@@ -18,6 +18,7 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Domain.Repositories;
@@ -199,9 +200,7 @@ public class CoreModule : WebModuleBase
         }).WithEntityFrameworkStore<CoreDbContext>();
 
         // repositories
-        // AddSqlServerDbContext above registers the SQL Server strategy; WithBulkInsert registers the shared TodoItem dispatcher.
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
-            .WithBulkInsert()
             .WithTransactions()
             .WithBehavior<RepositoryMetricsBehavior<TodoItem>>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
@@ -209,6 +208,17 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>()
             .WithBehavior<RepositoryOutboxDomainEventBehavior<TodoItem, CoreDbContext>>();
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
+
+        services.AddEntityFrameworkBulkInserter<TodoItem, CoreDbContext>()
+            .WithBehavior<EntityBulkInserterCancellationBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterTracingBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterLoggingBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterMetricsBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterOutboxDomainEventBehavior<TodoItem, CoreDbContext>>()
+            .WithBehavior<EntityBulkInserterAuditStateBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterConcurrencyBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterDomainEventBehavior<TodoItem>>()
+            .WithBehavior<EntityBulkInserterDomainEventMetricsBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithTransactions()

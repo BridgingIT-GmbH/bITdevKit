@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />
     <ProjectReference Include="..\Common.Options\Common.Options.csproj" />
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
   </ItemGroup>

@@ -8,11 +8,16 @@ namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositorie
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-internal sealed class TestEntityBulkInsertProvider(string providerName, long result) : IEntityBulkInsertProvider
+internal sealed class TestEntityBulkInsertProvider(string providerName, long result)
+    : IEntityBulkInsertProvider
 {
     public string ProviderName { get; } = providerName;
 
-    public long Result { get; } = result;
+    public long Result { get; set; } = result;
+
+    public bool IsSupported { get; set; } = true;
+
+    public string UnsupportedReason { get; set; }
 
     public int CallCount { get; private set; }
 
@@ -20,17 +25,24 @@ internal sealed class TestEntityBulkInsertProvider(string providerName, long res
 
     public int LastEntityCount { get; private set; }
 
+    public bool LastHadActiveTransaction { get; private set; }
+
+    public Action<DbContext> OnInsert { get; set; }
+
     public Exception ExceptionToThrow { get; set; }
 
     public Task<long> InsertAsync<TEntity>(
         DbContext context,
         EntityBulkInsertBatch<TEntity> batch,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TEntity : class
     {
         this.CallCount++;
         this.LastContext = context;
         this.LastEntityCount = batch.Entities.Count;
+        this.LastHadActiveTransaction = context.Database.CurrentTransaction is not null;
+        this.OnInsert?.Invoke(context);
 
         if (this.ExceptionToThrow is not null)
         {

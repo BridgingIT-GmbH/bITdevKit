@@ -7,9 +7,9 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 /// <summary>
 /// Persists a completed TodoItem import batch through the provider-selected bulk insert path.

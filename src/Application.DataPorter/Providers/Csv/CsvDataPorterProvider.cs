@@ -916,6 +916,17 @@ public sealed class CsvDataPorterProvider(
         var mappedColumns = columns
             .Select(column =>
             {
+                if (column.SourceColumn.SourceIndex >= 0)
+                {
+                    if (column.SourceColumn.SourceIndex >= headers.Count)
+                    {
+                        missingColumns.Add(column.SourceColumn);
+                        return null;
+                    }
+
+                    return column;
+                }
+
                 var header = headers.FirstOrDefault(h => h.Equals(column.HeaderName, StringComparison.OrdinalIgnoreCase));
                 if (header is null)
                 {
@@ -1128,7 +1139,9 @@ public sealed class CsvDataPorterProvider(
 
         foreach (var column in columns)
         {
-            var rawValue = csv.GetField(column.HeaderName);
+            var rawValue = column.SourceColumn.SourceIndex >= 0
+                ? csv.GetField(column.SourceColumn.SourceIndex)
+                : csv.GetField(column.HeaderName);
             if (this.configuration.TrimFields && rawValue is not null)
             {
                 rawValue = rawValue.Trim();

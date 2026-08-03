@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Common;
-using System.Diagnostics;
 using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
 
@@ -34,6 +33,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 {
     private readonly IOutboxDomainEventQueue eventQueue;
     private readonly OutboxDomainEventOptions options;
+    private readonly OutboxDomainEventCollector collector;
 
     public RepositoryOutboxDomainEventBehavior(
         ILoggerFactory loggerFactory,
@@ -52,6 +52,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         this.eventQueue = eventQueue;
         this.options = options ?? new OutboxDomainEventOptions();
         this.options.Serializer ??= new SystemTextJsonSerializer();
+        this.collector = new OutboxDomainEventCollector(this.options);
     }
 
     /// <summary>
@@ -305,23 +306,17 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
     private async Task StoreDomainEvents(TEntity entity, CancellationToken cancellationToken)
     {
-        entity.DomainEvents.GetAll()
-            .ForEach(e =>
+        var projections = this.collector.Collect([entity]);
+        projections.ForEach(projection =>
                 {
-                    TypedLogger.LogDomainEvent(this.Logger, Constants.LogKey, e.EventId, e.GetType().Name);
-
-                    var outboxEvent = new OutboxDomainEvent
-                    {
-                        EventId = e.EventId.ToString(),
-                        Type = e.GetType().AssemblyQualifiedNameShort(),
-                        Content = this.options.Serializer.SerializeToString(e),
-                        ContentHash = HashHelper.Compute(e),
-                        CreatedDate = e.Timestamp
-                    };
-                    this.PropagateContext(outboxEvent);
-                    this.Context.OutboxDomainEvents.Add(outboxEvent);
+                    TypedLogger.LogDomainEvent(
+                        this.Logger,
+                        Constants.LogKey,
+                        projection.DomainEvent.EventId,
+                        projection.DomainEvent.GetType().Name);
+                    this.Context.OutboxDomainEvents.Add(projection.OutboxEvent);
 #if DEBUG
-                    //this.Logger.LogDebug("++++ OUTBOX: STORE DOMAINEVENT {@DomainEvent}", outboxEvent);
+                    //this.Logger.LogDebug("++++ OUTBOX: STORE DOMAINEVENT {@DomainEvent}", projection.OutboxEvent);
 #endif
                 }, cancellationToken);
 
@@ -332,36 +327,9 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
         if (this.options.ProcessingMode == OutboxDomainEventProcessMode.Immediate)
         {
-            entity.DomainEvents.GetAll()
-                .ForEach(e => { this.eventQueue?.Enqueue(e.EventId.ToString()); }, cancellationToken);
-        }
-    }
-
-    private void PropagateContext(OutboxDomainEvent outboxEvent)
-    {
-        // propagate some internal properties
-        var correlationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
-        if (!correlationId.IsNullOrEmpty())
-        {
-            outboxEvent.Properties.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
-        }
-
-        var flowId = Activity.Current?.GetBaggageItem(ActivityConstants.FlowIdTagKey);
-        if (!flowId.IsNullOrEmpty())
-        {
-            outboxEvent.Properties.AddOrUpdate(Constants.FlowIdKey, flowId);
-        }
-
-        var moduleName = Activity.Current?.GetBaggageItem(ModuleConstants.ModuleNameKey);
-        if (!moduleName.IsNullOrEmpty())
-        {
-            outboxEvent.Properties.AddOrUpdate(ModuleConstants.ModuleNameKey, moduleName);
-        }
-
-        var activityId = Activity.Current?.Id;
-        if (!activityId.IsNullOrEmpty())
-        {
-            outboxEvent.Properties.AddOrUpdate(ModuleConstants.ActivityParentIdKey, activityId);
+            projections.ForEach(
+                projection => this.eventQueue?.Enqueue(projection.OutboxEvent.EventId),
+                cancellationToken);
         }
     }
 

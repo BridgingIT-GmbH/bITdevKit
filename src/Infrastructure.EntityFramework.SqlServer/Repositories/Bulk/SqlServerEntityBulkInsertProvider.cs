@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using BridgingIT.DevKit.Common;
 using System.Data;
+using BridgingIT.DevKit.Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -45,8 +45,9 @@ public sealed partial class SqlServerEntityBulkInsertProvider : IEntityBulkInser
     /// </example>
     public SqlServerEntityBulkInsertProvider(ILoggerFactory loggerFactory)
     {
-        this.logger = loggerFactory?.CreateLogger<SqlServerEntityBulkInsertProvider>() ??
-            NullLoggerFactory.Instance.CreateLogger<SqlServerEntityBulkInsertProvider>();
+        this.logger =
+            loggerFactory?.CreateLogger<SqlServerEntityBulkInsertProvider>()
+            ?? NullLoggerFactory.Instance.CreateLogger<SqlServerEntityBulkInsertProvider>();
     }
 
     /// <inheritdoc />
@@ -56,51 +57,44 @@ public sealed partial class SqlServerEntityBulkInsertProvider : IEntityBulkInser
     public async Task<long> InsertAsync<TEntity>(
         DbContext context,
         EntityBulkInsertBatch<TEntity> batch,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
         where TEntity : class
     {
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(batch, nameof(batch));
 
         var configuredOptions = GetConfiguredOptions(batch.Options);
-        var table = CreateDataTable(batch);
         var connection = GetSqlConnection<TEntity>(context);
-        var closeConnection = connection.State != ConnectionState.Open;
-
-        if (closeConnection)
+        if (connection.State is not ConnectionState.Open)
         {
-            await connection.OpenAsync(cancellationToken).AnyContext();
+            throw new InvalidOperationException(
+                $"Bulk insert for '{typeof(TEntity).Name}' requires the dispatcher to open the EF database connection before provider execution."
+            );
         }
 
-        try
+        var transaction = GetActiveSqlTransaction<TEntity>(context, connection);
+        var table = CreateDataTable(batch);
+        using var bulkCopy = new SqlBulkCopy(connection, configuredOptions, transaction);
+        bulkCopy.DestinationTableName = GetDelimitedTableName(batch.Schema, batch.TableName);
+        bulkCopy.BatchSize = batch.Options.BatchSize;
+        bulkCopy.BulkCopyTimeout = batch.Options.CommandTimeout;
+
+        foreach (DataColumn column in table.Columns)
         {
-            using var bulkCopy = CreateBulkCopy(context, connection, configuredOptions);
-            bulkCopy.DestinationTableName = GetDelimitedTableName(batch.Schema, batch.TableName);
-            bulkCopy.BatchSize = batch.Options.BatchSize;
-            bulkCopy.BulkCopyTimeout = batch.Options.CommandTimeout;
-
-            foreach (DataColumn column in table.Columns)
-            {
-                bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-            }
-
-            TypedLogger.LogBulkInsert(
-                this.logger,
-                Infrastructure.EntityFramework.Constants.LogKey,
-                typeof(TEntity).Name,
-                batch.Entities.Count,
-                bulkCopy.DestinationTableName);
-            await bulkCopy.WriteToServerAsync(table, cancellationToken).AnyContext();
-
-            return batch.Entities.Count;
+            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
         }
-        finally
-        {
-            if (closeConnection)
-            {
-                await connection.CloseAsync().AnyContext();
-            }
-        }
+
+        TypedLogger.LogBulkInsert(
+            this.logger,
+            Infrastructure.EntityFramework.Constants.LogKey,
+            typeof(TEntity).Name,
+            batch.Entities.Count,
+            bulkCopy.DestinationTableName
+        );
+        await bulkCopy.WriteToServerAsync(table, cancellationToken).AnyContext();
+
+        return batch.Entities.Count;
     }
 
     private static SqlBulkCopyOptions GetConfiguredOptions(EntityBulkInsertOptions options)
@@ -112,16 +106,18 @@ public sealed partial class SqlServerEntityBulkInsertProvider : IEntityBulkInser
                 : SqlBulkCopyOptions.Default;
         }
 
-        var forbiddenOptions = sqlServerOptions.SqlBulkCopyOptions &
-            (SqlBulkCopyOptions.KeepIdentity | SqlBulkCopyOptions.UseInternalTransaction);
+        var forbiddenOptions =
+            sqlServerOptions.SqlBulkCopyOptions
+            & (SqlBulkCopyOptions.KeepIdentity | SqlBulkCopyOptions.UseInternalTransaction);
         if (forbiddenOptions != SqlBulkCopyOptions.Default)
         {
             throw new ArgumentException(
-                $"{nameof(SqlServerEntityBulkInsertOptions.SqlBulkCopyOptions)} must not include " +
-                $"{SqlBulkCopyOptions.KeepIdentity} or {SqlBulkCopyOptions.UseInternalTransaction}. " +
-                $"Use {nameof(EntityBulkInsertOptions.KeepGeneratedIdentityValues)} to preserve generated identity values; " +
-                "the provider manages its internal transaction from the active EF transaction.",
-                nameof(sqlServerOptions));
+                $"{nameof(SqlServerEntityBulkInsertOptions.SqlBulkCopyOptions)} must not include "
+                    + $"{SqlBulkCopyOptions.KeepIdentity} or {SqlBulkCopyOptions.UseInternalTransaction}. "
+                    + $"Use {nameof(EntityBulkInsertOptions.KeepGeneratedIdentityValues)} to preserve generated identity values; "
+                    + "the bulk dispatcher owns transaction orchestration.",
+                nameof(sqlServerOptions)
+            );
         }
 
         return options.KeepGeneratedIdentityValues
@@ -129,32 +125,33 @@ public sealed partial class SqlServerEntityBulkInsertProvider : IEntityBulkInser
             : sqlServerOptions.SqlBulkCopyOptions;
     }
 
-    private static SqlBulkCopy CreateBulkCopy(
+    private static SqlTransaction GetActiveSqlTransaction<TEntity>(
         DbContext context,
-        SqlConnection connection,
-        SqlBulkCopyOptions configuredOptions)
+        SqlConnection connection
+    )
+        where TEntity : class
     {
         var transaction = context.Database.CurrentTransaction?.GetDbTransaction();
-        if (transaction is SqlTransaction sqlTransaction)
+        if (
+            transaction is SqlTransaction sqlTransaction
+            && ReferenceEquals(sqlTransaction.Connection, connection)
+        )
         {
-            return new SqlBulkCopy(
-                connection,
-                configuredOptions & ~SqlBulkCopyOptions.UseInternalTransaction,
-                sqlTransaction);
+            return sqlTransaction;
         }
 
-        return new SqlBulkCopy(
-            connection,
-            configuredOptions | SqlBulkCopyOptions.UseInternalTransaction,
-            null);
+        throw new InvalidOperationException(
+            $"Bulk insert for '{typeof(TEntity).Name}' requires an active Microsoft.Data.SqlClient.SqlTransaction owned or joined through the EF DbContext."
+        );
     }
 
     private static SqlConnection GetSqlConnection<TEntity>(DbContext context)
         where TEntity : class
     {
-        return context.Database.GetDbConnection() as SqlConnection ??
-            throw new InvalidOperationException(
-                $"Bulk insert for '{typeof(TEntity).Name}' requires a Microsoft.Data.SqlClient.SqlConnection.");
+        return context.Database.GetDbConnection() as SqlConnection
+            ?? throw new InvalidOperationException(
+                $"Bulk insert for '{typeof(TEntity).Name}' requires a Microsoft.Data.SqlClient.SqlConnection."
+            );
     }
 
     private static DataTable CreateDataTable<TEntity>(EntityBulkInsertBatch<TEntity> batch)
@@ -163,7 +160,10 @@ public sealed partial class SqlServerEntityBulkInsertProvider : IEntityBulkInser
         var table = new DataTable(batch.TableName);
         foreach (var column in batch.Columns)
         {
-            table.Columns.Add(column.ColumnName, Nullable.GetUnderlyingType(column.ProviderClrType) ?? column.ProviderClrType);
+            table.Columns.Add(
+                column.ColumnName,
+                Nullable.GetUnderlyingType(column.ProviderClrType) ?? column.ProviderClrType
+            );
         }
 
         foreach (var entity in batch.Entities)
@@ -194,7 +194,17 @@ public sealed partial class SqlServerEntityBulkInsertProvider : IEntityBulkInser
 
     private static partial class TypedLogger
     {
-        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] bulk inserting {EntityCount} {EntityType} entities into {TableName}")]
-        public static partial void LogBulkInsert(ILogger logger, string logKey, string entityType, int entityCount, string tableName);
+        [LoggerMessage(
+            1,
+            LogLevel.Debug,
+            "[{LogKey}] bulk inserting {EntityCount} {EntityType} entities into {TableName}"
+        )]
+        public static partial void LogBulkInsert(
+            ILogger logger,
+            string logKey,
+            string entityType,
+            int entityCount,
+            string tableName
+        );
     }
 }

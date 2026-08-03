@@ -19,8 +19,8 @@ using Microsoft.Data.SqlClient;
 /// </remarks>
 /// <example>
 /// <code>
-/// services.AddEntityFrameworkRepository&lt;Person, AppDbContext&gt;()
-///     .WithBulkInsert(new SqlServerEntityBulkInsertOptions
+/// services.AddEntityFrameworkBulkInserter&lt;Person, AppDbContext&gt;(
+///     new SqlServerEntityBulkInsertOptions
 ///     {
 ///         BatchSize = 5_000,
 ///         SqlBulkCopyOptions = SqlBulkCopyOptions.TableLock
@@ -43,4 +43,9 @@ public class SqlServerEntityBulkInsertOptions : EntityBulkInsertOptions
     /// </code>
     /// </example>
     public SqlBulkCopyOptions SqlBulkCopyOptions { get; set; } = SqlBulkCopyOptions.Default;
+
+    /// <inheritdoc />
+    protected override bool IsProviderConfigurationEquivalentTo(EntityBulkInsertOptions other) =>
+        other is SqlServerEntityBulkInsertOptions sqlServerOptions &&
+        this.SqlBulkCopyOptions == sqlServerOptions.SqlBulkCopyOptions;
 }

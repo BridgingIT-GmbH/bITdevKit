@@ -1,181 +1,402 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+using System.Collections;
+using System.Reflection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 /// <summary>
-/// Builds provider-neutral Entity Framework metadata and values for one entity bulk insert operation.
+/// Analyzes and builds provider-neutral Entity Framework values for one entity bulk insert operation.
 /// </summary>
 /// <typeparam name="TEntity">The entity type represented by the bulk insert batch.</typeparam>
 /// <example>
 /// <code>
-/// var batch = new EntityBulkInsertMappingBuilder&lt;Person&gt;()
-///     .Build(dbContext, people, options);
+/// var analysis = builder.Analyze(dbContext, people, options);
+/// var batch = builder.Build(analysis);
 /// </code>
 /// </example>
 public sealed class EntityBulkInsertMappingBuilder<TEntity>
-    where TEntity : class
+    where TEntity : class, IEntity
 {
+    private readonly IReadOnlyList<IEntityBulkInsertShadowValueProvider<TEntity>> shadowProviders;
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="EntityBulkInsertMappingBuilder{TEntity}"/> class.
+    /// Initializes a mapping builder with deterministic shadow-property value providers.
     /// </summary>
+    /// <param name="shadowProviders">The ordered shadow-property providers.</param>
     /// <example>
     /// <code>
-    /// var builder = new EntityBulkInsertMappingBuilder&lt;Person&gt;();
+    /// var builder = new EntityBulkInsertMappingBuilder&lt;Person&gt;(shadowProviders);
     /// </code>
     /// </example>
-    public EntityBulkInsertMappingBuilder()
+    public EntityBulkInsertMappingBuilder(
+        IEnumerable<IEntityBulkInsertShadowValueProvider<TEntity>> shadowProviders = null
+    )
     {
+        this.shadowProviders = (shadowProviders ?? [])
+            .Where(provider => provider is not null)
+            .ToArray();
     }
 
     /// <summary>
-    /// Creates a provider-neutral bulk insert batch from EF metadata and the supplied entities.
+    /// Performs side-effect-free model, graph, tracking, shadow, and writable-column analysis.
     /// </summary>
-    /// <param name="context">The Entity Framework context that owns the entity metadata.</param>
-    /// <param name="entities">The entities to prepare in insertion order.</param>
-    /// <param name="options">The provider-neutral bulk insert options.</param>
-    /// <returns>The prepared table metadata, ordered columns, converted value accessors, and entities.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the entity is not mapped, has no writable columns, or maps duplicate writable columns.</exception>
-    /// <exception cref="NotSupportedException">Thrown when the entity contains unsupported navigations or populated owned collections.</exception>
+    /// <param name="context">The Entity Framework context owning the model.</param>
+    /// <param name="entities">The already materialized entities in insertion order.</param>
+    /// <param name="options">The provider-neutral bulk options.</param>
+    /// <returns>An immutable analysis that can be finalized after bulk behaviors run.</returns>
+    /// <exception cref="InvalidOperationException">Thrown for invalid tracking, duplicate references, required values, or mappings.</exception>
+    /// <exception cref="NotSupportedException">Thrown for unsupported graphs or multi-store mappings.</exception>
     /// <example>
     /// <code>
-    /// var batch = builder.Build(dbContext, people, new EntityBulkInsertOptions());
+    /// var analysis = builder.Analyze(dbContext, people, options);
     /// </code>
     /// </example>
-    public EntityBulkInsertBatch<TEntity> Build(
+    public EntityBulkInsertMappingAnalysis<TEntity> Analyze(
         DbContext context,
         IReadOnlyList<TEntity> entities,
-        EntityBulkInsertOptions options)
+        EntityBulkInsertOptions options
+    )
     {
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(entities, nameof(entities));
         EnsureArg.IsNotNull(options, nameof(options));
-
         options.Validate();
 
-        var entityType = context.Model.FindEntityType(typeof(TEntity)) ??
-            throw new InvalidOperationException($"Entity type '{typeof(TEntity).Name}' is not part of the DbContext model.");
-        var tableName = entityType.GetTableName() ??
-            throw new InvalidOperationException($"Entity type '{typeof(TEntity).Name}' is not mapped to a relational table.");
+        EnsureDistinctReferences(entities);
+        EnsureDetached(context, entities);
 
-        this.EnsureSupportedNavigations(entityType, entities);
-        this.AssignClientGeneratedValues(entityType, entities, options);
+        var entityType =
+            context.Model.FindEntityType(typeof(TEntity))
+            ?? throw new InvalidOperationException(
+                $"Entity type '{typeof(TEntity).Name}' is not part of the DbContext model."
+            );
+        var tableName =
+            entityType.GetTableName()
+            ?? throw new InvalidOperationException(
+                $"Entity type '{typeof(TEntity).Name}' is not mapped to a relational table."
+            );
+        var schema = entityType.GetSchema();
+        var storeObject = StoreObjectIdentifier.Table(tableName, schema);
 
-        var mappings = this.CreatePropertyMappings(entityType, entityType, item => item, options)
-            .ToList();
+        EnsureSingleTableHierarchy(entityType);
+        this.EnsureSupportedGraph(entityType, entities, storeObject);
+
+        var mappings = new List<EntityBulkInsertPropertyMapping<TEntity>>();
+        this.AddPropertyMappings(
+            context,
+            entityType,
+            entityType,
+            entities,
+            storeObject,
+            item => item,
+            false,
+            options,
+            mappings
+        );
+
         if (mappings.Count == 0)
         {
-            throw new InvalidOperationException($"Entity type '{typeof(TEntity).Name}' has no writable columns for bulk insert.");
+            throw new InvalidOperationException(
+                $"Entity type '{typeof(TEntity).Name}' has no writable columns for bulk insert."
+            );
         }
 
-        var duplicateColumnNames = mappings
+        var duplicateColumns = mappings
             .GroupBy(mapping => mapping.ColumnName, StringComparer.OrdinalIgnoreCase)
             .Where(group => group.Count() > 1)
             .Select(group => group.Key)
-            .ToList();
-        if (duplicateColumnNames.Count != 0)
+            .ToArray();
+        if (duplicateColumns.Length > 0)
         {
             throw new InvalidOperationException(
-                $"Entity type '{typeof(TEntity).Name}' maps multiple writable properties to the same bulk insert column(s): {string.Join(", ", duplicateColumnNames)}.");
+                $"Entity type '{typeof(TEntity).Name}' maps multiple writable properties to the same bulk insert column(s): {string.Join(", ", duplicateColumns)}."
+            );
         }
 
-        var columns = mappings
-            .Select(mapping => new EntityBulkInsertColumn<TEntity>(
-                mapping.Property,
-                mapping.ColumnName,
-                GetProviderClrType(mapping),
-                mapping.Property.ValueGenerated,
-                item => GetProviderValue(mapping, item)))
-            .ToList();
-
-        return new EntityBulkInsertBatch<TEntity>(
+        return new EntityBulkInsertMappingAnalysis<TEntity>(
+            context,
             entityType,
-            entityType.GetSchema(),
+            schema,
             tableName,
             entities,
+            mappings.AsReadOnly(),
+            options
+        );
+    }
+
+    /// <summary>
+    /// Finalizes a successful analysis after behaviors have mutated supported CLR values.
+    /// </summary>
+    /// <param name="analysis">The side-effect-free mapping analysis.</param>
+    /// <returns>The finalized provider-neutral batch.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when a required finalized value is missing.</exception>
+    /// <example>
+    /// <code>
+    /// var batch = builder.Build(analysis);
+    /// </code>
+    /// </example>
+    public EntityBulkInsertBatch<TEntity> Build(EntityBulkInsertMappingAnalysis<TEntity> analysis)
+    {
+        EnsureArg.IsNotNull(analysis, nameof(analysis));
+        analysis.Options.Validate();
+        EnsureRequiredValues(analysis);
+        AssignClientGeneratedValues(analysis.EntityType, analysis.Entities, analysis.Options);
+
+        var columns = analysis
+            .Mappings.Select(mapping => new EntityBulkInsertColumn<TEntity>(
+                mapping.Property,
+                mapping.ColumnName,
+                mapping.ProviderClrType,
+                mapping.ValueGenerated,
+                mapping.Source,
+                mapping.IsIdentity,
+                mapping.ProviderValueAccessor
+            ))
+            .ToArray();
+
+        return new EntityBulkInsertBatch<TEntity>(
+            analysis.EntityType,
+            analysis.Schema,
+            analysis.TableName,
+            analysis.Entities,
             columns,
-            options);
+            analysis.Options
+        );
     }
 
-    private void EnsureSupportedNavigations(IEntityType entityType, IReadOnlyCollection<TEntity> items)
-    {
-        var unsupportedNavigations = entityType.GetNavigations()
-            .Concat<INavigationBase>(entityType.GetSkipNavigations())
-            .Where(navigation => !navigation.TargetEntityType.IsOwned())
-            .Select(navigation => navigation.Name)
-            .ToList();
-        if (unsupportedNavigations.Count != 0)
-        {
-            throw new NotSupportedException(
-                $"Bulk insert for '{typeof(TEntity).Name}' supports aggregate-root columns and owned values only. Unsupported navigations: {string.Join(", ", unsupportedNavigations)}.");
-        }
+    /// <summary>
+    /// Analyzes and immediately builds a batch for callers without lifecycle behaviors.
+    /// </summary>
+    /// <param name="context">The Entity Framework context.</param>
+    /// <param name="entities">The materialized entities.</param>
+    /// <param name="options">The provider-neutral options.</param>
+    /// <returns>The finalized provider-neutral batch.</returns>
+    /// <example><code>var batch = builder.Build(dbContext, people, options);</code></example>
+    public EntityBulkInsertBatch<TEntity> Build(
+        DbContext context,
+        IReadOnlyList<TEntity> entities,
+        EntityBulkInsertOptions options
+    ) => this.Build(this.Analyze(context, entities, options));
 
-        var ownedCollectionsWithItems = entityType.GetNavigations()
-            .Where(navigation => navigation.TargetEntityType.IsOwned() && navigation.IsCollection)
-            .Where(navigation => items.Any(item => HasCollectionItems(navigation.PropertyInfo?.GetValue(item))))
-            .Select(navigation => navigation.Name)
-            .ToList();
-        if (ownedCollectionsWithItems.Count != 0)
-        {
-            throw new NotSupportedException(
-                $"Bulk insert for '{typeof(TEntity).Name}' does not insert owned collection rows. Clear or persist these collections separately: {string.Join(", ", ownedCollectionsWithItems)}.");
-        }
-    }
-
-    private void AssignClientGeneratedValues(
+    private static void AssignClientGeneratedValues(
         IEntityType entityType,
-        IReadOnlyCollection<TEntity> items,
-        EntityBulkInsertOptions options)
+        IReadOnlyCollection<TEntity> entities,
+        EntityBulkInsertOptions options
+    )
     {
-        if (options.AssignConcurrencyVersions)
-        {
-            foreach (var entity in items.OfType<IConcurrency>())
-            {
-                entity.ConcurrencyVersion = GuidGenerator.CreateSequential();
-            }
-        }
-
         if (!options.AssignSequentialGuidKeys)
         {
             return;
         }
 
-        foreach (var property in entityType.GetProperties().Where(property =>
-                     property.IsKey() &&
-                     IsGuidProviderProperty(property) &&
-                     property.ValueGenerated == ValueGenerated.OnAdd &&
-                     property.PropertyInfo?.CanWrite == true))
+        foreach (
+            var property in entityType
+                .GetProperties()
+                .Where(property =>
+                    property.IsKey()
+                    && IsGuidProviderProperty(property)
+                    && property.ValueGenerated == ValueGenerated.OnAdd
+                    && property.PropertyInfo?.CanWrite == true
+                )
+        )
         {
-            foreach (var entity in items)
+            foreach (var entity in entities.Where(entity => IsDefaultGuidKey(property, entity)))
             {
-                if (IsDefaultGuidKey(property, entity))
+                SetGuidKey(property, entity, GuidGenerator.CreateSequential());
+            }
+        }
+    }
+
+    private static void EnsureDetached(DbContext context, IReadOnlyCollection<TEntity> entities)
+    {
+        var tracked = context
+            .ChangeTracker.Entries()
+            .Select(entry => entry.Entity)
+            .ToHashSet(ReferenceEqualityComparer.Instance);
+        if (entities.Any(entity => tracked.Contains(entity)))
+        {
+            throw new InvalidOperationException(
+                $"Bulk insert for '{typeof(TEntity).Name}' requires detached entities; at least one supplied instance is already tracked by the active DbContext."
+            );
+        }
+    }
+
+    private static void EnsureDistinctReferences(IReadOnlyCollection<TEntity> entities)
+    {
+        var references = new HashSet<TEntity>(ReferenceEqualityComparer.Instance);
+        if (entities.Any(entity => !references.Add(entity)))
+        {
+            throw new InvalidOperationException(
+                $"Bulk insert for '{typeof(TEntity).Name}' contains the same entity instance more than once. Duplicate object references are not supported."
+            );
+        }
+    }
+
+    private static void EnsureRequiredValues(EntityBulkInsertMappingAnalysis<TEntity> analysis)
+    {
+        foreach (var mapping in analysis.Mappings.Where(mapping => mapping.IsRequired))
+        {
+            foreach (var entity in analysis.Entities)
+            {
+                if (mapping.ProviderValueAccessor(entity) is null)
                 {
-                    SetGuidKey(property, entity, GuidGenerator.CreateSequential());
+                    throw new InvalidOperationException(
+                        $"Required bulk insert property '{mapping.Property.DeclaringType.DisplayName()}.{mapping.Property.Name}' has no value for entity '{typeof(TEntity).Name}'."
+                    );
                 }
             }
         }
     }
 
-    private IEnumerable<PropertyColumnMapping> CreatePropertyMappings(
+    private static void EnsureSingleTableHierarchy(IEntityType entityType)
+    {
+        var rootType = entityType.GetRootType();
+        var strategy = rootType.GetMappingStrategy();
+        if (
+            string.Equals(
+                strategy,
+                RelationalAnnotationNames.TptMappingStrategy,
+                StringComparison.Ordinal
+            )
+            || string.Equals(
+                strategy,
+                RelationalAnnotationNames.TpcMappingStrategy,
+                StringComparison.Ordinal
+            )
+        )
+        {
+            throw new NotSupportedException(
+                $"Bulk insert for '{typeof(TEntity).Name}' supports TPH inheritance only. Mapping strategy '{strategy}' requires multiple table writes."
+            );
+        }
+
+        var hierarchy = rootType.GetDerivedTypesInclusive();
+        if (
+            hierarchy.Any(type =>
+                type.GetMappingFragments(StoreObjectType.Table).Any() || !SameTable(rootType, type)
+            )
+        )
+        {
+            throw new NotSupportedException(
+                $"Bulk insert for '{typeof(TEntity).Name}' does not support entity splitting or other multi-table mappings."
+            );
+        }
+    }
+
+    private void EnsureSupportedGraph(
+        IEntityType rootEntityType,
+        IReadOnlyList<TEntity> entities,
+        StoreObjectIdentifier rootStoreObject
+    )
+    {
+        this.EnsureSupportedNavigations(
+            rootEntityType,
+            rootEntityType,
+            entities,
+            rootStoreObject,
+            entity => entity,
+            rootEntityType.DisplayName()
+        );
+    }
+
+    private void EnsureSupportedNavigations(
         IEntityType rootEntityType,
         IEntityType currentEntityType,
+        IReadOnlyList<TEntity> entities,
+        StoreObjectIdentifier rootStoreObject,
         Func<TEntity, object> instanceAccessor,
-        EntityBulkInsertOptions options)
+        string path
+    )
     {
-        var storeObject = StoreObjectIdentifier.Table(rootEntityType.GetTableName(), rootEntityType.GetSchema());
+        foreach (
+            var navigation in currentEntityType
+                .GetNavigations()
+                .Cast<INavigationBase>()
+                .Concat(currentEntityType.GetSkipNavigations())
+        )
+        {
+            if (navigation is INavigation { IsOnDependent: true, ForeignKey.IsOwnership: true })
+            {
+                continue;
+            }
 
-        foreach (var property in currentEntityType.GetProperties()
-                     .Where(property => !property.IsShadowProperty() && property.PropertyInfo is not null)
-                     .Where(property => ShouldInclude(property, options)))
+            var navigationPath = $"{path}.{navigation.Name}";
+            var values = entities
+                .Select(entity => GetNavigationValue(navigation, instanceAccessor(entity)))
+                .ToArray();
+
+            if (!navigation.TargetEntityType.IsOwned())
+            {
+                if (values.Any(HasNavigationValue))
+                {
+                    throw new NotSupportedException(
+                        $"Bulk insert for '{typeof(TEntity).Name}' is root-table-only and cannot persist populated navigation '{navigationPath}'."
+                    );
+                }
+
+                continue;
+            }
+
+            if (navigation.IsCollection)
+            {
+                if (values.Any(HasCollectionItems))
+                {
+                    throw new NotSupportedException(
+                        $"Bulk insert for '{typeof(TEntity).Name}' cannot persist populated owned collection '{navigationPath}'."
+                    );
+                }
+
+                continue;
+            }
+
+            if (navigation.TargetEntityType.IsMappedToJson())
+            {
+                throw new NotSupportedException(
+                    $"Bulk insert for '{typeof(TEntity).Name}' does not support JSON-owned reference '{navigationPath}'."
+                );
+            }
+
+            if (!IsMappedToStore(navigation.TargetEntityType, rootStoreObject))
+            {
+                throw new NotSupportedException(
+                    $"Bulk insert for '{typeof(TEntity).Name}' does not support separate-table owned reference '{navigationPath}'."
+                );
+            }
+
+            this.EnsureSupportedNavigations(
+                rootEntityType,
+                navigation.TargetEntityType,
+                entities,
+                rootStoreObject,
+                entity => GetNavigationValue(navigation, instanceAccessor(entity)),
+                navigationPath
+            );
+        }
+    }
+
+    private void AddPropertyMappings(
+        DbContext context,
+        IEntityType rootEntityType,
+        IEntityType currentEntityType,
+        IReadOnlyList<TEntity> entities,
+        StoreObjectIdentifier storeObject,
+        Func<TEntity, object> instanceAccessor,
+        bool owned,
+        EntityBulkInsertOptions options,
+        ICollection<EntityBulkInsertPropertyMapping<TEntity>> mappings
+    )
+    {
+        var discriminatorName = rootEntityType.GetRootType().GetDiscriminatorPropertyName();
+        foreach (var property in currentEntityType.GetProperties())
         {
             var columnName = property.GetColumnName(storeObject);
             if (string.IsNullOrWhiteSpace(columnName))
@@ -183,85 +404,336 @@ public sealed class EntityBulkInsertMappingBuilder<TEntity>
                 continue;
             }
 
-            yield return new PropertyColumnMapping(
-                property,
-                columnName,
-                property.GetTypeMapping().Converter,
-                instanceAccessor);
+            if (owned && IsOwnershipForeignKey(property))
+            {
+                continue;
+            }
+
+            var isDiscriminator = string.Equals(
+                property.Name,
+                discriminatorName,
+                StringComparison.Ordinal
+            );
+            var isIdentity = IsIdentity(property);
+            if (!ShouldInclude(property, storeObject, options, isIdentity, isDiscriminator))
+            {
+                continue;
+            }
+
+            if (isDiscriminator)
+            {
+                var constant = ConvertToProvider(property, rootEntityType.GetDiscriminatorValue());
+                mappings.Add(
+                    CreateMapping(
+                        property,
+                        columnName,
+                        EntityBulkInsertColumnSource.MetadataConstant,
+                        isIdentity,
+                        false,
+                        _ => constant
+                    )
+                );
+                continue;
+            }
+
+            if (property.IsShadowProperty())
+            {
+                this.AddShadowMapping(
+                    context,
+                    entities,
+                    property,
+                    columnName,
+                    isIdentity,
+                    storeObject,
+                    mappings
+                );
+                continue;
+            }
+
+            if (property.PropertyInfo is null && property.FieldInfo is null)
+            {
+                throw new NotSupportedException(
+                    $"Bulk insert property '{property.DeclaringType.DisplayName()}.{property.Name}' has no readable CLR member."
+                );
+            }
+
+            mappings.Add(
+                CreateMapping(
+                    property,
+                    columnName,
+                    owned
+                        ? EntityBulkInsertColumnSource.OwnedProperty
+                        : EntityBulkInsertColumnSource.ClrProperty,
+                    isIdentity,
+                    IsRequiredValue(property, storeObject),
+                    entity =>
+                    {
+                        var instance = instanceAccessor(entity);
+                        return ConvertToProvider(property, GetPropertyValue(property, instance));
+                    }
+                )
+            );
         }
 
-        var ownedReferenceNavigations = currentEntityType.GetNavigations()
-            .Where(navigation => navigation.TargetEntityType.IsOwned())
-            .Where(navigation => !navigation.IsCollection)
-            .Where(navigation => IsMappedToSameTable(rootEntityType, navigation.TargetEntityType))
-            .Where(navigation => navigation.PropertyInfo is not null);
-
-        foreach (var navigation in ownedReferenceNavigations)
+        foreach (
+            var navigation in currentEntityType
+                .GetNavigations()
+                .Where(navigation =>
+                    navigation.TargetEntityType.IsOwned()
+                    && !navigation.IsCollection
+                    && !navigation.TargetEntityType.IsMappedToJson()
+                    && IsMappedToStore(navigation.TargetEntityType, storeObject)
+                )
+        )
         {
-            foreach (var mapping in this.CreatePropertyMappings(
-                         rootEntityType,
-                         navigation.TargetEntityType,
-                         item =>
-                         {
-                             var instance = instanceAccessor(item);
-                             return instance is null ? null : navigation.PropertyInfo.GetValue(instance);
-                         },
-                         options))
-            {
-                yield return mapping;
-            }
+            this.AddPropertyMappings(
+                context,
+                rootEntityType,
+                navigation.TargetEntityType,
+                entities,
+                storeObject,
+                entity => GetNavigationValue(navigation, instanceAccessor(entity)),
+                true,
+                options,
+                mappings
+            );
         }
     }
 
-    private static bool ShouldInclude(IProperty property, EntityBulkInsertOptions options)
+    private void AddShadowMapping(
+        DbContext context,
+        IReadOnlyList<TEntity> entities,
+        IProperty property,
+        string columnName,
+        bool isIdentity,
+        StoreObjectIdentifier storeObject,
+        ICollection<EntityBulkInsertPropertyMapping<TEntity>> mappings
+    )
     {
-        if (property.ValueGenerated == ValueGenerated.OnAddOrUpdate)
+        var values = new Dictionary<TEntity, object>(ReferenceEqualityComparer.Instance);
+        foreach (var entity in entities)
+        {
+            var supplied = this
+                .shadowProviders.Select(provider =>
+                {
+                    var success = provider.TryGetValue(
+                        new EntityBulkInsertShadowPropertyContext<TEntity>(
+                            entity,
+                            property,
+                            context
+                        ),
+                        out var value
+                    );
+                    return (success, value);
+                })
+                .Where(result => result.success)
+                .ToArray();
+
+            if (supplied.Length > 1)
+            {
+                throw new InvalidOperationException(
+                    $"Multiple bulk shadow-value providers supplied property '{property.DeclaringType.DisplayName()}.{property.Name}'."
+                );
+            }
+
+            if (supplied.Length == 1)
+            {
+                values[entity] = ConvertToProvider(property, supplied[0].value);
+            }
+        }
+
+        var required = IsRequiredValue(property, storeObject);
+        if (
+            required
+            && entities.Any(entity => !values.TryGetValue(entity, out var value) || value is null)
+        )
+        {
+            throw new InvalidOperationException(
+                $"Required shadow property '{property.DeclaringType.DisplayName()}.{property.Name}' needs an EF metadata constant or one registered {nameof(IEntityBulkInsertShadowValueProvider<TEntity>)}."
+            );
+        }
+
+        if (values.Count == 0)
+        {
+            return;
+        }
+
+        mappings.Add(
+            CreateMapping(
+                property,
+                columnName,
+                EntityBulkInsertColumnSource.ShadowProvider,
+                isIdentity,
+                required,
+                entity => values.TryGetValue(entity, out var value) ? value : null
+            )
+        );
+    }
+
+    private static EntityBulkInsertPropertyMapping<TEntity> CreateMapping(
+        IProperty property,
+        string columnName,
+        EntityBulkInsertColumnSource source,
+        bool isIdentity,
+        bool isRequired,
+        Func<TEntity, object> accessor
+    ) =>
+        new(
+            property,
+            columnName,
+            GetProviderClrType(property),
+            property.ValueGenerated,
+            source,
+            isIdentity,
+            isRequired,
+            accessor
+        );
+
+    private static bool ShouldInclude(
+        IProperty property,
+        StoreObjectIdentifier storeObject,
+        EntityBulkInsertOptions options,
+        bool isIdentity,
+        bool isDiscriminator
+    )
+    {
+        if (isDiscriminator)
+        {
+            return true;
+        }
+
+        if (IsComputedOrRowVersion(property, storeObject) || HasStoreDefault(property, storeObject))
         {
             return false;
         }
 
-        return property.ValueGenerated != ValueGenerated.OnAdd ||
-            IsGuidProviderProperty(property) ||
-            options.KeepGeneratedIdentityValues;
+        if (isIdentity)
+        {
+            return options.KeepGeneratedIdentityValues;
+        }
+
+        return property.ValueGenerated switch
+        {
+            ValueGenerated.Never => true,
+            ValueGenerated.OnAdd => IsGuidProviderProperty(property),
+            _ => false,
+        };
     }
 
-    private static object GetProviderValue(PropertyColumnMapping mapping, TEntity item)
+    private static bool IsRequiredValue(IProperty property, StoreObjectIdentifier storeObject) =>
+        !property.IsNullable
+        && !IsComputedOrRowVersion(property, storeObject)
+        && !HasStoreDefault(property, storeObject)
+        && !IsIdentity(property);
+
+    private static bool HasStoreDefault(IProperty property, StoreObjectIdentifier storeObject) =>
+        property.GetDefaultValueSql(storeObject) is not null
+        || property.TryGetDefaultValue(storeObject, out _);
+
+    private static bool IsComputedOrRowVersion(
+        IProperty property,
+        StoreObjectIdentifier storeObject
+    ) =>
+        property.GetComputedColumnSql(storeObject) is not null
+        || property.ValueGenerated == ValueGenerated.OnAddOrUpdate
+        || (property.IsConcurrencyToken && property.ClrType == typeof(byte[]));
+
+    private static bool IsIdentity(IProperty property) =>
+        property
+            .GetAnnotations()
+            .Any(annotation =>
+                annotation.Name.EndsWith(":ValueGenerationStrategy", StringComparison.Ordinal)
+                && annotation
+                    .Value?.ToString()
+                    ?.Contains("Identity", StringComparison.OrdinalIgnoreCase) == true
+            );
+
+    private static bool IsOwnershipForeignKey(IProperty property) =>
+        property.GetContainingForeignKeys().Any(foreignKey => foreignKey.IsOwnership);
+
+    private static bool IsMappedToStore(
+        IEntityType entityType,
+        StoreObjectIdentifier storeObject
+    ) =>
+        string.Equals(entityType.GetTableName(), storeObject.Name, StringComparison.Ordinal)
+        && string.Equals(entityType.GetSchema(), storeObject.Schema, StringComparison.Ordinal);
+
+    private static bool SameTable(IEntityType first, IEntityType second) =>
+        string.Equals(first.GetTableName(), second.GetTableName(), StringComparison.Ordinal)
+        && string.Equals(first.GetSchema(), second.GetSchema(), StringComparison.Ordinal);
+
+    private static object GetNavigationValue(INavigationBase navigation, object instance)
     {
-        var instance = mapping.InstanceAccessor(item);
-        var value = instance is null ? null : mapping.Property.PropertyInfo.GetValue(instance);
+        if (instance is null)
+        {
+            return null;
+        }
 
-        return value is null || mapping.Converter is null
-            ? value
-            : mapping.Converter.ConvertToProvider(value);
+        return navigation.PropertyInfo?.GetValue(instance)
+            ?? navigation.FieldInfo?.GetValue(instance);
     }
 
-    private static bool IsMappedToSameTable(IEntityType rootEntityType, IEntityType targetEntityType)
+    private static bool HasNavigationValue(object value) =>
+        value switch
+        {
+            null => false,
+            IEnumerable enumerable when value is not string => enumerable.Cast<object>().Any(),
+            _ => true,
+        };
+
+    private static bool HasCollectionItems(object value) =>
+        value is IEnumerable enumerable && enumerable.Cast<object>().Any();
+
+    private static object GetPropertyValue(IProperty property, object instance)
     {
-        return string.Equals(rootEntityType.GetTableName(), targetEntityType.GetTableName(), StringComparison.Ordinal) &&
-            string.Equals(rootEntityType.GetSchema(), targetEntityType.GetSchema(), StringComparison.Ordinal);
+        if (instance is null)
+        {
+            return null;
+        }
+
+        return property.PropertyInfo?.GetValue(instance) ?? property.FieldInfo?.GetValue(instance);
     }
 
-    private static bool HasCollectionItems(object value)
+    private static object ConvertToProvider(IProperty property, object value)
     {
-        return value is System.Collections.IEnumerable enumerable && enumerable.Cast<object>().Any();
+        if (value is null)
+        {
+            return null;
+        }
+
+        var converter = property.GetTypeMapping().Converter;
+        if (converter is not null)
+        {
+            return converter.ConvertToProvider(value);
+        }
+
+        var enumType = Nullable.GetUnderlyingType(property.ClrType) ?? property.ClrType;
+        return enumType.IsEnum
+            ? Convert.ChangeType(value, Enum.GetUnderlyingType(enumType))
+            : value;
     }
 
-    private static bool IsGuidProviderProperty(IProperty property)
+    private static Type GetProviderClrType(IProperty property)
     {
-        return property.ClrType == typeof(Guid) ||
-            property.GetTypeMapping().Converter?.ProviderClrType == typeof(Guid);
+        var converter = property.GetTypeMapping().Converter;
+        var clrType = converter?.ProviderClrType ?? property.ClrType;
+        clrType = Nullable.GetUnderlyingType(clrType) ?? clrType;
+        return clrType.IsEnum ? Enum.GetUnderlyingType(clrType) : clrType;
     }
+
+    private static bool IsGuidProviderProperty(IProperty property) =>
+        property.ClrType == typeof(Guid)
+        || property.GetTypeMapping().Converter?.ProviderClrType == typeof(Guid);
 
     private static bool IsDefaultGuidKey(IProperty property, TEntity entity)
     {
-        var value = property.PropertyInfo.GetValue(entity);
-
+        var value = GetPropertyValue(property, entity);
         return value switch
         {
             null => true,
             Guid guid => guid == Guid.Empty,
             EntityId<Guid> id => id.Value == Guid.Empty,
-            _ => false
+            _ => false,
         };
     }
 
@@ -269,7 +741,7 @@ public sealed class EntityBulkInsertMappingBuilder<TEntity>
     {
         if (property.ClrType == typeof(Guid))
         {
-            property.PropertyInfo.SetValue(entity, value);
+            property.PropertyInfo?.SetValue(entity, value);
             return;
         }
 
@@ -278,27 +750,16 @@ public sealed class EntityBulkInsertMappingBuilder<TEntity>
             var createMethod = property.ClrType.GetMethod(
                 "Create",
                 BindingFlags.Public | BindingFlags.Static,
-                [typeof(Guid)]);
+                [typeof(Guid)]
+            );
             if (createMethod is null)
             {
                 throw new NotSupportedException(
-                    $"Typed ID '{property.ClrType.Name}' must expose a public static Create(Guid) method for bulk insert key generation.");
+                    $"Typed ID '{property.ClrType.Name}' must expose a public static Create(Guid) method for bulk insert key generation."
+                );
             }
 
-            property.PropertyInfo.SetValue(entity, createMethod.Invoke(null, [value]));
+            property.PropertyInfo?.SetValue(entity, createMethod.Invoke(null, [value]));
         }
     }
-
-    private static Type GetProviderClrType(PropertyColumnMapping mapping)
-    {
-        var clrType = mapping.Converter?.ProviderClrType ?? mapping.Property.ClrType;
-
-        return Nullable.GetUnderlyingType(clrType) ?? clrType;
-    }
-
-    private sealed record PropertyColumnMapping(
-        IProperty Property,
-        string ColumnName,
-        ValueConverter Converter,
-        Func<TEntity, object> InstanceAccessor);
 }

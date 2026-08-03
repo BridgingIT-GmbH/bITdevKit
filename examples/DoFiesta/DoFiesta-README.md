@@ -60,9 +60,11 @@ the [ApiClient](.\DoFiesta.Presentation.Web.Client\Connected%20Services\DoFiesta
 
 ## Todo DataPorter bulk imports
 
-- The todo DataPorter import endpoint parses and validates uploaded rows first, then an `AfterImportCompletedAsync` interceptor writes successful `TodoItem` rows through `IEntityBulkInserter<TodoItem>`.
-- `CoreModule` configures `CoreDbContext` through `AddSqlServerDbContext<CoreDbContext>()`, which automatically registers the SQL Server native strategy. `.WithBulkInsert()` only registers the provider-neutral `IEntityBulkInserter<TodoItem>` orchestrator; it selects SQL Server from `CoreDbContext.Database.ProviderName` when the import runs.
+- The todo DataPorter import endpoint parses and validates uploaded rows first, then an `AfterImportCompletedAsync` interceptor writes successful `TodoItem` rows through the Domain-owned `IEntityBulkInserter<TodoItem>` capability.
+- `CoreModule` configures `CoreDbContext` through `AddSqlServerDbContext<CoreDbContext>()`, which automatically registers the SQL Server native strategy, and registers `IEntityBulkInserter<TodoItem>` independently with `AddEntityFrameworkBulkInserter<TodoItem, CoreDbContext>()`.
 - The example intentionally keeps normal CRUD on `IGenericRepository<TodoItem>` and uses the bulk inserter only for the explicit import path.
+- `TodoItemBulkImportPersistenceInterceptor` intentionally calls `entity.Steps.Clear()` because the native capability writes the aggregate root table only. Importing steps requires a separate persistence workflow or normal repository insertion.
+- The explicit bulk chain applies cancellation, tracing, logging, metrics, outbox, audit, concurrency, created domain events, and event metrics in its configured order. Repository decorators are independent; inputs remain detached and store-generated values are not copied back.
 
 # Development
 

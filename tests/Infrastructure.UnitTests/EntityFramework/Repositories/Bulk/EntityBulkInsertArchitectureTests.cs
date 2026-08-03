@@ -8,6 +8,57 @@ namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositorie
 public class EntityBulkInsertArchitectureTests
 {
     [Fact]
+    public void TerminalBulkInserter_HasNoRepositoryOrLegacyBehaviorDependencies()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            GetRepositoryRoot(),
+            "src",
+            "Infrastructure.EntityFramework",
+            "Repositories",
+            "Bulk",
+            "EntityFrameworkEntityBulkInserter.cs"));
+
+        source.ShouldNotContain("IGenericRepository");
+        source.ShouldNotContain("CompatibilityAnalyzer");
+        source.ShouldNotContain("BehaviorPipeline");
+        source.ShouldNotContain("ExecuteRepositoryFallbackAsync");
+    }
+
+    [Fact]
+    public void BulkInserterContractAndStandardBehaviors_AreOwnedByDomain()
+    {
+        var repositoryRoot = GetRepositoryRoot();
+        var domainDirectory = Path.Combine(repositoryRoot, "src", "Domain", "Repositories");
+
+        File.Exists(Path.Combine(domainDirectory, "IEntityBulkInserter.cs")).ShouldBeTrue();
+        File.Exists(Path.Combine(domainDirectory, "EntityBulkInserterBuilderContext.cs")).ShouldBeTrue();
+        File.Exists(Path.Combine(domainDirectory, "Behaviors", "BulkInserter", "EntityBulkInserterConcurrencyBehavior.cs")).ShouldBeTrue();
+        File.Exists(Path.Combine(domainDirectory, "Behaviors", "BulkInserter", "EntityBulkInserterDomainEventBehavior.cs")).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void InfrastructureBulkBehaviors_ContainOnlyTheEntityFrameworkOutboxDecorator()
+    {
+        var behaviorDirectory = Path.Combine(
+            GetRepositoryRoot(),
+            "src",
+            "Infrastructure.EntityFramework",
+            "Repositories",
+            "Bulk",
+            "Behaviors");
+
+        Directory.EnumerateFiles(behaviorDirectory, "*.cs", SearchOption.TopDirectoryOnly)
+            .Select(Path.GetFileName)
+            .ShouldBe(["EntityBulkInserterOutboxDomainEventBehavior.cs"]);
+        var compatibilityDirectory = Path.Combine(Directory.GetParent(behaviorDirectory)!.FullName, "Compatibility");
+        (!Directory.Exists(compatibilityDirectory) || !Directory.EnumerateFiles(
+                compatibilityDirectory,
+                "*.cs",
+                SearchOption.TopDirectoryOnly).Any())
+            .ShouldBeTrue();
+    }
+
+    [Fact]
     public void SharedBulkInsertSources_DoNotReferenceProviderNativeTypes()
     {
         // Arrange

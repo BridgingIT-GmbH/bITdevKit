@@ -237,4 +237,5 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IEntityBulkInsertProvider, SqlServerEntityBulkInsertProvider>());
     }
+
 }

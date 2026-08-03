@@ -46,7 +46,9 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0024](0024-local-ipc-runtime-bridge.md) | Local IPC Runtime Bridge | Accepted |
 | [ADR-0025](0025-official-remote-devkit-docs-for-mcp.md) | Official Remote DevKit Documentation for MCP | Accepted |
 | [ADR-0026](0026-source-controlled-mcp-client-configuration.md) | Source-Controlled MCP Client Configuration | Accepted |
-| [ADR-0027](0027-provider-strategy-for-entity-bulk-insert.md) | Use Provider Strategies for Entity Bulk Insert | Accepted |
+| [ADR-0027](0027-provider-strategy-for-entity-bulk-insert.md) | Use Provider Strategies for Entity Bulk Insert | Accepted (partially superseded by ADR-0029) |
+| [ADR-0028](0028-domain-entity-bulk-insert-behavior-pipeline.md) | Expose Entity Bulk Insert as a Domain Capability with Explicit Behavior Compatibility | Superseded by ADR-0029 |
+| [ADR-0029](0029-independent-entity-bulk-inserter-decorator-behaviors.md) | Register Entity Bulk Inserters Independently with Explicit Decorators | Accepted |
 
 ## When to Write an ADR
 

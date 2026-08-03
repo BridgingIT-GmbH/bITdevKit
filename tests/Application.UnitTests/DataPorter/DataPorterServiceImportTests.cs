@@ -669,6 +669,26 @@ public class DataPorterServiceImportTests
     }
 
     [Fact]
+    public async Task ImportAsync_WithCsvSourceIndex_MapsColumnsByIndex()
+    {
+        // Arrange
+        this.profileRegistry.RegisterImportProfile(new IndexedRequiredColumnImportProfile());
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        await using var stream = CreateCsvWithDifferentHeadersStream();
+        var options = new ImportOptions { Format = Format.Csv };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Errors.ShouldBeEmpty();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Id.ShouldBe(1);
+        result.Value.Data[0].RequiredField.ShouldBe("value");
+    }
+
+    [Fact]
     public async Task ImportAsync_WithCsvTypedMissingRequiredValue_ReturnsErrorAndNoData()
     {
         // Arrange
@@ -1072,6 +1092,14 @@ Id,RequiredField
 """u8.ToArray());
     }
 
+    private static MemoryStream CreateCsvWithDifferentHeadersStream()
+    {
+        return new MemoryStream("""
+ExternalId,ExternalValue
+1,value
+"""u8.ToArray());
+    }
+
     private static MemoryStream CreateCsvTypedMissingRequiredStream()
     {
         return new MemoryStream("""
@@ -1127,5 +1155,19 @@ EntityWithValidation,root-1,root-1,,,,1,not-an-email,no
 
         stream.Position = 0;
         return stream;
+    }
+
+    private sealed class IndexedRequiredColumnImportProfile : ImportProfileBase<EntityWithRequiredColumn>
+    {
+        protected override void Configure()
+        {
+            this.HeaderRow(0);
+            this.SkipDataRows(0);
+
+            this.ForColumn(x => x.Id).FromIndex(0);
+            this.ForColumn(x => x.RequiredField)
+                .FromIndex(1)
+                .IsRequired("RequiredField is required");
+        }
     }
 }

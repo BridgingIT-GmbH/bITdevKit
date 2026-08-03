@@ -402,6 +402,19 @@
             await refreshContent(provider, '');
         });
 
+        shellElement.addEventListener('submit', async event => {
+            const form = event.target.closest('[data-permalink-copy-form]');
+            if (!form) return;
+            event.preventDefault();
+            const button = event.submitter;
+            const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+            if (!response.ok) return;
+            const payload = await response.json();
+            await navigator.clipboard.writeText(new URL(payload.url, location.origin).href);
+            const icon = button?.querySelector('i');
+            if (icon) { icon.className = 'bi bi-check-lg'; setTimeout(() => icon.className = 'bi bi-clipboard', 1200); }
+        });
+
         document.querySelectorAll('[data-storage-action]').forEach(form => {
             form.addEventListener('submit', async event => {
                 event.preventDefault();

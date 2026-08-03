@@ -25,7 +25,8 @@ public static partial class ServiceCollectionExtensions
     /// <example>
     /// <code>
     /// services.AddDistributedMemoryCache();
-    /// services.AddEntityFrameworkDocumentStoreClient&lt;CacheDocument, AppDbContext&gt;();
+    /// services.AddDocumentStorage()
+    ///     .WithEntityFrameworkClient&lt;CacheDocument, AppDbContext&gt;();
     ///
     /// services.AddCaching(configuration)
     ///     .UseDocumentStoreProvider();

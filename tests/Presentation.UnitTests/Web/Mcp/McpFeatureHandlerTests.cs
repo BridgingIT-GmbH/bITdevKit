@@ -5,13 +5,16 @@ using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Cli;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Jobs;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 using BridgingIT.DevKit.Presentation.Web.Queueing;
+using BridgingIT.DevKit.Presentation.Web.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -362,6 +365,188 @@ public sealed class McpFeatureHandlerTests
         response.Available.ShouldBeFalse();
         response.Code.ShouldBe("confirmation_required");
         await administration.DidNotReceiveWithAnyArgs().PurgeAsync(default, default);
+    }
+
+    [Fact]
+    public void BlobStorageBuilderContext_AddMcpHandlers_RegistersHandlerOnceAndUsesConfiguredDiagnostics()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddBlobStorage()
+            .AddMcpHandlers()
+            .AddMcpHandlers();
+
+        // Assert
+        services.Count(descriptor => descriptor.ServiceType == typeof(IMcpHandler) &&
+            descriptor.ImplementationType == typeof(BlobStorageMcpHandler)).ShouldBe(1);
+        services.Count(descriptor => descriptor.ServiceType == typeof(IBlobStorageDiagnosticsService)).ShouldBe(1);
+        services.Count(descriptor => descriptor.ServiceType == typeof(IHostedService) &&
+            descriptor.ImplementationType == typeof(McpStartupDiagnosticsService)).ShouldBe(1);
+    }
+
+    [Fact]
+    public void AddBlobStorage_WhenMcpRuntimeIsRegistered_RegistersBlobMcpHandlerImplicitly()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddSingleton<McpDispatcher>();
+
+        // Act
+        services.AddBlobStorage();
+
+        // Assert
+        services.Count(descriptor => descriptor.ServiceType == typeof(IMcpHandler) &&
+            descriptor.ImplementationType == typeof(BlobStorageMcpHandler)).ShouldBe(1);
+        services.Count(descriptor => descriptor.ServiceType == typeof(IBlobStorageDiagnosticsService)).ShouldBe(1);
+    }
+
+    [Fact]
+    public void AddBlobStorage_WhenMcpRuntimeIsMissing_DoesNotRegisterBlobMcpHandler()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddBlobStorage();
+
+        // Assert
+        services.ShouldNotContain(descriptor => descriptor.ServiceType == typeof(IMcpHandler) &&
+            descriptor.ImplementationType == typeof(BlobStorageMcpHandler));
+    }
+
+    [Fact]
+    public void AddDocumentStorage_WhenMcpRuntimeIsRegistered_RegistersDocumentMcpHandlerImplicitly()
+    {
+        var services = new ServiceCollection();
+        services.AddSingleton<McpDispatcher>();
+
+        services.AddDocumentStorage();
+
+        services.Count(descriptor => descriptor.ServiceType == typeof(IMcpHandler) &&
+            descriptor.ImplementationType == typeof(DocumentStorageMcpHandler)).ShouldBe(1);
+        services.Count(descriptor => descriptor.ServiceType == typeof(IDocumentStorageDiagnosticsService)).ShouldBe(1);
+    }
+
+    [Fact]
+    public void AddDocumentStorage_WhenMcpRuntimeIsMissing_DoesNotRegisterDocumentMcpHandler()
+    {
+        var services = new ServiceCollection();
+
+        services.AddDocumentStorage();
+
+        services.ShouldNotContain(descriptor => descriptor.ServiceType == typeof(IMcpHandler) &&
+            descriptor.ImplementationType == typeof(DocumentStorageMcpHandler));
+    }
+
+    [Fact]
+    public void BlobStorageBuilderContext_AddMcpHandlers_WhenImplicitHandlerExists_DoesNotDuplicateHandler()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddSingleton<McpDispatcher>();
+
+        // Act
+        services.AddBlobStorage()
+            .AddMcpHandlers();
+
+        // Assert
+        services.Count(descriptor => descriptor.ServiceType == typeof(IMcpHandler) &&
+            descriptor.ImplementationType == typeof(BlobStorageMcpHandler)).ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task BlobStorageMcpHandler_WhenSummaryRequested_ReturnsDiagnosticsSnapshot()
+    {
+        // Arrange
+        var diagnostics = Substitute.For<IBlobStorageDiagnosticsService>();
+        diagnostics.GetSnapshotAsync(Arg.Any<CancellationToken>())
+            .Returns(Result<BlobStorageDiagnosticsSnapshot>.Success(new BlobStorageDiagnosticsSnapshot
+            {
+                ClientCount = 2,
+                HealthyClientCount = 1,
+                UnhealthyClientCount = 1,
+                Clients =
+                [
+                    new BlobStorageClientDiagnostics { Name = "reports", ProviderName = "InMemory", IsHealthy = true, HealthStatus = "Healthy" },
+                    new BlobStorageClientDiagnostics { Name = "archive", ProviderName = "AzureBlob", IsHealthy = false, HealthStatus = "Unhealthy" }
+                ]
+            }));
+        var sut = new BlobStorageMcpHandler(diagnostics);
+
+        // Act
+        var response = await sut.HandleAsync(new McpRequest("blobs.summary", McpToolset.Diagnostics, EmptyJson()), CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        response.Summary.ShouldContain("2 registered clients");
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("archive");
+        json.ShouldNotContain("content");
+    }
+
+    [Fact]
+    public async Task BlobStorageMcpHandler_WhenClientsRequested_FiltersByHealth()
+    {
+        // Arrange
+        var diagnostics = Substitute.For<IBlobStorageDiagnosticsService>();
+        diagnostics.GetSnapshotAsync(Arg.Any<CancellationToken>())
+            .Returns(Result<BlobStorageDiagnosticsSnapshot>.Success(new BlobStorageDiagnosticsSnapshot
+            {
+                ClientCount = 2,
+                HealthyClientCount = 1,
+                UnhealthyClientCount = 1,
+                Clients =
+                [
+                    new BlobStorageClientDiagnostics { Name = "reports", ProviderName = "InMemory", IsHealthy = true, HealthStatus = "Healthy" },
+                    new BlobStorageClientDiagnostics { Name = "archive", ProviderName = "AzureBlob", IsHealthy = false, HealthStatus = "Unhealthy" }
+                ]
+            }));
+        var sut = new BlobStorageMcpHandler(diagnostics);
+        var arguments = JsonDocument.Parse("""{"healthy":false}""").RootElement;
+
+        // Act
+        var response = await sut.HandleAsync(new McpRequest("blobs.clients", McpToolset.Diagnostics, arguments), CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        response.Summary.ShouldContain("1 Blob Storage client");
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("archive");
+        json.ShouldNotContain("reports");
+    }
+
+    [Fact]
+    public async Task BlobStorageMcpHandler_WhenProbeNameMissing_ReturnsOperationFailed()
+    {
+        // Arrange
+        var diagnostics = Substitute.For<IBlobStorageDiagnosticsService>();
+        var sut = new BlobStorageMcpHandler(diagnostics);
+
+        // Act
+        var response = await sut.HandleAsync(new McpRequest("blobs.probe", McpToolset.Diagnostics, EmptyJson()), CancellationToken.None);
+
+        // Assert
+        response.Available.ShouldBeFalse();
+        response.Code.ShouldBe(McpErrorCode.OperationFailed);
+        await diagnostics.DidNotReceiveWithAnyArgs().GetSnapshotAsync(default);
+    }
+
+    [Theory]
+    [InlineData("bdk_blobs_summary")]
+    [InlineData("bdk_blobs_clients")]
+    [InlineData("bdk_blobs_probe")]
+    public void McpToolCatalog_WhenCreated_ContainsBlobStorageTools(string toolName)
+    {
+        // Arrange
+        var sut = new McpToolCatalog();
+
+        // Act
+        var contains = sut.Contains(toolName);
+
+        // Assert
+        contains.ShouldBeTrue();
     }
 
     [Fact]

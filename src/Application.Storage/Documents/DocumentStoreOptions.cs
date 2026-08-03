@@ -10,6 +10,8 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </summary>
 public sealed class DocumentStoreOptions
 {
+    /// <summary>Gets or sets the maximum logical serialized document size.</summary>
+    public long MaxDocumentSize { get; set; } = ByteSize.Megabytes(1);
     /// <summary>
     /// Gets or sets the default page size when a query does not specify <see cref="DocumentQuery.Take" />.
     /// </summary>
@@ -35,6 +37,10 @@ public sealed class DocumentStoreOptions
     /// </summary>
     public Result Validate()
     {
+        if (this.MaxDocumentSize <= 0)
+        {
+            return Result.Failure(new DocumentStoreSizeLimitError("MaxDocumentSize must be greater than zero."));
+        }
         if (this.DefaultTake <= 0)
         {
             return Result.Failure(new DocumentStoreInvalidQueryError("DefaultTake must be greater than zero."));

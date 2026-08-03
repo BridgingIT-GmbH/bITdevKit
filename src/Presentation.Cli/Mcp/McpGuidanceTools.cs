@@ -421,6 +421,28 @@ public sealed class McpGuidanceTools
                     "bdk_project_summary"
                 ],
                 "Use the document storage docs to align document contracts and provider-independent access."),
+            ["blob_storage"] = new(
+                "blob_storage",
+                "Store binary content through Result-native, stream-first, provider-neutral Blob Storage clients.",
+                "docs/features-storage-blobs.md",
+                [
+                    "Read the Blob Storage documentation before adding blob operations.",
+                    "Resolve named blob clients through IBlobStoreClientFactory instead of depending on provider implementations.",
+                    "Keep uploads and downloads stream-first; do not dispose caller-provided upload streams.",
+                    "Use ContentType and ContentTypeExtensions for content type handling, and use sha256-prefixed expected hashes when integrity is required.",
+                    "Use prefix queries for listing, require explicit full-scan approval, and keep list/properties/exists operations content-free.",
+                    "Use UploadFileAsync, DownloadToFileAsync or SaveToFileAsync when moving content between blobs and configured file providers.",
+                    "Add tests for success, missing blob, conflict, size-limit, integrity, listing and stream ownership behavior."
+                ],
+                [
+                    "bdk_docs_search",
+                    "bdk_docs_get",
+                    "bdk_api_search",
+                    "bdk_project_summary",
+                    "bdk_blobs_summary",
+                    "bdk_blobs_clients"
+                ],
+                "Use the blob storage docs to keep binary content access provider-neutral, stream-first and Result-native."),
             ["file_storage"] = new(
                 "file_storage",
                 "Read, write, move and monitor files through extensible FileStorage providers and behaviors.",
@@ -519,6 +541,7 @@ public sealed class McpGuidanceTools
         new("rules", ["rule", "rules", "business rule", "business rules", "validation"]),
         new("startuptasks", ["startup task", "startup tasks", "startuptask", "initialization", "startup work"]),
         new("document_storage", ["document storage", "documentstore", "document store", "documents"]),
+        new("blob_storage", ["blob storage", "blobstore", "blob store", "blobs", "binary storage", "binary content"]),
         new("file_storage", ["file storage", "filestorage", "file store", "files"]),
         new("monitoring", ["monitoring", "storage monitoring", "file monitoring", "watcher", "watchers", "file watcher"]),
         new("project_dashboard_page", ["project dashboard", "project dashboard page", "module dashboard"]),
@@ -541,6 +564,7 @@ public sealed class McpGuidanceTools
         "messaging",
         "orchestration",
         "document_storage",
+        "blob_storage",
         "file_storage",
         "monitoring",
         "caching"

@@ -136,4 +136,5 @@ Those concerns belong elsewhere now:
 
 - [StartupTasks](./features-startuptasks.md)
 - [Log Entries](./features-log-entries.md)
+- [Common Utilities](./common-utilities.md)
 - [Common Observability Tracing](./common-observability-tracing.md)

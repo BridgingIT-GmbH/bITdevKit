@@ -210,7 +210,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             try
             {
                 // Estimate file size if possible (e.g., if content.Length is available)
-                var estimatedSize = content.CanSeek ? content.Length : 1024 * 1024; // Default to 1 MB if unknown
+                var estimatedSize = content.CanSeek ? content.Length : ByteSize.Megabytes(1); // Default to 1 MB if unknown
                 var (bufferSize, minBufferSize, maxBufferSize) = this.CalculateBufferSize(estimatedSize);
 
                 await using var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, useAsync: true);
@@ -1388,24 +1388,21 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
     private (int BufferSize, int MinBufferSize, int MaxBufferSize) CalculateBufferSize(long fileSize)
     {
-        const int KB = 1024;
-        const int MB = 1024 * KB;
-
-        const int minBufferSize = 4 * KB; // 4 KB
-        const int maxBufferSize = 4 * MB; // 4 MB
+        var minBufferSize = (int)ByteSize.Kilobytes(4); // 4 KB
+        var maxBufferSize = (int)ByteSize.Megabytes(4); // 4 MB
         int bufferSize;
 
-        if (fileSize < 1 * MB)
+        if (fileSize < ByteSize.Megabytes(1))
         {
-            bufferSize = 4 * KB; // Small files: 4 KB
+            bufferSize = (int)ByteSize.Kilobytes(4); // Small files: 4 KB
         }
-        else if (fileSize < 100 * MB)
+        else if (fileSize < ByteSize.Megabytes(100))
         {
-            bufferSize = 64 * KB; // Medium files: 64 KB
+            bufferSize = (int)ByteSize.Kilobytes(64); // Medium files: 64 KB
         }
         else
         {
-            bufferSize = 1 * MB; // Large files: 1 MB
+            bufferSize = (int)ByteSize.Megabytes(1); // Large files: 1 MB
         }
 
         return (bufferSize, minBufferSize, maxBufferSize);
@@ -1413,10 +1410,8 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
     private (int NewBufferSize, bool ShouldAdjust) AdjustBufferSize(int currentBufferSize, long bytesProcessed, double elapsedSeconds, int minBufferSize, int maxBufferSize)
     {
-        const int KB = 1024;
-        const int MB = 1024 * KB;
-        const double LowThroughputThreshold = 10 * MB; // 10 MB/s
-        const double HighThroughputThreshold = 100 * MB; // 100 MB/s
+        var lowThroughputThreshold = ByteSize.Megabytes(10); // 10 MB/s
+        var highThroughputThreshold = ByteSize.Megabytes(100); // 100 MB/s
 
         if (elapsedSeconds <= 0)
         {
@@ -1425,13 +1420,13 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
 
         var throughput = bytesProcessed / elapsedSeconds; // Bytes per second
 
-        if (throughput < LowThroughputThreshold && currentBufferSize < maxBufferSize)
+        if (throughput < lowThroughputThreshold && currentBufferSize < maxBufferSize)
         {
             // Increase buffer size to improve throughput
             var newBufferSize = Math.Min(currentBufferSize * 2, maxBufferSize);
             return (newBufferSize, true);
         }
-        else if (throughput > HighThroughputThreshold && currentBufferSize > minBufferSize)
+        else if (throughput > highThroughputThreshold && currentBufferSize > minBufferSize)
         {
             // Decrease buffer size to reduce memory usage
             var newBufferSize = Math.Max(currentBufferSize / 2, minBufferSize);

@@ -193,7 +193,7 @@ services.AddFileStorage(factory => factory
                 .RetryCount(3)
                 .RetryBackoff(TimeSpan.FromMilliseconds(250))
                 .PageSize(100)
-                .MaximumBufferedContentSize(4 * 1024 * 1024))
+                .MaximumBufferedContentSize(ByteSize.Megabytes(4)))
         .WithLogging()
         .WithLifetime(ServiceLifetime.Singleton)));
 ```
@@ -794,40 +794,44 @@ eventsAfterResume.First().EventType.ShouldBe(FileEventType.Changed);
 
 ### Overview
 
-The `FileMonitoringLocationScanJob` is a scheduled job that triggers on-demand scans for a specified location using the `IFileMonitoringService`. It integrates with the `JobScheduling` feature to run scans at defined intervals, supporting retry logic and configurable scan options. The job is annotated with `[DisallowConcurrentExecution]`, ensuring that only one instance runs at a time to prevent overlapping scans.
+The `FileMonitoringLocationScanJob` is a scheduled job that triggers on-demand scans for a specified location using the `IFileMonitoringService`. It integrates with the `Application.Jobs` feature to run scans at defined intervals, supporting retry logic and configurable scan options. Configure job-level concurrency when overlapping scans must be prevented.
 
 ### Usage
 
 #### Registering the Job
 
-Register the `FileMonitoringLocationScanJob` using the `AddJobScheduling` extension, specifying the location name and scan options via job data:
+Register the `FileMonitoringLocationScanJob` using `AddJobScheduler`, specifying the location name and scan options via the typed `FileMonitoringLocationScanJobData` payload:
 
 ```csharp
-services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
-        .WithJob<FileMonitoringLocationScanJob>()
+services.AddJobScheduler()
+    .WithJob<FileMonitoringLocationScanJob>("scan_inbound", job => job
+        .Description("Scans the inbound location.")
+        .WithConcurrency(1)
+        .WithRetry(retry => retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))
+        .AddTrigger("schedule", trigger => trigger
             .Cron(CronExpressions.EveryMinute)
-            .Named("scan_inbound")
-            .WithData(DataKeys.LocationName, "inbound")         // mandatory
-            .WithData(DataKeys.DelayPerFile, "00:00:01")        // optional
-            .WithData(DataKeys.WaitForProcessing, "true")       // optional
-            .WithData(DataKeys.BatchSize, "10")                 // optional
-            .WithData(DataKeys.ProgressIntervalPercentage, "5") // optional
-            .WithData(DataKeys.FileFilter, ".txt")              // optional
-            .WithData(DataKeys.FileBlackListFilter, ".tmp;*.log") // optional
-            .WithData(DataKeys.MaxFilesToScan, "100")           // optional
-            .WithData(DataKeys.Timeout, "00:01:00")             // optional
-            .RegisterScoped();
-});
+            .Data(new FileMonitoringLocationScanJobData
+            {
+                LocationName = "inbound",
+                DelayPerFile = TimeSpan.FromSeconds(1),
+                WaitForProcessing = true,
+                BatchSize = 10,
+                ProgressIntervalPercentage = 5,
+                FileFilter = ".txt",
+                FileBlackListFilter = [".tmp", "*.log"],
+                MaxFilesToScan = 100,
+                Timeout = TimeSpan.FromMinutes(1)
+            })));
 ```
 
 - **Cron Schedule**: `CronExpressions.EveryMinute` runs the job every minute.
-- **Job Data**: `DataKeys` define the location name and scan options (e.g., `DelayPerFile`, `BatchSize`).
-- **Retry Logic**: The job implements `IRetryJobScheduling` with 3 retry attempts and a 1-second backoff.
+- **Job Data**: `FileMonitoringLocationScanJobData` defines the location name and scan options (e.g., `DelayPerFile`, `BatchSize`).
+- **Retry Logic**: Configure retry through the Jobs registration with `WithRetry(...)`.
 
 #### How It Works
 
-1. The job retrieves the location name from the job data (`DataKeys.LocationName`).
-2. It constructs a `FileScanOptions` object based on the job data, setting properties like `DelayPerFile`, `BatchSize`, and `Timeout`.
+1. The job retrieves the location name from `FileMonitoringLocationScanJobData.LocationName`.
+2. It constructs a `FileScanOptions` object based on the typed data, setting properties like `DelayPerFile`, `BatchSize`, and `Timeout`.
 3. It calls `IFileMonitoringService.ScanLocationAsync` to perform the scan, logging progress and events.
 4. Events are logged using structured logging (`TypedLogger`), capturing details like files scanned, events detected, and elapsed time.
 
@@ -842,7 +846,7 @@ STR job: event processed (location=inbound, eventType=Added, filePath=file1.txt,
 
 #### Retry Handling
 
-The job implements `IRetryJobScheduling` with 3 attempts and a 1-second backoff. If a scan fails (e.g., due to a transient error), the job will retry up to 3 times:
+Configure retries on the Jobs registration. For example, `WithRetry(retry => retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))` retries transient scan failures up to 3 times:
 
 ```bash
 STR job: scan started (location=inbound)

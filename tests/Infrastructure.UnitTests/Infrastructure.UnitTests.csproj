@@ -52,4 +52,8 @@
     <ProjectReference Include="..\Domain.UnitTests\Domain.UnitTests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Application.UnitTests\Storage\Blobs\BlobStoreProviderContractTests.cs" Link="EntityFramework\Storage\Blobs\Shared\BlobStoreProviderContractTests.cs" />
+  </ItemGroup>
+
 </Project>

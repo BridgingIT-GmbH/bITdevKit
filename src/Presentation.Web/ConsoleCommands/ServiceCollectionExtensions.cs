@@ -23,7 +23,7 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The same service collection for chaining.</returns>
     public static IServiceCollection AddConsoleCommandsInteractive(this IServiceCollection services, Action<ConsoleCommandsBuilder> configure = null)
     {
-        services.AddSingleton(_ => AnsiConsole.Create(new AnsiConsoleSettings { Ansi = AnsiSupport.Detect, ColorSystem = ColorSystemSupport.Detect }));
+        services.AddSingleton(_ => ConsoleTheme.ApplyTo(AnsiConsole.Create(new AnsiConsoleSettings { Ansi = AnsiSupport.Detect, ColorSystem = ColorSystemSupport.Detect })));
         services.AddSingleton<ConsoleCommandInteractiveRuntimeStats>();
         services.AddSingleton<ConsoleCommandExecutor>();
         services.AddSingleton<WebConsoleSessionManager>();
@@ -49,7 +49,9 @@ public static partial class ServiceCollectionExtensions
         services.AddTransient<IConsoleCommand, SampleConsoleCommand>();
         services.AddTransient<IConsoleCommand, HistoryListConsoleCommand>();
         services.AddTransient<IConsoleCommand, HistoryClearConsoleCommand>();
+        services.AddTransient<IConsoleCommand, HistoryEditConsoleCommand>();
         services.AddTransient<IConsoleCommand, HistorySearchConsoleCommand>();
+        services.AddTransient<IConsoleCommand, ConsoleThemeConsoleCommand>();
         services.AddTransient<IConsoleCommand, EchoConsoleCommand>();
         services.AddTransient<IConsoleCommand, BrowseConsoleCommand>();
         services.AddTransient<IConsoleCommand, RequesterInfoConsoleCommand>();

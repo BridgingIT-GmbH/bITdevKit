@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using BridgingIT.DevKit.Common;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
@@ -74,7 +75,7 @@ public class DotNetMetricsSnapshotService : IDotNetMetricsSnapshotService
 
     private static double ToMegabytes(long bytes)
     {
-        return bytes / (1024d * 1024d);
+        return ByteSize.ToMegabytes(bytes);
     }
 
     private static long SafePendingWorkItems()

@@ -14,6 +14,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Domain;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -118,19 +119,8 @@ builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopme
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
-    .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled().StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
                                                                                                   //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
-
-//builder.Services.AddJobScheduling(o => o
-//    .Enabled().StartupDelay(builder.Configuration["JobScheduling:StartupDelay"]), builder.Configuration)
-//    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
-//    .WithBehavior<ModuleScopeJobSchedulingBehavior>()
-//    //.WithBehavior<ChaosExceptionJobSchedulingBehavior>()
-//    .WithBehavior<TimeoutJobSchedulingBehavior>()
-//    //.WithInMemoryStore()
-//    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
-//    .AddEndpoints(/*new JobSchedulingEndpointsOptions { RequireAuthorization = true }, */builder.Environment.IsDevelopment());
 
 // Configure Authentication ==============================
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
@@ -152,17 +142,25 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
         "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
+    .WithClient(
+        "bdk dashboard",
+        "dashboard",
+        $"{builder.Configuration["Authentication:Authority"]}/_bdk/dashboard/signin-oidc")
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
 
 // builder.Services.AddMessagingEndpoints(options => options
 //     .RequireAuthorization(false));
 builder.Services.AddEndpoints<SystemEndpoints>();
+builder.Services.AddDashboard(o => o
+    .Enabled(true)
+    .Authorize(o => o
+        .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
+        .RequireRole(Role.Administrators)));
 MetricsServiceCollectionExtensions.AddMetrics(
     builder.Services, o => o
         .Enabled()
         .AddEndpoints());
 builder.Services.AddAppOpenTelemetry(builder.Configuration, builder.Environment);
-//builder.Services.AddEndpoints<JobSchedulingEndpoints>();
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);

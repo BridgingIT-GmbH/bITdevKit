@@ -1,0 +1,473 @@
+@using BlobStorageDashboardRoutes = BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard.BlobStorageDashboardRoutes
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = BlobStorageDashboardRoutes.BuildBlobsContentPath(dashboardOptions);
+    var actionBase = BlobStorageDashboardRoutes.BuildBlobsActionBase(dashboardOptions);
+}
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <span id="blobs-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="blobs-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Blob storage refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button" id="blobs-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh blobs">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-blobs-shell">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard.Pages.Content>())
+</div>
+
+<div class="modal fade" id="blobs-upload-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-blobs-action="@($"{actionBase}/upload")" enctype="multipart/form-data">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Blob</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="store">
+                <input type="hidden" name="container">
+                <input type="hidden" name="prefix">
+                <label class="form-label" for="blobs-upload-name">Blob name</label>
+                <input id="blobs-upload-name" class="form-control mb-3" name="name" autocomplete="off" placeholder="Use file name">
+                <label class="form-label" for="blobs-upload-file">File</label>
+                <input id="blobs-upload-file" class="form-control mb-3" type="file" name="file" required>
+                <label class="form-label" for="blobs-upload-expires">Expires at (UTC)</label>
+                <input id="blobs-upload-expires" class="form-control form-control-sm mb-3" type="datetime-local" name="expiresAt">
+                <div class="form-check">
+                    <input id="blobs-upload-overwrite" class="form-check-input" type="checkbox" name="overwrite" value="true" checked>
+                    <label class="form-check-label" for="blobs-upload-overwrite">Overwrite existing blob</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="blobs-details-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <form class="modal-content" data-blobs-action="@($"{actionBase}/expiration")">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title">Blob Details</h5>
+                    <div class="text-muted small" data-blobs-details-subtitle></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 small mb-3">
+                    <div class="col-12 col-md-6"><span class="text-muted">Store</span><div data-blobs-details-store></div></div>
+                    <div class="col-12 col-md-6"><span class="text-muted">Content type</span><div data-blobs-details-content-type></div></div>
+                    <div class="col-12 col-md-4"><span class="text-muted">Size</span><div data-blobs-details-size></div></div>
+                    <div class="col-12 col-md-4"><span class="text-muted">Created</span><div data-blobs-details-created></div></div>
+                    <div class="col-12 col-md-4"><span class="text-muted">Modified</span><div data-blobs-details-modified></div></div>
+                    <div class="col-12 col-md-4"><span class="text-muted">Expires</span><div data-blobs-details-expires></div></div>
+                    <div class="col-12 col-md-8"><span class="text-muted">ETag</span><div class="font-monospace text-break" data-blobs-details-etag></div></div>
+                    <div class="col-12"><span class="text-muted">Content hash</span><div class="font-monospace text-break" data-blobs-details-hash></div></div>
+                </div>
+                <label class="form-label small" for="blobs-details-properties">Properties JSON</label>
+                <textarea id="blobs-details-properties" class="form-control form-control-sm font-monospace" rows="8" readonly></textarea>
+                <input type="hidden" name="store"><input type="hidden" name="container"><input type="hidden" name="name"><input type="hidden" name="etag">
+                <label class="form-label small mt-3" for="blobs-details-expires-input">Expires at</label>
+                <div class="input-group"><input id="blobs-details-expires-input" class="form-control form-control-sm" type="datetime-local" name="expiresAt"><button class="btn btn-outline-secondary btn-sm" type="button" title="Clear expiration" aria-label="Clear expiration" data-blobs-clear-expiration><i class="bi bi-x-lg"></i></button></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary btn-sm">Save expiration</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="blobs-delete-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-blobs-action="@($"{actionBase}/delete")">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Blob</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="store">
+                <input type="hidden" name="container">
+                <input type="hidden" name="name">
+                <input type="hidden" name="etag">
+                <p class="mb-0" data-blobs-delete-message></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const shellElement = document.getElementById('dashboard-blobs-shell');
+        const baseContentUrl = '@contentPath';
+        const fullScanStorageKey = 'bdk.blobStorage.allowFullScan';
+        const prefixHistoryStorageKey = 'bdk.blobStorage.prefixHistory';
+        const prefixHistoryLimit = 20;
+
+        function getRoot() {
+            return shellElement?.querySelector('#blobs-dashboard-root');
+        }
+
+        function getState() {
+            const root = getRoot();
+            return {
+                store: root?.dataset.store || '',
+                container: root?.dataset.container || '',
+                prefix: root?.dataset.prefix || '',
+                take: root?.dataset.take || '100',
+                allowFullScan: root?.dataset.allowFullScan === 'true',
+                continuationToken: root?.dataset.continuationToken || ''
+            };
+        }
+
+        function setUrl(state) {
+            const url = new URL(window.location.href);
+            for (const key of ['store', 'container', 'prefix', 'take', 'continuationToken']) {
+                if (state[key]) {
+                    url.searchParams.set(key, state[key]);
+                } else {
+                    url.searchParams.delete(key);
+                }
+            }
+
+            url.searchParams.set('allowFullScan', state.allowFullScan ? 'true' : 'false');
+
+            window.history.replaceState({}, '', url);
+        }
+
+        function buildContentUrl(state) {
+            const url = new URL(baseContentUrl, window.location.origin);
+            for (const key of ['store', 'container', 'prefix', 'take', 'continuationToken']) {
+                if (state[key]) {
+                    url.searchParams.set(key, state[key]);
+                }
+            }
+
+            url.searchParams.set('allowFullScan', state.allowFullScan ? 'true' : 'false');
+
+            return url;
+        }
+
+        async function refreshContent(state, updateUrl) {
+            const response = await fetch(buildContentUrl(state).toString(), {
+                cache: 'no-store',
+                headers: { 'X-Requested-With': 'fetch' }
+            });
+
+            if (response.ok) {
+                shellElement.innerHTML = await response.text();
+                if (updateUrl) {
+                    setUrl(state);
+                }
+                document.getElementById('blobs-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+                populatePrefixHistory();
+            }
+        }
+
+        function prefixHistoryScope(state) {
+            return `${state.store || 'default'}:${state.container || 'default'}`;
+        }
+
+        function readPrefixHistoryMap() {
+            try {
+                const value = JSON.parse(localStorage.getItem(prefixHistoryStorageKey) || '{}');
+                if (Array.isArray(value)) {
+                    return { default: value };
+                }
+
+                return value && typeof value === 'object' ? value : {};
+            } catch {
+                return {};
+            }
+        }
+
+        function getPrefixHistory(state) {
+            const map = readPrefixHistoryMap();
+            const values = map[prefixHistoryScope(state)] || map.default || [];
+            return Array.isArray(values)
+                ? values.filter(value => typeof value === 'string' && value.trim().length > 0)
+                : [];
+        }
+
+        function rememberPrefix(state) {
+            const normalized = (state.prefix || '').trim();
+            if (!normalized) return;
+            const map = readPrefixHistoryMap();
+            const scope = prefixHistoryScope(state);
+            const values = Array.isArray(map[scope]) ? map[scope] : [];
+            map[scope] = [normalized, ...values.filter(value => value !== normalized)].slice(0, prefixHistoryLimit);
+            localStorage.setItem(prefixHistoryStorageKey, JSON.stringify(map));
+        }
+
+        function populatePrefixHistory(state = getState()) {
+            const list = shellElement.querySelector('#blobs-prefix-history');
+            if (!list) return;
+            list.replaceChildren(...getPrefixHistory(state).map(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                return option;
+            }));
+        }
+
+        function formatSize(bytes) {
+            const value = Number(bytes || 0);
+            if (value >= 1073741824) return `${(value / 1073741824).toFixed(2).replace(/\.00$/, '')} GB`;
+            if (value >= 1048576) return `${(value / 1048576).toFixed(2).replace(/\.00$/, '')} MB`;
+            if (value >= 1024) return `${(value / 1024).toFixed(2).replace(/\.00$/, '')} KB`;
+            return `${value} B`;
+        }
+
+        function formatTimestamp(value) {
+            if (!value) return '-';
+            const timestamp = new Date(value);
+            return Number.isNaN(timestamp.valueOf()) ? value : timestamp.toLocaleString();
+        }
+
+        function toDateTimeLocal(value) {
+            if (!value) return '';
+            const date = new Date(value);
+            return Number.isNaN(date.valueOf()) ? '' : new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        }
+
+        function showDetails(target) {
+            const modal = showModal('blobs-details-modal');
+            const value = selector => target.dataset[selector] || '-';
+            modal.querySelector('[data-blobs-details-subtitle]').textContent = `${target.dataset.container || ''} / ${target.dataset.name || ''}`;
+            modal.querySelector('[data-blobs-details-store]').textContent = getState().store || '-';
+            modal.querySelector('[data-blobs-details-content-type]').textContent = value('contentType');
+            modal.querySelector('[data-blobs-details-size]').textContent = formatSize(target.dataset.length);
+            modal.querySelector('[data-blobs-details-created]').textContent = formatTimestamp(target.dataset.createdAt);
+            modal.querySelector('[data-blobs-details-modified]').textContent = formatTimestamp(target.dataset.modifiedAt);
+            modal.querySelector('[data-blobs-details-expires]').textContent = formatTimestamp(target.dataset.expiresAt);
+            modal.querySelector('[data-blobs-details-etag]').textContent = value('etag');
+            modal.querySelector('[data-blobs-details-hash]').textContent = value('contentHash');
+            const form = modal.querySelector('form');
+            form.elements.store.value = getState().store || '';
+            form.elements.container.value = target.dataset.container || '';
+            form.elements.name.value = target.dataset.name || '';
+            form.elements.etag.value = target.dataset.etag || '';
+            form.elements.expiresAt.value = toDateTimeLocal(target.dataset.expiresAt);
+            try {
+                modal.querySelector('#blobs-details-properties').value = JSON.stringify(JSON.parse(target.dataset.properties || '{}'), null, 2);
+            } catch {
+                modal.querySelector('#blobs-details-properties').value = target.dataset.properties || '{}';
+            }
+        }
+
+        const refresher = window.bdkDashboard.createRefresher({
+            buildUrl: () => buildContentUrl(getState()),
+            contentSelector: () => shellElement,
+            statusSelector: '#blobs-refresh-status',
+            intervalSelector: '#blobs-refresh-interval',
+            refreshButtonSelector: '#blobs-refresh-now',
+            storageKey: 'bdk.dashboard.blobs.refreshInterval',
+            shouldRefresh: () => document.querySelector('#blobs-upload-modal.show, #blobs-details-modal.show, #blobs-delete-modal.show') === null,
+            onSuccess: () => populatePrefixHistory()
+        });
+
+        function showModal(id) {
+            const modalElement = document.getElementById(id);
+            const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+            modal.show();
+            return modalElement;
+        }
+
+        function hideModal(form) {
+            const modalElement = form.closest('.modal');
+            if (modalElement) {
+                window.bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+            }
+        }
+
+        function setContextFields(form) {
+            const state = getState();
+            form.elements.store.value = state.store;
+            if (form.elements.container) {
+                form.elements.container.value = state.container;
+            }
+            if (form.elements.prefix) {
+                form.elements.prefix.value = state.prefix;
+            }
+        }
+
+        async function submitForm(form, actionUrl) {
+            const button = form.querySelector('[type="submit"]');
+            if (button) {
+                button.disabled = true;
+            }
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    console.error('Blob action failed:', await response.text().catch(() => response.statusText));
+                    return;
+                }
+
+                hideModal(form);
+                form.reset();
+                await refresher.refresh(true);
+            } catch (error) {
+                console.error('Blob action error:', error);
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                }
+            }
+        }
+
+        shellElement.addEventListener('submit', async event => {
+            const form = event.target.closest('[data-blobs-filter-form]');
+            if (!form) {
+                return;
+            }
+
+            event.preventDefault();
+            const data = new FormData(form);
+            const state = {
+                store: data.get('store') || '',
+                container: data.get('container') || '',
+                prefix: data.get('prefix') || '',
+                take: data.get('take') || '100',
+                allowFullScan: data.get('allowFullScan') === 'true',
+                continuationToken: ''
+            };
+
+            localStorage.setItem(fullScanStorageKey, state.allowFullScan ? 'true' : 'false');
+            rememberPrefix(state);
+
+            await refreshContent(state, true);
+        });
+
+        shellElement.addEventListener('click', async event => {
+            const target = event.target.closest('[data-blobs-command]');
+            if (!target) {
+                return;
+            }
+
+            const command = target.dataset.blobsCommand;
+            if (command === 'upload') {
+                const modal = showModal('blobs-upload-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.querySelector('[name="name"]').value = '';
+                return;
+            }
+
+            if (command === 'delete') {
+                const modal = showModal('blobs-delete-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.elements.name.value = target.dataset.name || '';
+                form.elements.etag.value = target.dataset.etag || '';
+                modal.querySelector('[data-blobs-delete-message]').textContent =
+                    `Delete blob '${target.dataset.container}/${target.dataset.name}'?`;
+                return;
+            }
+
+            if (command === 'details') {
+                showDetails(target);
+                return;
+            }
+
+            if (command === 'clear-filter') {
+                const state = getState();
+                state.prefix = '';
+                state.continuationToken = '';
+                await refreshContent(state, true);
+                return;
+            }
+
+            if (command === 'next') {
+                const state = getState();
+                state.continuationToken = target.dataset.continuationToken || '';
+                await refreshContent(state, true);
+                return;
+            }
+        });
+
+        shellElement.addEventListener('change', event => {
+            if (!event.target.matches('#blobs-store, #blobs-container')) {
+                return;
+            }
+
+            const form = event.target.closest('[data-blobs-filter-form]');
+            if (!form) {
+                return;
+            }
+
+            const data = new FormData(form);
+            populatePrefixHistory({
+                store: data.get('store') || '',
+                container: data.get('container') || ''
+            });
+        });
+
+        document.querySelectorAll('[data-blobs-action]').forEach(form => {
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                await submitForm(form, form.dataset.blobsAction);
+            });
+        });
+
+        document.querySelector('[data-blobs-clear-expiration]')?.addEventListener('click', () => {
+            const input = document.getElementById('blobs-details-expires-input');
+            input.value = '';
+            input.focus();
+        });
+
+        shellElement.addEventListener('submit', async event => {
+            const form = event.target.closest('[data-permalink-copy-form]');
+            if (!form) return;
+            event.preventDefault();
+            const button = event.submitter;
+            const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+            if (!response.ok) return;
+            const payload = await response.json();
+            await navigator.clipboard.writeText(new URL(payload.url, location.origin).href);
+            const icon = button?.querySelector('i');
+            if (icon) { icon.className = 'bi bi-check-lg'; setTimeout(() => icon.className = 'bi bi-clipboard', 1200); }
+        });
+
+        populatePrefixHistory();
+        const storedFullScan = localStorage.getItem(fullScanStorageKey);
+        if (storedFullScan === null) {
+            localStorage.setItem(fullScanStorageKey, 'true');
+        } else {
+            const desired = storedFullScan === 'true';
+            const state = getState();
+            if (state.allowFullScan !== desired) {
+                state.allowFullScan = desired;
+                state.continuationToken = '';
+                refreshContent(state, true);
+            }
+        }
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Blobs" };
+}

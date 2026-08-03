@@ -42,7 +42,9 @@ public static partial class ServiceCollectionExtensions
         Builder<CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>, CosmosSqlProviderOptions<CosmosStorageDocument>>
             providerOptionsBuilder = null,
         ServiceLifetime? lifetime = null,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -52,14 +54,23 @@ public static partial class ServiceCollectionExtensions
             return context;
         }
 
-        context.Services.AddCosmosDocumentStoreClient<T>(
-            providerOptionsBuilder ?? (o => o),
-            lifetime ?? context.Lifetime,
-            documentStoreOptions);
-
-        return context.RegisterClient<T>(
+        var providerOptions = (providerOptionsBuilder ?? (o => o))(new CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>())
+            .Container("storage_documents")
+            .PartitionKey(e => e.Type)
+            .TimeToLive(-1)
+            .Build();
+        return context.RegisterProvider<T>(serviceProvider =>
+            {
+                providerOptions.Client ??= serviceProvider.GetService<CosmosClient>();
+                providerOptions.LoggerFactory ??= serviceProvider.GetRequiredService<ILoggerFactory>();
+                return new CosmosDocumentStoreProvider(new CosmosSqlProvider<CosmosStorageDocument>(providerOptions), documentStoreOptions, name);
+            },
             "Cosmos DB",
-            capabilities: CreateCosmosCapabilities());
+            capabilities: CreateCosmosCapabilities(),
+            documentStoreOptions: documentStoreOptions,
+            name: name,
+            isDefault: isDefault,
+            lifetime: lifetime);
     }
 
     /// <summary>
@@ -81,7 +92,9 @@ public static partial class ServiceCollectionExtensions
         this DocumentStorageBuilderContext context,
         CosmosClient cosmosClient,
         ServiceLifetime? lifetime = null,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -92,14 +105,21 @@ public static partial class ServiceCollectionExtensions
             return context;
         }
 
-        context.Services.AddCosmosDocumentStoreClient<T>(
-            cosmosClient,
-            lifetime ?? context.Lifetime,
-            documentStoreOptions);
-
-        return context.RegisterClient<T>(
+        return context.RegisterProvider<T>(serviceProvider => new CosmosDocumentStoreProvider(
+                new CosmosSqlProvider<CosmosStorageDocument>(o => o
+                    .Client(cosmosClient)
+                    .LoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>())
+                    .Container("storage_documents")
+                    .PartitionKey(e => e.Type)
+                    .TimeToLive(-1)),
+                documentStoreOptions,
+                name),
             "Cosmos DB",
-            capabilities: CreateCosmosCapabilities());
+            capabilities: CreateCosmosCapabilities(),
+            documentStoreOptions: documentStoreOptions,
+            name: name,
+            isDefault: isDefault,
+            lifetime: lifetime);
     }
 
     /// <summary>
@@ -187,6 +207,7 @@ public static partial class ServiceCollectionExtensions
         var providerOptions = providerOptionsBuilder(new CosmosSqlProviderOptionsBuilder<CosmosStorageDocument>())
             .Container("storage_documents")
             .PartitionKey(e => e.Type)
+            .TimeToLive(-1)
             .Build();
 
         switch (lifetime)
@@ -200,7 +221,7 @@ public static partial class ServiceCollectionExtensions
                     return new DocumentStoreClient<T>(
                         new CosmosDocumentStoreProvider(
                             new CosmosSqlProvider<CosmosStorageDocument>(providerOptions),
-                            options: documentStoreOptions));
+                            options: documentStoreOptions), options: documentStoreOptions);
                 });
 
                 break;
@@ -213,7 +234,7 @@ public static partial class ServiceCollectionExtensions
                     return new DocumentStoreClient<T>(
                         new CosmosDocumentStoreProvider(
                             new CosmosSqlProvider<CosmosStorageDocument>(providerOptions),
-                            options: documentStoreOptions));
+                            options: documentStoreOptions), options: documentStoreOptions);
                 });
 
                 break;
@@ -226,7 +247,7 @@ public static partial class ServiceCollectionExtensions
                     return new DocumentStoreClient<T>(
                         new CosmosDocumentStoreProvider(
                             new CosmosSqlProvider<CosmosStorageDocument>(providerOptions),
-                            options: documentStoreOptions));
+                            options: documentStoreOptions), options: documentStoreOptions);
                 });
 
                 break;
@@ -262,15 +283,15 @@ public static partial class ServiceCollectionExtensions
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.TryAddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
+                services.TryAddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider, options: documentStoreOptions));
 
                 break;
             case ServiceLifetime.Transient:
-                services.TryAddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
+                services.TryAddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider, options: documentStoreOptions));
 
                 break;
             default:
-                services.TryAddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider));
+                services.TryAddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider, options: documentStoreOptions));
 
                 break;
         }
@@ -287,7 +308,12 @@ public static partial class ServiceCollectionExtensions
         KeyListing = DocumentQuerySupport.SupportedServerSide,
         SupportsContinuationPaging = true,
         SupportsServerSideCount = false,
-        SupportsKeyOnlyProjection = true
+        SupportsKeyOnlyProjection = true,
+        SupportsConditionalWrite = true,
+        SupportsConditionalDelete = true,
+        SupportsAtomicPropertyUpdate = true,
+        SupportsLogicalExpiration = true,
+        SupportsRetention = true
     };
 }
 

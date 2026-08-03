@@ -232,7 +232,8 @@ public class BulkInsertDecoratedPersonStub : AuditableAggregateRoot<Guid>, IConc
 /// Shared EF Core test context that exposes the repository infrastructure tables used by integration tests.
 /// </summary>
 public class StubDbContext : DbContext,
-    IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext, IEntityPermissionContext, ILoggingContext, IFileStorageContext
+    IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext, IEntityPermissionContext, ILoggingContext, IFileStorageContext,
+    IBlobStoreContext
 {
     public StubDbContext() { }
 
@@ -253,6 +254,16 @@ public class StubDbContext : DbContext,
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public DbSet<StorageDocument> StorageDocuments { get; set; }
+
+    /// <summary>
+    /// Gets or sets the persisted blob metadata rows for Entity Framework blob storage tests.
+    /// </summary>
+    public DbSet<StorageBlob> StorageBlobs { get; set; }
+
+    /// <summary>
+    /// Gets or sets the persisted blob content chunk rows for Entity Framework blob storage tests.
+    /// </summary>
+    public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
 
     /// <summary>
     /// Gets or sets the persisted file rows for Entity Framework file storage tests.

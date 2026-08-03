@@ -121,8 +121,7 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
         DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsureSqliteDbContext(this.output, forceNew),
-            options: options,
-            documentStoreOptions: documentStoreOptions);
+            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqliteDbContext(this.output, true)),
+            documentStoreOptions);
     }
 }

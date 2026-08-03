@@ -327,6 +327,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             // Partition key value will be populated by extracting from {T}
             var response = await this.container.CreateItemAsync(item, cancellationToken: cancellationToken).AnyContext();
             this.UpdateItemVersion(item, response);
+            this.SetOpaqueETag(response.Resource, response.ETag);
 
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
             this.logger.LogDebug("[{LogKey}] CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
@@ -337,6 +338,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         {
             var response = await this.container.CreateItemAsync(item, requestOptions.PartitionKey.Value, cancellationToken: cancellationToken).AnyContext();
             this.UpdateItemVersion(item, response);
+            this.SetOpaqueETag(response.Resource, response.ETag);
 
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
             this.logger.LogDebug("[{LogKey}] CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
@@ -360,13 +362,9 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
         try
         {
-            var concurrencyOptions = this.CreateConcurrencyRequestOptions(item);
-            // var expectedVersion = item is IConcurrency c ? c.Version : Guid.Empty;
-
-            if (item is IConcurrency concurrencyItem && concurrencyItem.ConcurrencyVersion == Guid.Empty)
-            {
-                concurrencyItem.ConcurrencyVersion = this.options.VersionGenerator(); // new item: generate initial version
-            }
+            var concurrencyOptions = item is IConcurrency { ConcurrencyVersion: var version } && version == Guid.Empty
+                ? null
+                : this.CreateConcurrencyRequestOptions(item);
 
             ItemResponse<TItem> response;
             if (!requestOptions.PartitionKey.HasValue || requestOptions.PartitionKey == PartitionKey.None)
@@ -379,6 +377,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             }
 
             this.UpdateItemVersion(item, response);
+            this.SetOpaqueETag(response.Resource, response.ETag);
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
 
             this.logger.LogDebug("[{LogKey}] UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
@@ -434,6 +433,78 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             return false; // Only reached if ThrowOnConcurrencyConflict is false
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<TItem> UpsertItemAsync(
+        TItem item,
+        object partitionKeyValue,
+        string ifMatchETag,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureArg.IsNotNull(item, nameof(item));
+        await this.InitializeAsync(this.options, cancellationToken);
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, item);
+        var response = await this.container.UpsertItemAsync(
+            item,
+            requestOptions.PartitionKey.Value,
+            new ItemRequestOptions { IfMatchEtag = ifMatchETag },
+            cancellationToken).AnyContext();
+        this.SetOpaqueETag(response.Resource, response.ETag);
+        this.LogRequestCharge(response.RequestCharge, response.ActivityId);
+        return response.Resource;
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<bool> DeleteItemAsync(
+        string id,
+        object partitionKeyValue,
+        Guid expectedVersion,
+        CancellationToken cancellationToken = default)
+    {
+        if (id.IsNullOrEmpty()) return false;
+        await this.InitializeAsync(this.options, cancellationToken);
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, id);
+        try
+        {
+            var response = await this.container.DeleteItemAsync<TItem>(
+                id,
+                requestOptions.PartitionKey.Value,
+                new ItemRequestOptions { IfMatchEtag = $"\"{expectedVersion}\"" },
+                cancellationToken).AnyContext();
+            this.LogRequestCharge(response.RequestCharge, response.ActivityId);
+            return response.StatusCode == HttpStatusCode.NoContent;
+        }
+        catch (CosmosException ex) when (ex.StatusCode is HttpStatusCode.PreconditionFailed or HttpStatusCode.NotFound)
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<bool> DeleteItemAsync(
+        string id,
+        object partitionKeyValue,
+        string ifMatchETag,
+        CancellationToken cancellationToken = default)
+    {
+        if (id.IsNullOrEmpty()) return false;
+        await this.InitializeAsync(this.options, cancellationToken);
+        var requestOptions = this.CreateQueryRequestOptions(partitionKeyValue, id);
+        try
+        {
+            var response = await this.container.DeleteItemAsync<TItem>(
+                id,
+                requestOptions.PartitionKey.Value,
+                new ItemRequestOptions { IfMatchEtag = ifMatchETag },
+                cancellationToken).AnyContext();
+            this.LogRequestCharge(response.RequestCharge, response.ActivityId);
+            return response.StatusCode == HttpStatusCode.NoContent;
+        }
+        catch (CosmosException ex) when (ex.StatusCode is HttpStatusCode.PreconditionFailed or HttpStatusCode.NotFound)
         {
             return false;
         }
@@ -721,6 +792,12 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                 concurrencyItem.ConcurrencyVersion = version;
             }
         }
+    }
+
+    private void SetOpaqueETag(TItem item, string etag)
+    {
+        var property = typeof(TItem).GetProperty("ETag");
+        if (property?.CanWrite == true && property.PropertyType == typeof(string)) property.SetValue(item, etag);
     }
 
     private ItemRequestOptions CreateConcurrencyRequestOptions(TItem item)

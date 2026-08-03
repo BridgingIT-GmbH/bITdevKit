@@ -11,7 +11,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// <typeparam name="T">The document payload type.</typeparam>
 /// <example>
 /// <code>
-/// var page = await documents.FindPageResultAsync(query, cancellationToken);
+/// var page = await documents.FindPageAsync(query, cancellationToken);
 /// if (page.Value.HasMore)
 /// {
 ///     var nextQuery = DocumentQueries.Query()
@@ -20,12 +20,12 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// }
 /// </code>
 /// </example>
-public sealed class DocumentPage<T>
+public sealed class DocumentPage<T> where T : class
 {
     /// <summary>
     /// Gets the payload instances returned by this page.
     /// </summary>
-    public IReadOnlyCollection<T> Items { get; init; } = [];
+    public IReadOnlyList<DocumentEntry<T>> Items { get; init; } = [];
 
     /// <summary>
     /// Gets the opaque token used to retrieve the next page.

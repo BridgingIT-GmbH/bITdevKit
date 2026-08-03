@@ -108,6 +108,7 @@ Prefix-based keys work especially well with `RemoveStartsWith()`, so a stable ke
 
 - `DocumentStorage` uses cache behaviors to speed up repeated reads.
 - `DocumentStorage` can also back `ICacheProvider` itself through `DocumentStoreCacheProvider`, which enables persistent cache entries over EF, Cosmos DB, Azure Blob Storage, or Azure Table Storage.
+- Named Document Storage clients remain isolated cache namespaces. Cache keys include the normalized document client identity, so clients for the same CLR type cannot read or invalidate each other's entries.
 - `Requester and Notifier` use cache invalidation behaviors for request-driven workflows.
 - `ADRs` around service lifetimes and dependency injection reference caching as a shared infrastructure concern. See [ADR-0018: Dependency Injection Service Lifetimes](./adr/0018-dependency-injection-service-lifetimes.md).
 

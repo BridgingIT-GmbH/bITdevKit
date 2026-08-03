@@ -211,7 +211,7 @@ Implementation focus:
 - Register named clients without creating new projects.
 - Ensure duplicate client names fail deterministically.
 - Add aggregate health check named BlobStorage.
-- Health check probes every registered client with a non-mutating ExistsResultAsync probe.
+- Health check probes every registered client with a non-mutating ExistsAsync probe.
 - Health check data must render checked/failed client names as readable strings, not System.String[].
 
 Implementation exclusions:
@@ -472,10 +472,10 @@ Complete EF Core provider operations.
 
 Implementation focus:
 
-- Implement GetPropertiesResultAsync without querying chunks.
-- Implement UpdatePropertiesResultAsync with write lease and optional IfMatchETag.
-- Implement ExistsResultAsync without loading chunks.
-- Implement idempotent DeleteResultAsync with write lease and chunk cleanup.
+- Implement GetPropertiesAsync without querying chunks.
+- Implement UpdatePropertiesAsync with write lease and optional IfMatchETag.
+- Implement ExistsAsync without loading chunks.
+- Implement idempotent DeleteAsync with write lease and chunk cleanup.
 - Implement prefix listing without loading chunks.
 - Implement approved full container scan.
 - Implement keyset continuation token using last blob name.

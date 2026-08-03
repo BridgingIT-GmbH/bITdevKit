@@ -129,8 +129,7 @@ public class EntityFrameworkPostgresDocumentStoreProviderTests(ITestOutputHelper
         DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsurePostgresDbContext(this.output, forceNew),
-            options: options,
-            documentStoreOptions: documentStoreOptions);
+            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsurePostgresDbContext(this.output, true)),
+            documentStoreOptions);
     }
 }

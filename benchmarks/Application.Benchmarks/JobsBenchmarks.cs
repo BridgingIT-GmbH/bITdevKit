@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 [MemoryDiagnoser]
 public class JobsBenchmarks
 {
-    private ServiceProvider serviceProvider;
+    private ServiceProvider sp;
     private IJobSchedulerService scheduler;
 
     [GlobalSetup]
@@ -31,15 +31,15 @@ public class JobsBenchmarks
                 .Execute((context, cancellationToken) => Task.FromResult(Result.Success()))
                 .AddTrigger("manual", trigger => trigger.Manual()));
 
-        this.serviceProvider = services.BuildServiceProvider();
-        this.scheduler = this.serviceProvider.GetRequiredService<IJobSchedulerService>();
+        this.sp = services.BuildServiceProvider();
+        this.scheduler = this.sp.GetRequiredService<IJobSchedulerService>();
     }
 
     [GlobalCleanup]
     public void Cleanup()
     {
-        this.serviceProvider?.Dispose();
-        this.serviceProvider = null;
+        this.sp?.Dispose();
+        this.sp = null;
         this.scheduler = null;
     }
 

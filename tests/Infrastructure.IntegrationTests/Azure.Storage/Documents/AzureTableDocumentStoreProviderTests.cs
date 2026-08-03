@@ -483,8 +483,6 @@ public class AzureTableDocumentStoreProviderTests
         var ticks = DateTime.UtcNow.Ticks;
         var originalPartitionKey = "pa/rt'i#tion?" + ticks;
         var originalRowKey = "ro\\w?'#-1";
-        var normalizedPartitionKey = "partition" + ticks;
-        var normalizedRowKey = "row-1";
         var upsert = await this.sut.UpsertResultAsync(
             new DocumentKey(originalPartitionKey, originalRowKey),
             new AzureTablePagingPersonStub
@@ -510,7 +508,7 @@ public class AzureTableDocumentStoreProviderTests
         upsert.IsSuccess.ShouldBeTrue();
         getResult.IsSuccess.ShouldBeTrue();
         listResult.IsSuccess.ShouldBeTrue();
-        listResult.Value.Items.Single().ShouldBe(new DocumentKey(normalizedPartitionKey, normalizedRowKey));
+        listResult.Value.Items.Single().ShouldBe(new DocumentKey(originalPartitionKey, originalRowKey));
     }
 
     [Fact]

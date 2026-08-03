@@ -124,7 +124,7 @@ public class DocumentStoreCacheProvider : ICacheProvider
 
         foreach (var document in documents.SafeNull())
         {
-            await this.client.DeleteResultAsync(new DocumentKey(document.PartitionKey, document.RowKey), token);
+            await this.client.DeleteAsync(new DocumentKey(document.PartitionKey, document.RowKey), cancellationToken: token);
         }
     }
 
@@ -179,7 +179,7 @@ public class DocumentStoreCacheProvider : ICacheProvider
                 query.ContinueWith(continuationToken);
             }
 
-            var result = await this.client.ListPageResultAsync(query.Build(), token);
+            var result = await this.client.ListPageAsync(query.Build(), token);
             if (result.IsFailure)
             {
                 this.logger.LogWarning("{LogKey} cache document key listing failed: {Error}",

@@ -1,4 +1,5 @@
 @using BridgingIT.DevKit.Application.Storage
+@using BridgingIT.DevKit.Common
 @using BridgingIT.DevKit.Presentation.Web.Storage.Models
 @using Microsoft.Extensions.Logging
 @using System.Net
@@ -8,6 +9,10 @@
 
 @{
     var vm = await CreateModelAsync();
+    var currentPath = DisplayPath(vm.CurrentPath);
+    var displayCurrentPath = ShortenPath(currentPath, 64);
+    var permalinkAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/download";
+    var permalinkCopyAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/link";
 }
 
 <style>
@@ -84,8 +89,10 @@
         min-width: 0;
         overflow: hidden;
         color: var(--bs-body-color);
+        text-align: left;
         text-overflow: ellipsis;
         white-space: nowrap;
+        direction: rtl;
     }
 
     #storage-dashboard-root .storage-current-meta {
@@ -184,8 +191,10 @@
 
     #storage-dashboard-root .storage-tree-label {
         overflow: hidden;
+        text-align: left;
         text-overflow: ellipsis;
         white-space: nowrap;
+        direction: rtl;
     }
 
     #storage-dashboard-root .storage-name-cell {
@@ -197,8 +206,10 @@
 
     #storage-dashboard-root .storage-name-cell span {
         overflow: hidden;
+        text-align: left;
         text-overflow: ellipsis;
         white-space: nowrap;
+        direction: rtl;
     }
 
     #storage-dashboard-root .storage-breadcrumbs {
@@ -214,22 +225,16 @@
         flex: 0 0 auto;
         max-width: 12rem;
         overflow: hidden;
+        text-align: left;
         text-overflow: ellipsis;
         white-space: nowrap;
+        direction: rtl;
     }
 
     #storage-dashboard-root .storage-actions {
         display: inline-flex;
         align-items: center;
         gap: .18rem;
-        opacity: .24;
-        transition: opacity .12s ease;
-    }
-
-    #storage-dashboard-root tr:hover .storage-actions,
-    #storage-dashboard-root tr:focus-within .storage-actions,
-    #storage-dashboard-root .storage-actions:focus-within {
-        opacity: 1;
     }
 
     #storage-dashboard-root .storage-actions .btn {
@@ -318,7 +323,7 @@
                         <button type="button" class="btn btn-sm @(string.IsNullOrWhiteSpace(vm.CurrentPath) ? "btn-primary" : "btn-outline-secondary")" data-storage-command="open" data-path="">/</button>
                         @foreach (var crumb in GetBreadcrumbs(vm.CurrentPath))
                         {
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-storage-command="open" data-path="@crumb.Path">@crumb.Name</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-storage-command="open" data-path="@crumb.Path" title="@crumb.Name">@ShortenPath(crumb.Name, 24)</button>
                         }
                     </div>
                 </div>
@@ -394,12 +399,12 @@
             <section class="storage-panel">
                 <div class="storage-panel-header">
                     <span>Contents</span>
-                    <span class="text-muted small">@DisplayPath(vm.CurrentPath) · @vm.Directories.Count folder(s), @vm.Files.Count file(s)</span>
+                    <span class="text-muted small" title="@currentPath">@displayCurrentPath · @vm.Directories.Count folder(s), @vm.Files.Count file(s)</span>
                 </div>
                 <div class="storage-panel-body storage-panel-body-content">
                     <div class="storage-current-strip">
-                        <div class="storage-current-path" title="@DisplayPath(vm.CurrentPath)">
-                            <span class="text-muted">path</span> @DisplayPath(vm.CurrentPath)
+                        <div class="storage-current-path" title="@currentPath">
+                            <span class="text-muted">path</span> @displayCurrentPath
                         </div>
                         <div class="storage-current-meta">
                             @vm.SelectedProviderName · @vm.Directories.Count dir · @vm.Files.Count file
@@ -429,7 +434,7 @@
                                         <td>
                                             <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none storage-name-cell" data-storage-command="open" data-path="@directory.Path" title="@directory.Path">
                                                 <i class="bi bi-folder-fill text-warning"></i>
-                                                <span>@directory.Name</span>
+                                                <span>@ShortenPath(directory.Name, 48)</span>
                                             </button>
                                         </td>
                                         <td class="text-muted small">Folder</td>
@@ -450,11 +455,12 @@
                                 @foreach (var file in vm.Files)
                                 {
                                     var downloadUrl = BuildDownloadUrl(vm.DownloadPath, vm.SelectedProviderName, file.Path);
+                                    var displayFileName = ShortenPath(file.Name, 64);
                                     <tr>
                                         <td>
                                             <div class="storage-name-cell" title="@file.Path">
                                                 <i class="bi bi-file-earmark-text"></i>
-                                                <span>@file.Name</span>
+                                                <code>@displayFileName</code>
                                             </div>
                                         </td>
                                         <td class="text-muted small">@DisplayExtension(file.Path)</td>
@@ -465,6 +471,17 @@
                                                 <a class="btn btn-sm btn-outline-secondary" title="Download file" href="@downloadUrl">
                                                     <i class="bi bi-download"></i>
                                                 </a>
+                                                @if (vm.PermalinksEnabled)
+                                                {
+                                                    <form class="d-inline" method="post" target="_blank" action="@permalinkAction">
+                                                        <input type="hidden" name="kind" value="File"><input type="hidden" name="registration" value="@vm.SelectedProviderName"><input type="hidden" name="scope" value=""><input type="hidden" name="path" value="@file.Path">
+                                                        <button class="btn btn-sm btn-outline-secondary" title="Permalink download"><i class="bi bi-link-45deg"></i></button>
+                                                    </form>
+                                                    <form class="d-inline" method="post" action="@permalinkCopyAction" data-permalink-copy-form>
+                                                        <input type="hidden" name="kind" value="File"><input type="hidden" name="registration" value="@vm.SelectedProviderName"><input type="hidden" name="scope" value=""><input type="hidden" name="path" value="@file.Path">
+                                                        <button class="btn btn-sm btn-outline-secondary" title="Copy permalink"><i class="bi bi-clipboard"></i></button>
+                                                    </form>
+                                                }
                                                 <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename file" data-storage-command="rename" data-kind="file" data-path="@file.Path">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
@@ -523,6 +540,7 @@
         try
         {
             provider = factory.CreateProvider(model.SelectedProviderName);
+            model.PermalinksEnabled = StoragePermalinkExtensions.FindFileAccessor(provider) is not null;
         }
         catch (Exception ex)
         {
@@ -736,6 +754,9 @@
     private static string DisplayPath(string path) =>
         string.IsNullOrWhiteSpace(path) ? "/" : path;
 
+    private static string ShortenPath(string value, int maximumLength) =>
+        Shortener.Apply(value, new ShorteningOptions { MaximumLength = maximumLength });
+
     private static string DisplayExtension(string path)
     {
         var extension = Path.GetExtension(path);
@@ -832,7 +853,7 @@
             : ancestor ? "is-ancestor" : string.Empty;
         var hasChildren = node.Children.Count > 0;
         var encodedPath = WebUtility.HtmlEncode(node.Path);
-        var encodedName = WebUtility.HtmlEncode(node.Name);
+        var encodedName = WebUtility.HtmlEncode(ShortenPath(node.Name, 48));
         var expandedValue = expanded.ToString().ToLowerInvariant();
         var activeValue = active.ToString().ToLowerInvariant();
         var toggleLabel = expanded ? $"Collapse {node.Name}" : $"Expand {node.Name}";

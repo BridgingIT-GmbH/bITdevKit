@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Buffers;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -85,6 +86,48 @@ public static class HashHelper
         stream.CopyTo(ms);
 
         return ComputeSha256(ms.ToArray());
+    }
+
+    /// <summary>
+    ///     Computes the SHA-256 hash of the given stream incrementally from its current position.
+    /// </summary>
+    /// <param name="stream">The input stream to hash.</param>
+    /// <param name="bufferSize">The read buffer size used while hashing.</param>
+    /// <param name="cancellationToken">The cancellation token used while reading the stream.</param>
+    /// <returns>
+    ///     A lowercase hexadecimal SHA-256 hash. If the stream is null, returns an empty string.
+    /// </returns>
+    public static async Task<string> ComputeSha256Async(
+        Stream stream,
+        int bufferSize = 81920,
+        CancellationToken cancellationToken = default)
+    {
+        if (stream is null)
+        {
+            return string.Empty;
+        }
+
+        if (bufferSize <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bufferSize), "Buffer size must be greater than zero.");
+        }
+
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        try
+        {
+            int read;
+            while ((read = await stream.ReadAsync(buffer.AsMemory(0, bufferSize), cancellationToken).ConfigureAwait(false)) > 0)
+            {
+                hash.AppendData(buffer.AsSpan(0, read));
+            }
+
+            return Convert.ToHexStringLower(hash.GetHashAndReset());
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 
     /// <summary>

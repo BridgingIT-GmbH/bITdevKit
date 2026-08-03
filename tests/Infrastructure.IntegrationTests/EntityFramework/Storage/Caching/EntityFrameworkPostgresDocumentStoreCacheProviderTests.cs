@@ -129,7 +129,7 @@ public class EntityFrameworkPostgresDocumentStoreCacheProviderTests(ITestOutputH
         var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(
             XunitLoggerFactory.Create(this.output),
             new DocumentStoreClient<CacheDocument>(
-                new EntityFrameworkDocumentStoreProvider<StubDbContext>(this.fixture.EnsurePostgresDbContext(this.output))));
+                new EntityFrameworkDocumentStoreProvider<StubDbContext>(DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsurePostgresDbContext(this.output, true)))));
 
         var provider = new DocumentStoreCacheProvider(
             XunitLoggerFactory.Create(this.output),

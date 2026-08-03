@@ -1,9 +1,9 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.Storage;
+namespace BridgingIT.DevKit.Application.Storage.JobScheduling;
 
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
@@ -12,7 +12,9 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 
 [DisallowConcurrentExecution]
-public partial class FileMonitoringLocationScanJob(
+[Obsolete("This job is obsolete and will be removed in future versions. Use Application.Storage.Jobs/Files/FileMonitoringLocationScanJob instead.")]
+public partial class FileMonitoringLocationScanJob( // obsolete job, replaced by Files/FileMonitoringLocationScanJob based on ned Jobs instead of JobScheduling
+                                                    //  retained for backward compatibility, but will be removed in future versions as JobScheduling is deprecated
     ILoggerFactory loggerFactory,
     IServiceScopeFactory scopeFactory) : JobBase(loggerFactory), IRetryJobScheduling
 {

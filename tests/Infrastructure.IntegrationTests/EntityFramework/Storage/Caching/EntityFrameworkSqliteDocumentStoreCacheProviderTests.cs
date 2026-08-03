@@ -127,7 +127,7 @@ public class EntityFrameworkSqliteDocumentStoreCacheProviderTests(ITestOutputHel
     {
         var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(this.output),
             new DocumentStoreClient<CacheDocument>(new
-                EntityFrameworkDocumentStoreProvider<StubDbContext>(this.fixture.EnsureSqliteDbContext(this.output))));
+                EntityFrameworkDocumentStoreProvider<StubDbContext>(DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqliteDbContext(this.output, true)))));
 
         var provider = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(this.output),
             new DocumentStoreCache(client),

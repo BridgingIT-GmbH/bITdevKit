@@ -1,16 +1,23 @@
-@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DocumentStorageDashboardRoutes
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = StorageDashboardEndpoints.BuildDocumentsContentPath(dashboardOptions);
-    var actionBase = StorageDashboardEndpoints.BuildDocumentsActionBase(dashboardOptions);
+    var contentPath = StorageDashboardEndpoints.Content(dashboardOptions);
+    var actionBase = StorageDashboardEndpoints.Actions(dashboardOptions);
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2">
         <span id="documents-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="documents-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Document storage refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
         <button type="button" id="documents-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh documents">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
@@ -48,6 +55,7 @@
             <div class="modal-body">
                 <input type="hidden" name="clientId">
                 <input type="hidden" name="mode">
+                <input type="hidden" name="etag">
                 <div id="documents-details-alert" class="alert d-none py-2 mb-3" role="alert"></div>
                 <div class="mb-3">
                     <label class="form-label small mb-1">Client</label>
@@ -78,6 +86,23 @@
                           spellcheck="false"
                           aria-describedby="documents-details-content-feedback"></textarea>
                 <div id="documents-details-content-feedback" class="invalid-feedback"></div>
+                <div class="row g-2 mt-2">
+                    <div class="col-12 col-lg-6">
+                        <label class="form-label small mb-1" for="documents-details-expires">Expires at (UTC)</label>
+                        <div class="input-group">
+                            <input id="documents-details-expires" class="form-control form-control-sm" type="datetime-local" name="expiresAt">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear expiration" aria-label="Clear expiration" data-documents-clear-expiration><i class="bi bi-x-lg"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <label class="form-label small mb-1">Metadata</label>
+                        <div id="documents-details-metadata" class="small font-monospace text-break text-muted">-</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small mb-1" for="documents-details-properties">Properties JSON</label>
+                        <textarea id="documents-details-properties" class="form-control form-control-sm font-monospace" name="properties" rows="5" spellcheck="false"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="submit"
@@ -103,13 +128,12 @@
         const shellElement = document.getElementById('dashboard-documents-shell');
         const baseContentUrl = '@contentPath';
         const deleteActionUrl = '@($"{actionBase}/delete")';
-        const bulkDeleteActionUrl = '@($"{actionBase}/delete-batch")';
         const pageSizeStorageKey = 'bdk.documentStorage.pageSize';
         const clientStorageKey = 'bdk.documentStorage.clientId';
         const partitionHistoryStorageKey = 'bdk.documentStorage.partitionKeyHistory';
         const rowHistoryStorageKey = 'bdk.documentStorage.rowKeyHistory';
         const filterHistoryLimit = 20;
-        const allowedPageSizes = ['100', '250', '500', '1000'];
+        const allowedPageSizes = ['25', '50', '100', '250', '500'];
         const detailsModalElement = document.getElementById('documents-details-modal');
         const detailsModal = detailsModalElement && window.bootstrap
             ? window.bootstrap.Modal.getOrCreateInstance(detailsModalElement)
@@ -121,6 +145,9 @@
         const detailsPartitionKey = document.getElementById('documents-details-partition');
         const detailsRowKey = document.getElementById('documents-details-row');
         const detailsContent = document.getElementById('documents-details-content');
+        const detailsExpires = document.getElementById('documents-details-expires');
+        const detailsProperties = document.getElementById('documents-details-properties');
+        const detailsMetadata = document.getElementById('documents-details-metadata');
         const detailsContentFeedback = document.getElementById('documents-details-content-feedback');
         const detailsAlert = document.getElementById('documents-details-alert');
         const detailsDeleteButton = detailsForm?.querySelector('[data-documents-delete-button]');
@@ -144,7 +171,7 @@
         function setBusy(isBusy, message = null) {
             shellElement.classList.toggle('documents-busy', isBusy);
             shellElement.setAttribute('aria-busy', isBusy ? 'true' : 'false');
-            document.querySelectorAll('[data-documents-command], [data-documents-filter], [data-documents-row-check], [data-documents-select-all]')
+            document.querySelectorAll('[data-documents-command], [data-documents-filter]')
                 .forEach(element => {
                     element.disabled = isBusy;
                 });
@@ -313,33 +340,11 @@
             return selected?.textContent?.trim() || stateFromRoot().clientId || '-';
         }
 
-        function resetFilterForm(form) {
-            if (!form) {
-                return null;
-            }
-
-            const selectedClient = form.elements.clientId?.value || stateFromRoot().clientId;
-            form.elements.partitionKey.value = '';
-            form.elements.rowKey.value = '';
-            form.elements.rowKeyMode.value = 'prefix';
-            form.elements.pageSize.value = normalizePageSize(localStorage.getItem(pageSizeStorageKey));
-
-            return clearPagingAndSelection({
-                clientId: selectedClient,
-                partitionKey: '',
-                rowKey: '',
-                rowKeyMode: 'prefix',
-                pageSize: form.elements.pageSize.value,
-                continuationToken: '',
-                selectedPartitionKey: '',
-                selectedRowKey: ''
-            });
-        }
-
         function getSelectedDocument() {
             const root = currentRoot();
             const metadata = root?.querySelector('[data-documents-selected-document]');
             const content = root?.querySelector('[data-documents-selected-content]');
+            const properties = root?.querySelector('[data-documents-selected-properties]');
             if (!metadata || !content) {
                 return null;
             }
@@ -349,7 +354,13 @@
                 clientName: metadata.dataset.clientName || '',
                 partitionKey: metadata.dataset.partitionKey || '',
                 rowKey: metadata.dataset.rowKey || '',
-                content: content.value || ''
+                content: content.value || '',
+                properties: properties?.value || '{}',
+                etag: metadata.dataset.etag || '',
+                contentHash: metadata.dataset.contentHash || '',
+                createdAt: metadata.dataset.createdAt || '',
+                modifiedAt: metadata.dataset.modifiedAt || '',
+                expiresAt: metadata.dataset.expiresAt || ''
             };
         }
 
@@ -365,6 +376,7 @@
             detailsForm.elements.clientId.value = document.clientId;
             detailsForm.elements.partitionKey.value = document.partitionKey;
             detailsForm.elements.rowKey.value = document.rowKey;
+            detailsForm.elements.etag.value = document.etag;
             detailsTitle.textContent = 'Document Details';
             detailsSubtitle.textContent = `${document.partitionKey} / ${document.rowKey}`;
             detailsClient.textContent = document.clientName || '-';
@@ -372,6 +384,9 @@
             detailsRowKey.readOnly = true;
             detailsDeleteButton?.classList.remove('d-none');
             detailsContent.value = document.content;
+            detailsExpires.value = toDateTimeLocal(document.expiresAt);
+            detailsProperties.value = document.properties;
+            detailsMetadata.textContent = `${document.contentHash || '-'} | created ${document.createdAt || '-'} | modified ${document.modifiedAt || '-'}`;
             validateDetailsForm();
             detailsModal.show();
         }
@@ -389,6 +404,7 @@
             detailsForm.elements.clientId.value = state.clientId;
             detailsForm.elements.partitionKey.value = state.partitionKey || '';
             detailsForm.elements.rowKey.value = state.rowKey || '';
+            detailsForm.elements.etag.value = '';
             detailsTitle.textContent = 'New Document';
             detailsSubtitle.textContent = 'Create document for selected client';
             detailsClient.textContent = currentClientName();
@@ -396,6 +412,9 @@
             detailsRowKey.readOnly = false;
             detailsDeleteButton?.classList.add('d-none');
             detailsContent.value = '{\n  \n}';
+            detailsExpires.value = '';
+            detailsProperties.value = '{}';
+            detailsMetadata.textContent = '-';
             validateDetailsForm();
             detailsModal.show();
             detailsPartitionKey.focus();
@@ -408,6 +427,21 @@
             detailsRowKey?.classList.toggle('is-invalid', rowKey.length === 0);
 
             return partitionKey.length > 0 && rowKey.length > 0;
+        }
+
+        function toDateTimeLocal(value) {
+            if (!value) {
+                return '';
+            }
+
+            const date = new Date(value);
+            if (Number.isNaN(date.valueOf())) {
+                return '';
+            }
+
+            return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+                .toISOString()
+                .slice(0, 16);
         }
 
         function validateDetailsJson() {
@@ -438,7 +472,15 @@
         function validateDetailsForm() {
             const keysValid = validateDetailsKeys();
             const jsonValid = validateDetailsJson();
-            const isValid = keysValid && jsonValid;
+            let propertiesValid = true;
+            try {
+                const value = JSON.parse(detailsProperties?.value || '{}');
+                propertiesValid = value !== null && typeof value === 'object' && !Array.isArray(value);
+            } catch {
+                propertiesValid = false;
+            }
+            detailsProperties?.classList.toggle('is-invalid', !propertiesValid);
+            const isValid = keysValid && jsonValid && propertiesValid;
             if (detailsSaveButton) {
                 detailsSaveButton.disabled = !isValid;
             }
@@ -446,72 +488,7 @@
             return isValid;
         }
 
-        function getCheckedRows() {
-            return Array.from(shellElement.querySelectorAll('[data-documents-row-check]:checked'));
-        }
-
-        function updateBulkDeleteState() {
-            const checkedRows = getCheckedRows();
-            const rowChecks = Array.from(shellElement.querySelectorAll('[data-documents-row-check]'));
-            const bulkDeleteButton = shellElement.querySelector('[data-documents-command="delete-selected"]');
-            const selectAll = shellElement.querySelector('[data-documents-select-all]');
-
-            if (bulkDeleteButton) {
-                bulkDeleteButton.disabled = checkedRows.length === 0;
-                bulkDeleteButton.innerHTML = '<i class="bi bi-trash me-1"></i>'
-            }
-
-            if (selectAll) {
-                selectAll.checked = rowChecks.length > 0 && checkedRows.length === rowChecks.length;
-                selectAll.indeterminate = checkedRows.length > 0 && checkedRows.length < rowChecks.length;
-            }
-        }
-
-        async function deleteSelectedDocuments() {
-            const checkedRows = getCheckedRows();
-            if (checkedRows.length === 0) {
-                window.alert('Select at least one document to delete.');
-                return;
-            }
-
-            const preview = checkedRows
-                .slice(0, 5)
-                .map(row => `${row.dataset.partitionKey || ''} / ${row.dataset.rowKey || ''}`)
-                .join('\n');
-            const overflow = checkedRows.length > 5 ? `\n...and ${checkedRows.length - 5} more visible selected document(s).` : '';
-            if (!window.confirm(`Delete ${checkedRows.length} selected document(s) from this page?\n\n${preview}${overflow}\n\nThis cannot be undone.`)) {
-                return;
-            }
-
-            const state = clearSelectedDocument(stateFromRoot());
-            const formData = new FormData();
-            formData.append('clientId', state.clientId);
-            checkedRows.forEach(row => {
-                formData.append('partitionKey', row.dataset.partitionKey || '');
-                formData.append('rowKey', row.dataset.rowKey || '');
-            });
-
-            setBusy(true, 'Deleting selected documents...');
-
-            try {
-                const response = await fetch(bulkDeleteActionUrl, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'fetch' }
-                });
-
-                if (!response.ok) {
-                    window.alert(await readResponseMessage(response, 'Selected documents could not be deleted.'));
-                    return;
-                }
-
-                await refresh(state);
-            } finally {
-                setBusy(false);
-            }
-        }
-
-        async function deleteDocument(partitionKey, rowKey) {
+        async function deleteDocument(partitionKey, rowKey, etag = '') {
             const state = stateFromRoot();
             if (!window.confirm(`Delete this document?\n\n${partitionKey} / ${rowKey}\n\nThis cannot be undone.`)) {
                 return;
@@ -521,6 +498,7 @@
             formData.append('clientId', state.clientId);
             formData.append('partitionKey', partitionKey || '');
             formData.append('rowKey', rowKey || '');
+            formData.append('etag', etag || '');
 
             if (state.selectedPartitionKey === partitionKey && state.selectedRowKey === rowKey) {
                 clearSelectedDocument(state);
@@ -640,7 +618,6 @@
                     if (updateUrl) {
                         setPageUrl(state);
                     }
-                    updateBulkDeleteState();
                     populateFilterHistory();
                     document.getElementById('documents-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
                 } else {
@@ -648,29 +625,22 @@
                 }
             } finally {
                 setBusy(false);
-                updateBulkDeleteState();
             }
         }
 
-        document.getElementById('documents-refresh-now').addEventListener('click', async () => {
-            await refresh(stateFromRoot(), false);
+        window.bdkDashboard.createRefresher({
+            buildUrl: () => buildContentUrl(stateFromRoot()),
+            contentSelector: () => shellElement,
+            statusSelector: '#documents-refresh-status',
+            intervalSelector: '#documents-refresh-interval',
+            refreshButtonSelector: '#documents-refresh-now',
+            storageKey: 'bdk.dashboard.documents.refreshInterval',
+            shouldRefresh: () => detailsModalElement?.classList.contains('show') !== true &&
+                shellElement.getAttribute('aria-busy') !== 'true',
+            onSuccess: () => populateFilterHistory()
         });
 
         shellElement.addEventListener('change', async event => {
-            if (event.target.closest('[data-documents-select-all]')) {
-                const checked = event.target.checked;
-                shellElement.querySelectorAll('[data-documents-row-check]').forEach(row => {
-                    row.checked = checked;
-                });
-                updateBulkDeleteState();
-                return;
-            }
-
-            if (event.target.closest('[data-documents-row-check]')) {
-                updateBulkDeleteState();
-                return;
-            }
-
             if (!event.target.closest('[data-documents-filter]')) {
                 return;
             }
@@ -719,8 +689,13 @@
         });
 
         detailsContent?.addEventListener('input', validateDetailsForm);
+        detailsProperties?.addEventListener('input', validateDetailsForm);
         detailsPartitionKey?.addEventListener('input', validateDetailsForm);
         detailsRowKey?.addEventListener('input', validateDetailsForm);
+        document.querySelector('[data-documents-clear-expiration]')?.addEventListener('click', () => {
+            detailsExpires.value = '';
+            detailsExpires.focus();
+        });
 
         shellElement.addEventListener('click', async event => {
             const download = event.target.closest('[data-documents-download]');
@@ -737,14 +712,6 @@
             const state = stateFromRoot();
             if (target.dataset.documentsCommand === 'new') {
                 showNewDocumentDialog();
-                return;
-            }
-
-            if (target.dataset.documentsCommand === 'reset-filters') {
-                const resetState = resetFilterForm(currentFilterForm());
-                if (resetState) {
-                    await refresh(resetState);
-                }
                 return;
             }
 
@@ -766,13 +733,17 @@
                 return;
             }
 
-            if (target.dataset.documentsCommand === 'delete-selected') {
-                await deleteSelectedDocuments();
+            if (target.dataset.documentsCommand === 'clear-filter') {
+                state.partitionKey = '';
+                state.rowKey = '';
+                state.rowKeyMode = 'prefix';
+                clearPagingAndSelection(state);
+                await refresh(state);
                 return;
             }
 
             if (target.dataset.documentsCommand === 'delete') {
-                await deleteDocument(target.dataset.partitionKey || '', target.dataset.rowKey || '');
+                await deleteDocument(target.dataset.partitionKey || '', target.dataset.rowKey || '', target.dataset.etag || '');
                 return;
             }
 
@@ -817,7 +788,19 @@
             }
         }
 
-        updateBulkDeleteState();
+        shellElement.addEventListener('submit', async event => {
+            const form = event.target.closest('[data-permalink-copy-form]');
+            if (!form) return;
+            event.preventDefault();
+            const button = event.submitter;
+            const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+            if (!response.ok) return;
+            const payload = await response.json();
+            await navigator.clipboard.writeText(new URL(payload.url, location.origin).href);
+            const icon = button?.querySelector('i');
+            if (icon) { icon.className = 'bi bi-check-lg'; setTimeout(() => icon.className = 'bi bi-clipboard', 1200); }
+        });
+
         populateFilterHistory();
     })();
 </script>

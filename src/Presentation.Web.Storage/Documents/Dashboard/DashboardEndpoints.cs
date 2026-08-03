@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard;
 
 using System.Net;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using BridgingIT.DevKit.Application.Storage;
@@ -27,10 +28,9 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// </example>
 public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : EndpointsBase, IDashboardEndpoints
 {
-    internal const string DocumentsPath = "/storage/documents";
-    internal const string DocumentsContentPath = "/storage/documents/content";
-    internal const string DocumentsDownloadPath = "/storage/documents/download";
-
+    private const string DocumentsPath = "/storage/documents";
+    private const string DocumentsContentPath = "/storage/documents/content";
+    private const string DocumentsDownloadPath = "/storage/documents/download";
     private const string ActionsPath = "/storage/documents/actions";
 
     /// <inheritdoc />
@@ -83,7 +83,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
                 if (string.Equals(GetFormValue(form, "mode"), "new", StringComparison.OrdinalIgnoreCase))
                 {
-                    var existingResult = await accessor.GetJsonResultAsync(key, cancellationToken);
+                    var existingResult = await accessor.GetJsonAsync(key, cancellationToken);
                     if (existingResult.IsSuccess)
                     {
                         return Result.Failure(new ConflictError($"Document '{key.PartitionKey}/{key.RowKey}' already exists."));
@@ -95,7 +95,30 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     }
                 }
 
-                return await accessor.UpsertJsonResultAsync(key, content, cancellationToken);
+                var metadata = ParseProperties(GetFormText(form, "properties"));
+                if (metadata.IsFailure)
+                {
+                    return Result.Failure(metadata.Messages, metadata.Errors);
+                }
+
+                var expiresAt = GetFormValue(form, "expiresAt");
+                var writeOptions = new DocumentWriteOptions
+                {
+                    CreateOnly = string.Equals(GetFormValue(form, "mode"), "new", StringComparison.OrdinalIgnoreCase),
+                    IfMatchETag = GetFormValue(form, "etag"),
+                    Properties = metadata.Value,
+                    Expiration = string.IsNullOrWhiteSpace(expiresAt)
+                        ? ExpirationChange.Clear
+                        : DateTimeOffset.TryParse(expiresAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed)
+                            ? ExpirationChange.At(parsed)
+                            : null
+                };
+                if (writeOptions.Expiration is null)
+                {
+                    return Result.Failure(new ValidationError("Expiration must be an ISO-8601 timestamp."));
+                }
+
+                return await accessor.UpsertJsonAsync(key, content, writeOptions, cancellationToken);
             }))
             .WithName("_bdk.Dashboard.Storage.Documents.Save")
             .WithSummary("Save document storage document")
@@ -109,33 +132,14 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                 var keyValidation = ValidateDocumentKey(key);
                 return keyValidation.IsFailure
                     ? keyValidation
-                    : await accessor.DeleteResultAsync(key, cancellationToken);
+                    : await accessor.DeleteAsync(key, new DocumentDeleteOptions { IfMatchETag = GetFormValue(form, "etag") }, cancellationToken);
             }))
             .WithName("_bdk.Dashboard.Storage.Documents.Delete")
             .WithSummary("Delete document storage document")
             .DisableAntiforgery()
             .ExcludeFromDescription();
 
-        group.MapPost($"{ActionsPath}/delete-batch", async (HttpContext context, CancellationToken cancellationToken) =>
-            await ExecuteFormActionAsync(context, async (accessor, form) =>
-                await DeleteDocumentsAsync(accessor, CreateDocumentKeys(form), cancellationToken)))
-            .WithName("_bdk.Dashboard.Storage.Documents.DeleteBatch")
-            .WithSummary("Delete document storage documents")
-            .DisableAntiforgery()
-            .ExcludeFromDescription();
     }
-
-    internal static string BuildDocumentsPath(DashboardEndpointsOptions opts) =>
-        DashboardPath.Combine(opts?.GroupPath, DocumentsPath);
-
-    internal static string BuildDocumentsContentPath(DashboardEndpointsOptions opts) =>
-        DashboardPath.Combine(opts?.GroupPath, DocumentsContentPath);
-
-    internal static string BuildDocumentsDownloadPath(DashboardEndpointsOptions opts) =>
-        DashboardPath.Combine(opts?.GroupPath, DocumentsDownloadPath);
-
-    internal static string BuildDocumentsActionBase(DashboardEndpointsOptions opts) =>
-        DashboardPath.Combine(opts?.GroupPath, ActionsPath);
 
     private static bool IsDocumentStorageEnabled(IServiceProvider services) =>
         services.GetService<DocumentStorageFeature>()?.IsEnabled == true &&
@@ -200,7 +204,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
         var key = new DocumentKey(
             GetQueryValue(context.Request.Query, "partitionKey"),
             GetQueryValue(context.Request.Query, "rowKey"));
-        var result = await accessor.GetJsonResultAsync(key, cancellationToken);
+        var result = await accessor.GetJsonAsync(key, cancellationToken);
 
         return result.IsSuccess
             ? Results.File(
@@ -233,44 +237,6 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private static DocumentKey CreateDocumentKey(IFormCollection form) =>
         new(GetFormValue(form, "partitionKey"), GetFormValue(form, "rowKey"));
 
-    private static IReadOnlyList<DocumentKey> CreateDocumentKeys(IFormCollection form)
-    {
-        var partitionKeys = form["partitionKey"];
-        var rowKeys = form["rowKey"];
-        var count = Math.Min(partitionKeys.Count, rowKeys.Count);
-        var keys = new List<DocumentKey>(count);
-
-        for (var i = 0; i < count; i++)
-        {
-            keys.Add(new DocumentKey(partitionKeys[i], rowKeys[i]));
-        }
-
-        return keys;
-    }
-
-    private static async Task<Result> DeleteDocumentsAsync(
-        IDocumentStoreClientAccessor accessor,
-        IReadOnlyList<DocumentKey> keys,
-        CancellationToken cancellationToken)
-    {
-        if (keys.Count == 0)
-        {
-            return Result.Failure(new ValidationError("Select at least one document to delete."));
-        }
-
-        foreach (var key in keys)
-        {
-            var result = await accessor.DeleteResultAsync(key, cancellationToken);
-            if (result.IsFailure)
-            {
-                return result;
-            }
-        }
-
-        return Result.Success()
-            .WithMessage($"{keys.Count} document(s) deleted.");
-    }
-
     private static Result ValidateJsonContent(string content)
     {
         try
@@ -281,6 +247,46 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
         catch (JsonException ex)
         {
             return Result.Failure(new ValidationError($"Document payload must be valid JSON: {ex.Message}"));
+        }
+    }
+
+    private static Result<PropertyBag> ParseProperties(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return Result<PropertyBag>.Success(new());
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(content);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                return Result<PropertyBag>.Failure(new ValidationError("Properties must be a JSON object."));
+            }
+
+            var result = new PropertyBag();
+            foreach (var property in document.RootElement.EnumerateObject())
+            {
+                result.Set(property.Name, property.Value.ValueKind switch
+                {
+                    JsonValueKind.Null => null,
+                    JsonValueKind.String when property.Value.TryGetDateTimeOffset(out var date) => date,
+                    JsonValueKind.String when property.Value.TryGetGuid(out var guid) => guid,
+                    JsonValueKind.String => property.Value.GetString(),
+                    JsonValueKind.True => true,
+                    JsonValueKind.False => false,
+                    JsonValueKind.Number when property.Value.TryGetInt64(out var integer) => integer,
+                    JsonValueKind.Number => property.Value.GetDecimal(),
+                    _ => throw new JsonException($"Property '{property.Name}' must contain a scalar value.")
+                });
+            }
+
+            return Result<PropertyBag>.Success(result);
+        }
+        catch (Exception ex) when (ex is JsonException or FormatException)
+        {
+            return Result<PropertyBag>.Failure(new ValidationError($"Properties are invalid: {ex.Message}"));
         }
     }
 
@@ -309,6 +315,8 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             builder.Append(invalidChars.Contains(character) ? '_' : character);
         }
 
-        return $"{builder}.json";
+        return builder.ToString().EndsWith(".json", StringComparison.OrdinalIgnoreCase)
+            ? builder.ToString()
+            : $"{builder}.json";
     }
 }

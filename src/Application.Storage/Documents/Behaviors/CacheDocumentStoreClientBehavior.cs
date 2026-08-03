@@ -1,141 +1,62 @@
 // MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-/// <summary>
-/// Adds exact-key read-through caching and write invalidation to an <see cref="IDocumentStoreClient{T}" />.
-/// </summary>
-/// <typeparam name="T">The document type handled by the decorated client.</typeparam>
-public class CacheDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
-    where T : class, new()
+/// <summary>Adds exact-key read-through caching and mutation invalidation.</summary>
+/// <typeparam name="T">The document type.</typeparam>
+/// <example><code>var behavior = new CacheDocumentStoreClientBehavior&lt;Person&gt;(loggerFactory, inner, cache);</code></example>
+public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, IDocumentStoreClient<T> inner, ICacheProvider cacheProvider, CacheDocumentStoreClientBehaviorOptions options = null)
+    : DocumentStoreClientBehaviorBase<T>(inner) where T : class, new()
 {
-    private readonly string type;
-    private readonly ICacheProvider cacheProvideder;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CacheDocumentStoreClientBehavior{T}" /> class.
-    /// </summary>
-    public CacheDocumentStoreClientBehavior(
-        ILoggerFactory loggerFactory,
-        IDocumentStoreClient<T> inner,
-        ICacheProvider cacheProvideder,
-        CacheDocumentStoreClientBehaviorOptions options = null)
-    {
-        EnsureArg.IsNotNull(inner, nameof(inner));
-        EnsureArg.IsNotNull(cacheProvideder, nameof(cacheProvideder));
-
-        this.Logger = loggerFactory?.CreateLogger<CacheDocumentStoreClientBehavior<T>>() ??
-            NullLoggerFactory.Instance.CreateLogger<CacheDocumentStoreClientBehavior<T>>();
-        this.Inner = inner;
-        this.cacheProvideder = cacheProvideder;
-        this.Options = options ?? new CacheDocumentStoreClientBehaviorOptions();
-        this.type = typeof(T).Name;
-    }
-
-    /// <summary>
-    /// Gets the logger used by the behavior.
-    /// </summary>
-    protected ILogger<CacheDocumentStoreClientBehavior<T>> Logger { get; }
-
-    /// <summary>
-    /// Gets the cache settings used by the behavior.
-    /// </summary>
-    protected CacheDocumentStoreClientBehaviorOptions Options { get; }
-
-    /// <summary>
-    /// Gets the decorated inner client.
-    /// </summary>
-    protected IDocumentStoreClient<T> Inner { get; }
+    private readonly ILogger<CacheDocumentStoreClientBehavior<T>> logger = loggerFactory?.CreateLogger<CacheDocumentStoreClientBehavior<T>>() ?? NullLogger<CacheDocumentStoreClientBehavior<T>>.Instance;
+    private readonly ICacheProvider cache = cacheProvider ?? throw new ArgumentNullException(nameof(cacheProvider));
+    private readonly CacheDocumentStoreClientBehaviorOptions options = options ?? new();
 
     /// <inheritdoc />
-    public async Task<Result<T>> GetResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public override async Task<Result<DocumentEntry<T>>> GetAsync(DocumentKey key, CancellationToken cancellationToken = default)
     {
-        var cacheKey = this.CreateExactCacheKey(documentKey);
-        if (await this.cacheProvideder.TryGetAsync(cacheKey, out T cachedEntity, cancellationToken))
+        if (await this.cache.TryGetAsync(this.Key(key), out DocumentEntry<T> cached, cancellationToken))
         {
-            return Result<T>.Success(cachedEntity);
+            this.logger.LogDebug("{LogKey} document cache hit (type={DocumentType})", Constants.LogKey, typeof(T).Name);
+            return Result<DocumentEntry<T>>.Success(cached);
         }
 
-        var result = await this.Inner.GetResultAsync(documentKey, cancellationToken);
+        var result = await base.GetAsync(key, cancellationToken);
         if (result.IsSuccess)
         {
-            await this.cacheProvideder.SetAsync(cacheKey,
-                result.Value,
-                this.Options.SlidingExpiration,
-                this.Options.AbsoluteExpiration,
-                cancellationToken);
+            await this.cache.SetAsync(this.Key(key), result.Value, this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
         }
-
         return result;
     }
 
     /// <inheritdoc />
-    public Task<Result<DocumentPage<T>>> FindPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
-        this.Inner.FindPageResultAsync(query, cancellationToken);
-
-    /// <inheritdoc />
-    public Task<Result<DocumentKeyPage>> ListPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default) =>
-        this.Inner.ListPageResultAsync(query, cancellationToken);
-
-    /// <inheritdoc />
-    public Task<Result<long>> CountResultAsync(DocumentCountQuery query, CancellationToken cancellationToken = default) =>
-        this.Inner.CountResultAsync(query, cancellationToken);
-
-    /// <inheritdoc />
-    public Task<Result<bool>> ExistsResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default) =>
-        this.Inner.ExistsResultAsync(documentKey, cancellationToken);
-
-    /// <inheritdoc />
-    public async Task<Result> UpsertResultAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
+    public override async Task<Result<DocumentInfo>> UpsertAsync(DocumentKey key, T value, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)
     {
-        var result = await this.Inner.UpsertResultAsync(documentKey, entity, cancellationToken);
-        if (result.IsSuccess)
-        {
-            await this.InvalidateAsync(documentKey, cancellationToken);
-        }
-
+        var result = await base.UpsertAsync(key, value, options, cancellationToken);
+        if (result.IsSuccess) await this.cache.RemoveAsync(this.Key(key), cancellationToken);
         return result;
     }
 
     /// <inheritdoc />
-    public async Task<Result> UpsertResultAsync(
-        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
-        CancellationToken cancellationToken = default)
+    public override async Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentPropertiesUpdate update, CancellationToken cancellationToken = default)
     {
-        var materialized = entities.SafeNull().ToList();
-        var result = await this.Inner.UpsertResultAsync(materialized, cancellationToken);
-        if (result.IsSuccess)
-        {
-            foreach (var entity in materialized)
-            {
-                await this.InvalidateAsync(entity.DocumentKey, cancellationToken);
-            }
-        }
-
+        var result = await base.UpdatePropertiesAsync(update, cancellationToken);
+        if (result.IsSuccess) await this.cache.RemoveAsync(this.Key(update.Key), cancellationToken);
         return result;
     }
 
     /// <inheritdoc />
-    public async Task<Result> DeleteResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
+    public override async Task<Result> DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
     {
-        var result = await this.Inner.DeleteResultAsync(documentKey, cancellationToken);
-        if (result.IsSuccess)
-        {
-            await this.InvalidateAsync(documentKey, cancellationToken);
-        }
-
+        var result = await base.DeleteAsync(key, options, cancellationToken);
+        if (result.IsSuccess) await this.cache.RemoveAsync(this.Key(key), cancellationToken);
         return result;
     }
 
-    private string CreateExactCacheKey(DocumentKey documentKey) =>
-        $"storage-{this.type}-get-{documentKey.PartitionKey}-{documentKey.RowKey}";
-
-    private async Task InvalidateAsync(DocumentKey documentKey, CancellationToken cancellationToken)
+    private string Key(DocumentKey key)
     {
-        await this.cacheProvideder.RemoveAsync(this.CreateExactCacheKey(documentKey), cancellationToken);
-        await this.cacheProvideder.RemoveStartsWithAsync($"storage-{this.type}-", cancellationToken);
+        var identity = $"{typeof(T).AssemblyQualifiedName}\0{key.PartitionKey}\0{key.RowKey}";
+        return $"bdk_document_{((IDocumentStoreClientIdentity)this).ClientName}_{ContentHashHelper.ComputeSha256(identity)}";
     }
 }

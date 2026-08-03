@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\Application.Jobs\Application.Jobs.csproj" />
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
   </ItemGroup>
 

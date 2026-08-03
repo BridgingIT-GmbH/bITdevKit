@@ -26,11 +26,11 @@ public sealed class WebAnsiConsoleFactory
         int rows,
         CancellationToken cancellationToken)
     {
-        return AnsiConsole.Create(new AnsiConsoleSettings
+        return ConsoleTheme.ApplyTo(AnsiConsole.Create(new AnsiConsoleSettings
         {
             Ansi = AnsiSupport.Yes,
             ColorSystem = ColorSystemSupport.TrueColor,
             Out = new SignalRAnsiConsoleOutput(sendAsync, columns, rows, cancellationToken)
-        });
+        }));
     }
 }

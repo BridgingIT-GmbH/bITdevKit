@@ -187,6 +187,7 @@ Built-in page keys:
 | Orchestrations | `orchestrations` | [Orchestrations](assets/dashboard/12-orchestrations-orchestrations.png) |
 | Files | `storage.files` | [Files](assets/dashboard/13-storage-files-files.png) |
 | Documents | `storage.documents` | [Documents](assets/dashboard/14-storage-documents-documents.png) |
+| Blobs | `storage.blobs` | Blob Storage explorer |
 
 Project-specific pages declared with `DashboardPageSet` use the key passed to `.Page(...)`. For example, a page declared as `.Page("customer-management", "/app/core/customers")` can be hidden with:
 
@@ -373,6 +374,7 @@ The dashboard shell uses fixed built-in routes below the configured `GroupPath`.
 | Identity client credentials login | `/_bdk/dashboard/identity/client-credentials/login` |
 | File storage explorer | `/_bdk/dashboard/storage/files` |
 | Document storage explorer | `/_bdk/dashboard/storage/documents` |
+| Blob storage explorer | `/_bdk/dashboard/storage/blobs` |
 
 ## Built-In Pages
 
@@ -420,6 +422,12 @@ The identity page displays current user information using the current user acces
 The document storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddDocumentStorage(...)` is active and at least one typed document client is registered. The page is server-rendered and uses the existing `IDocumentStoreClient<T>` instances for the selected document type.
 
 The page lets operators switch between registered document clients on the fly, page through document keys with selectable page sizes of 100, 250, 500, or 1000 items remembered in browser storage, filter by partition and row key, reset filters, create a new document from keyed pasted or written JSON, download a document from the table, open exact documents in a details dialog, edit payload JSON with syntax validation, and delete one or more checked documents after a browser confirmation alert that includes the affected keys. New-document creation checks the selected client first and reports a conflict instead of overwriting an existing key. Paging, filtering, and reset actions clear row selections so stale checked rows are not reused. It does not expose a separate REST admin API; dashboard-local fragment and form-action routes serve the rendered page workflow.
+
+### Blob Storage
+
+The blob storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddBlobStorage(...)` is active and at least one named blob client is registered. The page is server-rendered and uses `IBlobStoreClientFactory`, so the dashboard stays provider-neutral across in-memory, Entity Framework Core, Azure Blob Storage, and decorated clients.
+
+The page lets operators switch between registered blob clients, choose a container and optional prefix, list `BlobInfo` metadata with deterministic paging, explicitly approve full scans when the selected client allows them, upload a local file to the selected container and prefix, download an exact blob, and delete an exact blob. Listing renders metadata only and does not download content streams. The download action streams the selected blob and disposes the returned `BlobDownload` after the response is complete.
 
 ## Adding Project-Specific Dashboard Pages
 

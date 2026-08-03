@@ -219,7 +219,7 @@ This job:
 - calls `IFileMonitoringService.ScanLocationAsync(...)`
 - logs progress and scan results
 
-That makes it the bridge between `Storage Monitoring` and `JobScheduling`.
+That makes it the bridge between `Storage Monitoring` and the `Application.Jobs` feature.
 
 For provider-backed locations, scheduled scans are the normal way to capture file events in
 multi-node or database-backed deployments where real-time watchers are not available.
@@ -270,6 +270,12 @@ Important notes:
 - Tune `RateLimitOptions` deliberately for high-volume locations.
 - Use scheduled scans for partner drop folders, archive sweeps, and recovery passes after downtime.
 - Prefer persistent event-store infrastructure when monitoring history matters across restarts.
+
+## Document Storage Diagnostics
+
+`IDocumentStorageDiagnosticsService` captures a payload-free snapshot of every named document client, including default selection, lifetime, provider capabilities, effective stored-size limits, health, transform identifiers, expiration/retention support, and the most recent retention result when available. Diagnostics never include document values, raw continuation tokens, encryption keys, or transform secrets.
+
+When the MCP runtime is present, `DocumentStorageMcpHandler` adds `documents.summary`, `documents.clients`, and `documents.probe`. These operations use the same normalized client identities as dependency injection, health checks, retention, cache keys, continuation-token binding, and the dashboard.
 
 ## Related Docs
 

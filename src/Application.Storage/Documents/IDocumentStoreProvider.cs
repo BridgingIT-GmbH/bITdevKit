@@ -1,175 +1,170 @@
 // MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Storage;
 
 /// <summary>
-/// Defines the Result-native backend contract implemented by document-store providers.
+/// Defines the provider-neutral persistence boundary used by Document Storage clients.
 /// </summary>
+/// <remarks>
+/// Providers store serialized and optionally transformed bytes rather than application document types. The outer
+/// <see cref="IDocumentStoreClient{T}" /> validates public inputs, serializes values, applies transforms, and verifies
+/// integrity. Providers own persistence concerns such as ETags, timestamps, atomic mutation, native paging, logical
+/// expiration filtering, resource initialization, and translation of expected backend failures into typed Result errors.
+/// </remarks>
 /// <example>
 /// <code>
-/// var result = await provider.GetResultAsync&lt;Person&gt;(
-///     new DocumentKey("people", "42"),
+/// var cutoff = timeProvider.GetUtcNow();
+/// var result = await provider.GetAsync(
+///     DocumentTypeIdentity.For&lt;Customer&gt;(),
+///     new DocumentKey("customers", "42"),
+///     cutoff,
 ///     cancellationToken);
 /// </code>
 /// </example>
 public interface IDocumentStoreProvider
 {
     /// <summary>
-    /// Gets the provider query capabilities.
+    /// Gets the immutable capabilities used for validation, query planning, diagnostics, and dashboard presentation.
     /// </summary>
+    /// <example><code>var supportsEtags = provider.Capabilities.SupportsConditionalWrite;</code></example>
     DocumentStoreProviderCapabilities Capabilities { get; }
 
     /// <summary>
-    /// Retrieves one document by exact key.
+    /// Gets one serialized document by exact key when it is logically visible at the supplied cutoff.
     /// </summary>
-    /// <typeparam name="T">The document payload type.</typeparam>
-    /// <param name="documentKey">The exact partition and row key of the document to retrieve.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result containing the document, or a failure when the document was not found or the provider failed.</returns>
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="key">The exact partition and row key identifying the document.</param>
+    /// <param name="visibilityCutoff">The UTC instant used to exclude documents whose expiration is due.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>
+    /// A result containing copied stored bytes and metadata. Missing and logically expired documents produce a not-found
+    /// failure even when an expired physical record remains awaiting retention.
+    /// </returns>
     /// <example>
     /// <code>
-    /// var result = await provider.GetResultAsync&lt;Person&gt;(
-    ///     new DocumentKey("people", "42"),
-    ///     cancellationToken);
+    /// var result = await provider.GetAsync(type, key, visibilityCutoff, cancellationToken);
     /// </code>
     /// </example>
-    Task<Result<T>> GetResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new();
+    Task<Result<StoredDocument>> GetAsync(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Retrieves one bounded page of document payloads.
+    /// Gets one bounded, deterministically ordered page of serialized documents visible at the supplied cutoff.
     /// </summary>
-    /// <typeparam name="T">The document payload type.</typeparam>
-    /// <param name="query">The query describing key filters, page size, continuation token, and full-scan intent.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result containing one page of documents and an optional continuation token.</returns>
-    /// <example>
-    /// <code>
-    /// var page = await provider.FindPageResultAsync&lt;Person&gt;(
-    ///     DocumentQueries.Query()
-    ///         .ForKey("people", "DE-")
-    ///         .WithRowKeyPrefix()
-    ///         .Take(50)
-    ///         .Build(),
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    Task<Result<DocumentPage<T>>> FindPageResultAsync<T>(DocumentQuery query, CancellationToken cancellationToken = default)
-        where T : class, new();
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="query">The validated query containing key filters, page size, and provider-native continuation state.</param>
+    /// <param name="visibilityCutoff">
+    /// The fixed UTC visibility instant established for the page sequence. Providers must apply the same cutoff to all
+    /// continuation pages.
+    /// </param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>
+    /// A result containing copied serialized records and opaque provider-native continuation state when more results exist.
+    /// </returns>
+    /// <example><code>var page = await provider.FindPageAsync(type, query, cutoff, cancellationToken);</code></example>
+    Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Retrieves one bounded page of document keys only.
+    /// Gets one bounded, deterministically ordered page of visible keys without returning payload bytes.
     /// </summary>
-    /// <typeparam name="T">The document payload type whose keys should be listed.</typeparam>
-    /// <param name="query">The query describing key filters, page size, continuation token, and full-scan intent.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result containing one page of document keys and an optional continuation token.</returns>
-    /// <example>
-    /// <code>
-    /// var keys = await provider.ListPageResultAsync&lt;Person&gt;(
-    ///     DocumentQueries.Query()
-    ///         .ForKey("people", "DE-")
-    ///         .WithRowKeyPrefix()
-    ///         .Take(100)
-    ///         .Build(),
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    Task<Result<DocumentKeyPage>> ListPageResultAsync<T>(DocumentQuery query, CancellationToken cancellationToken = default)
-        where T : class, new();
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="query">The validated query containing key filters, page size, and provider-native continuation state.</param>
+    /// <param name="visibilityCutoff">The fixed UTC visibility instant for the page sequence.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>A result containing document keys and continuation state when more matching keys exist.</returns>
+    /// <remarks>
+    /// Providers advertising <see cref="DocumentStoreProviderCapabilities.SupportsKeyOnlyProjection" /> should avoid
+    /// reading or materializing payload bytes for this operation.
+    /// </remarks>
+    /// <example><code>var page = await provider.ListPageAsync(type, query, cutoff, cancellationToken);</code></example>
+    Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Counts documents matching a query.
+    /// Counts matching documents that are logically visible at the supplied cutoff.
     /// </summary>
-    /// <typeparam name="T">The document payload type whose documents should be counted.</typeparam>
-    /// <param name="query">The count query describing key filters and full-scan intent.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result containing the number of matching documents.</returns>
-    /// <example>
-    /// <code>
-    /// var count = await provider.CountResultAsync&lt;Person&gt;(
-    ///     DocumentQueries.Count()
-    ///         .ForKey("people", "DE-")
-    ///         .WithRowKeyPrefix()
-    ///         .Build(),
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    Task<Result<long>> CountResultAsync<T>(DocumentCountQuery query, CancellationToken cancellationToken = default)
-        where T : class, new();
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="query">The validated count query and key-filter semantics.</param>
+    /// <param name="visibilityCutoff">The UTC instant used to exclude due documents.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>A result containing the number of matching visible documents.</returns>
+    /// <example><code>var count = await provider.CountAsync(type, query, cutoff, cancellationToken);</code></example>
+    Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Checks exact-key existence.
+    /// Determines whether an exact-key document exists and is logically visible at the supplied cutoff.
     /// </summary>
-    /// <typeparam name="T">The document payload type.</typeparam>
-    /// <param name="documentKey">The exact partition and row key to check.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result containing <c>true</c> when the document exists; otherwise <c>false</c>.</returns>
-    /// <example>
-    /// <code>
-    /// var exists = await provider.ExistsResultAsync&lt;Person&gt;(
-    ///     new DocumentKey("people", "42"),
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    Task<Result<bool>> ExistsResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new();
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="key">The exact partition and row key identifying the document.</param>
+    /// <param name="visibilityCutoff">The UTC instant used to exclude due documents.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>
+    /// A result containing <see langword="true" /> only when a non-expired document is present; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <example><code>var exists = await provider.ExistsAsync(type, key, cutoff, cancellationToken);</code></example>
+    Task<Result<bool>> ExistsAsync(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Inserts or updates one document.
+    /// Creates or atomically replaces one validated serialized document.
     /// </summary>
-    /// <typeparam name="T">The document payload type.</typeparam>
-    /// <param name="documentKey">The exact partition and row key to store the document under.</param>
-    /// <param name="entity">The document payload to insert or replace.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result indicating whether the upsert completed successfully.</returns>
-    /// <example>
-    /// <code>
-    /// var result = await provider.UpsertResultAsync(
-    ///     new DocumentKey("people", "42"),
-    ///     person,
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    Task<Result> UpsertResultAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
-        where T : class, new();
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="write">
+    /// The copied stored bytes, logical and stored hashes, transform metadata, properties, resolved expiration, and
+    /// concurrency settings supplied by the outer client.
+    /// </param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>
+    /// A result containing committed metadata. Failed create-only or ETag conditions produce a conflict failure and must
+    /// not expose a partially replaced record.
+    /// </returns>
+    /// <remarks>
+    /// When <see cref="StoredDocumentWrite.PreserveExpiration" /> is set, providers preserve the existing expiration on
+    /// replacement and store no expiration on insertion. A physical expired record still participates in create-only and
+    /// ETag conditions until retention deletes it.
+    /// </remarks>
+    /// <example><code>var info = await provider.UpsertAsync(type, write, cancellationToken);</code></example>
+    Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Inserts or updates multiple documents.
+    /// Atomically updates custom properties and expiration without changing serialized content or its hashes.
     /// </summary>
-    /// <typeparam name="T">The document payload type.</typeparam>
-    /// <param name="entities">The document keys and payloads to insert or replace.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result indicating whether all upserts completed successfully.</returns>
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="update">The exact key, optional replacement properties, expiration mutation, and ETag condition.</param>
+    /// <param name="resolvedExpiresAt">The absolute UTC expiration resolved once by the outer client.</param>
+    /// <param name="preserveExpiration">
+    /// A value indicating whether the current expiration must be retained instead of applying
+    /// <paramref name="resolvedExpiresAt" />.
+    /// </param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>A result containing updated metadata while preserving the logical content hash.</returns>
+    /// <remarks>
+    /// Providers must perform this mutation atomically or compensate a partially applied backend update with a
+    /// non-cancelable restore. Failed compensation is reported as a typed partial-update provider error.
+    /// </remarks>
     /// <example>
     /// <code>
-    /// var result = await provider.UpsertResultAsync(
-    ///     people.Select(person => (new DocumentKey("people", person.Id), person)),
+    /// var info = await provider.UpdatePropertiesAsync(
+    ///     type,
+    ///     update,
+    ///     resolvedExpiresAt,
+    ///     preserveExpiration,
     ///     cancellationToken);
     /// </code>
     /// </example>
-    Task<Result> UpsertResultAsync<T>(
-        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
-        CancellationToken cancellationToken = default)
-        where T : class, new();
+    Task<Result<DocumentInfo>> UpdatePropertiesAsync(DocumentTypeIdentity type, DocumentPropertiesUpdate update, DateTimeOffset? resolvedExpiresAt, bool preserveExpiration, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes a document by exact key.
+    /// Deletes one physical document by exact key, optionally guarded by its current ETag.
     /// </summary>
-    /// <typeparam name="T">The document payload type.</typeparam>
-    /// <param name="documentKey">The exact partition and row key of the document to delete.</param>
-    /// <param name="cancellationToken">The token used to cancel the operation.</param>
-    /// <returns>A result indicating whether the delete completed successfully.</returns>
-    /// <example>
-    /// <code>
-    /// var result = await provider.DeleteResultAsync&lt;Person&gt;(
-    ///     new DocumentKey("people", "42"),
-    ///     cancellationToken);
-    /// </code>
-    /// </example>
-    Task<Result> DeleteResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new();
+    /// <param name="type">The stable persisted namespace for the application document type.</param>
+    /// <param name="key">The exact partition and row key identifying the physical record.</param>
+    /// <param name="options">Optional conditional-delete settings.</param>
+    /// <param name="cancellationToken">The token used to cancel provider I/O.</param>
+    /// <returns>
+    /// A successful result when deletion completes or the record is already absent. An ETag mismatch produces a conflict
+    /// failure and leaves the current record unchanged.
+    /// </returns>
+    /// <remarks>Deletion addresses physical records and can therefore remove an expired document hidden from logical reads.</remarks>
+    /// <example><code>var result = await provider.DeleteAsync(type, key, options, cancellationToken);</code></example>
+    Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default);
 }

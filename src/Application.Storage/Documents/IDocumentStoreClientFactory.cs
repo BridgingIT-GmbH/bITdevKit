@@ -41,4 +41,11 @@ public interface IDocumentStoreClientFactory
     /// </code>
     /// </example>
     IDocumentStoreClientAccessor Create(string clientId);
+
+    /// <summary>Resolves a named typed document client.</summary>
+    /// <typeparam name="T">The document type.</typeparam>
+    /// <param name="name">The registered client name.</param>
+    /// <returns>The named client, or null when it is not registered.</returns>
+    /// <example><code>var archive = factory.CreateClient&lt;Person&gt;("archive");</code></example>
+    IDocumentStoreClient<T> CreateClient<T>(string name) where T : class, new();
 }

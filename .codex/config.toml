@@ -1,7 +1,7 @@
 # Repository-scoped Codex configuration.
 # Codex loads this file only for trusted checkouts of this repository.
 
-[mcp_servers.bdk]
+[mcp_servers.bdk_local]
 command = "dotnet"
 args = [
   "run",
@@ -11,6 +11,16 @@ args = [
   "mcp",
   "--toolset",
   "diagnostics,operations,admin",
+]
+cwd = ".."
+startup_timeout_sec = 60
+tool_timeout_sec = 120
+enabled = false
+
+[mcp_servers.bdk]
+command = "dotnet"
+args = [
+  "tool", "run", "bdk", "mcp"
 ]
 cwd = ".."
 startup_timeout_sec = 60

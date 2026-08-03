@@ -72,4 +72,8 @@
         <ProjectReference Include="..\Application.IntegrationTests\Application.IntegrationTests.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="..\Application.UnitTests\Storage\Blobs\BlobStoreProviderContractTests.cs" Link="Azure.Storage\Blobs\Shared\BlobStoreProviderContractTests.cs" />
+    </ItemGroup>
+
 </Project>

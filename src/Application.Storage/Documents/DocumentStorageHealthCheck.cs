@@ -111,7 +111,7 @@ public sealed class DocumentStorageHealthCheck(
         try
         {
             var client = serviceProvider.GetRequiredService<IDocumentStoreClient<T>>();
-            var result = await client.ExistsResultAsync(ProbeKey, cancellationToken);
+            var result = await client.ExistsAsync(ProbeKey, cancellationToken);
 
             if (result.IsSuccess)
             {

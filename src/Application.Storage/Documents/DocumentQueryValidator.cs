@@ -160,12 +160,12 @@ public static class DocumentQueryValidator
         {
             if (!allowFullScan)
             {
-                return Result.Failure(new DocumentStoreFullScanNotAllowedError("Full scans require query AllowFullScan."));
+                return Result.Failure(new DocumentStoreFullScanNotAllowedError("Full document scans require explicit query approval. Set AllowFullScan=true, pass --full-scan in console commands, or provide a document key."));
             }
 
             if (!options.AllowFullScans)
             {
-                return Result.Failure(new DocumentStoreFullScanNotAllowedError("Full scans are disabled by options."));
+                return Result.Failure(new DocumentStoreFullScanNotAllowedError("Full document scans are disabled for this document client. Enable AllowFullScans in the client options or provide a document key."));
             }
 
             return ValidateSupport(capabilities.FullScan, options, "Full scan");

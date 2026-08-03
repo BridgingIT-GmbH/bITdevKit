@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using System.Diagnostics;
@@ -33,8 +34,8 @@ public class RuntimeConsoleCommand : ConsoleCommandBase
         table.AddRow("Requests.Failures", stats.TotalFailures.ToString());
         table.AddRow("Requests.FailureRate", failureRate.ToString("F2") + "%");
         table.AddRow("Latency.AvgMs", avgLatency.ToString("F2"));
-        table.AddRow("Memory.ManagedMB", (managed / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("Memory.WorkingSetMB", (proc.WorkingSet64 / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("Memory.ManagedMB", ByteSize.ToMegabytes(managed).ToString("F2"));
+        table.AddRow("Memory.WorkingSetMB", ByteSize.ToMegabytes(proc.WorkingSet64).ToString("F2"));
         table.AddRow("GC.Gen0", GC.CollectionCount(0).ToString());
         table.AddRow("GC.Gen1", GC.CollectionCount(1).ToString());
         table.AddRow("GC.Gen2", GC.CollectionCount(2).ToString());

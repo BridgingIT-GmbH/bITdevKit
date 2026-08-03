@@ -40,6 +40,10 @@ public sealed class DocumentStorageOptions
     /// </example>
     public ServiceLifetime Lifetime { get; private set; } = ServiceLifetime.Scoped;
 
+    /// <summary>Gets the hosted document-retention sweeper options.</summary>
+    /// <example><code>options.Retention.BatchSize = 500;</code></example>
+    public StorageRetentionOptions Retention { get; } = new();
+
     /// <summary>
     /// Enables or disables document-storage client registration.
     /// </summary>
@@ -71,6 +75,17 @@ public sealed class DocumentStorageOptions
     {
         this.Lifetime = lifetime;
 
+        return this;
+    }
+
+    /// <summary>Configures hosted physical cleanup of expired documents.</summary>
+    /// <param name="configure">The retention options callback.</param>
+    /// <returns>The current options instance.</returns>
+    /// <example><code>options.WithRetention(x => x.SweepInterval = TimeSpan.FromMinutes(15));</code></example>
+    public DocumentStorageOptions WithRetention(Action<StorageRetentionOptions> configure)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+        configure(this.Retention);
         return this;
     }
 }

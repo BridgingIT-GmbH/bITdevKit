@@ -182,6 +182,78 @@ public class BuilderEndpointRegistrationTests
     }
 
     [Fact]
+    public void BlobStorageBuilder_AddMaintenanceEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddBlobStorage()
+            .WithInMemoryClient("reports")
+            .AddMaintenanceEndpoints(options => options
+                .RequireAuthorization()
+                .GroupPath("/api/test/blobs")
+                .GroupTag("blob-maintenance"));
+
+        // Assert
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(IEndpoints) &&
+            descriptor.ImplementationType == typeof(BlobStorageMaintenanceEndpoints))
+            .ShouldBeTrue();
+
+        var options = services.Single(descriptor => descriptor.ServiceType == typeof(BlobStorageMaintenanceEndpointsOptions))
+            .ImplementationInstance as BlobStorageMaintenanceEndpointsOptions;
+
+        options.ShouldNotBeNull();
+        options.RequireAuthorization.ShouldBeTrue();
+        options.GroupPath.ShouldBe("/api/test/blobs");
+        options.GroupTag.ShouldBe("blob-maintenance");
+    }
+
+    [Fact]
+    public void BlobStorageBuilder_AddEndpoints_RequiresAuthorizationByDefault()
+    {
+        // Arrange & Act
+        var maintenance = new BlobStorageMaintenanceEndpointsOptions();
+        var read = new BlobStorageReadEndpointsOptions();
+
+        // Assert
+        maintenance.RequireAuthorization.ShouldBeTrue();
+        maintenance.AllowAnonymous.ShouldBeFalse();
+        read.RequireAuthorization.ShouldBeTrue();
+        read.AllowAnonymous.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void BlobStorageBuilder_AddReadEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddBlobStorage()
+            .WithInMemoryClient("reports")
+            .AddReadEndpoints(options => options
+                .AllowAnonymous()
+                .GroupPath("/api/test/blob-content")
+                .GroupTag("blob-read"));
+
+        // Assert
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(IEndpoints) &&
+            descriptor.ImplementationType == typeof(BlobStorageReadEndpoints))
+            .ShouldBeTrue();
+
+        var options = services.Single(descriptor => descriptor.ServiceType == typeof(BlobStorageReadEndpointsOptions))
+            .ImplementationInstance as BlobStorageReadEndpointsOptions;
+
+        options.ShouldNotBeNull();
+        options.AllowAnonymous.ShouldBeTrue();
+        options.GroupPath.ShouldBe("/api/test/blob-content");
+        options.GroupTag.ShouldBe("blob-read");
+    }
+
+    [Fact]
     public void MessagingService_AddEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
     {
         // Arrange
@@ -290,5 +362,59 @@ public class BuilderEndpointRegistrationTests
         options.RequireAuthorization.ShouldBeTrue();
         options.GroupPath.ShouldBe("/api/test/storage/direct");
         options.GroupTag.ShouldBe("storage-direct");
+    }
+
+    [Fact]
+    public void BlobStorageService_AddMaintenanceEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddBlobStorageMaintenanceEndpoints(options => options
+            .RequireAuthorization()
+            .GroupPath("/api/test/blobs/direct")
+            .GroupTag("blob-maintenance-direct"));
+
+        // Assert
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(IEndpoints) &&
+            descriptor.ImplementationType == typeof(BlobStorageMaintenanceEndpoints))
+            .ShouldBeTrue();
+
+        var options = services.Single(descriptor => descriptor.ServiceType == typeof(BlobStorageMaintenanceEndpointsOptions))
+            .ImplementationInstance as BlobStorageMaintenanceEndpointsOptions;
+
+        options.ShouldNotBeNull();
+        options.RequireAuthorization.ShouldBeTrue();
+        options.GroupPath.ShouldBe("/api/test/blobs/direct");
+        options.GroupTag.ShouldBe("blob-maintenance-direct");
+    }
+
+    [Fact]
+    public void BlobStorageService_AddReadEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddBlobStorageReadEndpoints(options => options
+            .AllowAnonymous()
+            .GroupPath("/api/test/blob-content/direct")
+            .GroupTag("blob-read-direct"));
+
+        // Assert
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(IEndpoints) &&
+            descriptor.ImplementationType == typeof(BlobStorageReadEndpoints))
+            .ShouldBeTrue();
+
+        var options = services.Single(descriptor => descriptor.ServiceType == typeof(BlobStorageReadEndpointsOptions))
+            .ImplementationInstance as BlobStorageReadEndpointsOptions;
+
+        options.ShouldNotBeNull();
+        options.AllowAnonymous.ShouldBeTrue();
+        options.GroupPath.ShouldBe("/api/test/blob-content/direct");
+        options.GroupTag.ShouldBe("blob-read-direct");
     }
 }

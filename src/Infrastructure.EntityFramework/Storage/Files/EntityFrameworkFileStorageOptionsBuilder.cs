@@ -15,7 +15,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 ///     .RetryCount(3)
 ///     .RetryBackoff(TimeSpan.FromMilliseconds(250))
 ///     .PageSize(100)
-///     .MaximumBufferedContentSize(4 * 1024 * 1024)
+///     .MaximumBufferedContentSize(ByteSize.Megabytes(4))
 ///     .Build();
 /// </code>
 /// </example>
@@ -136,7 +136,7 @@ public class EntityFrameworkFileStorageOptionsBuilder
     /// <example>
     /// <code>
     /// var options = new EntityFrameworkFileStorageOptionsBuilder()
-    ///     .MaximumBufferedContentSize(4 * 1024 * 1024)
+    ///     .MaximumBufferedContentSize(ByteSize.Megabytes(4))
     ///     .Build();
     /// </code>
     /// </example>

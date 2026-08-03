@@ -1,8 +1,12 @@
-@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DocumentStorageDashboardRoutes
+@using BridgingIT.DevKit.Common
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
     var vm = await CreateModelAsync();
+    var permalinkAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/download";
+    var permalinkCopyAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/link";
 }
 
 <style>
@@ -48,6 +52,7 @@
         font-weight: 600;
         display: flex;
         justify-content: space-between;
+        align-items: center;
         gap: .5rem;
     }
 
@@ -60,13 +65,20 @@
     #documents-dashboard-root .documents-key-cell {
         max-width: 24rem;
         overflow: hidden;
+        text-align: left;
         text-overflow: ellipsis;
         white-space: nowrap;
+        direction: rtl;
     }
 
     #documents-dashboard-root .documents-editor {
         min-height: 22rem;
         resize: vertical;
+    }
+
+    #documents-dashboard-root .documents-actions {
+        display: inline-flex;
+        gap: .18rem;
     }
 
     #documents-dashboard-root .form-label {
@@ -89,6 +101,10 @@
 
         #documents-dashboard-root .documents-panel {
             max-height: none;
+        }
+
+        #documents-dashboard-root .documents-actions {
+            opacity: 1;
         }
     }
 </style>
@@ -171,18 +187,21 @@
                         }
                     </select>
                 </div>
-                <div class="col-6 col-lg-1 d-grid">
+                <div class="col-6 col-lg-1 d-flex gap-1">
                     <button type="submit" class="btn btn-primary btn-sm">
                         Apply
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters" data-documents-command="clear-filter">
+                        <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
                 <div class="col-6 col-lg-1 d-grid">
                     <button type="button"
                             class="btn btn-outline-secondary btn-sm"
-                            data-documents-command="reset-filters"
-                            title="Reset filters and clear selections"
-                            aria-label="Reset filters and clear selections">
-                        <i class="bi bi-x-circle"></i>
+                            data-documents-command="new"
+                            title="New document"
+                            aria-label="New document">
+                        <i class="bi bi-plus-lg"></i>
                     </button>
                 </div>
             </div>
@@ -193,25 +212,11 @@
                 <div class="documents-panel-header">
                     <span>Documents</span>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small">@DisplayCount(vm.TotalCount) · @vm.Keys.Count row(s)</span>
-                        <button type="button"
-                                class="btn btn-primary btn-sm"
-                                data-documents-command="new">
-                            <i class="bi bi-plus-lg me-1"></i>New
-                        </button>
-                        @if (vm.Keys.Count > 0)
-                        {
-                            <button type="button"
-                                    class="btn btn-outline-danger btn-sm"
-                                    data-documents-command="delete-selected"
-                                    disabled>
-                                <i class="bi bi-trash me-1"></i>
-                            </button>
-                        }
+                        <span class="text-muted small">@DisplayCount(vm.TotalCount) · @vm.Entries.Count row(s)</span>
                     </div>
                 </div>
                 <div class="documents-panel-body">
-                    @if (vm.Keys.Count == 0)
+                    @if (vm.Entries.Count == 0)
                     {
                         <div class="dashboard-empty">No documents matched this query.</div>
                     }
@@ -221,49 +226,55 @@
                             <table class="table table-sm align-middle">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 2.5rem;">
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   title="Select all documents on this page"
-                                                   data-documents-select-all>
-                                        </th>
                                         <th>Partition</th>
                                         <th>Row key</th>
+                                        <th class="text-end">Size</th>
+                                        <th>Modified</th>
+                                        <th>Expires</th>
                                         <th class="text-end"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var key in vm.Keys)
+                                    @foreach (var entry in vm.Entries)
                                     {
+                                        var key = entry.Info.Key;
+                                        var displayPartitionKey = Shortener.Apply(key.PartitionKey, new ShorteningOptions { MaximumLength = 48 });
+                                        var displayRowKey = Shortener.Apply(key.RowKey, new ShorteningOptions { MaximumLength = 64 });
                                         var active = string.Equals(key.PartitionKey, vm.SelectedPartitionKey, StringComparison.Ordinal) &&
                                             string.Equals(key.RowKey, vm.SelectedRowKey, StringComparison.Ordinal);
                                         <tr class="@(active ? "table-active" : null)">
-                                            <td class="text-center">
-                                                <input class="form-check-input"
-                                                       type="checkbox"
-                                                       title="Select document"
-                                                       data-documents-row-check
-                                                       data-partition-key="@key.PartitionKey"
-                                                       data-row-key="@key.RowKey">
-                                            </td>
                                             <td class="documents-key-cell" title="@key.PartitionKey">
                                                 <button type="button"
                                                         class="btn btn-link btn-sm p-0 align-baseline text-start font-monospace"
                                                         data-documents-command="filter-partition"
                                                         data-partition-key="@key.PartitionKey"
                                                         title="Filter by this partition">
-                                                    @key.PartitionKey
+                                                    @displayPartitionKey
                                                 </button>
                                             </td>
-                                            <td class="documents-key-cell" title="@key.RowKey">@key.RowKey</td>
+                                            <td class="documents-key-cell" title="@key.RowKey"><code>@displayRowKey</code></td>
+                                            <td class="text-end text-nowrap">@FormatSize(entry.Size)</td>
+                                            <td class="text-muted small text-nowrap">@FormatTimestamp(entry.Info.LastModifiedAt)</td>
+                                            <td class="text-muted small text-nowrap">@FormatTimestamp(entry.Info.ExpiresAt)</td>
                                             <td class="text-end">
-                                                <div class="btn-group btn-group-sm" role="group" aria-label="Document actions">
+                                                <div class="documents-actions btn-group btn-group-sm" role="group" aria-label="Document actions">
                                                     <a class="btn btn-outline-secondary"
                                                        href="@BuildDownloadUrl(vm, key)"
                                                        title="Download document"
                                                        data-documents-download>
                                                         <i class="bi bi-download"></i>
                                                     </a>
+                                                    @if (vm.PermalinksEnabled)
+                                                    {
+                                                        <form class="d-inline" method="post" target="_blank" action="@permalinkAction">
+                                                            <input type="hidden" name="kind" value="Document"><input type="hidden" name="registration" value="@vm.SelectedClientId"><input type="hidden" name="scope" value="@key.PartitionKey"><input type="hidden" name="path" value="@key.RowKey">
+                                                            <button class="btn btn-outline-secondary" title="Permalink download"><i class="bi bi-link-45deg"></i></button>
+                                                        </form>
+                                                        <form class="d-inline" method="post" action="@permalinkCopyAction" data-permalink-copy-form>
+                                                            <input type="hidden" name="kind" value="Document"><input type="hidden" name="registration" value="@vm.SelectedClientId"><input type="hidden" name="scope" value="@key.PartitionKey"><input type="hidden" name="path" value="@key.RowKey">
+                                                            <button class="btn btn-outline-secondary" title="Copy permalink"><i class="bi bi-clipboard"></i></button>
+                                                        </form>
+                                                    }
                                                     <button type="button"
                                                             class="btn btn-outline-secondary"
                                                             data-documents-command="select"
@@ -277,6 +288,7 @@
                                                             data-documents-command="delete"
                                                             data-partition-key="@key.PartitionKey"
                                                             data-row-key="@key.RowKey"
+                                                            data-etag="@entry.Info.ETag"
                                                             title="Delete document">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -311,14 +323,20 @@
                  data-client-id="@vm.SelectedClientId"
                  data-client-name="@DisplayClient(vm.SelectedClient)"
                  data-partition-key="@vm.SelectedPartitionKey"
-                 data-row-key="@vm.SelectedRowKey"></div>
+                 data-row-key="@vm.SelectedRowKey"
+                 data-etag="@vm.SelectedInfo?.ETag"
+                 data-content-hash="@vm.SelectedInfo?.ContentHash"
+                 data-created-at="@vm.SelectedInfo?.CreatedAt.ToString("O", CultureInfo.InvariantCulture)"
+                 data-modified-at="@vm.SelectedInfo?.LastModifiedAt.ToString("O", CultureInfo.InvariantCulture)"
+                 data-expires-at="@vm.SelectedInfo?.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)"></div>
             <textarea hidden data-documents-selected-content>@vm.SelectedContent</textarea>
+            <textarea hidden data-documents-selected-properties>@SerializeProperties(vm.SelectedInfo?.Properties)</textarea>
         }
     }
 </div>
 
 @functions {
-    private static readonly int[] PageSizeOptions = new[] { 100, 250, 500, 1000 };
+    private static readonly int[] PageSizeOptions = [25, 50, 100, 250, 500];
 
     private async Task<DashboardDocumentsViewModel> CreateModelAsync()
     {
@@ -326,8 +344,8 @@
         var factory = this.HttpContext.RequestServices.GetService<IDocumentStoreClientFactory>();
         var model = new DashboardDocumentsViewModel
         {
-            ActionBase = StorageDashboardEndpoints.BuildDocumentsActionBase(dashboardOptions),
-            DownloadPath = StorageDashboardEndpoints.BuildDocumentsDownloadPath(dashboardOptions),
+            ActionBase = StorageDashboardEndpoints.Actions(dashboardOptions),
+            DownloadPath = StorageDashboardEndpoints.Download(dashboardOptions),
             PartitionKey = GetQuery("partitionKey"),
             RowKey = GetQuery("rowKey"),
             RowKeyMode = NormalizeMode(GetQuery("rowKeyMode")),
@@ -360,12 +378,13 @@
             model.Errors.Add("The selected document client could not be loaded.");
             return model;
         }
+        model.PermalinksEnabled = accessor.PermalinksEnabled;
 
         var pageQuery = BuildPageQuery(model);
-        var pageResult = await accessor.ListPageResultAsync(pageQuery, this.HttpContext.RequestAborted);
+        var pageResult = await accessor.FindJsonPageAsync(pageQuery, this.HttpContext.RequestAborted);
         if (pageResult.IsSuccess)
         {
-            model.Keys = pageResult.Value.Items.ToArray();
+            model.Entries = pageResult.Value.Items.ToArray();
             model.NextContinuationToken = pageResult.Value.ContinuationToken;
         }
         else
@@ -373,7 +392,7 @@
             model.Errors.Add(GetFailureMessage(pageResult, "Documents could not be listed."));
         }
 
-        var countResult = await accessor.CountResultAsync(BuildCountQuery(model), this.HttpContext.RequestAborted);
+        var countResult = await accessor.CountAsync(BuildCountQuery(model), this.HttpContext.RequestAborted);
         if (countResult.IsSuccess)
         {
             model.TotalCount = countResult.Value;
@@ -381,10 +400,11 @@
 
         if (!string.IsNullOrWhiteSpace(model.SelectedPartitionKey) && !string.IsNullOrWhiteSpace(model.SelectedRowKey))
         {
-            var documentResult = await accessor.GetJsonResultAsync(new DocumentKey(model.SelectedPartitionKey, model.SelectedRowKey), this.HttpContext.RequestAborted);
+            var documentResult = await accessor.GetEntryJsonAsync(new DocumentKey(model.SelectedPartitionKey, model.SelectedRowKey), this.HttpContext.RequestAborted);
             if (documentResult.IsSuccess)
             {
-                model.SelectedContent = documentResult.Value;
+                model.SelectedContent = documentResult.Value.Content;
+                model.SelectedInfo = documentResult.Value.Info;
             }
             else
             {
@@ -538,6 +558,17 @@
     private static string DisplayCount(long? value) =>
         value.HasValue ? $"{value.Value.ToString("N0", CultureInfo.InvariantCulture)} match(es)" : "count unavailable";
 
+    private static string FormatSize(long bytes) => bytes switch
+    {
+        >= ByteSize.BytesPerGigabyte => $"{bytes / (double)ByteSize.BytesPerGigabyte:0.##} GB",
+        >= ByteSize.BytesPerMegabyte => $"{bytes / (double)ByteSize.BytesPerMegabyte:0.##} MB",
+        >= ByteSize.BytesPerKilobyte => $"{bytes / (double)ByteSize.BytesPerKilobyte:0.##} KB",
+        _ => $"{bytes} B"
+    };
+
+    private static string FormatTimestamp(DateTimeOffset? value) =>
+        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "-";
+
     private static string DisplayClient(DocumentStoreClientDescriptor descriptor) =>
         descriptor is null ? "-" : $"{descriptor.DocumentTypeName} · {descriptor.ProviderName}";
 
@@ -550,4 +581,8 @@
         result.Messages?.LastOrDefault()
         ?? result.Errors?.FirstOrDefault()?.Message
         ?? fallback;
+
+    private static string SerializeProperties(PropertyBag properties) => JsonSerializer.Serialize(
+        (properties ?? new PropertyBag()).ToDictionary(x => x.Key, x => x.Value),
+        new JsonSerializerOptions { WriteIndented = true });
 }

@@ -30,7 +30,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             yield break;
         }
 
-        yield return new DashboardPage("storage.documents", "Documents", "file-earmark-code", DashboardEndpoints.BuildDocumentsPath(options))
+        yield return new DashboardPage("storage.documents", "Documents", "file-earmark-code", DocumentStorageDashboardRoutes.Documents(options))
         {
             Group = "bdk",
             GroupOrder = 0,
@@ -44,7 +44,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     private static ValueTask<DashboardPageCard> GetCardAsync(HttpContext context)
     {
         var descriptors = context.RequestServices.GetServices<DocumentStoreClientDescriptor>().ToArray();
-        var url = DashboardEndpoints.BuildDocumentsPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>());
+        var url = DocumentStorageDashboardRoutes.Documents(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>());
 
         if (context.RequestServices.GetService<DocumentStorageFeature>()?.IsEnabled != true)
         {

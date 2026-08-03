@@ -15,6 +15,7 @@ using System.Text.Json;
 [Table("__Storage_Documents")]
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKeyHash), IsUnique = true)]
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKey))]
+[Index(nameof(TypeHash), nameof(ExpiresAtUnixMilliseconds))]
 public class StorageDocument
 {
     /// <summary>
@@ -73,13 +74,20 @@ public class StorageDocument
     /// <summary>
     /// Gets or sets the serialized document payload.
     /// </summary>
-    public string Content { get; set; }
+    public byte[] Content { get; set; }
 
     /// <summary>
     /// Gets or sets the content checksum for the serialized payload.
     /// </summary>
-    [MaxLength(64)]
+    [MaxLength(80)]
     public string ContentHash { get; set; }
+
+    /// <summary>Gets or sets the transformed payload checksum.</summary>
+    [MaxLength(80)]
+    public string StoredContentHash { get; set; }
+
+    /// <summary>Gets or sets the logical expiration timestamp as Unix milliseconds.</summary>
+    public long? ExpiresAtUnixMilliseconds { get; set; }
 
     /// <summary>
     /// Gets or sets the worker identifier that currently owns the mutation lease.
@@ -122,14 +130,28 @@ public class StorageDocument
     [Column("Properties")]
     public string PropertiesJson
     {
-        get =>
-            this.Properties.IsNullOrEmpty()
-                ? null
-                : JsonSerializer.Serialize(this.Properties, DefaultJsonSerializerOptions.Create());
-        set =>
-            this.Properties = value.IsNullOrEmpty()
-                ? []
-                : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
-                    DefaultJsonSerializerOptions.Create());
+        get => EncodeBag(this.Properties);
+        set => this.Properties = DecodeBag(value);
     }
+
+    /// <summary>Gets or sets provider-neutral transform metadata.</summary>
+    [NotMapped]
+    public IDictionary<string, object> TransformMetadata { get; set; } = new Dictionary<string, object>();
+
+    /// <summary>Gets or sets serialized transform metadata.</summary>
+    [Column("TransformMetadata")]
+    public string TransformMetadataJson
+    {
+        get => EncodeBag(this.TransformMetadata);
+        set => this.TransformMetadata = DecodeBag(value);
+    }
+
+    private static string EncodeBag(IDictionary<string, object> values) => values.IsNullOrEmpty()
+        ? null
+        : JsonSerializer.Serialize(values.ToDictionary(value => value.Key, value => PropertyBagScalarCodec.Encode(value.Value)));
+
+    private static IDictionary<string, object> DecodeBag(string value) => value.IsNullOrEmpty()
+        ? new Dictionary<string, object>()
+        : JsonSerializer.Deserialize<Dictionary<string, string>>(value)
+            .ToDictionary(item => item.Key, item => PropertyBagScalarCodec.Decode(item.Value));
 }

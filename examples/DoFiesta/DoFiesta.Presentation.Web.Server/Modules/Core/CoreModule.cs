@@ -11,7 +11,7 @@ using Application.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Application.DataPorter;
-using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Domain;
@@ -25,7 +25,7 @@ using DevKit.Domain.Repositories;
 using Domain.Model;
 using FluentValidation;
 using Infrastructure;
-using static BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob;
+using JobsCronExpressions = BridgingIT.DevKit.Application.Jobs.CronExpressions;
 
 public class CoreModule : WebModuleBase
 {
@@ -47,46 +47,42 @@ public class CoreModule : WebModuleBase
         //        .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
 
         // jobs
-        services.AddJobScheduling(o => o
-            .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
-            .WithSqlServerStore(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
-            .WithBehavior<MetricsJobSchedulingBehavior>()
-            .WithJob<FileMonitoringLocationScanJob>()
-                .Cron(CronExpressions.Every5Minutes)
-                .Named("scan_inbound")
-                .WithData(DataKeys.LocationName, "inbound")
-                .WithData(DataKeys.DelayPerFile, "00:00:00:100")
-                .WithData(DataKeys.FileFilter, "*.*")
-                .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
-                .RegisterScoped()
-            .WithJob<FileMonitoringLocationScanJob>()
-                .Cron(CronExpressions.EveryMinute)
-                .Named("scan_documents")
-                .WithData(DataKeys.LocationName, "documents")
-                .WithData(DataKeys.DelayPerFile, "00:00:00:100")
-                .WithData(DataKeys.FileFilter, "*.*")
-                .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
-                .RegisterScoped()
-            .WithJob<DevKit.Application.JobScheduling.EchoJob>()
-                .Cron(CronExpressions.EveryMinute)
-                .Named("firstecho")
-                .WithData("message", "First echo")
-                .RegisterScoped()
+        services.AddJobScheduler(configuration)
+            .StartupDelay(TimeSpan.TryParse(configuration["JobScheduler:StartupDelay"], out var startupDelay) ? startupDelay : TimeSpan.Zero)
+            .WithJob<FileMonitoringLocationScanJob>("scan_inbound", job => job
+                .Description("Scans the inbound file-monitoring location.")
+                .WithConcurrency(1)
+                .WithRetry(retry => retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))
+                .AddTrigger("schedule", trigger => trigger
+                    .Cron(JobsCronExpressions.Every5Minutes)
+                    .Data(new FileMonitoringLocationScanJobData
+                    {
+                        LocationName = "inbound",
+                        DelayPerFile = TimeSpan.FromMilliseconds(100),
+                        FileFilter = "*.*",
+                        FileBlackListFilter = ["*.tmp", "*.log"]
+                    })))
+            .WithJob<FileMonitoringLocationScanJob>("scan_documents", job => job
+                .Description("Scans the documents file-monitoring location.")
+                .WithConcurrency(1)
+                .WithRetry(retry => retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))
+                .AddTrigger("schedule", trigger => trigger
+                    .Cron(JobsCronExpressions.EveryMinute)
+                    .Data(new FileMonitoringLocationScanJobData
+                    {
+                        LocationName = "documents",
+                        DelayPerFile = TimeSpan.FromMilliseconds(100),
+                        FileFilter = "*.*",
+                        FileBlackListFilter = ["*.tmp", "*.log"]
+                    })))
+            .WithJob<EchoJob>("firstecho", job => job
+                .Description("Echoes a sample jobs message.")
+                .WithRetry(retry => retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))
+                .AddTrigger("schedule", trigger => trigger
+                    .Cron(JobsCronExpressions.EveryMinute)
+                    .Data(new EchoJobData { Message = "First echo" })))
             .AddEndpoints()
             .AddConsoleCommands();
-        //.WithJob<EchoJob>()
-        //    .Cron(CronExpressions.Every5Seconds)
-        //    .Named("secondecho")
-        //    .WithData("message", "Second echo")
-        //    .Enabled(environment?.IsDevelopment() == true)
-        //    .RegisterScoped()
-        //.WithJob<EchoJob>()
-        //    .Cron(b => b.DayOfMonth(1).AtTime(23, 59).Build()) // "0 59 23 1 * ?"
-        //    .Named("thirdecho")
-        //    .WithData("message", "Third echo")
-        //    .Enabled(environment?.IsDevelopment() == true)
-        //    .RegisterScoped()
-        //.AddEndpoints();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");

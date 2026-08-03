@@ -9,8 +9,14 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Net.Sockets;
 
+/// <summary>Provides helpers for inspecting exceptions.</summary>
+/// <example><code>var message = exception.GetFullMessage();</code></example>
 public static class ExceptionExtensions
 {
+    /// <summary>Builds a flattened message that includes the exception type and nested inner exceptions.</summary>
+    /// <param name="source">The exception to format.</param>
+    /// <returns>The formatted exception message, or null when <paramref name="source" /> is null.</returns>
+    /// <example><code>var message = exception.GetFullMessage();</code></example>
     [DebuggerStepThrough]
     public static string GetFullMessage(this Exception source)
     {

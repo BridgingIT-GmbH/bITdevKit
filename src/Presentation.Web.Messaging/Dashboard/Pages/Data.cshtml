@@ -80,7 +80,7 @@ else
                                 </td>
                                 <td class="text-muted small" title="@FormatTimestamp(message.CreatedDate)">@FormatRelative(message.CreatedDate)</td>
                                 <td title="@DisplayValue(message.Type)">@TrimValue(message.Type, 46)</td>
-                                <td class="text-muted small" title="@DisplayValue(message.MessageId)">@TrimFromStart(message.MessageId, 26)</td>
+                                <td class="text-muted small" title="@DisplayValue(message.MessageId)">@ShortenMessageId(message.MessageId)</td>
                                 <td class="text-end">@message.AttemptCountSummary</td>
                                 <td class="text-muted small">@FormatRelative(message.ProcessedDate)</td>
                                 <td>
@@ -175,7 +175,7 @@ else
                     {
                         <div class="border-bottom py-2">
                             <div class="fw-medium" title="@message.Type">@TrimValue(message.Type, 54)</div>
-                            <div class="text-muted small">@TrimFromStart(message.MessageId, 28)</div>
+                            <div class="text-muted small">@ShortenMessageId(message.MessageId)</div>
                             <div class="text-muted small">@FormatRelative(message.CreatedDate)</div>
                         </div>
                     }
@@ -389,7 +389,11 @@ else
             return "-";
         }
 
-        return value.Length <= maxLength ? value : $"{value[..maxLength]}...";
+        return Shortener.Apply(value, new ShorteningOptions
+        {
+            MaximumLength = maxLength,
+            Separator = "."
+        });
     }
 
     private static string TrimFromStart(string value, int maxLength)
@@ -399,8 +403,15 @@ else
             return "-";
         }
 
-        return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+        return Shortener.Apply(value, new ShorteningOptions
+        {
+            MaximumLength = maxLength,
+            Strategy = Shortener.LeftTruncate
+        });
     }
+
+    private static string ShortenMessageId(string value) =>
+        TrimFromStart(value, 18);
 
     private static string CreateMessageContext(BrokerMessageInfo message, BrokerMessageInfo detail, BrokerMessageContentInfo content)
     {

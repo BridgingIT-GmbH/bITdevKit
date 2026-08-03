@@ -8,12 +8,15 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Storage;
 using Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Provides service-collection extensions for registering document-store clients.
 /// </summary>
 public static partial class ServiceCollectionExtensions
 {
+    private const string DocumentStorageMcpDispatcherServiceTypeName = "BridgingIT.DevKit.Presentation.Web.McpDispatcher";
+
     /// <summary>
     /// Starts a top-level fluent document-storage registration flow.
     /// </summary>
@@ -25,8 +28,8 @@ public static partial class ServiceCollectionExtensions
     /// <code>
     /// services.AddDocumentStorage(o => o.Enabled(true))
     ///     .WithBehavior&lt;LoggingDocumentStoreClientBehavior&lt;Person&gt;&gt;()
-    ///     .WithClient&lt;Person&gt;(sp => new DocumentStoreClient&lt;Person&gt;(
-    ///         new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;())));
+    ///     .WithProvider&lt;Person&gt;(sp =>
+    ///         new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;()));
     /// </code>
     /// </example>
     public static DocumentStorageBuilderContext AddDocumentStorage(
@@ -39,6 +42,16 @@ public static partial class ServiceCollectionExtensions
         var options = new DocumentStorageOptions();
         configure?.Invoke(options);
 
+        services.Replace(ServiceDescriptor.Singleton(options));
+        services.TryAddSingleton(TimeProvider.System);
+        services.TryAddScoped<IDocumentStorageDiagnosticsService, DocumentStorageDiagnosticsService>();
+        services.TryAddDocumentStorageMcpHandler();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, DocumentRetentionBackgroundService>());
+        services.TryAddSingleton(serviceProvider => serviceProvider
+            .GetServices<IHostedService>()
+            .OfType<DocumentRetentionBackgroundService>()
+            .Single());
+
         if (options.IsEnabled)
         {
             services.TryAddSingleton(new DocumentStorageFeature { IsEnabled = true });
@@ -47,12 +60,25 @@ public static partial class ServiceCollectionExtensions
         return new DocumentStorageBuilderContext(services, options, configuration);
     }
 
+    private static void TryAddDocumentStorageMcpHandler(this IServiceCollection services)
+    {
+        if (!services.Any(descriptor => string.Equals(
+            descriptor.ServiceType.FullName,
+            DocumentStorageMcpDispatcherServiceTypeName,
+            StringComparison.Ordinal)))
+        {
+            return;
+        }
+
+        services.TryAddEnumerable(ServiceDescriptor.Transient<IMcpHandler, DocumentStorageMcpHandler>());
+    }
+
     /// <summary>
-    /// Registers a custom document-store client within a top-level document-storage registration flow.
+    /// Registers a custom document-store provider within a top-level document-storage registration flow.
     /// </summary>
     /// <typeparam name="T">The document type handled by the client.</typeparam>
     /// <param name="context">The document-storage builder context.</param>
-    /// <param name="clientFactory">The factory used to create the client implementation.</param>
+    /// <param name="providerFactory">The factory used to create the container-owned persistence provider.</param>
     /// <param name="lifetime">The optional service lifetime override for this client.</param>
     /// <param name="capabilities">The optional provider capabilities used by dashboard selection and query safety hints.</param>
     /// <returns>The current document-storage builder context.</returns>
@@ -60,71 +86,46 @@ public static partial class ServiceCollectionExtensions
     /// <code>
     /// services.AddDocumentStorage()
     ///     .WithBehavior&lt;LoggingDocumentStoreClientBehavior&lt;Person&gt;&gt;()
-    ///     .WithClient&lt;Person&gt;(sp => new DocumentStoreClient&lt;Person&gt;(
-    ///         new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;())));
+    ///     .WithProvider&lt;Person&gt;(sp =>
+    ///         new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;()));
     /// </code>
     /// </example>
-    public static DocumentStorageBuilderContext WithClient<T>(
+    public static DocumentStorageBuilderContext WithProvider<T>(
         this DocumentStorageBuilderContext context,
-        Func<IServiceProvider, IDocumentStoreClient<T>> clientFactory,
+        Func<IServiceProvider, IDocumentStoreProvider> providerFactory,
         ServiceLifetime? lifetime = null,
-        DocumentStoreProviderCapabilities capabilities = null)
+        DocumentStoreProviderCapabilities capabilities = null,
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
-        EnsureArg.IsNotNull(clientFactory, nameof(clientFactory));
+        EnsureArg.IsNotNull(providerFactory, nameof(providerFactory));
 
         if (!context.Options.IsEnabled)
         {
             return context;
         }
 
-        context.Services.AddDocumentStoreClient(clientFactory, lifetime ?? context.Lifetime);
-
-        return context.RegisterClient<T>("Custom", capabilities: capabilities);
+        return context.RegisterProvider<T>(providerFactory, "Custom", capabilities: capabilities,
+            documentStoreOptions: documentStoreOptions, name: name, isDefault: isDefault, lifetime: lifetime);
     }
 
-    /// <summary>
-    /// Registers an <see cref="IDocumentStoreClient{T}" /> using a custom factory and returns a fluent builder for behaviors.
-    /// </summary>
-    /// <typeparam name="T">The document type handled by the client.</typeparam>
-    /// <param name="services">The service collection to update.</param>
-    /// <param name="clientFactory">The factory used to create the client implementation.</param>
-    /// <param name="lifetime">The service lifetime to use for the registration.</param>
-    /// <returns>A builder that can be used to add client behaviors.</returns>
-    /// <example>
-    /// <code>
-    /// services.AddDocumentStoreClient&lt;Person&gt;(
-    ///         sp => new DocumentStoreClient&lt;Person&gt;(
-    ///             new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;())))
-    ///     .WithBehavior&lt;LoggingDocumentStoreClientBehavior&lt;Person&gt;&gt;();
-    /// </code>
-    /// </example>
-    public static DocumentStoreBuilderContext<T> AddDocumentStoreClient<T>(
-        this IServiceCollection services,
-        Func<IServiceProvider, IDocumentStoreClient<T>> clientFactory,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped)
-        where T : class, new()
-    {
-        EnsureArg.IsNotNull(services, nameof(services));
-        EnsureArg.IsNotNull(clientFactory, nameof(clientFactory));
+    /// <summary>Adds gzip compression to the payload pipeline for one document type.</summary>
+    /// <typeparam name="T">The document type.</typeparam>
+    /// <param name="context">The Document Storage builder.</param>
+    /// <returns>The current builder.</returns>
+    /// <example><code>services.AddDocumentStorage().WithCompressionTransform&lt;Person&gt;();</code></example>
+    public static DocumentStorageBuilderContext WithCompressionTransform<T>(this DocumentStorageBuilderContext context)
+        where T : class, new() => context.WithTransform<T>(_ => new CompressionDocumentPayloadTransform(), "gzip");
 
-        switch (lifetime)
-        {
-            case ServiceLifetime.Singleton:
-                services.AddSingleton(typeof(IDocumentStoreClient<T>), clientFactory);
-
-                break;
-            case ServiceLifetime.Transient:
-                services.AddTransient(typeof(IDocumentStoreClient<T>), clientFactory);
-
-                break;
-            default:
-                services.AddScoped(typeof(IDocumentStoreClient<T>), clientFactory);
-
-                break;
-        }
-
-        return new DocumentStoreBuilderContext<T>(services, lifetime);
-    }
+    /// <summary>Adds key-provider-backed encryption to the payload pipeline for one document type.</summary>
+    /// <typeparam name="T">The document type.</typeparam>
+    /// <param name="context">The Document Storage builder.</param>
+    /// <returns>The current builder.</returns>
+    /// <example><code>services.AddDocumentStorage().WithEncryptionTransform&lt;Person&gt;();</code></example>
+    public static DocumentStorageBuilderContext WithEncryptionTransform<T>(this DocumentStorageBuilderContext context)
+        where T : class, new() => context.WithTransform<T>(serviceProvider =>
+            new EncryptionDocumentPayloadTransform(serviceProvider.GetRequiredService<IEncryptionKeyProvider>()), "aes-cbc-pkcs7");
 }

@@ -2,7 +2,7 @@
 
 > Share consistent serializer abstractions and JSON conventions across the devkit.
 
-`Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, and the devkit's default JSON conventions for results, filtering, smart enumerations, and metadata objects.
+`Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, Base64Url and scalar codecs, continuation-token encoding, and the devkit's default JSON conventions for results, filtering, smart enumerations, and metadata objects.
 
 This package matters because many higher-level features depend on consistent serialization behavior:
 
@@ -51,6 +51,27 @@ A CSV-oriented serializer for tabular data scenarios. This is useful when the co
 ### `CompressionSerializer`
 
 A decorator that wraps another serializer and adds compression. Use this when payload size matters more than raw readability and you want to keep the underlying serialization format unchanged.
+
+## Shared Codecs
+
+### `Base64UrlHelper`
+
+`Base64UrlHelper.Encode` produces canonical unpadded Base64Url text. `Base64UrlHelper.Decode` restores the bytes and rejects malformed, padded, or non-canonical values.
+
+```csharp
+var encoded = Base64UrlHelper.Encode("payload"u8);
+var decoded = Base64UrlHelper.Decode(encoded);
+```
+
+Base64Url is appropriate for opaque URL segments, continuation tokens, and string-only metadata formats. It is distinct from regular padded Base64; use `Convert.ToBase64String` when a protocol requires the standard Base64 alphabet.
+
+### `PropertyBagScalarCodec`
+
+`PropertyBagScalarCodec` uses a versioned Base64Url envelope to preserve supported scalar types in string-only persistence systems. Legacy unprefixed values remain strings.
+
+### `OpaqueContinuationTokenCodec`
+
+`OpaqueContinuationTokenCodec` serializes purpose-bound continuation-token payloads using Base64Url. It supports unsigned values and optional HMAC-SHA256 protection through `IContinuationTokenProtector`.
 
 ## Default JSON Conventions
 
@@ -156,6 +177,12 @@ Use `CompressionSerializer` when:
 - JSON defaults are opinionated, so if a feature needs different naming or converter ordering, create an explicit `JsonSerializerOptions` instance instead of assuming the shared defaults fit every case.
 - The serializer abstraction is intentionally small. It does not try to replace ASP.NET Core formatters or model binding.
 - Binary serializers are great for internal transport, but they are harder to debug than JSON.
+
+## Storage Envelopes
+
+`ContentTransformEnvelopeCodec` encodes versioned `bdk_` metadata for ordered payload transforms. `PropertyBagScalarCodec` preserves supported scalar property types in a `bdk_v1_` Base64Url envelope, while legacy unprefixed values remain strings. `OpaqueContinuationTokenCodec` creates purpose-bound JSON token envelopes and can use `IContinuationTokenProtector` for HMAC protection.
+
+These codecs are shared by Blob and Document Storage. Payload transforms execute in registration order on writes and reverse order on reads; stored and logical SHA-256 hashes are verified before deserialization.
 
 ## Related Docs
 

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Collections.Concurrent;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -244,6 +245,36 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
         public FileStorageBuilder WithCaching(CachingOptions options = null)
         {
             this.behaviors.Add((p, sp) => new CachingFileStorageBehavior(p, sp.GetRequiredService<IMemoryCache>(), options));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds metrics behavior to the provider.
+        /// </summary>
+        public FileStorageBuilder WithMetrics()
+        {
+            this.behaviors.Add((p, sp) => new MetricsFileStorageBehavior(p, sp.GetService<IMeterFactory>()));
+            return this;
+        }
+
+        /// <summary>
+        /// Enables Storage Permalinks for this configured provider.
+        /// </summary>
+        /// <returns>
+        /// The current builder.
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// builder.UseLocal("Files", rootPath).WithPermalinks();
+        /// </code>
+        /// </example>
+        public FileStorageBuilder WithPermalinks()
+        {
+            this.behaviors.Add((provider, serviceProvider) => new FileStoragePermalinkBehavior(
+                provider,
+                this.providerName,
+                serviceProvider.GetRequiredService<IStoragePermalinkRegistry>(),
+                serviceProvider.GetRequiredService<IStoragePermalinkChangeQueue>()));
             return this;
         }
 

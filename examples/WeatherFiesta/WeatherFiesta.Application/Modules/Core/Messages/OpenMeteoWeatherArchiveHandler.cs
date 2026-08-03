@@ -52,7 +52,7 @@ public sealed class OpenMeteoWeatherArchiveHandler(
         var documentKey = CreateDocumentKey(message);
         var document = CreateDocument(message);
 
-        var upsertResult = await documentStoreClient.UpsertResultAsync(documentKey, document, cancellationToken);
+        var upsertResult = await documentStoreClient.UpsertAsync(documentKey, document, cancellationToken: cancellationToken);
         if (upsertResult.IsFailure)
         {
             throw new InvalidOperationException(

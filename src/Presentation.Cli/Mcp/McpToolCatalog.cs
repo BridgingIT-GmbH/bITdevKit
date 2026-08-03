@@ -63,6 +63,9 @@ public sealed class McpToolCatalog
         Tool("bdk_queueing_pause_type", "Pauses queue processing for a message type.", TypeSchema()),
         Tool("bdk_queueing_resume_type", "Resumes queue processing for a message type.", TypeSchema()),
         Tool("bdk_queueing_purge", "Purges retained queue messages when the admin toolset is enabled and confirmation is supplied.", RetainedMessagesPurgeSchema("purge queue messages")),
+        Tool("bdk_blobs_summary", "Returns Blob Storage registration and health summary from the selected runtime.", EmptySchema),
+        Tool("bdk_blobs_clients", "Lists registered Blob Storage clients from the selected runtime.", BlobClientsSchema()),
+        Tool("bdk_blobs_probe", "Returns non-mutating probe details for one Blob Storage client.", BlobClientNameSchema()),
         Tool("bdk_jobs_list", "Lists job definitions or recent job runs from the selected runtime.", JobsListSchema()),
         Tool("bdk_jobs_details", "Returns job details from the selected runtime.", JobNameSchema()),
         Tool("bdk_jobs_runs", "Returns job execution history from the selected runtime.", JobRunsSchema()),
@@ -90,7 +93,7 @@ public sealed class McpToolCatalog
         Tool("bdk_api_search", "Searches bounded official DevKit API reference symbols.", ApiSearchSchema()),
         Tool("bdk_api_get", "Gets bounded DevKit API reference content by symbol uid.", new { type = "object", additionalProperties = false, required = new[] { "uid" }, properties = new { uid = String("DocFX API reference symbol uid."), maxChars = Integer("Maximum characters to return.") } }),
         Tool("bdk_guidance_list", "Lists curated DevKit agentic coding guidance topics.", EmptySchema),
-        Tool("bdk_guidance_get", "Gets curated DevKit agentic coding guidance. Use when the user asks for guidance, how to implement, add, create or build DevKit jobs, messaging, queueing, orchestration, pipelines, dashboards or project dashboard pages.", GuidanceSchema()),
+        Tool("bdk_guidance_get", "Gets curated DevKit agentic coding guidance. Use when the user asks for guidance, how to implement, add, create or build DevKit jobs, messaging, queueing, orchestration, storage, pipelines, dashboards or project dashboard pages.", GuidanceSchema()),
         Tool("bdk_project_summary", "Summarizes the selected runtime, advertised project shape, MCP capabilities, and suggested next calls.", EmptySchema),
         Tool("bdk_project_operations", "Lists project-owned MCP operations advertised by the selected runtime.", EmptySchema),
         Tool("bdk_project_call", "Invokes a project-owned MCP operation by name.", new { type = "object", additionalProperties = false, required = new[] { "operation" }, properties = new { operation = String("Project operation name."), toolset = String("Required toolset: diagnostics, operations, or admin. Defaults to diagnostics."), arguments = new { type = "object", additionalProperties = true } } })
@@ -166,6 +169,7 @@ public sealed class McpToolCatalog
                     "rules",
                     "startuptasks",
                     "document_storage",
+                    "blob_storage",
                     "file_storage",
                     "monitoring",
                     "dashboard",
@@ -201,6 +205,32 @@ public sealed class McpToolCatalog
 
     private static object QueueNameSchema()
         => new { type = "object", additionalProperties = false, required = new[] { "queueName" }, properties = new { queueName = String("Logical queue name.") } };
+
+    private static object BlobClientNameSchema()
+        => new
+        {
+            type = "object",
+            additionalProperties = false,
+            required = new[] { "name" },
+            properties = new
+            {
+                name = String("Blob Storage client name.")
+            }
+        };
+
+    private static object BlobClientsSchema()
+        => new
+        {
+            type = "object",
+            additionalProperties = false,
+            properties = new
+            {
+                name = String("Blob Storage client name filter."),
+                clientName = String("Alias for name."),
+                providerName = String("Provider name filter."),
+                healthy = Bool("Health state filter.")
+            }
+        };
 
     private static object CorrelationSchema()
         => new

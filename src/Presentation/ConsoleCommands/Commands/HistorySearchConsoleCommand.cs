@@ -37,4 +37,3 @@ public class HistorySearchConsoleCommand : ConsoleCommandBase, IGroupedConsoleCo
         return Task.CompletedTask;
     }
 }
-// === end diagnostic additions ===

@@ -373,7 +373,10 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
             if (!HasColumn(dbContext, tableName, "ConcurrencyVersion") ||
                 !HasColumn(dbContext, tableName, "TypeHash") ||
                 !HasColumn(dbContext, tableName, "PartitionKeyHash") ||
-                !HasColumn(dbContext, tableName, "RowKeyHash"))
+                !HasColumn(dbContext, tableName, "RowKeyHash") ||
+                !HasColumn(dbContext, tableName, "StoredContentHash") ||
+                !HasColumn(dbContext, tableName, "ExpiresAtUnixMilliseconds") ||
+                !HasColumn(dbContext, tableName, "TransformMetadata"))
             {
                 dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();

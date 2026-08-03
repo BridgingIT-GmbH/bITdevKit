@@ -71,7 +71,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         }
     }
 
-    public uint MaxSize { get; private set; } = 50 * 1024 * 1024;
+    public uint MaxSize { get; private set; } = checked((uint)ByteSize.Megabytes(50));
 
     public bool RequireTLS
     {

@@ -12,8 +12,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 /// <example>
 /// <code>
-/// services.AddEntityFrameworkDocumentStoreClient&lt;Person, AppDbContext&gt;(
-///     configure: options =>
+/// services.AddDocumentStorage()
+///     .WithEntityFrameworkClient&lt;Person, AppDbContext&gt;(
+///     configureProvider: options =>
 ///     {
 ///         options.LeaseDuration = TimeSpan.FromSeconds(15);
 ///         options.RetryCount = 5;
@@ -43,6 +44,6 @@ public class EntityFrameworkDocumentStoreProviderOptions
     /// </summary>
     public ILoggerFactory LoggerFactory { get; set; }
 
-    internal ILogger CreateLogger<T>() =>
+    private ILogger CreateLogger<T>() =>
         (this.LoggerFactory ?? NullLoggerFactory.Instance).CreateLogger<T>();
 }

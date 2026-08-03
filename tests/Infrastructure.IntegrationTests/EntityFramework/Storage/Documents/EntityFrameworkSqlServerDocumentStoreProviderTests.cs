@@ -121,8 +121,7 @@ public class EntityFrameworkSqlServerDocumentStoreProviderTests(ITestOutputHelpe
         DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsureSqlServerDbContext(this.output, forceNew),
-            options: options,
-            documentStoreOptions: documentStoreOptions);
+            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqlServerDbContext(this.output, true)),
+            documentStoreOptions);
     }
 }

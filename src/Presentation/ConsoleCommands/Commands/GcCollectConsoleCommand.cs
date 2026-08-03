@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
 public class GcCollectConsoleCommand : ConsoleCommandBase
@@ -28,11 +29,12 @@ public class GcCollectConsoleCommand : ConsoleCommandBase
             GC.Collect();
         }
         var after = GC.GetTotalMemory(false); // do not force finalizers if skipped
-        var freedMb = this.NoCollect ? 0 : (before - after) / (1024 * 1024.0);
+        var freedBytes = this.NoCollect ? 0 : Math.Max(0, before - after);
+        var freedMb = ByteSize.ToMegabytes(freedBytes);
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Metric"); table.AddColumn("Value");
-        table.AddRow("Before.Managed MB", (before / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("After.Managed MB", (after / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("Before.Managed MB", ByteSize.ToMegabytes(before).ToString("F2"));
+        table.AddRow("After.Managed MB", ByteSize.ToMegabytes(after).ToString("F2"));
         table.AddRow("Freed MB", freedMb.ToString("F2"));
         table.AddRow("Mode", this.NoCollect ? "skipped" : "forced");
         table.AddRow("Gen0", GC.CollectionCount(0).ToString());

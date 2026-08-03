@@ -63,7 +63,9 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [StartupTasks](./features-startuptasks.md): Run application startup work in a structured, observable and dependency-aware way.
 - [Jobs](./features-jobs.md): Schedule durable background work through code-first jobs, triggers, batches, history and source-level integrations.
 - [JobScheduling](./features-jobscheduling.md): Legacy Quartz-backed scheduling feature for existing applications that have not migrated yet.
-- [DocumentStorage](./features-storage-documents.md): Store and query JSON-like documents through a simple, provider-agnostic abstraction.
+- [BlobStorage](./features-storage-blobs.md): Store binary content through Result-native, stream-first, named blob clients.
+- [DocumentStorage](./features-storage-documents.md): Store typed documents with metadata, ETags, integrity, transforms, expiration/retention, named clients, and managed provider resources.
+- [StoragePermalinks](./features-storage-permalinks.md): Give Blob, Document, and File Storage resources stable opaque download links with optional expiration.
 - [FileStorage](./features-storage-files.md): Read, write, move and monitor files through extensible storage providers and behaviors.
 - [Storage Monitoring](./features-storage-monitoring.md): Detect file changes and process storage events through configurable monitoring pipelines.
 - [Log Entries](./features-log-entries.md): Query, stream, export and manage persisted application logs through a stable application API.

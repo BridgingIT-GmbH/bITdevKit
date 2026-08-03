@@ -123,9 +123,9 @@ hide:
     <h3>Orchestrations</h3>
     <p>Durable, stateful workflows with explicit states, activities, signals, timers and operational endpoints.</p>
   </a>
-  <a class="capability-card" href="reference/features-storage-documents/">
+  <a class="capability-card" href="reference/features-storage-blobs/">
     <h3>Storage</h3>
-    <p>Document and file storage abstractions, monitoring, behaviors and provider-based extensibility.</p>
+    <p>Blob, document and file storage abstractions with monitoring, behaviors and provider-based extensibility.</p>
   </a>
   <a class="capability-card" href="reference/features-jobs/">
     <h3>Jobs</h3>

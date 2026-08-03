@@ -28,9 +28,19 @@ Path:
 
 Best for:
 
-- broader application composition
-- operational and integration-oriented scenarios
-- seeing more of the surrounding infrastructure in context
+- a full-stack application with a Blazor WebAssembly frontend and ASP.NET Core API backend
+- a stronger Domain-Driven Design example across Domain, Application, Infrastructure, and Presentation layers
+- following aggregates, value objects, domain events, specifications, rules, commands, and queries in context
+- exploring generated API clients, persistence, file attachments, messaging, jobs, and operational integrations
+
+Run it from the repository root:
+
+```bash
+dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server
+```
+
+For its layer structure and development notes, read the
+[`DoFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta-README.md).
 
 ### EventSourcingDemo
 
@@ -42,12 +52,32 @@ Best for:
 - event-sourcing-oriented exploration
 - understanding how event-driven persistence concepts fit into the devkit
 
-### WeatherForecast
+Run it from the repository root:
+
+```bash
+dotnet run --project examples/EventSourcingDemo/EventSourcingDemo.Presentation.Web
+```
+
+For its short overview and REST request guidance, read the
+[`EventSourcingDemo-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/EventSourcingDemo/EventSourcingDemo-README.md).
+
+### WeatherFiesta
 
 Path:
-[`examples/WeatherForecast`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherForecast)
+[`examples/WeatherFiesta`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherFiesta)
 
 Best for:
 
-- a lighter-weight example
-- fast experimentation with less surface area
+- seeing ActiveEntity and modular vertical slices in a realistic weather dashboard
+- learning service-agent abstractions through the Open-Meteo integration
+- following commands, queries, requester pipelines, scheduled ingestion, and data export end to end
+- exploring subscription-gated features, developer dashboards, console commands, and MCP integration
+
+Run it from the repository root:
+
+```bash
+dotnet run --project examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server
+```
+
+For its architecture, API, configuration, and testing guide, read the
+[`WeatherFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/WeatherFiesta/WeatherFiesta-README.md).

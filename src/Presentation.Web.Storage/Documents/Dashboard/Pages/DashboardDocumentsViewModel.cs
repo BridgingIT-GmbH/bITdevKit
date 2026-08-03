@@ -38,6 +38,16 @@ public sealed class DashboardDocumentsViewModel
     public bool IsAvailable { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether the selected client supports Storage Permalinks.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// if (model.PermalinksEnabled) { }
+    /// </code>
+    /// </example>
+    public bool PermalinksEnabled { get; set; }
+
+    /// <summary>
     /// Gets or sets the registered document clients available for selection.
     /// </summary>
     /// <example>
@@ -127,15 +137,9 @@ public sealed class DashboardDocumentsViewModel
     /// </example>
     public string NextContinuationToken { get; set; }
 
-    /// <summary>
-    /// Gets or sets the document keys in the current page.
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// foreach (var key in model.Keys) { }
-    /// </code>
-    /// </example>
-    public IReadOnlyList<DocumentKey> Keys { get; set; } = [];
+    /// <summary>Gets or sets the document rows in the current page.</summary>
+    /// <example><code>foreach (var entry in model.Entries) { }</code></example>
+    public IReadOnlyList<DocumentJsonEntry> Entries { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the total matching document count when available.
@@ -176,6 +180,10 @@ public sealed class DashboardDocumentsViewModel
     /// </code>
     /// </example>
     public string SelectedContent { get; set; }
+
+    /// <summary>Gets or sets metadata for the selected document.</summary>
+    /// <example><code>var etag = model.SelectedInfo?.ETag;</code></example>
+    public DocumentInfo SelectedInfo { get; set; }
 
     /// <summary>
     /// Gets the dashboard errors captured while creating the model.

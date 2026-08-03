@@ -10,10 +10,10 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </summary>
 /// <example>
 /// <code>
-/// var page = await documents.ListPageResultAsync(query, cancellationToken);
+/// var page = await documents.ListPageAsync(query, cancellationToken);
 /// foreach (var key in page.Value.Items)
 /// {
-///     var document = await documents.GetResultAsync(key, cancellationToken);
+///     var document = await documents.GetAsync(key, cancellationToken);
 /// }
 /// </code>
 /// </example>

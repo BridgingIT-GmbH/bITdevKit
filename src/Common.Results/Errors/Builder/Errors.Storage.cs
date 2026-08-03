@@ -171,3 +171,26 @@ public class DocumentStoreSerializationError(string message = null, Exception in
     /// </summary>
     public Exception InnerException { get; } = innerException;
 }
+
+/// <summary>Represents a failed document-store concurrency condition.</summary>
+public class DocumentStoreConflictError(string message = null) : StorageError(message ?? "Document store concurrency condition failed");
+
+/// <summary>Represents a document that exceeds the configured size limit.</summary>
+public class DocumentStoreSizeLimitError(string message = null) : StorageError(message ?? "Document exceeds the configured size limit");
+
+/// <summary>Represents failed document content integrity verification.</summary>
+public class DocumentStoreIntegrityError(string message = null) : StorageError(message ?? "Document content integrity verification failed");
+
+/// <summary>Represents a metadata update whose compensation also failed.</summary>
+public class DocumentStorePartialUpdateError(string message = null, Exception innerException = null)
+    : StorageError(message ?? "Document metadata was only partially updated")
+{
+    /// <summary>Gets the optional compensation failure.</summary>
+    public Exception InnerException { get; } = innerException;
+}
+
+/// <summary>Represents a document transfer that copied the target but retained the source.</summary>
+public class DocumentStoreTransferError(string message = null) : StorageError(message ?? "Document transfer did not complete");
+
+/// <summary>Represents an elapsed document operation deadline.</summary>
+public class DocumentStoreTimeoutError(string message = null) : StorageError(message ?? "Document store operation timed out");

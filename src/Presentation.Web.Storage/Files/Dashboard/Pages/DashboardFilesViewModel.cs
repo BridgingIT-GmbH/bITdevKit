@@ -38,6 +38,16 @@ public sealed class DashboardFilesViewModel
     public List<string> Errors { get; } = [];
 
     public bool IsAvailable { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the selected file provider supports Storage Permalinks.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// if (model.PermalinksEnabled) { }
+    /// </code>
+    /// </example>
+    public bool PermalinksEnabled { get; set; }
 }
 
 public sealed record DashboardDirectoryNode(

@@ -21,6 +21,7 @@ public class HistoryListConsoleCommand : ConsoleCommandBase, IGroupedConsoleComm
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var all = ConsoleCommandHistory.GetAll(); var take = this.Max <= 0 ? 50 : this.Max;
+        console.MarkupLine($"[grey]History file:[/] {Markup.Escape(ConsoleCommandHistory.FilePath)}");
         var seq = all.Select((l, i) => (i + 1, l)).Reverse().Take(take).Reverse();
         var table = new Table().Border(TableBorder.Minimal); table.AddColumn("#"); table.AddColumn("Command");
         foreach (var item in seq)
@@ -42,4 +43,3 @@ public class HistoryListConsoleCommand : ConsoleCommandBase, IGroupedConsoleComm
         return Task.CompletedTask;
     }
 }
-// === end diagnostic additions ===

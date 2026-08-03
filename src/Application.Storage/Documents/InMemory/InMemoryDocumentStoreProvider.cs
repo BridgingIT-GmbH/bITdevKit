@@ -1,41 +1,29 @@
 // MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Text.Json;
 
 /// <summary>
-/// Implements <see cref="IDocumentStoreProvider" /> using an in-memory context.
+/// Stores copied serialized documents in process memory with atomic conditional mutations and bounded retention.
 /// </summary>
+/// <param name="loggerFactory">The optional logger factory used to create the typed provider logger.</param>
 /// <remarks>
-/// This provider is useful for tests, local development, and other scenarios where persistence is not required beyond the
-/// current process.
+/// State is local to the provider instance and is not shared across application processes. All synchronization and backing
+/// collections remain private; returned bytes, records, and property bags are cloned so caller mutation cannot alter stored
+/// state. The provider is useful for tests and single-process scenarios, not distributed persistence.
 /// </remarks>
-/// <param name="loggerFactory">The logger factory used to create the provider logger.</param>
-/// <param name="context">The optional shared in-memory context backing the provider.</param>
-/// <param name="options">The optional query safety options.</param>
-public class InMemoryDocumentStoreProvider(
-    ILoggerFactory loggerFactory,
-    InMemoryDocumentStoreContext context = null,
-    DocumentStoreOptions options = null) : IDocumentStoreProvider
+/// <example><code>var provider = new InMemoryDocumentStoreProvider(loggerFactory);</code></example>
+public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) : IDocumentStoreProvider, IDocumentStoreRetentionProvider
 {
-    private const string ProviderName = "in-memory";
-    private readonly DocumentStoreOptions options = options ?? new DocumentStoreOptions { AllowFullScans = true };
+    private readonly object syncRoot = new();
+    private readonly Dictionary<(string Type, string Partition, string Row), StoredDocument> documents = [];
 
-    /// <summary>
-    /// Gets the logger used by the provider.
-    /// </summary>
+    /// <summary>Gets the typed provider logger used for non-sensitive operational diagnostics.</summary>
+    /// <example><code>protected ILogger ProviderLogger =&gt; this.Logger;</code></example>
     protected ILogger<InMemoryDocumentStoreProvider> Logger { get; } =
-        loggerFactory?.CreateLogger<InMemoryDocumentStoreProvider>() ??
-        NullLoggerFactory.Instance.CreateLogger<InMemoryDocumentStoreProvider>();
-
-    /// <summary>
-    /// Gets the in-memory context backing the provider.
-    /// </summary>
-    protected InMemoryDocumentStoreContext Context { get; } = context ?? new InMemoryDocumentStoreContext();
+        loggerFactory?.CreateLogger<InMemoryDocumentStoreProvider>() ?? NullLogger<InMemoryDocumentStoreProvider>.Instance;
 
     /// <inheritdoc />
     public DocumentStoreProviderCapabilities Capabilities { get; } = new()
@@ -46,267 +34,305 @@ public class InMemoryDocumentStoreProvider(
         FullScan = DocumentQuerySupport.SupportedEfficiently,
         KeyListing = DocumentQuerySupport.SupportedEfficiently,
         SupportsContinuationPaging = true,
-        SupportsServerSideCount = false,
-        SupportsKeyOnlyProjection = true
+        SupportsServerSideCount = true,
+        SupportsKeyOnlyProjection = true,
+        SupportsConditionalWrite = true,
+        SupportsConditionalDelete = true,
+        SupportsAtomicPropertyUpdate = true,
+        SupportsLogicalExpiration = true,
+        SupportsRetention = true
     };
 
     /// <inheritdoc />
-    public Task<Result<T>> GetResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new()
+    public Task<Result<StoredDocument>> GetAsync(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = this.ValidateExactKey(documentKey);
-        if (validation.IsFailure)
+        lock (this.syncRoot)
         {
-            return Task.FromResult(Result<T>.Failure(validation));
+            return Task.FromResult(this.documents.TryGetValue(ToKey(type, key), out var document) && IsVisible(document, visibilityCutoff)
+                ? Result<StoredDocument>.Success(Clone(document))
+                : Result<StoredDocument>.Failure(new DocumentStoreNotFoundError($"Document '{key.PartitionKey}/{key.RowKey}' was not found.")));
         }
-
-        var entity = this.Context.Query<T>()
-            .FirstOrDefault(e => e.DocumentKey.PartitionKey == documentKey.PartitionKey && e.DocumentKey.RowKey == documentKey.RowKey)
-            .Content;
-
-        return Task.FromResult(entity is null
-            ? Result<T>.Failure(new DocumentStoreNotFoundError($"Document '{documentKey.PartitionKey}/{documentKey.RowKey}' was not found."))
-            : Result<T>.Success(entity.Clone()));
     }
 
     /// <inheritdoc />
-    public Task<Result<DocumentPage<T>>> FindPageResultAsync<T>(DocumentQuery query, CancellationToken cancellationToken = default)
-        where T : class, new()
+    public Task<Result<StoredDocumentPage>> FindPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = DocumentQueryValidator.ValidatePage<T>("find", ProviderName, query, this.Capabilities, this.options);
-        if (validation.IsFailure)
+        lock (this.syncRoot)
         {
-            return Task.FromResult(Result<DocumentPage<T>>.Failure(validation));
+            var rows = this.Query(type, query?.DocumentKey, query?.Filter ?? DocumentKeyFilter.FullMatch, visibilityCutoff);
+            rows = ApplyContinuation(rows, ReadNativeToken(query?.ContinuationToken));
+            var take = query?.Take ?? 100;
+            var page = rows.Take(take + 1).ToArray();
+            return Task.FromResult(Result<StoredDocumentPage>.Success(new()
+            {
+                Items = page.Take(take).Select(Clone).ToArray(),
+                ContinuationToken = page.Length > take ? CreateToken("find", type, query, visibilityCutoff, page[take - 1].Key) : null
+            }));
         }
-
-        var rows = this.ApplyQuery(this.Context.Query<T>(), query).ToList();
-        rows = this.ApplyContinuation(rows, validation.Value.ContinuationToken?.NativeToken).ToList();
-
-        var pageRows = rows.Take(validation.Value.Take + 1).ToList();
-        var items = pageRows.Take(validation.Value.Take).Select(e => e.Content.Clone()).ToList();
-        var continuationToken = pageRows.Count > validation.Value.Take
-            ? this.CreateContinuationToken(validation.Value.QueryHash, pageRows[validation.Value.Take - 1].DocumentKey)
-            : null;
-
-        return Task.FromResult(Result<DocumentPage<T>>.Success(new DocumentPage<T>
-        {
-            Items = items,
-            ContinuationToken = continuationToken
-        }));
     }
 
     /// <inheritdoc />
-    public Task<Result<DocumentKeyPage>> ListPageResultAsync<T>(DocumentQuery query, CancellationToken cancellationToken = default)
-        where T : class, new()
+    public async Task<Result<DocumentKeyPage>> ListPageAsync(DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = DocumentQueryValidator.ValidatePage<T>("list", ProviderName, query, this.Capabilities, this.options);
-        if (validation.IsFailure)
+        lock (this.syncRoot)
         {
-            return Task.FromResult(Result<DocumentKeyPage>.Failure(validation));
+            var rows = this.Query(type, query?.DocumentKey, query?.Filter ?? DocumentKeyFilter.FullMatch, visibilityCutoff);
+            rows = ApplyContinuation(rows, ReadNativeToken(query?.ContinuationToken));
+            var take = query?.Take ?? 100;
+            var page = rows.Take(take + 1).ToArray();
+            return Result<DocumentKeyPage>.Success(new()
+            {
+                Items = page.Take(take).Select(x => x.Key).ToArray(),
+                ContinuationToken = page.Length > take ? CreateToken("list", type, query, visibilityCutoff, page[take - 1].Key) : null
+            });
         }
-
-        var rows = this.ApplyQuery(this.Context.Query<T>(), query).ToList();
-        rows = this.ApplyContinuation(rows, validation.Value.ContinuationToken?.NativeToken).ToList();
-
-        var pageRows = rows.Take(validation.Value.Take + 1).ToList();
-        var keys = pageRows.Take(validation.Value.Take).Select(e => e.DocumentKey).ToList();
-        var continuationToken = pageRows.Count > validation.Value.Take
-            ? this.CreateContinuationToken(validation.Value.QueryHash, pageRows[validation.Value.Take - 1].DocumentKey)
-            : null;
-
-        return Task.FromResult(Result<DocumentKeyPage>.Success(new DocumentKeyPage
-        {
-            Items = keys,
-            ContinuationToken = continuationToken
-        }));
     }
 
     /// <inheritdoc />
-    public Task<Result<long>> CountResultAsync<T>(DocumentCountQuery query, CancellationToken cancellationToken = default)
-        where T : class, new()
+    public Task<Result<long>> CountAsync(DocumentTypeIdentity type, DocumentCountQuery query, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = DocumentQueryValidator.ValidateCount<T>("count", query, this.Capabilities, this.options);
-        if (validation.IsFailure)
+        lock (this.syncRoot)
         {
-            return Task.FromResult(Result<long>.Failure(validation));
+            var count = this.Query(type, query?.DocumentKey, query?.Filter ?? DocumentKeyFilter.FullMatch, visibilityCutoff).LongCount();
+            return Task.FromResult(Result<long>.Success(count));
         }
-
-        return Task.FromResult(Result<long>.Success(this.ApplyCountQuery(this.Context.Query<T>(), query).LongCount()));
     }
 
     /// <inheritdoc />
-    public Task<Result<bool>> ExistsResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new()
+    public Task<Result<bool>> ExistsAsync(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset visibilityCutoff, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = this.ValidateExactKey(documentKey);
-        if (validation.IsFailure)
+        lock (this.syncRoot)
         {
-            return Task.FromResult(Result<bool>.Failure((IResult)validation));
+            return Task.FromResult(Result<bool>.Success(
+                this.documents.TryGetValue(ToKey(type, key), out var document) && IsVisible(document, visibilityCutoff)));
         }
-
-        var exists = this.Context.Query<T>().Any(e =>
-            e.DocumentKey.PartitionKey == documentKey.PartitionKey &&
-            e.DocumentKey.RowKey == documentKey.RowKey);
-
-        return Task.FromResult(Result<bool>.Success(exists));
     }
 
     /// <inheritdoc />
-    public Task<Result> UpsertResultAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
-        where T : class, new()
+    public Task<Result<DocumentInfo>> UpsertAsync(DocumentTypeIdentity type, StoredDocumentWrite write, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = this.ValidateExactKey(documentKey);
-        if (validation.IsFailure)
+        lock (this.syncRoot)
         {
-            return Task.FromResult(validation);
+            var storageKey = ToKey(type, write.Key);
+            this.documents.TryGetValue(storageKey, out var current);
+            if (write.Options.CreateOnly && current is not null)
+            {
+                return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentStoreConflictError("A physical document already exists.")));
+            }
+
+            if (!string.IsNullOrWhiteSpace(write.Options.IfMatchETag) &&
+                (current is null || !string.Equals(current.ETag, write.Options.IfMatchETag, StringComparison.Ordinal)))
+            {
+                return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed.")));
+            }
+
+            var now = DateTimeOffset.UtcNow;
+            var stored = new StoredDocument
+            {
+                Key = write.Key,
+                Content = write.Content.ToArray(),
+                ContentHash = write.ContentHash,
+                StoredContentHash = write.StoredContentHash,
+                ETag = Guid.NewGuid().ToString("N"),
+                CreatedAt = current?.CreatedAt ?? now,
+                LastModifiedAt = now,
+                ExpiresAt = write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt,
+                Properties = write.Properties?.Clone() ?? current?.Properties?.Clone() ?? new PropertyBag(),
+                TransformMetadata = write.TransformMetadata?.Clone() ?? new PropertyBag()
+            };
+            this.documents[storageKey] = stored;
+            return Task.FromResult(Result<DocumentInfo>.Success(ToInfo(stored)));
         }
-
-        if (entity is null)
-        {
-            return Task.FromResult(Result.Failure(new DocumentStoreInvalidQueryError("Document entity must not be null.")));
-        }
-
-        this.Context.AddOrUpdate(entity.Clone(), documentKey);
-
-        return Task.FromResult(Result.Success());
     }
 
     /// <inheritdoc />
-    public async Task<Result> UpsertResultAsync<T>(
-        IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
+    public Task<Result<DocumentInfo>> UpdatePropertiesAsync(
+        DocumentTypeIdentity type,
+        DocumentPropertiesUpdate update,
+        DateTimeOffset? resolvedExpiresAt,
+        bool preserveExpiration,
         CancellationToken cancellationToken = default)
-        where T : class, new()
     {
-        if (entities is null)
+        cancellationToken.ThrowIfCancellationRequested();
+        lock (this.syncRoot)
         {
-            return Result.Failure(new DocumentStoreInvalidQueryError("Document entities must not be null."));
-        }
+            var storageKey = ToKey(type, update.Key);
+            if (!this.documents.TryGetValue(storageKey, out var current))
+            {
+                return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentStoreNotFoundError()));
+            }
 
-        var materialized = entities.ToList();
-        foreach (var (documentKey, entity) in materialized)
+            if (!string.IsNullOrWhiteSpace(update.IfMatchETag) && !string.Equals(current.ETag, update.IfMatchETag, StringComparison.Ordinal))
+            {
+                return Task.FromResult(Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed.")));
+            }
+
+            var updated = current with
+            {
+                ETag = Guid.NewGuid().ToString("N"),
+                LastModifiedAt = DateTimeOffset.UtcNow,
+                ExpiresAt = preserveExpiration ? current.ExpiresAt : resolvedExpiresAt,
+                Properties = update.Properties?.Clone() ?? current.Properties.Clone()
+            };
+            this.documents[storageKey] = updated;
+            return Task.FromResult(Result<DocumentInfo>.Success(ToInfo(updated)));
+        }
+    }
+
+    /// <inheritdoc />
+    public Task<Result> DeleteAsync(DocumentTypeIdentity type, DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        lock (this.syncRoot)
+        {
+            var storageKey = ToKey(type, key);
+            if (this.documents.TryGetValue(storageKey, out var current) &&
+                !string.IsNullOrWhiteSpace(options?.IfMatchETag) &&
+                !string.Equals(current.ETag, options.IfMatchETag, StringComparison.Ordinal))
+            {
+                return Task.FromResult(Result.Failure(new DocumentStoreConflictError("The document ETag changed.")));
+            }
+
+            this.documents.Remove(storageKey);
+            return Task.FromResult(Result.Success());
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<DocumentRetentionSweepResult>> SweepExpiredAsync(
+        DocumentRetentionSweepRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        var deleted = 0L;
+        var deletedKeys = new List<DocumentKey>();
+        var batches = 0;
+        var hasMore = false;
+
+        for (; batches < request.MaxBatches; batches++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await this.UpsertResultAsync(documentKey, entity, cancellationToken);
-            if (result.IsFailure)
+            int removed;
+            lock (this.syncRoot)
             {
-                return result;
+                var keys = this.documents
+                    .Where(x => x.Key.Type == request.DocumentType.Value && x.Value.ExpiresAt is not null && x.Value.ExpiresAt <= request.VisibilityCutoff)
+                    .OrderBy(x => x.Value.ExpiresAt)
+                    .ThenBy(x => x.Key.Partition, StringComparer.Ordinal)
+                    .ThenBy(x => x.Key.Row, StringComparer.Ordinal)
+                    .Take(request.BatchSize)
+                    .Select(x => x.Key)
+                    .ToArray();
+                foreach (var key in keys)
+                {
+                    this.documents.Remove(key);
+                    deletedKeys.Add(new(key.Partition, key.Row));
+                }
+                removed = keys.Length;
+                hasMore = removed == request.BatchSize;
+            }
+
+            deleted += removed;
+            if (!hasMore)
+            {
+                batches++;
+                break;
+            }
+
+            if (request.BatchDelay > TimeSpan.Zero)
+            {
+                await Task.Delay(request.BatchDelay, cancellationToken);
             }
         }
 
-        return Result.Success();
-    }
-
-    /// <inheritdoc />
-    public Task<Result> DeleteResultAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
-        where T : class, new()
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var validation = this.ValidateExactKey(documentKey);
-        if (validation.IsFailure)
+        return Result<DocumentRetentionSweepResult>.Success(new()
         {
-            return Task.FromResult(validation);
-        }
-
-        this.Context.Delete<T>(documentKey);
-
-        return Task.FromResult(Result.Success());
-    }
-
-    private Result ValidateExactKey(DocumentKey documentKey)
-    {
-        if (string.IsNullOrWhiteSpace(documentKey.PartitionKey))
-        {
-            return Result.Failure(new DocumentStoreInvalidQueryError("PartitionKey must not be null or whitespace."));
-        }
-
-        if (string.IsNullOrWhiteSpace(documentKey.RowKey))
-        {
-            return Result.Failure(new DocumentStoreInvalidQueryError("RowKey must not be null or whitespace."));
-        }
-
-        return Result.Success();
-    }
-
-    private IEnumerable<(DocumentKey DocumentKey, T Content)> ApplyQuery<T>(
-        IEnumerable<(DocumentKey DocumentKey, T Content)> rows,
-        DocumentQuery query)
-        where T : class, new()
-    {
-        query ??= new DocumentQuery();
-
-        return this.ApplyCountQuery(rows, new DocumentCountQuery
-        {
-            DocumentKey = query.DocumentKey,
-            Filter = query.Filter,
-            AllowFullScan = query.AllowFullScan
+            DocumentType = request.DocumentType,
+            DeletedCount = deleted,
+            DeletedKeys = deletedKeys,
+            BatchCount = batches,
+            HasMore = hasMore
         });
     }
 
-    private IEnumerable<(DocumentKey DocumentKey, T Content)> ApplyCountQuery<T>(
-        IEnumerable<(DocumentKey DocumentKey, T Content)> rows,
-        DocumentCountQuery query)
-        where T : class, new()
+    private IEnumerable<StoredDocument> Query(DocumentTypeIdentity type, DocumentKey? key, DocumentKeyFilter filter, DateTimeOffset cutoff)
     {
-        query ??= new DocumentCountQuery();
-        if (query.DocumentKey is null)
+        var rows = this.documents
+            .Where(x => string.Equals(x.Key.Type, type.Value, StringComparison.Ordinal) && IsVisible(x.Value, cutoff))
+            .Select(x => x.Value);
+        if (key is null)
         {
-            return rows;
+            return Order(rows);
         }
 
-        var key = query.DocumentKey.Value;
-        return query.Filter switch
+        var match = key.Value;
+        rows = filter switch
         {
-            DocumentKeyFilter.FullMatch => rows.Where(e =>
-                e.DocumentKey.PartitionKey == key.PartitionKey &&
-                e.DocumentKey.RowKey == key.RowKey),
-            DocumentKeyFilter.RowKeyPrefixMatch => rows.Where(e =>
-                e.DocumentKey.PartitionKey == key.PartitionKey &&
-                e.DocumentKey.RowKey.StartsWith(key.RowKey ?? string.Empty, StringComparison.Ordinal)),
-            DocumentKeyFilter.RowKeySuffixMatch => rows.Where(e =>
-                e.DocumentKey.PartitionKey == key.PartitionKey &&
-                e.DocumentKey.RowKey.EndsWith(key.RowKey ?? string.Empty, StringComparison.Ordinal)),
+            DocumentKeyFilter.FullMatch => rows.Where(x => x.Key == match),
+            DocumentKeyFilter.RowKeyPrefixMatch => rows.Where(x => x.Key.PartitionKey == match.PartitionKey && x.Key.RowKey.StartsWith(match.RowKey ?? string.Empty, StringComparison.Ordinal)),
+            DocumentKeyFilter.RowKeySuffixMatch => rows.Where(x => x.Key.PartitionKey == match.PartitionKey && x.Key.RowKey.EndsWith(match.RowKey ?? string.Empty, StringComparison.Ordinal)),
             _ => []
         };
+        return Order(rows);
     }
 
-    private IEnumerable<(DocumentKey DocumentKey, T Content)> ApplyContinuation<T>(
-        IEnumerable<(DocumentKey DocumentKey, T Content)> rows,
-        string nativeToken)
-    {
-        if (string.IsNullOrWhiteSpace(nativeToken))
-        {
-            return rows;
-        }
+    private static IEnumerable<StoredDocument> Order(IEnumerable<StoredDocument> rows) => rows
+        .OrderBy(x => x.Key.PartitionKey, StringComparer.Ordinal)
+        .ThenBy(x => x.Key.RowKey, StringComparer.Ordinal);
 
-        var lastKey = JsonSerializer.Deserialize<DocumentKey>(nativeToken);
-        return rows.Where(e =>
-            string.Compare(e.DocumentKey.PartitionKey, lastKey.PartitionKey, StringComparison.Ordinal) > 0 ||
-            (e.DocumentKey.PartitionKey == lastKey.PartitionKey &&
-                string.Compare(e.DocumentKey.RowKey, lastKey.RowKey, StringComparison.Ordinal) > 0));
-    }
+    private static IEnumerable<StoredDocument> ApplyContinuation(IEnumerable<StoredDocument> rows, DocumentKey? key) => key is null
+        ? rows
+        : rows.Where(x => string.Compare(x.Key.PartitionKey, key.Value.PartitionKey, StringComparison.Ordinal) > 0 ||
+            (x.Key.PartitionKey == key.Value.PartitionKey && string.Compare(x.Key.RowKey, key.Value.RowKey, StringComparison.Ordinal) > 0));
 
-    private string CreateContinuationToken(string queryHash, DocumentKey lastKey)
+    private static string CreateToken(string operation, DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, DocumentKey lastKey)
     {
-        var result = DocumentContinuationTokenSerializer.Serialize(new DocumentContinuationToken
+        var hash = DocumentQueryHash.Compute(operation, type, query, query?.Take ?? 100);
+        var token = DocumentContinuationTokenSerializer.Serialize(new DocumentContinuationToken
         {
-            Provider = ProviderName,
-            QueryHash = queryHash,
+            Provider = type.Value,
+            QueryHash = hash,
+            VisibilityCutoff = visibilityCutoff,
             NativeToken = JsonSerializer.Serialize(lastKey)
         });
-
-        return result.IsSuccess ? result.Value : null;
+        return token.IsSuccess ? token.Value : null;
     }
+
+    private static DocumentKey? ReadNativeToken(string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
+
+        var parsed = DocumentContinuationTokenSerializer.Deserialize(token);
+        return parsed.IsSuccess && !string.IsNullOrWhiteSpace(parsed.Value.NativeToken)
+            ? JsonSerializer.Deserialize<DocumentKey>(parsed.Value.NativeToken)
+            : null;
+    }
+
+    private static bool IsVisible(StoredDocument document, DateTimeOffset cutoff) => document.ExpiresAt is null || document.ExpiresAt > cutoff;
+    private static (string Type, string Partition, string Row) ToKey(DocumentTypeIdentity type, DocumentKey key) => (type.Value, key.PartitionKey, key.RowKey);
+    private static StoredDocument Clone(StoredDocument value) => value with
+    {
+        Content = value.Content.ToArray(),
+        Properties = value.Properties?.Clone() ?? new PropertyBag(),
+        TransformMetadata = value.TransformMetadata?.Clone() ?? new PropertyBag()
+    };
+    private static DocumentInfo ToInfo(StoredDocument value) => new()
+    {
+        Key = value.Key,
+        ETag = value.ETag,
+        ContentHash = value.ContentHash,
+        CreatedAt = value.CreatedAt,
+        LastModifiedAt = value.LastModifiedAt,
+        ExpiresAt = value.ExpiresAt,
+        Properties = value.Properties?.Clone() ?? new PropertyBag()
+    };
 }

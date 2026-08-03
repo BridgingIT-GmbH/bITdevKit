@@ -10,6 +10,12 @@ using System.Reflection;
 
 public static partial class Extensions
 {
+    /// <summary>Converts a value to the specified target type.</summary>
+    /// <typeparam name="T">The target type.</typeparam>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The converted value, or the default value of <typeparamref name="T" /> when <paramref name="value" /> is null and cannot be converted.</returns>
+    /// <exception cref="ArgumentException">Thrown when the value cannot be converted to <typeparamref name="T" />.</exception>
+    /// <example><code>var count = "42".ToType&lt;int&gt;();</code></example>
     public static T ToType<T>(this object value)
     {
         var targetType = typeof(T);

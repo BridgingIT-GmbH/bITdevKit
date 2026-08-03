@@ -53,17 +53,18 @@ public class OpenMeteoWeatherArchiveHandlerTests
             WeatherIngestionResult = ingestionResult
         };
 
-        documentStoreClient.UpsertResultAsync(
+        documentStoreClient.UpsertAsync(
                 Arg.Any<DocumentKey>(),
                 Arg.Any<OpenMeteoWeatherArchiveDocument>(),
+                Arg.Any<DocumentWriteOptions>(),
                 Arg.Any<CancellationToken>())
-            .Returns(Result.Success());
+            .Returns(Result<DocumentInfo>.Success(new DocumentInfo { Key = new DocumentKey("p", "r") }));
 
         // Act
         await sut.Handle(message, CancellationToken.None);
 
         // Assert
-        await documentStoreClient.Received(1).UpsertResultAsync(
+        await documentStoreClient.Received(1).UpsertAsync(
             Arg.Is<DocumentKey>(key =>
                 key.PartitionKey == "archive/openmeteo/weather" &&
                 key.RowKey == $"{cityId:N}/2026/07/07/123456789-message-123.json"),
@@ -74,6 +75,7 @@ public class OpenMeteoWeatherArchiveHandlerTests
                 document.ProviderName == "openmeteo" &&
                 document.RetrievedAt == retrievedAt &&
                 document.WeatherIngestionResult == ingestionResult),
+            Arg.Any<DocumentWriteOptions>(),
             Arg.Any<CancellationToken>());
     }
 }

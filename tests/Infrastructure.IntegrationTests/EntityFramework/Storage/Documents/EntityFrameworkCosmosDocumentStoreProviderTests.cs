@@ -142,8 +142,7 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
         DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsureCosmosDbContext(this.output, forceNew: forceNew),
-            options: options,
-            documentStoreOptions: documentStoreOptions);
+            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureCosmosDbContext(this.output, forceNew: true)),
+            documentStoreOptions);
     }
 }

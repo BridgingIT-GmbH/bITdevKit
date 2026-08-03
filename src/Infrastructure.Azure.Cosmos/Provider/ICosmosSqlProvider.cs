@@ -66,6 +66,19 @@ public interface ICosmosSqlProvider<TItem>
         object partitionKeyValue = null,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Upserts an item only when the supplied opaque Cosmos ETag still matches.</summary>
+    /// <param name="item">The item to replace.</param>
+    /// <param name="partitionKeyValue">The partition key value.</param>
+    /// <param name="ifMatchETag">The exact Cosmos ETag required for replacement.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns>The committed item.</returns>
+    /// <example><code>var saved = await provider.UpsertItemAsync(item, partition, etag, cancellationToken);</code></example>
+    Task<TItem> UpsertItemAsync(
+        TItem item,
+        object partitionKeyValue,
+        string ifMatchETag,
+        CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Asynchronously reads items from the Cosmos database based on the provided parameters.
     /// </summary>
@@ -247,5 +260,25 @@ public interface ICosmosSqlProvider<TItem>
     Task<bool> DeleteItemAsync(
         string id,
         object partitionKeyValue = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Deletes an item using an explicitly observed concurrency version.</summary>
+    /// <param name="id">The identifier of the item to delete.</param>
+    /// <param name="partitionKeyValue">The partition key value.</param>
+    /// <param name="expectedVersion">The required current Cosmos ETag represented as a version.</param>
+    /// <param name="cancellationToken">The token used to cancel the operation.</param>
+    /// <returns><see langword="true" /> when Cosmos deleted the expected version.</returns>
+    /// <example><code>await provider.DeleteItemAsync(id, partition, version, cancellationToken);</code></example>
+    Task<bool> DeleteItemAsync(
+        string id,
+        object partitionKeyValue,
+        Guid expectedVersion,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Deletes an item only when the supplied opaque Cosmos ETag still matches.</summary>
+    Task<bool> DeleteItemAsync(
+        string id,
+        object partitionKeyValue,
+        string ifMatchETag,
         CancellationToken cancellationToken = default);
 }

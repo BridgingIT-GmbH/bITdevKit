@@ -17,7 +17,7 @@ This includes:
 - date/time range utilities with half-open range algebra
 - human-readable duration and relative-time text formatting
 - dynamic predicate and reflection helpers
-- content-type, compression, hashing, and cloning utilities
+- content-type, Base64Url, compression, hashing, stream, and cloning utilities
 - id and key generation helpers
 - low-level activity and tracing helpers
 - startup-task primitives and behaviors
@@ -1548,6 +1548,94 @@ var allStatuses = Enumeration.GetAll<OrderStatus>();
 
 ## Data And Content Helpers
 
+### ByteSize
+
+`ByteSize` centralizes binary byte-size calculations so options and defaults do not repeat raw `1024` multiplication expressions.
+
+Use it for storage limits, cache-size thresholds, stream buffer thresholds, and memory display conversions:
+
+```csharp
+var maxValueSize = ByteSize.Megabytes(1);
+var maxCachedBlobSize = ByteSize.Megabytes(10);
+var chunkSize = (int)ByteSize.Megabytes(4);
+var previewLimit = (int)ByteSize.Kilobytes(64);
+```
+
+Available unit helpers return raw byte counts:
+
+- `ByteSize.Bytes(value)`
+- `ByteSize.Kilobytes(value)`
+- `ByteSize.Megabytes(value)`
+- `ByteSize.Gigabytes(value)`
+- `ByteSize.Terabytes(value)`
+
+Use `ByteSize.ToMegabytes(bytes)` when rendering memory or file-size values as megabytes:
+
+```csharp
+var workingSetMb = ByteSize.ToMegabytes(process.WorkingSet64);
+```
+
+Rules:
+
+- Units are binary: 1 KB is 1024 bytes.
+- Negative size values throw `ArgumentOutOfRangeException`.
+- Calculations use checked arithmetic and throw `OverflowException` when the result exceeds `long`.
+- Size options should still store raw byte counts, usually as `long` or `long?`.
+
+### Shortener
+
+`Shortener` produces compact, readable display values for paths and other separator-delimited identifiers. It preserves the terminal segment whenever the configured character budget allows, which makes it suitable for dashboard paths, filenames, namespaces, type names, and storage keys.
+
+The default adaptive strategy progressively abbreviates every parent segment using the configured prefix length, then one-character initials, before using left truncation as the final fallback. This keeps the most useful end of a value visible without relying only on CSS clipping.
+
+```csharp
+var displayPath = Shortener.Apply(
+    "archives/2026/july/customer-report.pdf",
+    new PathShorteningOptions
+    {
+        MaximumLength = 32,
+        Separator = "/",
+        Placeholder = "...",
+        SegmentPrefixLength = 3
+    });
+
+var typeName = Shortener.Apply(
+    "Company.Product.Storage.DocumentHandler",
+    36,
+    separator: ".");
+```
+
+Examples:
+
+| Input | Configuration | Output |
+| --- | --- | --- |
+| `archives/2026/report.pdf` | `MaximumLength = 12`, `Strategy = Shortener.LeftTruncate` | `...eport.pdf` |
+| `archives/2026/report.pdf` | `MaximumLength = 12`, `Strategy = Shortener.RightTruncate` | `archives/...` |
+| `archives/2026/july/report.pdf` | `MaximumLength = 18`, `Strategy = Shortener.SegmentInitials` | `a/2/j/report.pdf` |
+| `Company.Product.Feature.Handler` | `MaximumLength = 16`, `Separator = "."`, `SegmentPrefixLength = 2`, `Strategy = Shortener.SegmentPrefixes` | `Co.Pr.Fe.Handler` |
+| `FirstProduct/Items/PriceDiscount/aaa.json` | `MaximumLength = 20`, `Strategy = Shortener.CamelCaseInitials` | `FP/I/PD/aaa.json` |
+| `archives/2026/july/report.pdf` | `MaximumLength = 20`, `SegmentPrefixLength = 3`, adaptive default | `ar/20/ju/report.pdf` |
+
+When an abbreviated result still exceeds the budget, use `OverflowTruncation` to choose the final fallback direction:
+
+| Input | Configuration | Output |
+| --- | --- | --- |
+| `FirstProduct/Items/PriceDiscount/aaa.json` | `MaximumLength = 11`, `Strategy = Shortener.CamelCaseInitials`, `OverflowTruncation = Left` | `...aaa.json` |
+| `FirstProduct/Items/PriceDiscount/aaa.json` | `MaximumLength = 11`, `Strategy = Shortener.CamelCaseInitials`, `OverflowTruncation = Right` | `FP/I/PD/...` |
+
+Available strategies are exposed by `Shortener`:
+
+- `LeftTruncate` preserves the end of a value, for example `.../report.pdf`.
+- `RightTruncate` preserves the beginning of a value, for example `archives/...`.
+- `SegmentInitials` reduces each parent segment to one character while preserving the terminal segment.
+- `SegmentPrefixes` keeps `SegmentPrefixLength` characters from each parent segment.
+- `CamelCaseInitials` uses the initials of PascalCase or camelCase words, for example `FirstProduct/Items/PriceDiscount/aaa.json` becomes `FP/I/PD/aaa.json`.
+- `Adaptive` tries the longest readable segment prefixes first, then initials, and finally left truncation.
+
+Set `Placeholder` to an empty string when the shortened representation must not include a marker. `Separator` defaults to `/` but can be set to `.`, `:`, `|`, or any other non-empty delimiter.
+
+Segment-based strategies always fit the configured budget. When parent-segment abbreviation is still too long, `OverflowTruncation` selects the fallback: `Left` (the default) preserves the final filename or identifier, while `Right` preserves the beginning of the abbreviated path.
+
 ### Content Types
 
 The content-type helpers define a `ContentType` model plus extension methods for:
@@ -1575,14 +1663,178 @@ var isBinary = contentType.IsBinary();
 - byte arrays
 - streams
 
-It uses GZip and supports async workflows, making it useful for payload compression, export/import scenarios, and storage pipelines.
+It uses GZip and supports async workflows, making it useful for payload compression, export/import scenarios, and storage pipelines. Prefer the stream factory methods for large payloads or provider integrations, because they avoid requiring the full content as a byte array.
 
-Example:
+String and byte-array helpers are convenient for small payloads that are already in memory:
 
 ```csharp
 var compressed = await CompressionHelper.CompressAsync("hello world");
 var original = await CompressionHelper.DecompressAsync(compressed);
 ```
+
+Stream-first compression:
+
+```csharp
+await using var compressed = File.Create("report.csv.gz");
+await using (var compressor = CompressionHelper.CreateGZipCompressionStream(
+    compressed,
+    CompressionLevel.Optimal,
+    leaveOpen: false))
+{
+    await source.CopyToAsync(compressor, cancellationToken);
+}
+```
+
+Stream-first decompression:
+
+```csharp
+await using var compressed = File.OpenRead("report.csv.gz");
+await using var decompressor = CompressionHelper.CreateGZipDecompressionStream(
+    compressed,
+    leaveOpen: false);
+
+await decompressor.CopyToAsync(target, cancellationToken);
+```
+
+`CompressionHelper` also provides single-entry ZIP stream helpers for workflows that need ZIP container compatibility.
+
+### EncryptionHelper
+
+`EncryptionHelper` encrypts and decrypts:
+
+- strings
+- byte arrays
+- streams
+
+It uses AES-CBC/PKCS7 and centralizes key-size validation, initialization-vector generation, and stream creation for features that need symmetric encryption.
+
+Use the string and byte-array helpers for small payloads that are already in memory. These helpers generate a new initialization vector per encryption operation. The byte-array payload format is `IV || ciphertext`; the string payload is Base64 for that same binary envelope.
+
+```csharp
+var key = EncryptionHelper.GenerateAesKey();
+
+var encryptedText = await EncryptionHelper.EncryptAsync("secret", key, cancellationToken);
+var text = await EncryptionHelper.DecryptAsync(encryptedText, key, cancellationToken);
+
+var encryptedBytes = await EncryptionHelper.EncryptAsync(bytes, key, cancellationToken);
+var decryptedBytes = await EncryptionHelper.DecryptAsync(encryptedBytes, key, cancellationToken);
+```
+
+Prefer the stream factory methods for large payloads or provider integrations:
+
+```csharp
+var key = EncryptionHelper.GenerateAesKey(); // AES-256 by default
+var iv = EncryptionHelper.GenerateAesCbcInitializationVector();
+
+await using var encrypted = File.Create("report.bin");
+await using (var encryptor = EncryptionHelper.CreateAesCbcEncryptionStream(
+    encrypted,
+    key,
+    iv,
+    leaveOpen: false))
+{
+    await source.CopyToAsync(encryptor, cancellationToken);
+    encryptor.FlushFinalBlock();
+}
+```
+
+Decrypt with the same key and initialization vector:
+
+```csharp
+await using var encrypted = File.OpenRead("report.bin");
+await using var decryptor = EncryptionHelper.CreateAesCbcDecryptionStream(
+    encrypted,
+    key,
+    iv,
+    leaveOpen: false);
+
+await decryptor.CopyToAsync(target, cancellationToken);
+```
+
+Rules:
+
+- AES keys must be 16, 24, or 32 bytes.
+- AES-CBC initialization vectors must be 16 bytes.
+- Generate a new initialization vector for every encrypted payload.
+- Store keys in application configuration or a secret store, not in source files.
+
+### Encryption Key Providers
+
+`IEncryptionKeyProvider` separates active write-key selection from historical read-key lookup. `EncryptionKeyMaterial` copies supplied key bytes, and `DictionaryEncryptionKeyProvider` provides an immutable in-memory implementation suitable for configuration-backed key sets and tests.
+
+```csharp
+var keys = new DictionaryEncryptionKeyProvider(
+    "2026-07",
+    new Dictionary<string, byte[]>
+    {
+        ["2026-07"] = currentKey,
+        ["2026-01"] = previousKey
+    });
+
+var active = await keys.GetActiveKeyAsync(cancellationToken);
+var historical = await keys.GetKeyAsync("2026-01", cancellationToken);
+```
+
+Keep old key ids available until no persisted encrypted value references them.
+
+### Stream Operations And Temporary Files
+
+`StreamHelper` is the shared location for stream operations. Its `CopyAsync` method performs pooled asynchronous copies while optionally enforcing a maximum byte count and calculating an incremental hash. It leaves caller streams open and throws `StreamSizeLimitExceededException` before writing bytes beyond the configured limit.
+
+```csharp
+var copy = await StreamHelper.CopyAsync(
+    source,
+    destination,
+    new StreamCopyOptions
+    {
+        MaximumBytes = ByteSize.Megabytes(10),
+        HashAlgorithm = HashAlgorithmName.SHA256
+    },
+    cancellationToken);
+
+Console.WriteLine($"{copy.Length} bytes, hash {copy.Hash}");
+```
+
+`TemporaryFileHelper.Create(...)` returns a `TemporaryFileLease` with an asynchronous sequential stream and a unique path. Synchronous or asynchronous disposal closes the stream and unconditionally attempts to delete the file.
+
+```csharp
+await using var temporary = TemporaryFileHelper.Create(prefix: "bdk-export-");
+await source.CopyToAsync(temporary.Stream, cancellationToken);
+```
+
+### Base64Url Encoding
+
+`Base64UrlHelper` converts binary values to canonical unpadded Base64Url text and back. `Encode` replaces the standard Base64 `+` and `/` characters with URL-safe characters and omits padding. `Decode` accepts only that canonical unpadded representation, rejecting malformed input, standard Base64 padding, and alternate encodings of the same bytes.
+
+```csharp
+var encoded = Base64UrlHelper.Encode("payload"u8);
+var decoded = Base64UrlHelper.Decode(encoded);
+```
+
+Use this helper for URL, key, token, and metadata formats that explicitly require Base64Url. Continue using standard `Convert.ToBase64String` and `Convert.FromBase64String` when a protocol requires regular padded Base64.
+
+### Property Scalar Encoding
+
+`PropertyBagScalarCodec` preserves scalar property types across string-only persistence systems. Encoded values use a versioned `bdk_v1_` Base64Url envelope. Strings remain strings even when they look like numbers or booleans; legacy unprefixed values are read as strings.
+
+Supported values include null, strings, characters, Boolean and numeric primitives, `Guid`, date/time values, `TimeSpan`, and byte arrays. Complex values are rejected.
+
+```csharp
+var encoded = PropertyBagScalarCodec.Encode(DateTimeOffset.UtcNow);
+var decoded = (DateTimeOffset)PropertyBagScalarCodec.Decode(encoded);
+```
+
+### Opaque Continuation Tokens
+
+`OpaqueContinuationTokenCodec` serializes purpose-bound, versioned tokens. Without an `IContinuationTokenProtector`, tokens are unsigned. With `HmacContinuationTokenProtector`, tokens use HMAC-SHA256 and reject unsigned, modified, incorrectly signed, or wrong-purpose payloads.
+
+```csharp
+var protector = new HmacContinuationTokenProtector(secret);
+var token = OpaqueContinuationTokenCodec.Serialize(payload, "blob-storage", protector);
+var restored = OpaqueContinuationTokenCodec.Deserialize<MyPayload>(token, "blob-storage", protector);
+```
+
+Use a distinct stable purpose for each feature and keep the HMAC secret consistent across application instances that exchange continuation tokens.
 
 ### HashHelper
 
@@ -1687,6 +1939,48 @@ await Retry.On<TimeoutException>(
     delays: [TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(250)]);
 
 Console.WriteLine(stopwatch.GetElapsedMilliseconds());
+```
+
+## Storage-Neutral Utilities
+
+Storage features share the following helpers instead of implementing local byte, stream, expiration, hashing, initialization, or key-display logic:
+
+- `ByteSize.Bytes/Kilobytes/Megabytes/Gigabytes` for checked byte calculations.
+- `StreamHelper.CopyAsync` for pooled bounded asynchronous copying with optional incremental hashing.
+- `TemporaryFileHelper` and `TemporaryFileLease` for unique sequential temporary files with unconditional disposal cleanup.
+- `Base64UrlHelper` for URL-safe binary envelopes.
+- `ExpirationHelper` for UTC preserve/set/clear/relative expiration resolution and due checks.
+- `ContentHashHelper` for canonical `sha256:<lowercase-hex>` hashes.
+- `AsyncInitializationGate` for retryable, concurrent, idempotent resource initialization.
+- `PeriodicBackgroundService` for monitored startup-gated work that runs one iteration at a time with `TimeProvider`-based delays and bounded shutdown.
+- `RawKeyDisplayStrategy` and `Sha256KeyDisplayStrategy` for operational key logging.
+
+```csharp
+var limit = ByteSize.Megabytes(1);
+var hash = ContentHashHelper.ComputeSha256(payload);
+var expiresAt = ExpirationHelper.Resolve(
+    ExpirationChange.After(TimeSpan.FromHours(1)),
+    current: null,
+    TimeProvider.System);
+```
+
+Recurring hosted work derives from `PeriodicBackgroundService` and implements one iteration. The base class waits for `ApplicationStarted`, applies `StartupDelay`, serializes iterations, exposes unexpected failures through `BackgroundService.ExecuteTask`, and applies `StopTimeout` during shutdown.
+
+```csharp
+public sealed class CleanupService(IHostApplicationLifetime lifetime, TimeProvider timeProvider)
+    : PeriodicBackgroundService(
+        new()
+        {
+            StartupDelay = TimeSpan.FromSeconds(15),
+            Interval = TimeSpan.FromHours(1),
+            StopTimeout = TimeSpan.FromSeconds(10)
+        },
+        lifetime,
+        timeProvider)
+{
+    protected override Task ExecuteIterationAsync(CancellationToken cancellationToken) =>
+        CleanupAsync(cancellationToken);
+}
 ```
 
 ## Related Documentation

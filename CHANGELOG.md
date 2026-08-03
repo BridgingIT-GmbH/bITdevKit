@@ -4,6 +4,14 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
+## [10.0.110] - 2026-07-26
+
+- public documentation restyled (multiple themes) and updated for clarity, accuracy, and consistency.
+- Added blob storage support with upload and download capabilities for binary content, including content-type-aware transfer behavior and reusable storage helpers.
+- Added storage permalink support for blobs, files, and documents, with registry, metrics, and change-queue integration to make stored content easier to reference and manage.
+- Improved storage paging and document/file storage behavior for more predictable handling of larger content sets.
+- Refined storage dashboard experience with clearer UI elements and aligned storage page titles for a more consistent experience.
+- added storage console commands for blob, file, and document storage operations.
 - Redesigned the preview Entity Framework bulk-insert feature as the Domain-owned `IEntityBulkInserter<TEntity>` capability with independent registration, explicit ordered decorators, root-table mapping preflight, and one-operation transactions.
 - Moved the preview `IEntityBulkInserter<TEntity>` contract from `Infrastructure.EntityFramework` to `Domain.Repositories` without a compatibility alias. This is an intentional preview-breaking namespace change; the feature had no known consumers.
 - Native bulk inserts no longer infer repository decorators or EF interceptors. Providers without a native writer return typed precondition failures; inputs remain detached and database-generated identity/default/computed/rowversion values are not returned.

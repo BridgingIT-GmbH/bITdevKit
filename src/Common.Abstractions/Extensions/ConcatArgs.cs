@@ -13,6 +13,18 @@ using System.Threading.Tasks;
 
 public static partial class Extensions
 {
+    /// <summary>
+    /// Concatenates two argument arrays, treating null arrays as empty.
+    /// </summary>
+    /// <param name="args0">The first argument array.</param>
+    /// <param name="args1">The second argument array.</param>
+    /// <returns>The combined arguments, or the non-empty input array when the other input is null or empty.</returns>
+    /// <example>
+    /// <code>
+    /// var arguments = new object[] { "first" }.ConcatArgs(["second"]);
+    /// // ["first", "second"]
+    /// </code>
+    /// </example>
     public static object[] ConcatArgs(this object[] args0, object[] args1)
     {
         var a0 = args0 ?? [];

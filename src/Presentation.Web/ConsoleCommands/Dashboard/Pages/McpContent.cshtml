@@ -47,8 +47,18 @@
     .dashboard-mcp-code {
         max-width: 26rem;
         overflow: hidden;
+        text-align: left;
         text-overflow: ellipsis;
         white-space: nowrap;
+        direction: rtl;
+    }
+
+    .dashboard-mcp-left-truncate {
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        direction: rtl;
     }
 
     .dashboard-mcp-table {
@@ -131,7 +141,7 @@ else
         <section class="card dashboard-mcp-span-3">
             <div class="card-body p-2">
                 <div class="dashboard-mcp-label">Target</div>
-                <div class="dashboard-mcp-value text-truncate">@viewModel.McpServerTarget</div>
+                <div class="dashboard-mcp-value dashboard-mcp-left-truncate">@viewModel.McpServerTarget</div>
                 <div class="dashboard-mcp-subvalue">@viewModel.McpServerSelectionSource</div>
             </div>
         </section>

@@ -28,7 +28,7 @@ public static partial class ServiceCollectionExtensions
         // store client > store provider
         context.Services.TryAddScoped<IDocumentStoreClient<CacheDocument>>(sp =>
             new DocumentStoreClient<CacheDocument>(
-                new EntityFrameworkDocumentStoreProvider<TContext>(sp, sp.GetService<ILoggerFactory>())));
+                new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<IServiceScopeFactory>())));
 
         // cache provider > distrbuted cache + store client
         context.Services.TryAddTransient<ICacheProvider>(sp =>

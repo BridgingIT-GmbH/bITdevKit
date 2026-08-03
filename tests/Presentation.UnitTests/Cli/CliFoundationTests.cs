@@ -24,6 +24,20 @@ public sealed class CliFoundationTests
     }
 
     [Fact]
+    public void McpToolCatalog_WhenGuidanceGetIsAdvertised_IncludesBlobStorageTopic()
+    {
+        // Arrange
+        var sut = new McpToolCatalog();
+
+        // Act
+        var guidanceTool = sut.Tools.Single(tool => tool.Name == "bdk_guidance_get");
+        var schema = JsonSerializer.Serialize(guidanceTool.InputSchema);
+
+        // Assert
+        schema.ShouldContain("blob_storage");
+    }
+
+    [Fact]
     public void CliArgumentParser_WhenQuietAndVerbose_ReturnsInvalidArguments()
     {
         // Arrange & Act
@@ -1263,8 +1277,47 @@ public sealed class CliFoundationTests
         json.ShouldContain("caching");
         json.ShouldContain("commands_queries");
         json.ShouldContain("domain_events");
+        json.ShouldContain("blob_storage");
         json.ShouldContain("document_storage");
         json.ShouldContain("monitoring");
+    }
+
+    [Fact]
+    public void McpGuidanceTools_WhenTopicIsBlobStorage_ReturnsBlobGuidance()
+    {
+        // Arrange
+        var sut = new McpGuidanceTools();
+        var arguments = JsonDocument.Parse("{\"topic\":\"blob_storage\"}").RootElement;
+
+        // Act
+        var response = sut.Get(arguments);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        response.Next.Select(next => next.Tool).ShouldContain("bdk_docs_search");
+        response.Next.Select(next => next.Tool).ShouldContain("bdk_api_search");
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("features-storage-blobs.md");
+        json.ShouldContain("IBlobStoreClientFactory");
+        json.ShouldContain("UploadFileAsync");
+    }
+
+    [Fact]
+    public void McpGuidanceTools_WhenQueryMentionsBlobStorage_ReturnsBlobGuidance()
+    {
+        // Arrange
+        var sut = new McpGuidanceTools();
+        var arguments = JsonDocument.Parse("{\"query\":\"give me guidance for blob storage uploads and downloads\"}").RootElement;
+
+        // Act
+        var response = sut.Get(arguments);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("blob_storage");
+        json.ShouldContain("features-storage-blobs.md");
+        json.ShouldContain("stream-first");
     }
 
     [Fact]

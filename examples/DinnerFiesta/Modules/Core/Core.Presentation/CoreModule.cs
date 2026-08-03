@@ -132,29 +132,22 @@ public class CoreModule() : WebModuleBase(nameof(CoreModule).ToLower())
         //    .UseConnectionString("connectionstring"))
         //    .WithHealthChecks();
 
-        services
-            .AddEntityFrameworkDocumentStoreClient<DinnerSnapshotDocument,
-                CoreDbContext>() // no need to setup the client+provider (sql)
+        services.AddDocumentStorage()
             .WithBehavior<LoggingDocumentStoreClientBehavior<DinnerSnapshotDocument>>()
-            .WithBehavior((inner, sp) =>
+            .WithBehavior<DinnerSnapshotDocument, TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>>((inner, sp) =>
                 new TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>(sp.GetRequiredService<ILoggerFactory>(),
                     inner,
-                    new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+                    new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }))
+            .WithEntityFrameworkClient<DinnerSnapshotDocument, CoreDbContext>();
 
-        //services.AddAzureBlobDocumentStoreClient<DinnerSnapshotDocument>()
-        //    .WithBehavior<LoggingDocumentStoreClientBehavior<DinnerSnapshotDocument>>()
-        //    .WithBehavior((inner, sp) =>
-        //        new TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>(sp.GetRequiredService<ILoggerFactory>(), inner, new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+        //services.AddDocumentStorage()
+        //    .WithAzureBlobClient<DinnerSnapshotDocument>();
 
-        //services.AddAzureTableDocumentStoreClient<DinnerSnapshotDocument>()
-        //    .WithBehavior<LoggingDocumentStoreClientBehavior<DinnerSnapshotDocument>>()
-        //    .WithBehavior((inner, sp) =>
-        //        new TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>(sp.GetRequiredService<ILoggerFactory>(), inner, new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+        //services.AddDocumentStorage()
+        //    .WithAzureTableClient<DinnerSnapshotDocument>();
 
-        //services.AddCosmosDocumentStoreClient<DinnerSnapshotDocument>(o => o.Database(this.Name))
-        //    .WithBehavior<LoggingDocumentStoreClientBehavior<DinnerSnapshotDocument>>()
-        //    .WithBehavior((inner, sp) =>
-        //        new TimeoutDocumentStoreClientBehavior<DinnerSnapshotDocument>(sp.GetRequiredService<ILoggerFactory>(), inner, new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+        //services.AddDocumentStorage()
+        //    .WithCosmosClient<DinnerSnapshotDocument>(o => o.Database(this.Name));
 
         //services.AddCosmosSqlRepository<Dinner>(o => o.Database(this.Name).PartitionKey(e => e.Location.Country))
         //    .WithBehavior<RepositoryTracingBehavior<Dinner>>()

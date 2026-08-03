@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -81,9 +82,9 @@ static class DiagnosticTablesBuilder
         var info = GC.GetGCMemoryInfo();
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Metric"); table.AddColumn("Value");
-        table.AddRow("TotalMemoryMB", (GC.GetTotalMemory(false) / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("HeapSizeMB", (info.HeapSizeBytes / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("FragmentedMB", (info.FragmentedBytes / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("TotalMemoryMB", ByteSize.ToMegabytes(GC.GetTotalMemory(false)).ToString("F2"));
+        table.AddRow("HeapSizeMB", ByteSize.ToMegabytes(info.HeapSizeBytes).ToString("F2"));
+        table.AddRow("FragmentedMB", ByteSize.ToMegabytes(info.FragmentedBytes).ToString("F2"));
         table.AddRow("Gen0", GC.CollectionCount(0).ToString());
         table.AddRow("Gen1", GC.CollectionCount(1).ToString());
         table.AddRow("Gen2", GC.CollectionCount(2).ToString());
@@ -117,11 +118,11 @@ static class DiagnosticTablesBuilder
         var info = GC.GetGCMemoryInfo();
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Metric"); table.AddColumn("Value");
-        table.AddRow("ManagedMB", (managed / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("WorkingSetMB", (proc.WorkingSet64 / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("PrivateMemMB", (proc.PrivateMemorySize64 / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("HeapSizeMB", (info.HeapSizeBytes / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("FragmentedMB", (info.FragmentedBytes / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("ManagedMB", ByteSize.ToMegabytes(managed).ToString("F2"));
+        table.AddRow("WorkingSetMB", ByteSize.ToMegabytes(proc.WorkingSet64).ToString("F2"));
+        table.AddRow("PrivateMemMB", ByteSize.ToMegabytes(proc.PrivateMemorySize64).ToString("F2"));
+        table.AddRow("HeapSizeMB", ByteSize.ToMegabytes(info.HeapSizeBytes).ToString("F2"));
+        table.AddRow("FragmentedMB", ByteSize.ToMegabytes(info.FragmentedBytes).ToString("F2"));
         table.AddRow("Gen0", GC.CollectionCount(0).ToString());
         table.AddRow("Gen1", GC.CollectionCount(1).ToString());
         table.AddRow("Gen2", GC.CollectionCount(2).ToString());
@@ -145,8 +146,8 @@ static class DiagnosticTablesBuilder
         table.AddRow("Requests.Failures", stats.TotalFailures.ToString());
         table.AddRow("Requests.FailureRate%", failureRate.ToString("F2"));
         table.AddRow("Latency.AvgMs", avgLatency.ToString("F2"));
-        table.AddRow("ManagedMB", (managed / (1024 * 1024.0)).ToString("F2"));
-        table.AddRow("WorkingSetMB", (proc.WorkingSet64 / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("ManagedMB", ByteSize.ToMegabytes(managed).ToString("F2"));
+        table.AddRow("WorkingSetMB", ByteSize.ToMegabytes(proc.WorkingSet64).ToString("F2"));
         table.AddRow("Threads", proc.Threads.Count.ToString());
         return table;
         static string Format(TimeSpan ts) => $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
@@ -163,7 +164,7 @@ static class DiagnosticTablesBuilder
         table.AddRow("GC.Latency", GCSettings.LatencyMode.ToString());
         table.AddRow("ProcessId", proc.Id.ToString());
         table.AddRow("StartTime", proc.StartTime.ToString("u"));
-        table.AddRow("WorkingSetMB", (proc.WorkingSet64 / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("WorkingSetMB", ByteSize.ToMegabytes(proc.WorkingSet64).ToString("F2"));
         table.AddRow("AssembliesLoaded", AppDomain.CurrentDomain.GetAssemblies().Length.ToString());
         table.AddRow("Build.Config", GetBuildConfiguration());
         return table;

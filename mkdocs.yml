@@ -73,10 +73,12 @@ nav:
           - Exception Handling: reference/features-presentation-exception-handling.md
           - AppState: reference/features-presentation-appstate.md
       - Storage, Scheduling and Utilities:
-          - StartupTasks: reference/features-startuptasks.md
+          - Startup Tasks: reference/features-startuptasks.md
           - Jobs: reference/features-jobs.md
-          - JobScheduling: reference/features-jobscheduling.md
-          - DocumentStorage: reference/features-storage-documents.md
+          - Job Scheduling: reference/features-jobscheduling.md
+          - Blob Storage: reference/features-storage-blobs.md
+          - Document Storage: reference/features-storage-documents.md
+          - Storage Permalinks: reference/features-storage-permalinks.md
           - FileStorage: reference/features-storage-files.md
           - Storage Monitoring: reference/features-storage-monitoring.md
           - Log Entries: reference/features-log-entries.md
@@ -86,31 +88,69 @@ nav:
 
 theme:
   name: material
+  custom_dir: docs/site/overrides
   logo: assets/images/bITDevKit_Icon.svg
   favicon: assets/images/bITDevKit_Icon.svg
   font: false
   features:
     - navigation.instant
+    - navigation.path
     - navigation.top
     - search.highlight
     - search.share
     - content.code.copy
     - content.tabs.link
   palette:
+    - media: "(prefers-color-scheme)"
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-auto
+        name: Use system theme
     - media: "(prefers-color-scheme: light)"
-      scheme: default
+      scheme: light
       primary: custom
       accent: custom
       toggle:
         icon: material/weather-night
-        name: Switch to dark mode
+        name: Use light theme
     - media: "(prefers-color-scheme: dark)"
-      scheme: slate
+      scheme: dark
       primary: custom
       accent: custom
       toggle:
         icon: material/weather-sunny
-        name: Switch to light mode
+        name: Use dark theme
+    - scheme: catppuccin
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Catppuccin theme
+    - scheme: darkforest
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Darkforest theme
+    - scheme: carbon
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Carbon theme
+    - scheme: tokionights
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Tokyo Night theme
+    - scheme: matrix
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Matrix theme
 
 plugins:
   - search
@@ -134,7 +174,14 @@ markdown_extensions:
       alternate_style: true
 
 extra_css:
+  - assets/stylesheets/themes.css
   - assets/stylesheets/extra.css
+  - assets/stylesheets/theme-picker.css
+
+extra_javascript:
+  - assets/javascripts/disable-keyboard-shortcuts.js
+  - assets/javascripts/context7-widget.js
+  - assets/javascripts/theme-picker.js
 
 extra_javascript:
   - assets/javascripts/disable-keyboard-shortcuts.js

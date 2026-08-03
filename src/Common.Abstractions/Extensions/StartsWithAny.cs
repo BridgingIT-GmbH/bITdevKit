@@ -7,6 +7,12 @@ namespace BridgingIT.DevKit.Common;
 
 public static partial class Extensions
 {
+    /// <summary>Determines whether a string begins with any supplied prefix.</summary>
+    /// <param name="source">The string to inspect.</param>
+    /// <param name="items">The prefixes to compare.</param>
+    /// <param name="comp">The comparison mode.</param>
+    /// <returns><see langword="true" /> when a prefix matches; otherwise <see langword="false" />.</returns>
+    /// <example><code>var isHttp = url.StartsWithAny(["http://", "https://"]);</code></example>
     public static bool StartsWithAny(
         this string source,
         IEnumerable<string> items,

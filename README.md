@@ -118,7 +118,7 @@ The best entry point into the current documentation set is the
 - [StartupTasks](./docs/features-startuptasks.md)
 - [Jobs](./docs/features-jobs.md)
 - [JobScheduling](./docs/features-jobscheduling.md) (legacy Quartz-backed feature)
-- [DocumentStorage](./docs/features-storage-documents.md)
+- [DocumentStorage](./docs/features-storage-documents.md) - typed documents with concurrency, integrity, transforms, expiration/retention, and managed provider resources
 - [FileStorage](./docs/features-storage-files.md)
 - [Storage Monitoring](./docs/features-storage-monitoring.md)
 - [Log Entries](./docs/features-log-entries.md)
@@ -153,7 +153,7 @@ The best entry point into the current documentation set is the
 - [GettingStarted (Basic)](https://github.com/bridgingIT/bITdevKit.Examples.GettingStarted)
 - [BookFiesta (DDD)](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.BookFiesta)
 - [EventStore (CQRS)](https://github.com/bridgingit/bitdevkit/examples)
-- [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
+- [WeatherFiesta](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherFiesta)
 
 ## Performance Benchmarks
 

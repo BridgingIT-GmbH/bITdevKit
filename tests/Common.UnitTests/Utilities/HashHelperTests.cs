@@ -90,6 +90,19 @@ public class HashHelperTests
     }
 
     [Fact]
+    public async Task ComputeSha256Async_GivenStream_ReturnsCorrectHash()
+    {
+        // Arrange
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes("abc"));
+
+        // Act
+        var result = await HashHelper.ComputeSha256Async(stream, bufferSize: 2);
+
+        // Assert
+        result.ShouldBe("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+    }
+
+    [Fact]
     public void Compute_GivenObject_ReturnsCorrectHash()
     {
         // Arrange

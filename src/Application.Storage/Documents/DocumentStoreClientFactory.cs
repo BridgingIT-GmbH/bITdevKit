@@ -8,14 +8,14 @@ namespace BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Resolves dashboard adapters for registered typed document-store clients.
+/// Resolves keyed typed clients and dashboard accessors without constructing or caching them.
 /// </summary>
 /// <param name="serviceProvider">The service provider used to resolve typed clients.</param>
 /// <param name="descriptors">The registered document-store client descriptors.</param>
 /// <example>
 /// <code>
 /// var accessor = factory.Create("myapp.person");
-/// var page = await accessor.ListPageResultAsync(query, cancellationToken);
+/// var page = await accessor.ListPageAsync(query, cancellationToken);
 /// </code>
 /// </example>
 public sealed class DocumentStoreClientFactory(
@@ -40,9 +40,12 @@ public sealed class DocumentStoreClientFactory(
             return null;
         }
 
-        return (IDocumentStoreClientAccessor)ActivatorUtilities.CreateInstance(
-            serviceProvider,
-            typeof(DocumentStoreClientAccessor<>).MakeGenericType(descriptor.DocumentType),
-            descriptor);
+        var key = new DocumentStoreServiceKey(descriptor.DocumentType, descriptor.Name);
+        return serviceProvider.GetKeyedService<IDocumentStoreClientAccessor>(key);
     }
+
+    /// <inheritdoc />
+    public IDocumentStoreClient<T> CreateClient<T>(string name) where T : class, new() =>
+        serviceProvider.GetKeyedService<IDocumentStoreClient<T>>(
+            new DocumentStoreServiceKey(typeof(T), DocumentStorageBuilderContext.NormalizeName(name)));
 }

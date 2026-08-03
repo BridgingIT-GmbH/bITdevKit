@@ -51,16 +51,16 @@ That sequence gives you the shortest path to understanding how the kit is intend
 - If you are evaluating the architectural approach, start with the [DDD Introduction](reference/introduction-ddd-guide.md), [Domain](reference/features-domain.md), [Domain Repositories](reference/features-domain-repositories.md), and [Domain Specifications](reference/features-domain-specifications.md).
 - If you are building application workflows, start with [Results](reference/features-results.md), [Application Commands and Queries](reference/features-application-commands-queries.md), [Application Events](reference/features-application-events.md), and [Requester and Notifier](reference/features-requester-notifier.md).
 - If you are structuring a modular monolith, start with [Modules](reference/features-modules.md), [Pipelines](reference/features-pipelines.md), and [Presentation Endpoints](reference/features-presentation-endpoints.md).
-- If you are integrating operational infrastructure, start with [Messaging](reference/features-messaging.md), [Queueing](reference/features-queueing.md), [Jobs](reference/features-jobs.md), [DocumentStorage](reference/features-storage-documents.md), and [FileStorage](reference/features-storage-files.md).
+- If you are integrating operational infrastructure, start with [Messaging](reference/features-messaging.md), [Queueing](reference/features-queueing.md), [Jobs](reference/features-jobs.md), [BlobStorage](reference/features-storage-blobs.md), [DocumentStorage](reference/features-storage-documents.md), and [FileStorage](reference/features-storage-files.md).
 
 ## Explore the example applications
 
 The repository includes several examples that show the kit in practice:
 
 - [GettingStarted](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted): the canonical onboarding project and the recommended first hands-on entry point.
-- [DoFiesta](https://github.com/bridgingIT/bITdevKit/tree/main/examples/DoFiesta): broader example application using the devkit in a realistic host setup.
+- [DoFiesta](https://github.com/bridgingIT/bITdevKit/tree/main/examples/DoFiesta): full-stack, domain-driven example with a Blazor WebAssembly frontend and ASP.NET Core API backend.
 - [EventSourcingDemo](https://github.com/bridgingIT/bITdevKit/tree/main/examples/EventSourcingDemo): example for event-sourcing-oriented scenarios.
-- [WeatherForecast](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherForecast): lightweight example for focused experimentation.
+- [WeatherFiesta](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherFiesta): weather dashboard demonstrating ActiveEntity, service-agent abstractions, requester pipelines, scheduled ingestion, subscriptions, and operational tooling.
 
 If you want the shortest practical route, start with `GettingStarted` and read it together with the
 docs for `Domain`, `Results`, `Requester and Notifier`, `Modules`, and `Presentation Endpoints`.

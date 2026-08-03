@@ -42,12 +42,13 @@ public class DocumentStoreClientBuilderContextTests : IDisposable
                 .StartupDelay("00:00:05")
                 .PurgeOnStartup());
 
-        services.AddEntityFrameworkDocumentStoreClient<PersonStubDocument, StubDbContext>()
+        services.AddDocumentStorage()
             .WithBehavior<LoggingDocumentStoreClientBehavior<PersonStubDocument>>()
-            .WithBehavior((inner, sp) =>
+            .WithBehavior<PersonStubDocument, TimeoutDocumentStoreClientBehavior<PersonStubDocument>>((inner, sp) =>
                 new TimeoutDocumentStoreClientBehavior<PersonStubDocument>(sp.GetRequiredService<ILoggerFactory>(),
                     inner,
-                    new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }));
+                    new TimeoutDocumentStoreClientBehaviorOptions { Timeout = 30.Seconds() }))
+            .WithEntityFrameworkClient<PersonStubDocument, StubDbContext>();
 
         this.serviceProvider = services.BuildServiceProvider();
     }
@@ -83,7 +84,8 @@ public class DocumentStoreClientBuilderContextTests : IDisposable
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddDbContext<StubDbContext>(options => options.UseSqlite(connection));
-        services.AddEntityFrameworkDocumentStoreClient<PersonStubDocument, StubDbContext>(
+        services.AddDocumentStorage(options => options.UseLifetime(ServiceLifetime.Singleton))
+            .WithEntityFrameworkClient<PersonStubDocument, StubDbContext>(
             lifetime: ServiceLifetime.Singleton,
             configure: options => options.LeaseDuration = TimeSpan.FromSeconds(5));
 

@@ -32,16 +32,13 @@ public sealed class ConsoleCommandExecutor
         ConsoleCommandExecutionSource source,
         CancellationToken cancellationToken = default)
     {
-        ConsoleCommandHistory.Initialize(Assembly.GetEntryAssembly()?.GetName().Name);
-
         if (string.IsNullOrWhiteSpace(commandLine))
         {
             return ConsoleCommandExecutionResult.Success();
         }
 
-        ConsoleCommandHistory.Append(commandLine);
         var tokens = SplitArgs(commandLine);
-        return await this.ExecuteAsync(tokens, console, services, source, cancellationToken).ConfigureAwait(false);
+        return await this.ExecuteAsync(tokens, console, services, source, commandLine, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -59,11 +56,23 @@ public sealed class ConsoleCommandExecutor
         IServiceProvider services,
         ConsoleCommandExecutionSource source,
         CancellationToken cancellationToken = default)
+        => await this.ExecuteAsync(tokens, console, services, source, BuildCommandLine(tokens), cancellationToken).ConfigureAwait(false);
+
+    private async Task<ConsoleCommandExecutionResult> ExecuteAsync(
+        string[] tokens,
+        IAnsiConsole console,
+        IServiceProvider services,
+        ConsoleCommandExecutionSource source,
+        string historyLine,
+        CancellationToken cancellationToken = default)
     {
         if (tokens.Length == 0)
         {
             return ConsoleCommandExecutionResult.Success();
         }
+
+        ConsoleCommandHistory.Initialize(Assembly.GetEntryAssembly()?.GetName().Name);
+        ConsoleCommandHistory.Append(historyLine);
 
         var primary = tokens[0];
         using var scope = services.CreateScope();
@@ -197,6 +206,21 @@ public sealed class ConsoleCommandExecutor
         }
 
         return list.ToArray();
+    }
+
+    private static string BuildCommandLine(IEnumerable<string> tokens) =>
+        string.Join(' ', tokens.Select(EscapeToken));
+
+    private static string EscapeToken(string token)
+    {
+        if (string.IsNullOrEmpty(token))
+        {
+            return "\"\"";
+        }
+
+        return token.Any(char.IsWhiteSpace)
+            ? $"\"{token.Replace("\"", "\\\"", StringComparison.Ordinal)}\""
+            : token;
     }
 }
 

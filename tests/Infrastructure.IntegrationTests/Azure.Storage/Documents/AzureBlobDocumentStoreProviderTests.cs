@@ -571,7 +571,7 @@ public class AzureBlobDocumentStoreProviderTests
     }
 
     [Fact]
-    public async Task UpsertResultAsync_WithReservedSeparatorInKey_ReturnsInvalidQueryFailure()
+    public async Task UpsertResultAsync_WithReservedSeparatorInKey_RoundTripsKey()
     {
         // Act
         var result = await this.sut.UpsertResultAsync(
@@ -585,13 +585,15 @@ public class AzureBlobDocumentStoreProviderTests
                 Age = 33
             });
 
+        var read = await this.sut.GetResultAsync<AzureBlobPagingPersonStub>(new DocumentKey("partition__bad", "row-1"));
+
         // Assert
-        result.IsSuccess.ShouldBeFalse();
-        result.Errors.ShouldContain(e => e.GetType().Name == "DocumentStoreInvalidQueryError");
+        result.IsSuccess.ShouldBeTrue();
+        read.IsSuccess.ShouldBeTrue();
     }
 
     [Fact]
-    public async Task ListPageResultAsync_WithExistingBlobContainingMultipleSeparators_ParsesFirstSeparatorOnly()
+    public async Task ListPageResultAsync_WithLegacyUnencodedBlob_DoesNotTreatItAsDocument()
     {
         // Arrange
         var partitionKey = "existing-blob-" + DateTime.UtcNow.Ticks;
@@ -614,7 +616,7 @@ public class AzureBlobDocumentStoreProviderTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.Items.ShouldContain(new DocumentKey(partitionKey, rowKey));
+        result.Value.Items.ShouldNotContain(new DocumentKey(partitionKey, rowKey));
     }
 
     private async Task SeedPagingPeopleAsync(AzureBlobDocumentStoreProvider provider, string partitionKey, string rowPrefix, int count)

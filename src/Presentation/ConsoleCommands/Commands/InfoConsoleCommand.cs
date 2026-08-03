@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using BridgingIT.DevKit.Common;
 using Spectre.Console;
 using System.Diagnostics;
 using System.Runtime;
@@ -37,7 +38,7 @@ public class InfoConsoleCommand : ConsoleCommandBase
         table.AddRow("GC.Mode", gcMode);
         table.AddRow("GC.Latency", latency.ToString());
         table.AddRow("Build.Config", config);
-        table.AddRow("WorkingSetMB", (proc.WorkingSet64 / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("WorkingSetMB", ByteSize.ToMegabytes(proc.WorkingSet64).ToString("F2"));
         table.AddRow("StartTime", proc.StartTime.ToString("u"));
         console.Write(table);
 

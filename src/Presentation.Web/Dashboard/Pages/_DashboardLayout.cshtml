@@ -25,7 +25,7 @@
     <script>
         (function() { // prevents screen flashing on navigation
             const theme = localStorage.getItem('theme') || 'dark';
-            const dashboardThemes = ['light', 'dark', 'catppuccin', 'darkforest', 'carbon', 'tokioknights', 'matrix', 'system'];
+            const dashboardThemes = ['light', 'dark', 'catppuccin', 'darkforest', 'carbon', 'tokionights', 'matrix', 'system'];
             const selectedTheme = dashboardThemes.includes(theme) ? theme : 'dark';
             const effectiveTheme = selectedTheme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : selectedTheme;
             document.documentElement.setAttribute('data-bs-theme', effectiveTheme);
@@ -607,7 +607,7 @@
             --dashboard-active-fg: var(--bs-primary);
         }
 
-        [data-bs-theme="tokioknights"] {
+        [data-bs-theme="tokionights"] {
             --bs-primary: #7aa2f7;
             --bs-primary-rgb: 122,162,247;
             --bs-secondary: #bb9af7;
@@ -906,8 +906,10 @@
             overflow: hidden;
             padding-left: 0 !important;
             padding-right: 0 !important;
+            text-align: left;
             text-overflow: ellipsis;
             white-space: nowrap;
+            direction: rtl;
         }
 
         @@media (min-width: 768px) {
@@ -948,8 +950,10 @@
             min-width: 0;
             max-width: min(28rem, 34vw);
             overflow: hidden;
+            text-align: left;
             text-overflow: ellipsis;
             white-space: nowrap;
+            direction: rtl;
         }
 
         .dashboard-navbar-title::before {
@@ -1645,7 +1649,7 @@
         [data-bs-theme="catppuccin"] .btn-close,
         [data-bs-theme="darkforest"] .btn-close,
         [data-bs-theme="carbon"] .btn-close,
-        [data-bs-theme="tokioknights"] .btn-close,
+        [data-bs-theme="tokionights"] .btn-close,
         [data-bs-theme="matrix"] .btn-close {
             filter: invert(1) grayscale(100%) brightness(200%);
         }
@@ -1754,7 +1758,7 @@
                         <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="catppuccin"><span class="dashboard-theme-swatch" style="--theme-bg:#11111b;--theme-swatch:#89b4fa;--theme-accent:#f5c2e7"></span>Catppuccin</button></li>
                         <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="darkforest"><span class="dashboard-theme-swatch" style="--theme-bg:#07120d;--theme-swatch:#9ece6a;--theme-accent:#e0af68"></span>Darkforest</button></li>
                         <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="carbon"><span class="dashboard-theme-swatch" style="--theme-bg:#161616;--theme-swatch:#78a9ff;--theme-accent:#ff7eb6"></span>Carbon</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="tokioknights"><span class="dashboard-theme-swatch" style="--theme-bg:#0f1021;--theme-swatch:#7aa2f7;--theme-accent:#bb9af7"></span>Tokyo Night</button></li>
+                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="tokionights"><span class="dashboard-theme-swatch" style="--theme-bg:#0f1021;--theme-swatch:#7aa2f7;--theme-accent:#bb9af7"></span>Tokyo Night</button></li>
                         <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="matrix"><span class="dashboard-theme-swatch" style="--theme-bg:#020802;--theme-swatch:#00ff66;--theme-accent:#39ff14"></span>Matrix</button></li>
                         <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="light"><span class="dashboard-theme-swatch" style="--theme-bg:#f7f7f2;--theme-swatch:#0f62fe;--theme-accent:#8a3ffc"></span>Light</button></li>
                         <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="system"><span class="dashboard-theme-swatch" style="--theme-bg:#151414;--theme-swatch:#a59f99;--theme-accent:#f7f7f2"></span>System</button></li>
@@ -1825,7 +1829,7 @@
                 catppuccin: 'catppuccin',
                 darkforest: 'darkforest',
                 carbon: 'carbon',
-                tokioknights: 'tokioknights',
+                tokionights: 'tokionights',
                 matrix: 'matrix',
                 system: 'system'
             },
@@ -1835,7 +1839,7 @@
                 catppuccin: 'Catppuccin',
                 darkforest: 'Darkforest',
                 carbon: 'Carbon',
-                tokioknights: 'Tokyo Night',
+                tokionights: 'Tokyo Night',
                 matrix: 'Matrix',
                 system: 'System'
             },

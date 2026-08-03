@@ -80,7 +80,7 @@ else
                                 <td class="text-muted small" title="@FormatTimestamp(message.CreatedDate)">@FormatRelative(message.CreatedDate)</td>
                                 <td>@DisplayValue(message.QueueName)</td>
                                 <td title="@DisplayValue(message.Type)">@TrimValue(message.Type, 42)</td>
-                                <td class="text-muted small" title="@DisplayValue(message.MessageId)">@TrimFromStart(message.MessageId, 24)</td>
+                                <td class="text-muted small" title="@DisplayValue(message.MessageId)">@ShortenMessageId(message.MessageId)</td>
                                 <td class="text-end">@message.AttemptCount</td>
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(message.LockedBy))
@@ -191,7 +191,7 @@ else
                         <div class="border-bottom py-2">
                             <div class="fw-medium" title="@message.Type">@TrimValue(message.Type, 54)</div>
                             <div class="text-muted small">Queue: @DisplayValue(message.QueueName)</div>
-                            <div class="text-muted small">@TrimFromStart(message.MessageId, 28)</div>
+                            <div class="text-muted small">@ShortenMessageId(message.MessageId)</div>
                             <div class="text-muted small">@FormatRelative(message.CreatedDate)</div>
                         </div>
                     }
@@ -386,7 +386,11 @@ else
             return "-";
         }
 
-        return value.Length <= maxLength ? value : $"{value[..maxLength]}...";
+        return Shortener.Apply(value, new ShorteningOptions
+        {
+            MaximumLength = maxLength,
+            Separator = "."
+        });
     }
 
     private static string TrimFromStart(string value, int maxLength)
@@ -396,8 +400,15 @@ else
             return "-";
         }
 
-        return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+        return Shortener.Apply(value, new ShorteningOptions
+        {
+            MaximumLength = maxLength,
+            Strategy = Shortener.LeftTruncate
+        });
     }
+
+    private static string ShortenMessageId(string value) =>
+        TrimFromStart(value, 18);
 
     private static string CreateMessageContext(QueueMessageInfo message, QueueMessageContentInfo content)
     {

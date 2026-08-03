@@ -7,8 +7,9 @@ namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 using Common;
+using Newtonsoft.Json;
 
 public class CosmosStorageDocument
 {
@@ -26,10 +27,19 @@ public class CosmosStorageDocument
     [MaxLength(512)]
     public string RowKey { get; set; }
 
-    public string Content { get; set; }
+    public byte[] Content { get; set; }
 
-    [MaxLength(64)]
+    [MaxLength(80)]
     public string ContentHash { get; set; }
+
+    [MaxLength(80)]
+    public string StoredContentHash { get; set; }
+
+    public DateTimeOffset? ExpiresAt { get; set; }
+
+    public int Ttl { get; set; } = -1;
+
+    public string TransformMetadataJson { get; set; }
 
     [Required]
     public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
@@ -42,17 +52,20 @@ public class CosmosStorageDocument
     [Column("Properties")]
     public string PropertiesJson
     {
-        get =>
-            this.Properties.IsNullOrEmpty()
-                ? null
-                : JsonSerializer.Serialize(this.Properties, DefaultJsonSerializerOptions.Create());
-        set =>
-            this.Properties = value.IsNullOrEmpty()
-                ? []
-                : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
-                    DefaultJsonSerializerOptions.Create());
+        get => EncodeBag(this.Properties);
+        set => this.Properties = DecodeBag(value);
     }
 
-    [Timestamp]
-    public byte[] RowVersion { get; set; }
+    [JsonProperty(PropertyName = "_etag")]
+    [JsonPropertyName("_etag")]
+    public string ETag { get; set; }
+
+    private static string EncodeBag(IDictionary<string, object> values) => values.IsNullOrEmpty()
+        ? null
+        : System.Text.Json.JsonSerializer.Serialize(values.ToDictionary(value => value.Key, value => PropertyBagScalarCodec.Encode(value.Value)));
+
+    private static IDictionary<string, object> DecodeBag(string value) => value.IsNullOrEmpty()
+        ? new Dictionary<string, object>()
+        : System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(value)
+            .ToDictionary(item => item.Key, item => PropertyBagScalarCodec.Decode(item.Value));
 }

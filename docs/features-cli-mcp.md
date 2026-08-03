@@ -239,6 +239,7 @@ The MCP catalog is stable. Tools can return structured unavailable responses whe
 | Logs and errors    | `bdk_logs_query`, `bdk_logs_tail`, `bdk_errors_recent`, `bdk_errors_details`, `bdk_correlation_inspect`                                 |
 | Messaging          | `bdk_messages_summary`, `bdk_messages_list`, `bdk_messages_details`, `bdk_messages_retry`, `bdk_messages_archive`, `bdk_messages_purge` |
 | Queueing           | `bdk_queueing_summary`, `bdk_queueing_messages`, `bdk_queueing_retry`, `bdk_queueing_pause_queue`, `bdk_queueing_purge`                  |
+| Blob Storage       | `bdk_blobs_summary`, `bdk_blobs_clients`, `bdk_blobs_probe`                                                                               |
 | Jobs               | `bdk_jobs_list`, `bdk_jobs_details`, `bdk_jobs_runs`, `bdk_jobs_trigger`, `bdk_jobs_purge_runs`                                          |
 | Orchestrations     | `bdk_orchestrations_list`, `bdk_orchestrations_instance_details`, `bdk_orchestrations_signal`, `bdk_orchestrations_purge`                |
 | Investigation      | `bdk_investigate_recent_errors`, `bdk_investigate_correlation`, `bdk_investigate_job_run`, `bdk_investigate_orchestration_instance`        |
@@ -279,6 +280,7 @@ The current guidance topics cover the major DevKit feature areas:
 - `rules`
 - `startuptasks`
 - `document_storage`
+- `blob_storage`
 - `file_storage`
 - `monitoring`
 - `dashboard`
@@ -315,6 +317,12 @@ Additional examples:
 ```json
 {
   "query": "give me guidance for document storage and file monitoring"
+}
+```
+
+```json
+{
+  "query": "give me guidance for blob storage uploads and downloads"
 }
 ```
 

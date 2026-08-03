@@ -16,7 +16,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 ///     RetryCount = 3,
 ///     RetryBackoff = TimeSpan.FromMilliseconds(250),
 ///     PageSize = 100,
-///     MaximumBufferedContentSize = 4 * 1024 * 1024
+///     MaximumBufferedContentSize = ByteSize.Megabytes(4)
 /// };
 /// </code>
 /// </example>
@@ -67,7 +67,7 @@ public class EntityFrameworkFileStorageConfiguration
     /// </summary>
     /// <example>
     /// <code>
-    /// configuration.MaximumBufferedContentSize = 4 * 1024 * 1024;
+    /// configuration.MaximumBufferedContentSize = ByteSize.Megabytes(4);
     /// </code>
     /// </example>
     public long? MaximumBufferedContentSize { get; set; }

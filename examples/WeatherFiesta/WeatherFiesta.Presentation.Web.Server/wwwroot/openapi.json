@@ -8888,7 +8888,54 @@
         }
       }
     },
-    "/_bdk/api/locations": {
+    "/_bdk/api/storage/permalinks/{id}": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Permalinks"
+        ],
+        "summary": "Download storage content by permalink",
+        "operationId": "_bdk.Storage.Permalinks.Download",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/storage/files/locations": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -8913,7 +8960,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/provider": {
+    "/_bdk/api/storage/files/{providerName}/provider": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -8955,7 +9002,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/health": {
+    "/_bdk/api/storage/files/{providerName}/health": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9007,7 +9054,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/files/exists": {
+    "/_bdk/api/storage/files/{providerName}/files/exists": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9076,7 +9123,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/files/content": {
+    "/_bdk/api/storage/files/{providerName}/files/content": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9225,7 +9272,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/files": {
+    "/_bdk/api/storage/files/{providerName}/files": {
       "delete": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9393,7 +9440,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/files/metadata": {
+    "/_bdk/api/storage/files/{providerName}/files/metadata": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9462,7 +9509,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/files/checksum": {
+    "/_bdk/api/storage/files/{providerName}/files/checksum": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9531,7 +9578,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/directories/exists": {
+    "/_bdk/api/storage/files/{providerName}/directories/exists": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9600,7 +9647,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/directories": {
+    "/_bdk/api/storage/files/{providerName}/directories": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9849,7 +9896,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/events": {
+    "/_bdk/api/storage/files/{providerName}/events": {
       "get": {
         "tags": [
           "_bdk.Storage.Files"
@@ -9959,7 +10006,7 @@
         }
       }
     },
-    "/_bdk/api/{providerName}/events/scan": {
+    "/_bdk/api/storage/files/{providerName}/events/scan": {
       "post": {
         "tags": [
           "_bdk.Storage.Files"
@@ -15144,6 +15191,9 @@
     },
     {
       "name": "_bdk.Queueing"
+    },
+    {
+      "name": "_bdk.Storage.Permalinks"
     },
     {
       "name": "_bdk.Storage.Files"

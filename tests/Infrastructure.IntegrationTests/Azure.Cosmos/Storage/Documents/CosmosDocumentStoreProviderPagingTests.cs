@@ -130,6 +130,13 @@ public class CosmosDocumentStoreProviderPagingTests
             CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
+        public Task<CosmosStorageDocument> UpsertItemAsync(
+            CosmosStorageDocument item,
+            object partitionKeyValue,
+            string ifMatchETag,
+            CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
         public Task<IEnumerable<CosmosStorageDocument>> ReadItemsAsync(
             Expression<Func<CosmosStorageDocument, bool>> expression,
             int? skip = null,
@@ -225,6 +232,20 @@ public class CosmosDocumentStoreProviderPagingTests
         public Task<bool> DeleteItemAsync(
             string id,
             object partitionKeyValue = null,
+            CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
+        public Task<bool> DeleteItemAsync(
+            string id,
+            object partitionKeyValue,
+            Guid expectedVersion,
+            CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
+        public Task<bool> DeleteItemAsync(
+            string id,
+            object partitionKeyValue,
+            string ifMatchETag,
             CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
     }

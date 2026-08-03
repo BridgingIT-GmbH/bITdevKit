@@ -1,0 +1,506 @@
+@using System.Net
+@using System.Text.Json
+@using BridgingIT.DevKit.Application.Storage
+@using BridgingIT.DevKit.Presentation.Web.Storage.Models
+@using Microsoft.Extensions.Logging
+@using BlobStorageDashboardRoutes = BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard.BlobStorageDashboardRoutes
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+    var permalinkAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/download";
+    var permalinkCopyAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/link";
+}
+
+<style>
+    #blobs-dashboard-root {
+        height: calc(100vh - 7.75rem);
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        overflow: hidden;
+    }
+
+    #blobs-dashboard-root .blobs-toolbar,
+    #blobs-dashboard-root .blobs-panel {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .1rem;
+        background: transparent;
+    }
+
+    #blobs-dashboard-root .blobs-toolbar {
+        flex: 0 0 auto;
+        padding: .55rem;
+    }
+
+    #blobs-dashboard-root .blobs-panel {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #blobs-dashboard-root .blobs-panel-header {
+        padding: .48rem .6rem;
+        border-bottom: 1px solid var(--bs-border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    #blobs-dashboard-root .blobs-panel-body {
+        min-height: 0;
+        overflow: auto;
+        padding: .45rem;
+    }
+
+    #blobs-dashboard-root .blobs-name-cell {
+        max-width: 26rem;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        direction: rtl;
+    }
+
+    #blobs-dashboard-root .blobs-hash-cell {
+        max-width: 13rem;
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        direction: rtl;
+    }
+
+    #blobs-dashboard-root .blobs-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: .18rem;
+    }
+
+    #blobs-dashboard-root .blobs-actions .btn {
+        --bs-btn-padding-y: .18rem;
+        --bs-btn-padding-x: .38rem;
+    }
+
+    #blobs-dashboard-root .form-label {
+        color: var(--bs-secondary-color);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        font-size: .68rem;
+    }
+
+    @@media (max-width: 991.98px) {
+        #blobs-dashboard-root {
+            height: auto;
+            overflow: visible;
+        }
+
+        #blobs-dashboard-root .blobs-actions {
+            opacity: 1;
+        }
+    }
+</style>
+
+<div id="blobs-dashboard-root"
+     data-store="@vm.SelectedStoreName"
+     data-container="@vm.Container"
+     data-prefix="@vm.Prefix"
+     data-take="@vm.Take"
+     data-allow-full-scan="@vm.AllowFullScan.ToString().ToLowerInvariant()"
+     data-continuation-token="@vm.ContinuationToken">
+    @if (!vm.IsAvailable)
+    {
+        <div class="alert alert-warning py-2 mb-0">
+            Blob storage is not registered. Call <code>AddBlobStorage()</code> and register at least one client.
+        </div>
+    }
+    else
+    {
+        @if (vm.Errors.Count > 0)
+        {
+            <div class="alert alert-danger py-2 mb-0">
+                @foreach (var error in vm.Errors)
+                {
+                    <div>@error</div>
+                }
+            </div>
+        }
+
+        <form class="blobs-toolbar" data-blobs-filter-form>
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-lg-2">
+                    <label class="form-label small mb-1" for="blobs-store">Store</label>
+                    <select id="blobs-store" class="form-select form-select-sm" name="store" @(vm.Stores.Count == 0 ? "disabled" : null)>
+                        @foreach (var store in vm.Stores)
+                        {
+                            <option value="@store.Name" title="@store.ProviderName" @(string.Equals(store.Name, vm.SelectedStoreName, StringComparison.OrdinalIgnoreCase) ? "selected" : null)>
+                                @store.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-12 col-lg-2">
+                    <label class="form-label small mb-1" for="blobs-container">Container</label>
+                    <select id="blobs-container" class="form-select form-select-sm" name="container" required>
+                        @foreach (var container in vm.Containers)
+                        {
+                            <option value="@container" @(string.Equals(container, vm.Container, StringComparison.Ordinal) ? "selected" : null)>@container</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-12 col-lg-3">
+                    <label class="form-label small mb-1" for="blobs-prefix">Prefix</label>
+                    <input id="blobs-prefix" class="form-control form-control-sm" name="prefix" value="@vm.Prefix" list="blobs-prefix-history" autocomplete="off" placeholder="2026/">
+                    <datalist id="blobs-prefix-history"></datalist>
+                </div>
+                <div class="col-6 col-lg-1">
+                    <label class="form-label small mb-1" for="blobs-take">Size</label>
+                    <select id="blobs-take" class="form-select form-select-sm" name="take">
+                        @foreach (var take in PageSizeOptions)
+                        {
+                            <option value="@take" @(vm.Take == take ? "selected" : null)>@take</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="form-check mb-1">
+                        <input id="blobs-full-scan" class="form-check-input" type="checkbox" name="allowFullScan" value="true" @(vm.AllowFullScan ? "checked" : null)>
+                        <label class="form-check-label small" for="blobs-full-scan">Allow full scan</label>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-1 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" title="Clear filters" aria-label="Clear filters" data-blobs-command="clear-filter"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="col-6 col-lg-1 d-grid">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-blobs-command="upload" @(string.IsNullOrWhiteSpace(vm.SelectedStoreName) || string.IsNullOrWhiteSpace(vm.Container) ? "disabled" : null)>
+                        <i class="bi bi-upload"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <section class="blobs-panel">
+            <div class="blobs-panel-header">
+                <span>Blobs</span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">@DisplayQuery(vm) · @vm.Blobs.Count row(s)</span>
+                    @if (vm.HasMore)
+                    {
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                data-blobs-command="next"
+                                data-continuation-token="@vm.NextContinuationToken">
+                            Next
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="blobs-panel-body">
+                @if (string.IsNullOrWhiteSpace(vm.Container))
+                {
+                    <div class="dashboard-empty">Enter a container to list blobs.</div>
+                }
+                else if (vm.Blobs.Count == 0)
+                {
+                    <div class="dashboard-empty">No blobs matched this query.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Content</th>
+                                    <th class="text-end">Size</th>
+                                    <th>Modified</th>
+                                    <th>Expires</th>
+                                    <th>Hash</th>
+                                    <th class="text-end"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var blob in vm.Blobs)
+                            {
+                                var downloadUrl = BuildDownloadUrl(vm.DownloadPath, vm.SelectedStoreName, blob.Container, blob.Name);
+                                var displayName = Shortener.Apply(blob.Name, new ShorteningOptions { MaximumLength = 64 });
+                                <tr>
+                                    <td>
+                                        <div class="blobs-name-cell" title="@blob.Name">
+                                            <i class="bi bi-file-earmark-binary me-1"></i><code>@displayName</code>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">@DisplayValue(blob.ContentType)</td>
+                                    <td class="text-end">@FormatSize(blob.Length)</td>
+                                    <td class="text-muted small">@FormatTimestamp(blob.LastModifiedAt)</td>
+                                    <td class="text-muted small">@FormatTimestamp(blob.ExpiresAt)</td>
+                                    <td>
+                                        <div class="blobs-hash-cell text-muted small" title="@blob.ContentHash">@DisplayValue(blob.ContentHash)</div>
+                                    </td>
+                                    <td class="text-end text-nowrap">
+                                        <span class="blobs-actions">
+                                            <a class="btn btn-sm btn-outline-secondary" title="Download blob" href="@downloadUrl">
+                                                <i class="bi bi-download"></i>
+                                            </a>
+                                            @if (vm.PermalinksEnabled)
+                                            {
+                                                <form class="d-inline" method="post" target="_blank" action="@permalinkAction">
+                                                    <input type="hidden" name="kind" value="Blob"><input type="hidden" name="registration" value="@vm.SelectedStoreName"><input type="hidden" name="scope" value="@blob.Container"><input type="hidden" name="path" value="@blob.Name">
+                                                    <button class="btn btn-sm btn-outline-secondary" title="Permalink download"><i class="bi bi-link-45deg"></i></button>
+                                                </form>
+                                                <form class="d-inline" method="post" action="@permalinkCopyAction" data-permalink-copy-form>
+                                                    <input type="hidden" name="kind" value="Blob"><input type="hidden" name="registration" value="@vm.SelectedStoreName"><input type="hidden" name="scope" value="@blob.Container"><input type="hidden" name="path" value="@blob.Name">
+                                                    <button class="btn btn-sm btn-outline-secondary" title="Copy permalink"><i class="bi bi-clipboard"></i></button>
+                                                </form>
+                                            }
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    title="Blob details"
+                                                    data-blobs-command="details"
+                                                    data-container="@blob.Container"
+                                                    data-name="@blob.Name"
+                                                    data-content-type="@blob.ContentType"
+                                                    data-length="@blob.Length"
+                                                    data-content-hash="@blob.ContentHash"
+                                                    data-etag="@blob.ETag"
+                                                    data-created-at="@blob.CreatedAt?.ToString("O", CultureInfo.InvariantCulture)"
+                                                    data-modified-at="@blob.LastModifiedAt?.ToString("O", CultureInfo.InvariantCulture)"
+                                                    data-expires-at="@blob.ExpiresAt?.ToString("O", CultureInfo.InvariantCulture)"
+                                                    data-properties="@SerializeProperties(blob.Properties)">
+                                                <i class="bi bi-info-circle"></i>
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Delete blob"
+                                                    data-blobs-command="delete"
+                                                    data-container="@blob.Container"
+                                                    data-name="@blob.Name"
+                                                    data-etag="@blob.ETag">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+</div>
+
+@functions {
+    private static readonly int[] PageSizeOptions = [25, 50, 100, 250, 500];
+
+    private async Task<DashboardBlobsViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var factory = this.HttpContext.RequestServices.GetService<IBlobStoreClientFactory>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<Content>>();
+        var cancellationToken = this.HttpContext.RequestAborted;
+        var model = new DashboardBlobsViewModel
+        {
+            ActionBase = BlobStorageDashboardRoutes.BuildBlobsActionBase(dashboardOptions),
+            DownloadPath = BlobStorageDashboardRoutes.BuildBlobsDownloadPath(dashboardOptions),
+            Container = GetQuery("container") ?? string.Empty,
+            Prefix = NormalizePrefix(GetQuery("prefix")),
+            Take = ResolveTake(GetQuery("take")),
+            AllowFullScan = !this.HttpContext.Request.Query.ContainsKey("allowFullScan") || GetBooleanQuery("allowFullScan"),
+            ContinuationToken = GetQuery("continuationToken")
+        };
+
+        if (factory is null)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        model.Stores = GetStores(factory);
+        model.SelectedStoreName = ResolveSelectedStore(model.Stores, GetQuery("store"));
+        if (string.IsNullOrWhiteSpace(model.SelectedStoreName))
+        {
+            return model;
+        }
+
+        try
+        {
+            var client = factory.CreateClient(model.SelectedStoreName);
+            model.PermalinksEnabled = StoragePermalinkExtensions.FindBlobAccessor(client) is not null;
+            var containersDiscovered = false;
+            if (client is IBlobStoreContainerCatalog catalog)
+            {
+                var containersResult = await catalog.ListContainersAsync(cancellationToken);
+                if (containersResult.IsSuccess)
+                {
+                    model.Containers = containersResult.Value;
+                    containersDiscovered = true;
+                }
+            }
+
+            if (!containersDiscovered && !string.IsNullOrWhiteSpace(model.Container) && !model.Containers.Contains(model.Container, StringComparer.Ordinal))
+            {
+                model.Containers = [.. model.Containers, model.Container];
+            }
+            if (model.Containers.Count == 0)
+            {
+                model.Containers = [model.SelectedStoreName];
+            }
+            model.Containers = model.Containers.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+            model.Container = model.Containers.Contains(model.Container, StringComparer.Ordinal)
+                ? model.Container
+                : model.Containers[0];
+
+            var result = await client.ListPageAsync(
+                new BlobQuery
+                {
+                    Container = model.Container,
+                    Prefix = model.Prefix,
+                    Take = model.Take,
+                    AllowFullScan = model.AllowFullScan,
+                    ContinuationToken = model.ContinuationToken
+                },
+                cancellationToken);
+
+            if (result.IsSuccess)
+            {
+                model.Blobs = result.Value.Items.Select(MapRow).ToArray();
+                model.HasMore = result.Value.HasMore;
+                model.NextContinuationToken = result.Value.ContinuationToken;
+            }
+            else
+            {
+                model.Errors.Add(GetFailureMessage(result, "Blobs could not be listed."));
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Blob storage dashboard: list failed.");
+            model.Errors.Add("Blobs could not be listed.");
+        }
+
+        return model;
+    }
+
+    private string GetQuery(string key) =>
+        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+
+    private bool GetBooleanQuery(string key) =>
+        this.HttpContext.Request.Query.TryGetValue(key, out var value) &&
+        string.Equals(value.ToString(), "true", StringComparison.OrdinalIgnoreCase);
+
+    private static IReadOnlyList<BlobStorageClientInfoModel> GetStores(IBlobStoreClientFactory factory) =>
+        factory.GetRegistrations()
+            .OrderBy(registration => registration.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(registration => new BlobStorageClientInfoModel
+            {
+                Name = registration.Name,
+                ProviderName = registration.ProviderName,
+                Capabilities = registration.Capabilities
+            })
+            .ToArray();
+
+    private static string ResolveSelectedStore(IReadOnlyList<BlobStorageClientInfoModel> stores, string requestedStore)
+    {
+        if (!string.IsNullOrWhiteSpace(requestedStore))
+        {
+            var matched = stores.FirstOrDefault(store =>
+                string.Equals(store.Name, requestedStore, StringComparison.OrdinalIgnoreCase));
+
+            if (matched is not null)
+            {
+                return matched.Name;
+            }
+        }
+
+        return stores.FirstOrDefault()?.Name;
+    }
+
+    private static DashboardBlobRow MapRow(BlobInfo info) =>
+        new(
+            info.Key?.Container,
+            info.Key?.Name,
+            info.Length,
+            info.ContentType?.MimeType(),
+            info.ContentHash,
+            info.ETag,
+            info.CreatedAt,
+            info.LastModifiedAt,
+            info.ExpiresAt,
+            info.Properties?.Clone() ?? new PropertyBag());
+
+    private static int ResolveTake(string value) =>
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed)
+            ? PageSizeOptions.Contains(parsed) ? parsed : 100
+            : 100;
+
+    private static string NormalizePrefix(string value) =>
+        string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.Replace('\\', '/').TrimStart('/');
+
+    private static string DisplayQuery(DashboardBlobsViewModel vm)
+    {
+        var prefix = string.IsNullOrWhiteSpace(vm.Prefix)
+            ? vm.AllowFullScan ? "full scan" : "no prefix"
+            : vm.Prefix;
+
+        return $"{DisplayValue(vm.Container)} / {prefix}";
+    }
+
+    private static string DisplayValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "-" : value;
+
+    private static string SerializeProperties(PropertyBag properties) => JsonSerializer.Serialize(
+        (properties ?? new PropertyBag()).ToDictionary(item => item.Key, item => item.Value));
+
+    private static string FormatTimestamp(DateTimeOffset? value) =>
+        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "-";
+
+    private static string FormatSize(long value)
+    {
+        const long kiloByte = 1024;
+        const long megaByte = kiloByte * 1024;
+        const long gigaByte = megaByte * 1024;
+
+        return value switch
+        {
+            >= gigaByte => $"{value / (double)gigaByte:0.##} GB",
+            >= megaByte => $"{value / (double)megaByte:0.##} MB",
+            >= kiloByte => $"{value / (double)kiloByte:0.##} KB",
+            _ => $"{value} B"
+        };
+    }
+
+    private static string BuildDownloadUrl(string basePath, string storeName, string container, string name)
+    {
+        var query = new List<string>();
+        if (!string.IsNullOrWhiteSpace(storeName))
+        {
+            query.Add($"store={Uri.EscapeDataString(storeName)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(container))
+        {
+            query.Add($"container={Uri.EscapeDataString(container)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query.Add($"name={Uri.EscapeDataString(name)}");
+        }
+
+        return query.Count == 0 ? basePath : $"{basePath}?{string.Join("&", query)}";
+    }
+
+    private static string GetFailureMessage(BridgingIT.DevKit.Common.IResult result, string fallback) =>
+        result.Messages?.LastOrDefault()
+        ?? result.Errors?.FirstOrDefault()?.Message
+        ?? fallback;
+}

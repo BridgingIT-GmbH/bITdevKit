@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application.Queueing\Application.Queueing.csproj" />
     <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj" />
   </ItemGroup>
 

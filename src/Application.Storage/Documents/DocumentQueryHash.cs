@@ -35,7 +35,7 @@ public static class DocumentQueryHash
     {
         var key = query?.DocumentKey;
         return HashHelper.ComputeSha256(string.Join("|",
-            typeof(T).FullName?.ToLowerInvariant(),
+            DocumentTypeIdentity.For<T>().Value,
             operation,
             key?.PartitionKey ?? string.Empty,
             key?.RowKey ?? string.Empty,
@@ -61,11 +61,20 @@ public static class DocumentQueryHash
     {
         var key = query?.DocumentKey;
         return HashHelper.ComputeSha256(string.Join("|",
-            typeof(T).FullName?.ToLowerInvariant(),
+            DocumentTypeIdentity.For<T>().Value,
             operation,
             key?.PartitionKey ?? string.Empty,
             key?.RowKey ?? string.Empty,
             query?.Filter.ToString() ?? DocumentKeyFilter.FullMatch.ToString(),
             query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
+    }
+
+    /// <summary>Computes a page-query hash for a provider-neutral type identity.</summary>
+    public static string Compute(string operation, DocumentTypeIdentity type, DocumentQuery query, int take)
+    {
+        var key = query?.DocumentKey;
+        return HashHelper.ComputeSha256(string.Join("|", type.Value, operation, key?.PartitionKey ?? string.Empty,
+            key?.RowKey ?? string.Empty, query?.Filter.ToString() ?? DocumentKeyFilter.FullMatch.ToString(),
+            take.ToString(CultureInfo.InvariantCulture), query?.AllowFullScan.ToString(CultureInfo.InvariantCulture) ?? bool.FalseString));
     }
 }

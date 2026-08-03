@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 /// <summary>
 /// Entity Framework Core DbContext for the WeatherFiesta Core module.
@@ -17,7 +18,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -83,13 +84,13 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
 
     public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
 
-    /// <summary>Gets or sets the document-store rows DbSet.</summary>
-    /// <example>
-    /// <code>
-    /// var rows = dbContext.StorageDocuments;
-    /// </code>
-    /// </example>
+    public DbSet<StorageBlob> StorageBlobs { get; set; }
+
+    public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
+
     public DbSet<StorageDocument> StorageDocuments { get; set; }
+
+    public DbSet<StoragePermalink> StoragePermalinks { get; set; }
 
     public DbSet<LogEntry> LogEntries { get; set; }
 

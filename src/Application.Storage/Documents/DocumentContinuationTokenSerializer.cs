@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
-using System.Text;
-using System.Text.Json;
-
 /// <summary>
 /// Serializes and deserializes opaque document-store continuation tokens.
 /// </summary>
@@ -19,7 +16,7 @@ using System.Text.Json;
 /// </example>
 public static class DocumentContinuationTokenSerializer
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+    private const string Purpose = "document-storage";
 
     /// <summary>
     /// Serializes a continuation token envelope to an opaque string.
@@ -36,7 +33,9 @@ public static class DocumentContinuationTokenSerializer
     /// });
     /// </code>
     /// </example>
-    public static Result<string> Serialize(DocumentContinuationToken token)
+    public static Result<string> Serialize(
+        DocumentContinuationToken token,
+        IContinuationTokenProtector protector = null)
     {
         if (token is null)
         {
@@ -49,8 +48,7 @@ public static class DocumentContinuationTokenSerializer
             return Result<string>.Failure(new DocumentStoreInvalidContinuationTokenError("Continuation token is missing required envelope values."));
         }
 
-        var json = JsonSerializer.Serialize(token, JsonOptions);
-        return Result<string>.Success(ToBase64Url(Encoding.UTF8.GetBytes(json)));
+        return Result<string>.Success(OpaqueContinuationTokenCodec.Serialize(token, Purpose, protector));
     }
 
     /// <summary>
@@ -63,7 +61,9 @@ public static class DocumentContinuationTokenSerializer
     /// var result = DocumentContinuationTokenSerializer.Deserialize(page.Value.ContinuationToken);
     /// </code>
     /// </example>
-    public static Result<DocumentContinuationToken> Deserialize(string token)
+    public static Result<DocumentContinuationToken> Deserialize(
+        string token,
+        IContinuationTokenProtector protector = null)
     {
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -72,8 +72,7 @@ public static class DocumentContinuationTokenSerializer
 
         try
         {
-            var json = Encoding.UTF8.GetString(FromBase64Url(token));
-            var envelope = JsonSerializer.Deserialize<DocumentContinuationToken>(json, JsonOptions);
+            var envelope = OpaqueContinuationTokenCodec.Deserialize<DocumentContinuationToken>(token, Purpose, protector);
             if (envelope is null || envelope.Version != 1)
             {
                 return Result<DocumentContinuationToken>.Failure(new DocumentStoreInvalidContinuationTokenError("Continuation token version is not supported."));
@@ -87,20 +86,10 @@ public static class DocumentContinuationTokenSerializer
 
             return Result<DocumentContinuationToken>.Success(envelope);
         }
-        catch (Exception ex) when (ex is FormatException or JsonException or ArgumentException)
+        catch (Exception ex) when (ex is FormatException or ArgumentException)
         {
             return Result<DocumentContinuationToken>.Failure(new DocumentStoreInvalidContinuationTokenError("Continuation token is invalid.", ex));
         }
     }
 
-    private static string ToBase64Url(byte[] bytes) =>
-        Convert.ToBase64String(bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');
-
-    private static byte[] FromBase64Url(string value)
-    {
-        var base64 = value.Replace('-', '+').Replace('_', '/');
-        base64 = base64.PadRight(base64.Length + ((4 - base64.Length % 4) % 4), '=');
-
-        return Convert.FromBase64String(base64);
-    }
 }

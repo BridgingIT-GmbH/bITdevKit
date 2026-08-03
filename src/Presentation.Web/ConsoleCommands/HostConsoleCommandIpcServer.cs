@@ -104,12 +104,12 @@ public sealed class HostConsoleCommandIpcServer(
         }
 
         var output = new StringWriter();
-        var console = AnsiConsole.Create(new AnsiConsoleSettings
+        var console = ConsoleTheme.ApplyTo(AnsiConsole.Create(new AnsiConsoleSettings
         {
             Ansi = AnsiSupport.Yes,
             ColorSystem = ColorSystemSupport.TrueColor,
             Out = new TextWriterAnsiConsoleOutput(output, 120, 32)
-        });
+        }));
         var executor = services.GetService<ConsoleCommandExecutor>() ?? new ConsoleCommandExecutor();
         var result = await executor.ExecuteAsync(commandTokens, console, services, ConsoleCommandExecutionSource.Web, cancellationToken).ConfigureAwait(false);
         var exitCode = result.Succeeded ? 0 : 1;

@@ -32,6 +32,7 @@ The feature addresses these challenges by supplying:
 - Grouped subcommands (`IGroupedConsoleCommand`) enabling hierarchical organization (e.g. `history list`, `diag perf`).
 - Automatic help generation and validation errors through a central binder.
 - Interactive loop with history persistence and restart support for local development.
+- Native console themes aligned with dashboard theme names for prompt and console log output.
 - Consistent diagnostics commands (status, metrics, memory, threads, GC, env, diag group).
 - Extensible registration via fluent builders (`AddConsoleCommands`, `AddConsoleCommandsInteractive`).
 - Spectre.Console-based formatting (tables, markup, rules) for clear developer feedback.
@@ -45,6 +46,7 @@ The feature addresses these challenges by supplying:
 | Automated task invocation | Trigger maintenance, job scheduling or batch operations via CLI | `jobs trigger --name=reindex` |
 | Environment launch helpers | Open bound Kestrel addresses with optional filtering | `browse open --all` |
 | Documentation lookup | Open the official bITdevKit documentation from any Console Commands host | `docs` `docs --url` |
+| Console theme selection | Change the native console prompt and console log colors | `console theme` `console theme matrix` |
 | GC experimentation | Force collections in development to validate memory patterns | `diag gc --force` |
 | Extension via custom commands | Project-specific automation (seed data, cache warmup, export) | `seed data --count=50` |
 
@@ -77,6 +79,7 @@ flowchart LR
 | `ServiceCollectionExtensions` | Registers interactive or non-interactive command sets. |
 | `ApplicationBuilderExtensions.UseConsoleCommandsInteractive` | Activates the input loop for local Kestrel hosting. |
 | `ConsoleCommandHistory` | Persists and serves command history between sessions. |
+| `ConsoleTheme` | Persists and serves the native console theme used by prompts and console log output. |
 | Diagnostic helpers (diag group) | Aggregated runtime tables (`DiagnosticTablesBuilder`). |
 
 ## Setup

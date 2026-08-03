@@ -35,7 +35,7 @@ public static class FileStorageProviderFactoryEntityFrameworkExtensions
     ///                 .RetryCount(3)
     ///                 .RetryBackoff(TimeSpan.FromMilliseconds(250))
     ///                 .PageSize(100)
-    ///                 .MaximumBufferedContentSize(4 * 1024 * 1024);
+    ///                 .MaximumBufferedContentSize(ByteSize.Megabytes(4));
     ///         })
     ///     .WithLogging()));
     /// </code>

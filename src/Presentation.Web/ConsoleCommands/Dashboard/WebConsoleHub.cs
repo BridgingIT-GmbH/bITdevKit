@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard;
 
-using System.Reflection;
 using BridgingIT.DevKit.Presentation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -23,6 +23,7 @@ public sealed class WebConsoleHub(
     WebAnsiConsoleFactory consoleFactory,
     ConsoleCommandExecutor executor,
     IServiceProvider services,
+    IWebHostEnvironment environment,
     ILogger<WebConsoleHub> logger) : Hub
 {
     private const int HistoryLimit = 100;
@@ -30,7 +31,7 @@ public sealed class WebConsoleHub(
     /// <inheritdoc />
     public override async Task OnConnectedAsync()
     {
-        ConsoleCommandHistory.Initialize(Assembly.GetEntryAssembly()?.GetName().Name);
+        ConsoleCommandHistory.Initialize(environment.ApplicationName);
 
         var session = this.GetSession();
         session.ConnectionId = this.Context.ConnectionId;

@@ -15,6 +15,15 @@ public sealed class DocumentContinuationToken
     /// </summary>
     public string Provider { get; init; }
 
+    /// <summary>Gets or sets the normalized named-client identity.</summary>
+    public string ClientName { get; init; }
+
+    /// <summary>Gets or sets the stable document type identity.</summary>
+    public string DocumentType { get; init; }
+
+    /// <summary>Gets or sets the page operation represented by the token.</summary>
+    public string Operation { get; init; }
+
     /// <summary>
     /// Gets or sets the token envelope version.
     /// </summary>
@@ -24,6 +33,11 @@ public sealed class DocumentContinuationToken
     /// Gets or sets the logical query hash.
     /// </summary>
     public string QueryHash { get; init; }
+
+    /// <summary>
+    /// Gets or sets the fixed visibility cutoff used by every page in this sequence.
+    /// </summary>
+    public DateTimeOffset VisibilityCutoff { get; init; }
 
     /// <summary>
     /// Gets or sets the provider-native continuation state.

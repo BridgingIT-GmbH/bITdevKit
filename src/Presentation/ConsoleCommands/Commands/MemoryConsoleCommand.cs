@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using BridgingIT.DevKit.Common;
 using Spectre.Console;
 using System.Diagnostics;
 
@@ -27,9 +28,9 @@ public class MemoryConsoleCommand : ConsoleCommandBase
         var managed = GC.GetTotalMemory(false);
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Metric"); table.AddColumn("Value");
-        table.AddRow("Managed", $"{managed / (1024 * 1024.0):F2} MB");
-        table.AddRow("WorkingSet", $"{proc.WorkingSet64 / (1024 * 1024.0):F2} MB");
-        table.AddRow("PrivateMem", $"{proc.PrivateMemorySize64 / (1024 * 1024.0):F2} MB");
+        table.AddRow("Managed", $"{ByteSize.ToMegabytes(managed):F2} MB");
+        table.AddRow("WorkingSet", $"{ByteSize.ToMegabytes(proc.WorkingSet64):F2} MB");
+        table.AddRow("PrivateMem", $"{ByteSize.ToMegabytes(proc.PrivateMemorySize64):F2} MB");
         table.AddRow("Threads", proc.Threads.Count.ToString());
         table.AddRow("Handles", proc.HandleCount.ToString());
         console.Write(table);

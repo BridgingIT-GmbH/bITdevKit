@@ -32,7 +32,9 @@ public static partial class ServiceCollectionExtensions
         this DocumentStorageBuilderContext context,
         AzureBlobDocumentStoreProvider provider = null,
         ServiceLifetime? lifetime = null,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -42,14 +44,18 @@ public static partial class ServiceCollectionExtensions
             return context;
         }
 
-        context.Services.AddAzureBlobDocumentStoreClient<T>(
-            provider,
-            lifetime ?? context.Lifetime,
-            documentStoreOptions);
-
-        return context.RegisterClient<T>(
+        return context.RegisterProvider<T>(
+            serviceProvider => provider ?? new AzureBlobDocumentStoreProvider(
+                serviceProvider.GetRequiredService<ILoggerFactory>(),
+                serviceProvider.GetRequiredService<BlobServiceClient>(),
+                options: documentStoreOptions,
+                clientName: name),
             "Azure Blob Storage",
-            capabilities: provider?.Capabilities ?? CreateAzureBlobCapabilities());
+            capabilities: provider?.Capabilities ?? CreateAzureBlobCapabilities(),
+            documentStoreOptions: documentStoreOptions,
+            name: name,
+            isDefault: isDefault,
+            lifetime: lifetime);
     }
 
     /// <summary>
@@ -71,7 +77,9 @@ public static partial class ServiceCollectionExtensions
         this DocumentStorageBuilderContext context,
         BlobServiceClient serviceClient,
         ServiceLifetime? lifetime = null,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -81,14 +89,18 @@ public static partial class ServiceCollectionExtensions
             return context;
         }
 
-        context.Services.AddAzureBlobDocumentStoreClient<T>(
-            serviceClient,
-            lifetime ?? context.Lifetime,
-            documentStoreOptions);
-
-        return context.RegisterClient<T>(
+        return context.RegisterProvider<T>(
+            serviceProvider => new AzureBlobDocumentStoreProvider(
+                serviceProvider.GetRequiredService<ILoggerFactory>(),
+                serviceClient ?? serviceProvider.GetRequiredService<BlobServiceClient>(),
+                options: documentStoreOptions,
+                clientName: name),
             "Azure Blob Storage",
-            capabilities: CreateAzureBlobCapabilities());
+            capabilities: CreateAzureBlobCapabilities(),
+            documentStoreOptions: documentStoreOptions,
+            name: name,
+            isDefault: isDefault,
+            lifetime: lifetime);
     }
 
     /// <summary>
@@ -110,7 +122,9 @@ public static partial class ServiceCollectionExtensions
         this DocumentStorageBuilderContext context,
         AzureTableDocumentStoreProvider provider = null,
         ServiceLifetime? lifetime = null,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -120,14 +134,18 @@ public static partial class ServiceCollectionExtensions
             return context;
         }
 
-        context.Services.AddAzureTableDocumentStoreClient<T>(
-            provider,
-            lifetime ?? context.Lifetime,
-            documentStoreOptions);
-
-        return context.RegisterClient<T>(
+        return context.RegisterProvider<T>(
+            serviceProvider => provider ?? new AzureTableDocumentStoreProvider(
+                serviceProvider.GetRequiredService<ILoggerFactory>(),
+                serviceProvider.GetRequiredService<TableServiceClient>(),
+                options: documentStoreOptions,
+                clientName: name),
             "Azure Table Storage",
-            capabilities: provider?.Capabilities ?? CreateAzureTableCapabilities());
+            capabilities: provider?.Capabilities ?? CreateAzureTableCapabilities(),
+            documentStoreOptions: documentStoreOptions,
+            name: name,
+            isDefault: isDefault,
+            lifetime: lifetime);
     }
 
     /// <summary>
@@ -149,7 +167,9 @@ public static partial class ServiceCollectionExtensions
         this DocumentStorageBuilderContext context,
         TableServiceClient serviceClient,
         ServiceLifetime? lifetime = null,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string name = "default",
+        bool isDefault = true)
         where T : class, new()
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -159,14 +179,18 @@ public static partial class ServiceCollectionExtensions
             return context;
         }
 
-        context.Services.AddAzureTableDocumentStoreClient<T>(
-            serviceClient,
-            lifetime ?? context.Lifetime,
-            documentStoreOptions);
-
-        return context.RegisterClient<T>(
+        return context.RegisterProvider<T>(
+            serviceProvider => new AzureTableDocumentStoreProvider(
+                serviceProvider.GetRequiredService<ILoggerFactory>(),
+                serviceClient ?? serviceProvider.GetRequiredService<TableServiceClient>(),
+                options: documentStoreOptions,
+                clientName: name),
             "Azure Table Storage",
-            capabilities: CreateAzureTableCapabilities());
+            capabilities: CreateAzureTableCapabilities(),
+            documentStoreOptions: documentStoreOptions,
+            name: name,
+            isDefault: isDefault,
+            lifetime: lifetime);
     }
 
     /// <summary>
@@ -200,21 +224,21 @@ public static partial class ServiceCollectionExtensions
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
                     new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<BlobServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions), options: documentStoreOptions));
 
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
                     new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<BlobServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions), options: documentStoreOptions));
 
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
                     new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<BlobServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions), options: documentStoreOptions));
 
                 break;
         }
@@ -242,7 +266,8 @@ public static partial class ServiceCollectionExtensions
         this IServiceCollection services,
         BlobServiceClient serviceClient,
         ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string clientName = "default")
         where T : class, new()
     {
         EnsureArg.IsNotNull(services, nameof(services));
@@ -253,21 +278,21 @@ public static partial class ServiceCollectionExtensions
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<BlobServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions, clientName: clientName), options: documentStoreOptions));
 
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<BlobServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions, clientName: clientName), options: documentStoreOptions));
 
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     new AzureBlobDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<BlobServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions, clientName: clientName), options: documentStoreOptions));
 
                 break;
         }
@@ -306,21 +331,21 @@ public static partial class ServiceCollectionExtensions
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
                     new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<TableServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions), options: documentStoreOptions));
 
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
                     new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<TableServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions), options: documentStoreOptions));
 
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(provider ??
                     new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         sp.GetRequiredService<TableServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions), options: documentStoreOptions));
 
                 break;
         }
@@ -348,7 +373,8 @@ public static partial class ServiceCollectionExtensions
         this IServiceCollection services,
         TableServiceClient serviceClient,
         ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        DocumentStoreOptions documentStoreOptions = null)
+        DocumentStoreOptions documentStoreOptions = null,
+        string clientName = "default")
         where T : class, new()
     {
         EnsureArg.IsNotNull(services, nameof(services));
@@ -359,21 +385,21 @@ public static partial class ServiceCollectionExtensions
                 services.AddSingleton<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<TableServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions, clientName: clientName), options: documentStoreOptions));
 
                 break;
             case ServiceLifetime.Transient:
                 services.AddTransient<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<TableServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions, clientName: clientName), options: documentStoreOptions));
 
                 break;
             default:
                 services.AddScoped<IDocumentStoreClient<T>>(sp => new DocumentStoreClient<T>(
                     new AzureTableDocumentStoreProvider(sp.GetRequiredService<ILoggerFactory>(),
                         serviceClient ?? sp.GetRequiredService<TableServiceClient>(),
-                        options: documentStoreOptions)));
+                        options: documentStoreOptions, clientName: clientName), options: documentStoreOptions));
 
                 break;
         }

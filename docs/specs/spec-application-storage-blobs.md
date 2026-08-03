@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Blob Storage
@@ -120,7 +120,7 @@ This feature does not introduce:
 * Listing is continuation-token based.
 * Continuation tokens are opaque to callers.
 * Full container scans require explicit opt-in.
-* `DeleteResultAsync` is idempotent.
+* `DeleteAsync` is idempotent.
 * EF Core stores blob content in chunks.
 * EF Core write/delete operations use leases.
 * Provider-specific details stay inside providers.
@@ -132,31 +132,31 @@ This feature does not introduce:
 ```csharp
 public interface IBlobStoreClient
 {
-    Task<Result<BlobInfo>> UploadResultAsync(
+    Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobDownload>> DownloadResultAsync(
+    Task<Result<BlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobInfo>> GetPropertiesResultAsync(
+    Task<Result<BlobInfo>> GetPropertiesAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobInfo>> UpdatePropertiesResultAsync(
+    Task<Result<BlobInfo>> UpdatePropertiesAsync(
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default);
 
-    Task<Result<bool>> ExistsResultAsync(
+    Task<Result<bool>> ExistsAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobPage>> ListPageResultAsync(
+    Task<Result<BlobPage>> ListPageAsync(
         BlobQuery query,
         CancellationToken cancellationToken = default);
 
-    Task<Result> DeleteResultAsync(
+    Task<Result> DeleteAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 }
@@ -169,31 +169,31 @@ public interface IBlobStoreProvider
 {
     BlobStoreProviderCapabilities Capabilities { get; }
 
-    Task<Result<BlobInfo>> UploadResultAsync(
+    Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobDownload>> DownloadResultAsync(
+    Task<Result<BlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobInfo>> GetPropertiesResultAsync(
+    Task<Result<BlobInfo>> GetPropertiesAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobInfo>> UpdatePropertiesResultAsync(
+    Task<Result<BlobInfo>> UpdatePropertiesAsync(
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default);
 
-    Task<Result<bool>> ExistsResultAsync(
+    Task<Result<bool>> ExistsAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 
-    Task<Result<BlobPage>> ListPageResultAsync(
+    Task<Result<BlobPage>> ListPageAsync(
         BlobQuery query,
         CancellationToken cancellationToken = default);
 
-    Task<Result> DeleteResultAsync(
+    Task<Result> DeleteAsync(
         BlobKey key,
         CancellationToken cancellationToken = default);
 }
@@ -213,11 +213,18 @@ services.AddBlobStorage(o => o.Enabled(true))
     .WithBehavior<MetricsBlobStoreClientBehavior>()
     .WithBehavior<RetryBlobStoreClientBehavior>()
     .WithBehavior<TimeoutBlobStoreClientBehavior>()
-    .WithEntityFrameworkClient<AppDbContext>("reports", o => o
-        .MaxBlobSize(50 * 1024 * 1024))
-    .WithAzureBlobClient("media", o => o
-        .Container("media")
-        .MaxBlobSize(500 * 1024 * 1024));
+    .WithEntityFrameworkClient<AppDbContext>("reports", options =>
+    {
+        options.MaxBlobSize = ByteSize.Megabytes(50);
+        options.ChunkSize = (int)ByteSize.Megabytes(4);
+        options.AllowFullScans = true;
+    })
+    .WithAzureBlobClient("media", configure: options =>
+    {
+        options.MaxBlobSize = ByteSize.Megabytes(500);
+        options.DefaultTake = 100;
+        options.MaxTake = 500;
+    });
 ```
 
 Rules:
@@ -274,7 +281,7 @@ Rules:
 * The health check runs only when Blob Storage is enabled and at least one client is registered.
 * The check probes every registered client.
 * The probe must be non-mutating.
-* Recommended probe: `ExistsResultAsync(new BlobKey("__bdk", "healthcheck/probe"))`.
+* Recommended probe: `ExistsAsync(new BlobKey("__bdk", "healthcheck/probe"))`.
 * A missing probe blob is healthy.
 * Provider failures make the aggregate health check unhealthy.
 * The health-check description and data must identify the failed client names clearly.
@@ -483,7 +490,7 @@ Rules:
 Example:
 
 ```csharp
-var result = await blobs.DownloadResultAsync(
+var result = await blobs.DownloadAsync(
     new BlobKey("reports", "2026/06/report.pdf"),
     cancellationToken);
 
@@ -565,7 +572,7 @@ Rules:
 
 * `Items` contains blob information only.
 * `Items` must not contain content streams.
-* `ListPageResultAsync` must never download content.
+* `ListPageAsync` must never download content.
 * `ContinuationToken` is opaque to callers.
 * `HasMore` indicates whether a continuation token exists.
 
@@ -736,7 +743,7 @@ public sealed class BlobStoreOptions
 
     public bool RequireExplicitFullScanApproval { get; set; } = true;
 
-    public int ChunkSize { get; set; } = 4 * 1024 * 1024;
+    public int ChunkSize { get; set; } = (int)ByteSize.Megabytes(4);
 
     public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromMinutes(1);
 
@@ -1134,7 +1141,7 @@ public sealed class BlobStoreClient : IBlobStoreClient
     private readonly BlobQueryValidator queryValidator;
     private readonly BlobValidator blobValidator;
 
-    public async Task<Result<BlobInfo>> UploadResultAsync(
+    public async Task<Result<BlobInfo>> UploadAsync(
         BlobUpload upload,
         CancellationToken cancellationToken = default)
     {
@@ -1148,10 +1155,10 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For<BlobInfo>();
         }
 
-        return await this.provider.UploadResultAsync(upload, cancellationToken);
+        return await this.provider.UploadAsync(upload, cancellationToken);
     }
 
-    public async Task<Result<BlobDownload>> DownloadResultAsync(
+    public async Task<Result<BlobDownload>> DownloadAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -1162,10 +1169,10 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For<BlobDownload>();
         }
 
-        return await this.provider.DownloadResultAsync(key, cancellationToken);
+        return await this.provider.DownloadAsync(key, cancellationToken);
     }
 
-    public async Task<Result<BlobInfo>> GetPropertiesResultAsync(
+    public async Task<Result<BlobInfo>> GetPropertiesAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -1176,10 +1183,10 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For<BlobInfo>();
         }
 
-        return await this.provider.GetPropertiesResultAsync(key, cancellationToken);
+        return await this.provider.GetPropertiesAsync(key, cancellationToken);
     }
 
-    public async Task<Result<BlobInfo>> UpdatePropertiesResultAsync(
+    public async Task<Result<BlobInfo>> UpdatePropertiesAsync(
         BlobPropertiesUpdate update,
         CancellationToken cancellationToken = default)
     {
@@ -1190,10 +1197,10 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For<BlobInfo>();
         }
 
-        return await this.provider.UpdatePropertiesResultAsync(update, cancellationToken);
+        return await this.provider.UpdatePropertiesAsync(update, cancellationToken);
     }
 
-    public async Task<Result<bool>> ExistsResultAsync(
+    public async Task<Result<bool>> ExistsAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -1204,10 +1211,10 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For<bool>();
         }
 
-        return await this.provider.ExistsResultAsync(key, cancellationToken);
+        return await this.provider.ExistsAsync(key, cancellationToken);
     }
 
-    public async Task<Result<BlobPage>> ListPageResultAsync(
+    public async Task<Result<BlobPage>> ListPageAsync(
         BlobQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -1221,12 +1228,12 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For<BlobPage>();
         }
 
-        return await this.provider.ListPageResultAsync(
+        return await this.provider.ListPageAsync(
             validationResult.Value,
             cancellationToken);
     }
 
-    public async Task<Result> DeleteResultAsync(
+    public async Task<Result> DeleteAsync(
         BlobKey key,
         CancellationToken cancellationToken = default)
     {
@@ -1237,7 +1244,7 @@ public sealed class BlobStoreClient : IBlobStoreClient
             return validationResult.For();
         }
 
-        return await this.provider.DeleteResultAsync(key, cancellationToken);
+        return await this.provider.DeleteAsync(key, cancellationToken);
     }
 }
 ```
@@ -1306,14 +1313,14 @@ Each provider method must follow these rules:
 * Do not catch cancellation exceptions caused by caller cancellation unless the devkit has a global convention for that.
 * Do not throw for invalid query shape.
 * Do not throw for unsupported provider semantics.
-* Do not throw for missing blob on `DownloadResultAsync` or `GetPropertiesResultAsync`.
+* Do not throw for missing blob on `DownloadAsync` or `GetPropertiesAsync`.
 * Do not throw for idempotent missing delete.
 * Do not throw for invalid continuation tokens.
 * Do not return partially successful pages.
-* Do not download content for `ListPageResultAsync`.
-* Do not download content for `GetPropertiesResultAsync`.
-* Do not download content for `ExistsResultAsync`.
-* Do not download content for `UpdatePropertiesResultAsync`.
+* Do not download content for `ListPageAsync`.
+* Do not download content for `GetPropertiesAsync`.
+* Do not download content for `ExistsAsync`.
+* Do not download content for `UpdatePropertiesAsync`.
 
 ## Lease Model
 
@@ -1509,13 +1516,13 @@ For full container scan:
 
 ## EF Core Properties Strategy
 
-`GetPropertiesResultAsync`:
+`GetPropertiesAsync`:
 
 * Query only `StorageBlob`.
 * Do not query chunks.
 * Return `BlobInfo`.
 
-`UpdatePropertiesResultAsync`:
+`UpdatePropertiesAsync`:
 
 * Begin transaction.
 * Acquire write lease.
@@ -1527,7 +1534,7 @@ For full container scan:
 
 ## EF Core Exists Strategy
 
-`ExistsResultAsync`:
+`ExistsAsync`:
 
 * Query existence by key.
 * Do not load chunks.
@@ -1616,13 +1623,13 @@ List must:
 
 ## Azure Blob Properties Strategy
 
-`GetPropertiesResultAsync`:
+`GetPropertiesAsync`:
 
 * Use native properties/head call.
 * Map HTTP headers and metadata to `BlobInfo`.
 * Do not download content.
 
-`UpdatePropertiesResultAsync`:
+`UpdatePropertiesAsync`:
 
 * Validate metadata conversion.
 * Use native set properties/metadata APIs.
@@ -1631,7 +1638,7 @@ List must:
 
 ## Azure Blob Exists Strategy
 
-`ExistsResultAsync`:
+`ExistsAsync`:
 
 * Use native existence call.
 * Return `Result<bool>.Success(...)`.
@@ -1704,7 +1711,7 @@ Rules:
 
 ## Upload Semantics
 
-`UploadResultAsync` uploads or replaces content depending on `OverwriteMode`.
+`UploadAsync` uploads or replaces content depending on `OverwriteMode`.
 
 Rules:
 
@@ -1723,7 +1730,7 @@ Rules:
 
 ## Download Semantics
 
-`DownloadResultAsync` retrieves blob content and properties.
+`DownloadAsync` retrieves blob content and properties.
 
 Rules:
 
@@ -1737,7 +1744,7 @@ Rules:
 
 ## Get Properties Semantics
 
-`GetPropertiesResultAsync` returns blob properties without content.
+`GetPropertiesAsync` returns blob properties without content.
 
 Rules:
 
@@ -1748,7 +1755,7 @@ Rules:
 
 ## Update Properties Semantics
 
-`UpdatePropertiesResultAsync` updates properties without uploading content.
+`UpdatePropertiesAsync` updates properties without uploading content.
 
 Rules:
 
@@ -1763,7 +1770,7 @@ Rules:
 
 ## Exists Semantics
 
-`ExistsResultAsync` checks for exact-key existence.
+`ExistsAsync` checks for exact-key existence.
 
 Rules:
 
@@ -1775,7 +1782,7 @@ Rules:
 
 ## List Semantics
 
-`ListPageResultAsync` returns a page of `BlobInfo`.
+`ListPageAsync` returns a page of `BlobInfo`.
 
 Rules:
 
@@ -1791,7 +1798,7 @@ Rules:
 
 ## Delete Semantics
 
-`DeleteResultAsync` deletes a blob by exact key.
+`DeleteAsync` deletes a blob by exact key.
 
 Rules:
 
@@ -2167,11 +2174,18 @@ services.AddBlobStorage(o => o.Enabled(true))
     .WithBehavior<MetricsBlobStoreClientBehavior>()
     .WithBehavior<RetryBlobStoreClientBehavior>()
     .WithBehavior<TimeoutBlobStoreClientBehavior>()
-    .WithEntityFrameworkClient<AppDbContext>("reports", o => o
-        .MaxBlobSize(50 * 1024 * 1024))
-    .WithAzureBlobClient("media", o => o
-        .Container("media")
-        .MaxBlobSize(500 * 1024 * 1024));
+    .WithEntityFrameworkClient<AppDbContext>("reports", options =>
+    {
+        options.MaxBlobSize = ByteSize.Megabytes(50);
+        options.ChunkSize = (int)ByteSize.Megabytes(4);
+        options.AllowFullScans = true;
+    })
+    .WithAzureBlobClient("media", configure: options =>
+    {
+        options.MaxBlobSize = ByteSize.Megabytes(500);
+        options.DefaultTake = 100;
+        options.MaxTake = 500;
+    });
 ```
 
 ## Resolve A Named Client
@@ -2186,15 +2200,17 @@ var blobs = factory.CreateClient("reports");
 ```csharp
 await using var content = File.OpenRead("report.pdf");
 
-var uploadResult = await blobs.UploadResultAsync(
+var uploadResult = await blobs.UploadAsync(
     new BlobUpload
     {
         Key = new BlobKey("reports", "2026/06/report.pdf"),
         Content = content,
         ContentType = ContentType.PDF,
-        Properties = new PropertyBag()
-            .Set("customerId", "42")
-            .Set("source", "monthly-export"),
+        Properties = new PropertyBag
+        {
+            ["customerId"] = "42",
+            ["source"] = "monthly-export"
+        },
         OverwriteMode = BlobOverwriteMode.Overwrite
     },
     cancellationToken);
@@ -2203,15 +2219,21 @@ var uploadResult = await blobs.UploadResultAsync(
 ## Upload With Expected Hash
 
 ```csharp
-var expectedHash = "sha256:<lowercase-64-character-hex-sha256>";
+var hashResult = await BlobContentHash.ComputeSha256Async(content, cancellationToken);
+if (hashResult.IsFailure)
+{
+    return hashResult;
+}
 
-var uploadResult = await blobs.UploadResultAsync(
+content.Position = 0;
+
+var uploadResult = await blobs.UploadAsync(
     new BlobUpload
     {
         Key = new BlobKey("reports", "2026/06/report.pdf"),
         Content = content,
         ContentType = ContentType.PDF,
-        ExpectedContentHash = expectedHash
+        ExpectedContentHash = hashResult.Value
     },
     cancellationToken);
 ```
@@ -2219,7 +2241,7 @@ var uploadResult = await blobs.UploadResultAsync(
 ## Download
 
 ```csharp
-var downloadResult = await blobs.DownloadResultAsync(
+var downloadResult = await blobs.DownloadAsync(
     new BlobKey("reports", "2026/06/report.pdf"),
     cancellationToken);
 
@@ -2233,7 +2255,7 @@ if (downloadResult.IsSuccess)
 ## Get Properties
 
 ```csharp
-var propertiesResult = await blobs.GetPropertiesResultAsync(
+var propertiesResult = await blobs.GetPropertiesAsync(
     new BlobKey("reports", "2026/06/report.pdf"),
     cancellationToken);
 
@@ -2247,14 +2269,16 @@ if (propertiesResult.IsSuccess)
 ## Update Properties
 
 ```csharp
-var updateResult = await blobs.UpdatePropertiesResultAsync(
+var updateResult = await blobs.UpdatePropertiesAsync(
     new BlobPropertiesUpdate
     {
         Key = new BlobKey("reports", "2026/06/report.pdf"),
         ContentType = ContentType.PDF,
-        Properties = new PropertyBag()
-            .Set("customerId", "42")
-            .Set("reviewed", true),
+        Properties = new PropertyBag
+        {
+            ["customerId"] = "42",
+            ["reviewed"] = true
+        },
         IfMatchETag = propertiesResult.Value.ETag
     },
     cancellationToken);
@@ -2263,7 +2287,7 @@ var updateResult = await blobs.UpdatePropertiesResultAsync(
 ## Exists
 
 ```csharp
-var existsResult = await blobs.ExistsResultAsync(
+var existsResult = await blobs.ExistsAsync(
     new BlobKey("reports", "2026/06/report.pdf"),
     cancellationToken);
 
@@ -2276,7 +2300,7 @@ if (existsResult.IsSuccess && existsResult.Value)
 ## List by Prefix
 
 ```csharp
-var pageResult = await blobs.ListPageResultAsync(
+var pageResult = await blobs.ListPageAsync(
     BlobQueries
         .Query()
         .InContainer("reports")
@@ -2297,7 +2321,7 @@ if (pageResult.IsSuccess)
 ## Continue Listing
 
 ```csharp
-var nextPageResult = await blobs.ListPageResultAsync(
+var nextPageResult = await blobs.ListPageAsync(
     BlobQueries
         .Query()
         .InContainer("reports")
@@ -2311,7 +2335,7 @@ var nextPageResult = await blobs.ListPageResultAsync(
 ## Explicit Full Container Scan
 
 ```csharp
-var pageResult = await blobs.ListPageResultAsync(
+var pageResult = await blobs.ListPageAsync(
     BlobQueries
         .Query()
         .InContainer("reports")
@@ -2326,7 +2350,7 @@ This only works when `BlobStoreOptions.AllowFullScans` is also enabled.
 ## Delete
 
 ```csharp
-var deleteResult = await blobs.DeleteResultAsync(
+var deleteResult = await blobs.DeleteAsync(
     new BlobKey("reports", "2026/06/report.pdf"),
     cancellationToken);
 ```

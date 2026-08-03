@@ -76,6 +76,10 @@ builder.Services.AddOrchestrations(o => o
     .WithEntityFramework<CoreDbContext>()
     .AddEndpoints();
 
+builder.Services.AddStoragePermalinks()
+    .UseEntityFramework<CoreDbContext>()
+    .AddDownloadEndpoints();
+
 builder.Services.AddFileStorage(factory => factory
         .RegisterProvider("documents", storage => storage
             .UseEntityFramework<CoreDbContext>(
@@ -84,6 +88,8 @@ builder.Services.AddFileStorage(factory => factory
                 options => options
                     .PageSize(200)
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
+            .WithMetrics()
+            .WithPermalinks()
             .WithLifetime(ServiceLifetime.Singleton))
         .RegisterProvider("attachments", storage => storage
             .UseEntityFramework<CoreDbContext>(
@@ -92,16 +98,34 @@ builder.Services.AddFileStorage(factory => factory
                 options => options
                     .PageSize(200)
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
+            .WithMetrics()
+            .WithPermalinks()
             .WithLifetime(ServiceLifetime.Singleton)))
-        .AddEndpoints(options => options.RequireAuthorization());
+        .AddEndpoints(options => options.RequireAuthorization())
+        .AddConsoleCommands();
 
 builder.Services.AddDocumentStorage(o => o.Enabled(true))
     .WithBehavior<LoggingDocumentStoreClientBehavior<OpenMeteoWeatherArchiveDocument>>()
+    .WithMetricsBehavior<OpenMeteoWeatherArchiveDocument>()
     .WithEntityFrameworkClient<OpenMeteoWeatherArchiveDocument, CoreDbContext>(
         documentStoreOptions: new DocumentStoreOptions
         {
             AllowFullScans = true
-        });
+        })
+    .WithPermalinks<OpenMeteoWeatherArchiveDocument>()
+    .AddConsoleCommands();
+
+builder.Services.AddBlobStorage(o => o.Enabled(true))
+    .WithLoggingBehavior()
+    .WithMetricsBehavior()
+    .WithEntityFrameworkClient<CoreDbContext>(o =>
+    {
+        o.AllowFullScans = true;
+        o.DefaultTake = 50;
+        o.MaxTake = 250;
+    })
+    .WithPermalinks()
+    .AddConsoleCommands();
 
 builder.Services.AddMapping().WithMapster();
 

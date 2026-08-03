@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using Microsoft.Extensions.DependencyInjection;
+
 /// <summary>
 /// Describes one typed document-store client registered for dashboard selection.
 /// </summary>
@@ -28,7 +30,12 @@ public sealed class DocumentStoreClientDescriptor(
     Type documentType,
     string documentTypeName,
     string providerName,
-    DocumentStoreProviderCapabilities capabilities = null)
+    DocumentStoreProviderCapabilities capabilities = null,
+    string name = "default",
+    bool isDefault = true,
+    ServiceLifetime lifetime = ServiceLifetime.Scoped,
+    DocumentTypeIdentity typeIdentity = default,
+    IReadOnlyList<string> transformIdentifiers = null)
 {
     /// <summary>
     /// Gets the stable client identifier used by dashboard requests.
@@ -79,4 +86,26 @@ public sealed class DocumentStoreClientDescriptor(
     /// </code>
     /// </example>
     public DocumentStoreProviderCapabilities Capabilities { get; } = capabilities ?? new DocumentStoreProviderCapabilities();
+
+    /// <summary>Gets the normalized case-insensitive client name used by keyed dependency injection and operational surfaces.</summary>
+    /// <example><code>var name = descriptor.Name;</code></example>
+    public string Name { get; } = DocumentStorageBuilderContext.NormalizeName(name);
+
+    /// <summary>Gets whether direct unkeyed <c>IDocumentStoreClient&lt;T&gt;</c> injection resolves this registration.</summary>
+    /// <example><code>var isDefault = descriptor.IsDefault;</code></example>
+    public bool IsDefault { get; } = isDefault;
+
+    /// <summary>Gets the dependency-injection lifetime shared by the keyed provider and client graph.</summary>
+    /// <example><code>var lifetime = descriptor.Lifetime;</code></example>
+    public ServiceLifetime Lifetime { get; } = lifetime;
+
+    /// <summary>Gets the stable persisted namespace and continuation-token type identity.</summary>
+    /// <example><code>var typeIdentity = descriptor.TypeIdentity;</code></example>
+    public DocumentTypeIdentity TypeIdentity { get; } = string.IsNullOrWhiteSpace(typeIdentity.Value)
+        ? DocumentTypeIdentity.For(documentType)
+        : typeIdentity;
+
+    /// <summary>Gets the non-sensitive payload transform identifiers configured for this client.</summary>
+    /// <example><code>foreach (var id in descriptor.TransformIdentifiers) { Console.WriteLine(id); }</code></example>
+    public IReadOnlyList<string> TransformIdentifiers { get; } = transformIdentifiers?.ToArray() ?? [];
 }

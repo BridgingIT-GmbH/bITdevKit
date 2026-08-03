@@ -4,7 +4,7 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
-## [10.0.110] - 2026-07-26
+## [10.0.110] - 2026-08-03
 
 - public documentation restyled (multiple themes) and updated for clarity, accuracy, and consistency.
 - Added blob storage support with upload and download capabilities for binary content, including content-type-aware transfer behavior and reusable storage helpers.

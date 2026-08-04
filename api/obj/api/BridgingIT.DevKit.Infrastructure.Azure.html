@@ -92,7 +92,7 @@ Classes
 </h3>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobDocumentStoreProvider.html">AzureBlobDocumentStoreProvider</a></dt>
-      <dd><p>Implements <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a> using Azure Blob Storage.</p>
+      <dd><p>Persists serialized documents in deterministic, provider-managed Azure Blob containers.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -107,6 +107,41 @@ Classes
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobServiceOptionsBuilder.html">AzureBlobServiceOptionsBuilder</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.html">AzureBlobStoreProvider</a></dt>
+      <dd><p>Implements the provider-neutral blob-store contract using Azure Blob Storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobListPage.html">AzureBlobStoreProvider.AzureBlobListPage</a></dt>
+      <dd><p>Describes one Azure listing page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobProperties.html">AzureBlobStoreProvider.AzureBlobProperties</a></dt>
+      <dd><p>Describes Azure blob properties used by the provider boundary.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobRetentionPage.html">AzureBlobStoreProvider.AzureBlobRetentionPage</a></dt>
+      <dd><p>Describes one Azure retention candidate page.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobStoreBackendException.html">AzureBlobStoreProvider.AzureBlobStoreBackendException</a></dt>
+      <dd><p>Carries a typed blob-store error across the protected Azure backend boundary.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobUploadRequest.html">AzureBlobStoreProvider.AzureBlobUploadRequest</a></dt>
+      <dd><p>Describes a staged Azure blob commit request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobUploadResult.html">AzureBlobStoreProvider.AzureBlobUploadResult</a></dt>
+      <dd><p>Describes a committed Azure blob upload.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureFilesFileStorageProvider.html">AzureFilesFileStorageProvider</a></dt>
@@ -170,7 +205,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableDocumentStoreProvider.html">AzureTableDocumentStoreProvider</a></dt>
-      <dd><p>Implements <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a> using Azure Table Storage.</p>
+      <dd><p>Persists chunked serialized documents in deterministic, provider-managed Azure Tables.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -195,7 +230,7 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosDocumentStoreProvider.html">CosmosDocumentStoreProvider</a></dt>
-      <dd><p>Implements <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a> using Azure Cosmos DB SQL API.</p>
+      <dd><p>Persists provider-neutral serialized document envelopes with ETags, paging, and native TTL in Cosmos DB.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -341,6 +376,11 @@ CosmosSqlGenericRepository for operations with Cosmos DB using a given provider.
     <h3 id="interfaces">
 Interfaces
 </h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.html">AzureBlobStoreProvider.IAzureBlobStoreBackend</a></dt>
+      <dd><p>Defines the protected Azure transport seam used by provider contract tests and specialized derived providers.</p>
+</dd>
+    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlEntity.html">ICosmosSqlEntity</a></dt>
       <dd></dd>

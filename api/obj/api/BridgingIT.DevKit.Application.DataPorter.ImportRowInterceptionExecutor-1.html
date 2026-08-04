@@ -403,6 +403,57 @@ Class ImportRowInterceptionExecutor&lt;TTarget&gt;
 
 
 
+  <a id="BridgingIT_DevKit_Application_DataPorter_ImportRowInterceptionExecutor_1_CompleteAsync_" data-uid="BridgingIT.DevKit.Application.DataPorter.ImportRowInterceptionExecutor`1.CompleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_DataPorter_ImportRowInterceptionExecutor_1_CompleteAsync_BridgingIT_DevKit_Application_DataPorter_ImportResult__0__BridgingIT_DevKit_Application_DataPorter_Format_System_String_System_Boolean_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.DataPorter.ImportRowInterceptionExecutor`1.CompleteAsync(BridgingIT.DevKit.Application.DataPorter.ImportResult{`0},BridgingIT.DevKit.Application.DataPorter.Format,System.String,System.Boolean,System.Threading.CancellationToken)">
+  CompleteAsync(ImportResult&lt;TTarget&gt;, Format, string, bool, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes the import completion callbacks after all rows have been processed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; CompleteAsync(ImportResult&lt;TTarget&gt; result, Format format, string sheetName, bool isStreaming, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Application.DataPorter.ImportResult-1.html">ImportResult</a>&lt;TTarget&gt;</dt>
+    <dd><p>The completed import result.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="BridgingIT.DevKit.Application.DataPorter.Format.html">Format</a></dt>
+    <dd><p>The import format.</p>
+</dd>
+    <dt><code>sheetName</code> <span class="xref">string</span></dt>
+    <dd><p>The sheet or section name when available.</p>
+</dd>
+    <dt><code>isStreaming</code> <span class="xref">bool</span></dt>
+    <dd><p>Indicates whether the operation is streaming.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The aggregated completion result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 

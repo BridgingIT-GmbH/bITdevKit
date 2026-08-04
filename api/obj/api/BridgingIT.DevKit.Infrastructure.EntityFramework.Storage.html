@@ -91,14 +91,31 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider-1.html">EntityFrameworkBlobStoreProvider&lt;TContext&gt;</a></dt>
+      <dd><p>Provides the Entity Framework blob-store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProviderOptions.html">EntityFrameworkDocumentStoreProviderOptions</a></dt>
       <dd><p>Defines runtime options for <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider-1.html">EntityFrameworkDocumentStoreProvider&lt;TContext&gt;</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkDocumentStoreProvider-1.html">EntityFrameworkDocumentStoreProvider&lt;TContext&gt;</a></dt>
-      <dd><p>Provides an Entity Framework backed <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreProvider.html">IDocumentStoreProvider</a> with hashed lookups and
-lease-based mutation coordination.</p>
+      <dd><p>Persists serialized documents with one dependency-injection-owned Entity Framework scope per operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkStoragePermalinkRegistryProvider-1.html">EntityFrameworkStoragePermalinkRegistryProvider&lt;TContext&gt;</a></dt>
+      <dd><p>Persists Storage Permalink Registry entries through a provider-owned Entity Framework context scope.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.IStoragePermalinkRegistryContext.html">IStoragePermalinkRegistryContext</a></dt>
+      <dd><p>Defines the Entity Framework set required by the Storage Permalink Registry.</p>
 </dd>
     </dl>
 

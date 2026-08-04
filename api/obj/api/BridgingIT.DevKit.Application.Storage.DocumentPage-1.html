@@ -98,7 +98,7 @@ Class DocumentPage&lt;T&gt;
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class DocumentPage&lt;T&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class DocumentPage&lt;T&gt; where T : class</code></pre>
   </div>
 
 
@@ -260,7 +260,7 @@ Class DocumentPage&lt;T&gt;
 
 
   <h2 id="BridgingIT_DevKit_Application_Storage_DocumentPage_1_examples">Examples</h2>
-  <pre><code class="lang-csharp">var page = await documents.FindPageResultAsync(query, cancellationToken);
+  <pre><code class="lang-csharp">var page = await documents.FindPageAsync(query, cancellationToken);
 if (page.Value.HasMore)
 {
     var nextQuery = DocumentQueries.Query()
@@ -381,7 +381,7 @@ if (page.Value.HasMore)
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;T&gt; Items { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;DocumentEntry&lt;T&gt;&gt; Items { get; init; }</code></pre>
   </div>
 
 
@@ -390,7 +390,7 @@ if (page.Value.HasMore)
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">IReadOnlyCollection</span>&lt;T&gt;</dt>
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntry-1.html">DocumentEntry</a>&lt;T&gt;&gt;</dt>
     <dd></dd>
   </dl>
 

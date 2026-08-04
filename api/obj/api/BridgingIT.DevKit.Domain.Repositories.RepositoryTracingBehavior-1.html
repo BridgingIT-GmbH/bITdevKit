@@ -305,6 +305,9 @@ Class RepositoryTracingBehavior&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.html#BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_InsertResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericRepository___0____0_System_Threading_CancellationToken_">GenericRepositoryResultExtensions.InsertResultAsync&lt;TEntity&gt;(IGenericRepository&lt;TEntity&gt;, TEntity, CancellationToken)</a>
   </div>
   <div>
+      <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.html#BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_InsertSetResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericRepository___0__System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_">GenericRepositoryResultExtensions.InsertSetResultAsync&lt;TEntity&gt;(IGenericRepository&lt;TEntity&gt;, IEnumerable&lt;TEntity&gt;, CancellationToken)</a>
+  </div>
+  <div>
       <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.html#BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_UpdateResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericRepository___0____0_System_Threading_CancellationToken_">GenericRepositoryResultExtensions.UpdateResultAsync&lt;TEntity&gt;(IGenericRepository&lt;TEntity&gt;, TEntity, CancellationToken)</a>
   </div>
   <div>
@@ -1231,6 +1234,48 @@ or null if no entity with the given identifier is found.</p>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
     <dd><p>A task representing the asynchronous operation, with the inserted entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Repositories_RepositoryTracingBehavior_1_InsertSetAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.RepositoryTracingBehavior`1.InsertSetAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_RepositoryTracingBehavior_1_InsertSetAsync_System_Collections_Generic_IEnumerable__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.RepositoryTracingBehavior`1.InsertSetAsync(System.Collections.Generic.IEnumerable{`0},System.Threading.CancellationToken)">
+  InsertSetAsync(IEnumerable&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inserts the provided entities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;IEnumerable&lt;TEntity&gt;&gt; InsertSetAsync(IEnumerable&lt;TEntity&gt; entities, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TEntity&gt;</dt>
+    <dd><p>The entities to insert.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to monitor for cancellation requests.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>A task representing the asynchronous operation, with the inserted entities.</p>
 </dd>
   </dl>
 

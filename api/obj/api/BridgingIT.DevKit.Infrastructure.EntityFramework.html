@@ -394,6 +394,16 @@ Supports paged queries, streaming, background purging, statistics, and exporting
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.OutboxDomainEventCollector.html">OutboxDomainEventCollector</a></dt>
+      <dd><p>Projects aggregate domain events to deterministic outbox rows in enumeration order.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.OutboxDomainEventProjection.html">OutboxDomainEventProjection</a></dt>
+      <dd><p>Associates one source aggregate and domain event with its projected outbox row.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.OutboxDomainEventQueue.html">OutboxDomainEventQueue</a></dt>
       <dd><p>Provides an in-process queue for immediate outbox domain event dispatch requests.</p>
 </dd>
@@ -575,8 +585,23 @@ in SQLite, so schema parameters are ignored but kept for interface consistency.<
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html">StorageBlob</a></dt>
+      <dd><p>Represents a persisted blob metadata row for the Entity Framework blob store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobChunk.html">StorageBlobChunk</a></dt>
+      <dd><p>Represents one ordered content chunk for an Entity Framework backed blob.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html">StorageDocument</a></dt>
       <dd><p>Represents a persisted document row for the Entity Framework document store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StoragePermalink.html">StoragePermalink</a></dt>
+      <dd><p>Represents one persisted Storage Permalink Registry entry.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -615,6 +640,11 @@ Structs
 Interfaces
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IBlobStoreContext.html">IBlobStoreContext</a></dt>
+      <dd><p>Defines the Entity Framework capability contract required by the database-backed blob store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IDbContextResolver.html">IDbContextResolver</a></dt>
       <dd><p>Resolves Entity Framework <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span> instances at runtime
 for transactional behaviors and other cross-cutting concerns.</p>
@@ -622,7 +652,8 @@ for transactional behaviors and other cross-cutting concerns.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IDocumentStoreContext.html">IDocumentStoreContext</a></dt>
-      <dd></dd>
+      <dd><p>Defines the Entity Framework context surface required by the Document Storage provider.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IEntityPermissionContext.html">IEntityPermissionContext</a></dt>

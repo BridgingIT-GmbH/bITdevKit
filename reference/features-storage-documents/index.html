@@ -13,25 +13,25 @@
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-storage-documents/">
       
       
-        <link rel="prev" href="../features-jobscheduling/">
+        <link rel="prev" href="../features-storage-blobs/">
       
       
-        <link rel="next" href="../features-storage-files/">
+        <link rel="next" href="../features-storage-permalinks/">
       
       
         
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>DocumentStorage - bITdevKit</title>
+        <title>Document Storage - bITdevKit</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -47,7 +47,11 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/stylesheets/themes.css">
+    
       <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/theme-picker.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -74,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#document-storage-feature-documentation" class="md-skip">
+        <a href="#document-storage" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              DocumentStorage
+              Document Storage
             
           </span>
         </div>
@@ -117,28 +121,227 @@
     </div>
     
       
-        <form class="md-header__option" data-md-component="palette">
+        
+<form class="md-header__option bdk-theme-picker" data-md-component="palette">
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme)"
+      data-md-color-scheme="default"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use system theme"
+      type="radio"
+      name="__palette"
+      id="__palette_0"
+    >
     
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_1"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: light)"
+      data-md-color-scheme="light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_1"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_2"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: dark)"
+      data-md-color-scheme="dark"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use dark theme"
+      type="radio"
+      name="__palette"
+      id="__palette_2"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_3"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin theme"
+      type="radio"
+      name="__palette"
+      id="__palette_3"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_4"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="darkforest"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Darkforest theme"
+      type="radio"
+      name="__palette"
+      id="__palette_4"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_5"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="carbon"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Carbon theme"
+      type="radio"
+      name="__palette"
+      id="__palette_5"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_6"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="tokionights"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Tokyo Night theme"
+      type="radio"
+      name="__palette"
+      id="__palette_6"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_7"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="matrix"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Matrix theme"
+      type="radio"
+      name="__palette"
+      id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_0"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+
+  <details class="bdk-theme-picker__details" data-bdk-theme-picker>
+    <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
+      <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
+      <span data-bdk-theme-label>System</span>
+      <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
+      <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="dark" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#66d9ef;--theme-accent:#fd971f"></span>
+        <span>Dark</span>
       </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#11111b;--theme-primary:#89b4fa;--theme-accent:#f5c2e7"></span>
+        <span>Catppuccin</span>
       </label>
-    
-  
+      <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="darkforest" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#07120d;--theme-primary:#9ece6a;--theme-accent:#e0af68"></span>
+        <span>Darkforest</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="carbon" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#161616;--theme-primary:#78a9ff;--theme-accent:#ff7eb6"></span>
+        <span>Carbon</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="tokionights" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#0f1021;--theme-primary:#7aa2f7;--theme-accent:#bb9af7"></span>
+        <span>Tokyo Night</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="matrix" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#020802;--theme-primary:#00ff66;--theme-accent:#39ff14"></span>
+        <span>Matrix</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="light" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#f7f7f2;--theme-primary:#0f62fe;--theme-accent:#8a3ffc"></span>
+        <span>Light</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="system" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#a59f99;--theme-accent:#f7f7f2"></span>
+        <span>System</span>
+      </label>
+    </div>
+  </details>
 </form>
       
     
@@ -2169,7 +2372,7 @@
   <span class="md-ellipsis">
     
   
-    StartupTasks
+    Startup Tasks
   
 
     
@@ -2225,7 +2428,35 @@
   <span class="md-ellipsis">
     
   
-    JobScheduling
+    Job Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-blobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
   
 
     
@@ -2262,7 +2493,7 @@
   <span class="md-ellipsis">
     
   
-    DocumentStorage
+    Document Storage
   
 
     
@@ -2280,7 +2511,7 @@
   <span class="md-ellipsis">
     
   
-    DocumentStorage
+    Document Storage
   
 
     
@@ -2317,10 +2548,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#challenges" class="md-nav__link">
+  <a href="#good-fit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Challenges
+        Good Fit
       
     </span>
   </a>
@@ -2328,10 +2559,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#solution" class="md-nav__link">
+  <a href="#contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Solution
+        Contract
       
     </span>
   </a>
@@ -2339,49 +2570,76 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#query-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Query Safety
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#class-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Class Diagram
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#flow-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Flow Diagram
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-contracts" class="md-nav__link">
+  <a href="#size-and-integrity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Contracts
+        Size And Integrity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties-and-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties And Transforms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expiration-and-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expiration And Retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#named-clients-and-di" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Named Clients And DI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transfers-and-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transfers And Maintenance
       
     </span>
   </a>
@@ -2423,10 +2681,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-cosmos-db" class="md-nav__link">
+  <a href="#azure-blob" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azure Cosmos DB
+        Azure Blob
       
     </span>
   </a>
@@ -2434,10 +2692,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-blob-storage" class="md-nav__link">
+  <a href="#azure-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azure Blob Storage
+        Azure Table
       
     </span>
   </a>
@@ -2445,10 +2703,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-table-storage" class="md-nav__link">
+  <a href="#cosmos-db" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azure Table Storage
+        Cosmos DB
       
     </span>
   </a>
@@ -2461,226 +2719,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
+  <a href="#azure-resource-ownership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        Azure Resource Ownership
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Getting Started">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#di-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DI Setup
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dashboard-explorer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dashboard Explorer
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-document-storage-as-a-persistent-cache-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using Document Storage As A Persistent Cache Backend
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Basic Usage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#query-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Query Usage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading-one-page" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading One Page
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading-all-pages" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading All Pages
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#key-only-listing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key-Only Listing
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#counting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Counting
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explicit-full-scans" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Explicit Full Scans
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#operations-semantics" class="md-nav__link">
+  <a href="#dashboard-and-diagnostics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operations &amp; Semantics
+        Dashboard And Diagnostics
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Operations &amp; Semantics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#query-safety-and-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Query Safety And Errors
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#entity-framework-mutation-semantics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Entity Framework Mutation Semantics
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#multi-host-deployment-guidance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Multi-Host Deployment Guidance
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#entity-framework-schema-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Entity Framework Schema Notes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#behaviors-client-decorators" class="md-nav__link">
+  <a href="#shared-common-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Behaviors (Client Decorators)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Behaviors (Client Decorators)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#built-in-behavior-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Built-In Behavior Matrix
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best Practices
+        Shared Common APIs
       
     </span>
   </a>
@@ -2698,60 +2762,38 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#appendix-a-behaviors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Appendix A — Behaviors
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Appendix A — Behaviors">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pipeline-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pipeline Model
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#creating-a-custom-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Creating A Custom Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#registration-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Registration Patterns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-permalinks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Permalinks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3005,10 +3047,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#challenges" class="md-nav__link">
+  <a href="#good-fit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Challenges
+        Good Fit
       
     </span>
   </a>
@@ -3016,10 +3058,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#solution" class="md-nav__link">
+  <a href="#contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Solution
+        Contract
       
     </span>
   </a>
@@ -3027,49 +3069,76 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#query-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Query Safety
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Architecture">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#class-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Class Diagram
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#flow-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Flow Diagram
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-contracts" class="md-nav__link">
+  <a href="#size-and-integrity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Contracts
+        Size And Integrity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties-and-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties And Transforms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expiration-and-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expiration And Retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#named-clients-and-di" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Named Clients And DI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transfers-and-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transfers And Maintenance
       
     </span>
   </a>
@@ -3111,10 +3180,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-cosmos-db" class="md-nav__link">
+  <a href="#azure-blob" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azure Cosmos DB
+        Azure Blob
       
     </span>
   </a>
@@ -3122,10 +3191,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-blob-storage" class="md-nav__link">
+  <a href="#azure-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azure Blob Storage
+        Azure Table
       
     </span>
   </a>
@@ -3133,10 +3202,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#azure-table-storage" class="md-nav__link">
+  <a href="#cosmos-db" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azure Table Storage
+        Cosmos DB
       
     </span>
   </a>
@@ -3149,226 +3218,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
+  <a href="#azure-resource-ownership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        Azure Resource Ownership
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Getting Started">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#di-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        DI Setup
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dashboard-explorer" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dashboard Explorer
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-document-storage-as-a-persistent-cache-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using Document Storage As A Persistent Cache Backend
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Basic Usage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#query-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Query Usage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading-one-page" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading One Page
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading-all-pages" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading All Pages
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#key-only-listing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key-Only Listing
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#counting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Counting
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explicit-full-scans" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Explicit Full Scans
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#operations-semantics" class="md-nav__link">
+  <a href="#dashboard-and-diagnostics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operations &amp; Semantics
+        Dashboard And Diagnostics
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Operations &amp; Semantics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#query-safety-and-errors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Query Safety And Errors
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#entity-framework-mutation-semantics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Entity Framework Mutation Semantics
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#multi-host-deployment-guidance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Multi-Host Deployment Guidance
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#entity-framework-schema-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Entity Framework Schema Notes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#behaviors-client-decorators" class="md-nav__link">
+  <a href="#shared-common-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Behaviors (Client Decorators)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Behaviors (Client Decorators)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#built-in-behavior-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Built-In Behavior Matrix
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Best Practices
+        Shared Common APIs
       
     </span>
   </a>
@@ -3386,56 +3261,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#appendix-a-behaviors" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Appendix A — Behaviors
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Appendix A — Behaviors">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pipeline-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pipeline Model
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#creating-a-custom-behavior" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Creating A Custom Behavior
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#registration-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Registration Patterns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -3447,6 +3272,72 @@
           
             <div class="md-content" data-md-component="content">
               
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../features-startuptasks/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Storage, Scheduling and Utilities
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
               <article class="md-content__inner md-typeset">
                 
                   
@@ -3456,729 +3347,155 @@
   
 
 
-<h1 id="document-storage-feature-documentation">Document Storage Feature Documentation<a class="headerlink" href="#document-storage-feature-documentation" title="Permanent link">&para;</a></h1>
-<blockquote>
-<p>Store typed JSON-like documents through a provider-agnostic, Result-native, continuation-paged API.</p>
-</blockquote>
-<div class="toc">
-<ul>
-<li><a href="#document-storage-feature-documentation">Document Storage Feature Documentation</a><ul>
-<li><a href="#overview">Overview</a></li>
-<li><a href="#challenges">Challenges</a></li>
-<li><a href="#solution">Solution</a></li>
-<li><a href="#architecture">Architecture</a><ul>
-<li><a href="#class-diagram">Class Diagram</a></li>
-<li><a href="#flow-diagram">Flow Diagram</a></li>
-</ul>
-</li>
-<li><a href="#core-contracts">Core Contracts</a></li>
-<li><a href="#providers">Providers</a><ul>
-<li><a href="#in-memory">In-Memory</a></li>
-<li><a href="#entity-framework">Entity Framework</a></li>
-<li><a href="#azure-cosmos-db">Azure Cosmos DB</a></li>
-<li><a href="#azure-blob-storage">Azure Blob Storage</a></li>
-<li><a href="#azure-table-storage">Azure Table Storage</a></li>
-</ul>
-</li>
-<li><a href="#getting-started">Getting Started</a><ul>
-<li><a href="#di-setup">DI Setup</a></li>
-<li><a href="#dashboard-explorer">Dashboard Explorer</a></li>
-<li><a href="#using-document-storage-as-a-persistent-cache-backend">Using Document Storage As A Persistent Cache Backend</a></li>
-<li><a href="#basic-usage">Basic Usage</a></li>
-<li><a href="#query-usage">Query Usage</a></li>
-<li><a href="#reading-one-page">Reading One Page</a></li>
-<li><a href="#reading-all-pages">Reading All Pages</a></li>
-<li><a href="#key-only-listing">Key-Only Listing</a></li>
-<li><a href="#counting">Counting</a></li>
-<li><a href="#explicit-full-scans">Explicit Full Scans</a></li>
-</ul>
-</li>
-<li><a href="#operations-semantics">Operations &amp; Semantics</a><ul>
-<li><a href="#query-safety-and-errors">Query Safety And Errors</a></li>
-<li><a href="#entity-framework-mutation-semantics">Entity Framework Mutation Semantics</a></li>
-<li><a href="#multi-host-deployment-guidance">Multi-Host Deployment Guidance</a></li>
-<li><a href="#entity-framework-schema-notes">Entity Framework Schema Notes</a></li>
-</ul>
-</li>
-<li><a href="#behaviors-client-decorators">Behaviors (Client Decorators)</a><ul>
-<li><a href="#built-in-behavior-matrix">Built-In Behavior Matrix</a></li>
-</ul>
-</li>
-<li><a href="#best-practices">Best Practices</a></li>
-<li><a href="#testing">Testing</a></li>
-<li><a href="#appendix-a-behaviors">Appendix A — Behaviors</a><ul>
-<li><a href="#pipeline-model">Pipeline Model</a></li>
-<li><a href="#creating-a-custom-behavior">Creating A Custom Behavior</a></li>
-<li><a href="#registration-patterns">Registration Patterns</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+<h1 id="document-storage">Document Storage<a class="headerlink" href="#document-storage" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Document Storage provides a type-safe abstraction for storing, retrieving, listing, counting, and deleting JSON-like documents keyed by <code>DocumentKey</code> (<code>PartitionKey</code> + <code>RowKey</code>). Consumers use <code>IDocumentStoreClient&lt;T&gt;</code>, and every operation returns <code>Result</code> or <code>Result&lt;T&gt;</code> for consistent recoverable error handling.</p>
-<p>Read operations are bounded. Query reads return one page at a time, and continuation tokens are opaque strings that can be passed back to the same provider with the same query shape to retrieve the next page.</p>
-<p>The cache behavior described here builds on the shared abstractions documented in <a href="../common-caching/">Common Caching</a>, and document payload serialization follows the serializer conventions covered in <a href="../common-serialization/">Common Serialization</a>.</p>
-<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Document Storage is the typed JSON-document companion to Blob Storage. Applications use <code>IDocumentStoreClient&lt;T&gt;</code> with a two-part <code>DocumentKey</code> (<code>PartitionKey</code>, <code>RowKey</code>); providers persist serialized bytes and provider-neutral metadata.</p>
+<p>The client owns validation, serialization, canonical SHA-256 hashes, size limits, payload transforms, integrity verification, continuation-token binding, and expiration resolution. Providers own durable state, conditional persistence, native paging, and resource initialization.</p>
+<p>Document Storage does not replace <code>ICacheProvider</code>. <code>DocumentStoreCacheProvider</code> is an adapter for deployments that intentionally use a document store as cache persistence; the abstractions remain separate.</p>
+<h2 id="good-fit">Good Fit<a class="headerlink" href="#good-fit" title="Permanent link">&para;</a></h2>
+<p>Use Document Storage when data is:</p>
 <ul>
-<li>Consistent access: Unified API across in-memory, relational, and cloud providers without leaking implementation details.</li>
-<li>Bounded reads: Prevent accidental unbounded reads by requiring page-based query APIs.</li>
-<li>Query safety: Make full scans, page-size limits, unsupported query shapes, and client-side filtering explicit.</li>
-<li>Keyed access patterns: Efficient reads by partition and row key with full, prefix, and provider-supported suffix matching.</li>
-<li>Resilience and latency: Support retries, timeouts, diagnostics, and typed Result failures without exception-based control flow.</li>
-<li>Caching and invalidation: Avoid repeated exact-key reads while invalidating cache entries after writes and deletes.</li>
+<li>naturally addressed by partition and row key;</li>
+<li>serialized and consumed as a typed document;</li>
+<li>read by exact key or bounded key-prefix pages;</li>
+<li>shared across application instances;</li>
+<li>protected by optimistic concurrency;</li>
+<li>temporary or retention-managed;</li>
+<li>portable across in-memory, relational, Azure Storage, and Cosmos providers.</li>
 </ul>
-<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Core contracts: <code>IDocumentStoreClient&lt;T&gt;</code> and <code>IDocumentStoreProvider</code> define the Result-native client and provider surface.</li>
-<li>Query model: <code>DocumentQuery</code>, <code>DocumentCountQuery</code>, and <code>DocumentQueries</code> provide explicit bounded query shapes.</li>
-<li>Paging model: <code>DocumentPage&lt;T&gt;</code> and <code>DocumentKeyPage</code> return items plus opaque continuation tokens.</li>
-<li>Query safety: <code>DocumentStoreOptions</code>, <code>DocumentStoreProviderCapabilities</code>, and <code>DocumentQueryValidator</code> enforce provider-aware limits.</li>
-<li>Providers: In-memory, Entity Framework, Cosmos DB, Azure Blob Storage, and Azure Table Storage implementations.</li>
-<li>Behaviors: Decorator pipeline around the client for logging, retry, timeout, caching, and chaos testing.</li>
-</ul>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<p>The Document Storage architecture consists of a provider-backed client decorated by optional behaviors. Consumers depend on <code>IDocumentStoreClient&lt;T&gt;</code>, while providers implement <code>IDocumentStoreProvider</code>.</p>
-<ul>
-<li>Components:</li>
-<li><code>IDocumentStoreClient&lt;T&gt;</code>: Public API for exact reads, paged reads, key listing, counting, existence checks, writes, and deletes.</li>
-<li><code>DocumentStoreClient&lt;T&gt;</code>: Default client that forwards operations to an <code>IDocumentStoreProvider</code>.</li>
-<li><code>IDocumentStoreProvider</code>: Backend contract implemented by providers.</li>
-<li>Query types: <code>DocumentQuery</code>, <code>DocumentCountQuery</code>, <code>DocumentPage&lt;T&gt;</code>, <code>DocumentKeyPage</code>.</li>
-<li>Behaviors: Decorators that wrap the client for logging, retry, timeout, cache, and chaos concerns.</li>
-</ul>
-<h3 id="class-diagram">Class Diagram<a class="headerlink" href="#class-diagram" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>classDiagram
-  class IDocumentStoreClient~T~ {
-    +GetResultAsync(DocumentKey)
-    +FindPageResultAsync(DocumentQuery)
-    +ListPageResultAsync(DocumentQuery)
-    +CountResultAsync(DocumentCountQuery)
-    +ExistsResultAsync(DocumentKey)
-    +UpsertResultAsync(DocumentKey, T)
-    +UpsertResultAsync(IEnumerable~(DocumentKey, T)~)
-    +DeleteResultAsync(DocumentKey)
-  }
+<p>Use Blob Storage for stream-first binary objects and Key/Value Storage for low-latency scalar/shared-state workloads.</p>
+<h2 id="contract">Contract<a class="headerlink" href="#contract" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span><span class="p">();</span>
+<span class="n">properties</span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="s">&quot;region&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eu&quot;</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">created</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">UpsertAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentKey</span><span class="p">(</span><span class="s">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">customer</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentWriteOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">CreateOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Expiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExpirationChange</span><span class="p">.</span><span class="n">After</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromDays</span><span class="p">(</span><span class="mi">7</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">properties</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
-  class DocumentStoreClient~T~
-  class IDocumentStoreProvider {
-    +Capabilities
-  }
-  class DocumentQuery
-  class DocumentCountQuery
-  class DocumentPage~T~
-  class DocumentKeyPage
-  class DocumentStoreOptions
-  class DocumentStoreProviderCapabilities
-  class InMemoryDocumentStoreProvider
-  class EntityFrameworkDocumentStoreProvider~TContext~
-  class CosmosDocumentStoreProvider
-  class AzureBlobDocumentStoreProvider
-  class AzureTableDocumentStoreProvider
-  class LoggingDocumentStoreClientBehavior~T~
-  class RetryDocumentStoreClientBehavior~T~
-  class TimeoutDocumentStoreClientBehavior~T~
-  class CacheDocumentStoreClientBehavior~T~
-  class ChaosDocumentStoreClientBehavior~T~
+<span class="kt">var</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">GetAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentKey</span><span class="p">(</span><span class="s">&quot;customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
-  IDocumentStoreClient~T~ &lt;|.. DocumentStoreClient~T~
-  IDocumentStoreProvider &lt;|.. InMemoryDocumentStoreProvider
-  IDocumentStoreProvider &lt;|.. EntityFrameworkDocumentStoreProvider~TContext~
-  IDocumentStoreProvider &lt;|.. CosmosDocumentStoreProvider
-  IDocumentStoreProvider &lt;|.. AzureBlobDocumentStoreProvider
-  IDocumentStoreProvider &lt;|.. AzureTableDocumentStoreProvider
-  DocumentStoreClient~T~ --&gt; IDocumentStoreProvider
-  IDocumentStoreClient~T~ ..&gt; DocumentQuery
-  IDocumentStoreClient~T~ ..&gt; DocumentCountQuery
-  IDocumentStoreClient~T~ ..&gt; DocumentPage~T~
-  IDocumentStoreClient~T~ ..&gt; DocumentKeyPage
-  IDocumentStoreProvider ..&gt; DocumentStoreProviderCapabilities
-  LoggingDocumentStoreClientBehavior~T~ ..&gt; IDocumentStoreClient~T~
-  RetryDocumentStoreClientBehavior~T~ ..&gt; IDocumentStoreClient~T~
-  TimeoutDocumentStoreClientBehavior~T~ ..&gt; IDocumentStoreClient~T~
-  CacheDocumentStoreClientBehavior~T~ ..&gt; IDocumentStoreClient~T~
-  ChaosDocumentStoreClientBehavior~T~ ..&gt; IDocumentStoreClient~T~</code></pre>
-<h3 id="flow-diagram">Flow Diagram<a class="headerlink" href="#flow-diagram" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>sequenceDiagram
-  participant Caller
-  participant Logging
-  participant Retry
-  participant Timeout
-  participant Cache
-  participant Client as DocumentStoreClient&lt;T&gt;
-  participant Provider
-
-  Caller-&gt;&gt;Logging: FindPageResultAsync(query)
-  Logging-&gt;&gt;Retry: FindPageResultAsync(query)
-  Retry-&gt;&gt;Timeout: FindPageResultAsync(query)
-  Timeout-&gt;&gt;Cache: FindPageResultAsync(query)
-  Cache-&gt;&gt;Client: FindPageResultAsync(query)
-  Client-&gt;&gt;Provider: FindPageResultAsync&lt;T&gt;(query)
-  Provider--&gt;&gt;Client: Result&lt;DocumentPage&lt;T&gt;&gt;
-  Client--&gt;&gt;Cache: Result&lt;DocumentPage&lt;T&gt;&gt;
-  Cache--&gt;&gt;Timeout: Result&lt;DocumentPage&lt;T&gt;&gt;
-  Timeout--&gt;&gt;Retry: Result&lt;DocumentPage&lt;T&gt;&gt;
-  Retry--&gt;&gt;Logging: Result&lt;DocumentPage&lt;T&gt;&gt;
-  Logging--&gt;&gt;Caller: Result&lt;DocumentPage&lt;T&gt;&gt;
-  alt page.HasMore
-    Caller-&gt;&gt;Logging: FindPageResultAsync(query with ContinuationToken)
-  end</code></pre>
-<h2 id="core-contracts">Core Contracts<a class="headerlink" href="#core-contracts" title="Permanent link">&para;</a></h2>
+<span class="kt">var</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">UpdatePropertiesAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">DocumentPropertiesUpdate</span><span class="p">(</span><span class="n">current</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Key</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">IfMatchETag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ETag</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Expiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExpirationChange</span><span class="p">.</span><span class="n">Clear</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Core operations:</p>
 <ul>
-<li><code>IDocumentStoreClient&lt;T&gt;</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/IDocumentStoreClient.cs">src/Application.Storage/Documents/IDocumentStoreClient.cs</a>)</li>
-<li><strong>GetResultAsync(DocumentKey)</strong>: Retrieves one exact document. Missing documents return a typed not-found failure.</li>
-<li><strong>FindPageResultAsync(DocumentQuery)</strong>: Retrieves one bounded page of payload instances.</li>
-<li><strong>ListPageResultAsync(DocumentQuery)</strong>: Retrieves one bounded page of document keys only.</li>
-<li><strong>CountResultAsync(DocumentCountQuery)</strong>: Counts documents matching a query shape.</li>
-<li><strong>ExistsResultAsync(DocumentKey)</strong>: Checks exact-key existence.</li>
-<li><strong>UpsertResultAsync(DocumentKey, T)</strong>: Inserts or updates one document.</li>
-<li><strong>UpsertResultAsync(IEnumerable&lt;(DocumentKey, T)&gt;)</strong>: Inserts or updates multiple documents.</li>
-<li><strong>DeleteResultAsync(DocumentKey)</strong>: Deletes one exact document.</li>
-<li><code>IDocumentStoreProvider</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/IDocumentStoreProvider.cs">src/Application.Storage/Documents/IDocumentStoreProvider.cs</a>)</li>
-<li>Backend interface implemented by providers.</li>
-<li>Exposes <code>DocumentStoreProviderCapabilities Capabilities</code>.</li>
-<li><code>DocumentStoreClient&lt;T&gt;</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/DocumentStoreClient.cs">src/Application.Storage/Documents/DocumentStoreClient.cs</a>)</li>
-<li>Default client implementation that forwards operations to the provider.</li>
-<li><code>DocumentKey</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/DocumentKey.cs">src/Application.Storage/Documents/DocumentKey.cs</a>)</li>
-<li>Value type: <code>PartitionKey</code>, <code>RowKey</code>.</li>
-<li><code>DocumentQuery</code> and <code>DocumentCountQuery</code></li>
-<li>Query models for paged reads, key listing, and counts.</li>
-<li><code>DocumentPage&lt;T&gt;</code> and <code>DocumentKeyPage</code></li>
-<li>Page result models containing items and continuation tokens.</li>
-<li><code>DocumentStoreOptions</code></li>
-<li>Query safety settings such as <code>DefaultTake</code>, <code>MaxTake</code>, <code>AllowFullScans</code>, and <code>RejectClientSideFilteredQueries</code>.</li>
-<li><code>DocumentStoreProviderCapabilities</code></li>
-<li>Describes provider support for exact, prefix, suffix, full-scan, key-listing, paging, count, and key-only projection behavior.</li>
-<li><code>DocumentStoreCacheProvider</code> and <code>DocumentStoreCache</code></li>
-<li>Allow the document-store stack to act as the backing store for <code>ICacheProvider</code>.</li>
-<li>Cache entries are stored as <code>CacheDocument</code> documents under the <code>storage-cache</code> partition.</li>
+<li><code>GetAsync</code>: exact read returning <code>DocumentEntry&lt;T&gt;</code>.</li>
+<li><code>FindPageAsync</code>: bounded payload page returning <code>DocumentEntry&lt;T&gt;</code> items.</li>
+<li><code>ListPageAsync</code>: bounded key-only page.</li>
+<li><code>CountAsync</code>: provider-side count where supported.</li>
+<li><code>ExistsAsync</code>: exact logical existence.</li>
+<li><code>UpsertAsync</code>: one conditional typed write returning <code>DocumentInfo</code>.</li>
+<li><code>UpsertManyAsync</code>: ordered, prevalidated, non-atomic batch with explicit partial completion.</li>
+<li><code>UpdatePropertiesAsync</code>: metadata/expiration-only conditional update.</li>
+<li><code>DeleteAsync</code>: idempotent optional ETag delete.</li>
+<li><code>DeleteManyAsync</code>: ordered, prevalidated delete batch.</li>
 </ul>
+<p><code>DocumentEntry&lt;T&gt;</code> and <code>DocumentInfo</code> expose provider-neutral <code>ETag</code>, logical <code>ContentHash</code>, creation/modification timestamps, <code>ExpiresAt</code>, and cloned scalar properties. The stored transformed hash remains an internal integrity value.</p>
+<h2 id="query-safety">Query Safety<a class="headerlink" href="#query-safety" title="Permanent link">&para;</a></h2>
+<p>Reads are page-based and deterministic. Full scans require consent in both <code>DocumentStoreOptions</code> and the individual query. Provider capabilities decide whether exact, prefix, suffix, count, and key-only operations are accepted or require client-side filtering.</p>
+<p>Continuation tokens are opaque and bind the normalized client name, document type, operation, query shape, page size, provider state, and first-page expiration cutoff. Configure <code>IContinuationTokenProtector</code> to require HMAC-protected tokens.</p>
+<p>See <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/specs/spec-application-storage-documents-paging.md">Document Storage Paging Specification</a>.</p>
+<h2 id="size-and-integrity">Size And Integrity<a class="headerlink" href="#size-and-integrity" title="Permanent link">&para;</a></h2>
+<p><code>DocumentStoreOptions.MaxDocumentSize</code> defaults to <code>ByteSize.Megabytes(1)</code> and is enforced against logical serialized bytes before provider I/O. A provider may advertise a lower stored-size limit.</p>
+<p>Every write computes:</p>
+<ul>
+<li>logical <code>ContentHash</code> over serialized bytes;</li>
+<li>stored content hash after all transforms.</li>
+</ul>
+<p><code>DocumentWriteOptions.ExpectedContentHash</code> can enforce the caller's expected logical hash. Reads verify the stored hash before reversing transforms and verify the logical hash before deserialization. Mismatches return <code>DocumentStoreIntegrityError</code>.</p>
+<h2 id="properties-and-transforms">Properties And Transforms<a class="headerlink" href="#properties-and-transforms" title="Permanent link">&para;</a></h2>
+<p>Properties are scalar <code>PropertyBag</code> values. Supported values include null, strings, Boolean and numeric primitives, <code>Guid</code>, date/time values, <code>TimeSpan</code>, and byte arrays. Providers use <code>PropertyBagScalarCodec</code> where text persistence is required.</p>
+<p><code>IDocumentPayloadTransform</code> runs in registration order on writes and reverse order on reads. Compression uses <code>CompressionHelper</code>; encryption uses <code>EncryptionHelper</code> and <code>IEncryptionKeyProvider</code>, so active-key writes and historical-key reads support key rotation. Transform metadata is stored in a versioned <code>bdk_</code> envelope and is not exposed as application properties.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCompressionTransform</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionTransform</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureTableClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tableServiceClient</span><span class="p">);</span>
+</code></pre></div>
+<p>The encryption transform requires a registered <code>IEncryptionKeyProvider</code>. Standard provider registrations resolve the configured <code>ISerializer</code>, <code>TimeProvider</code>, <code>IContinuationTokenProtector</code>, and transforms from dependency injection.</p>
+<h2 id="expiration-and-retention">Expiration And Retention<a class="headerlink" href="#expiration-and-retention" title="Permanent link">&para;</a></h2>
+<p>Writes use <code>ExpirationChange</code>:</p>
+<ul>
+<li><code>Preserve</code>: keep the current expiration; inserts remain non-expiring.</li>
+<li><code>At(...)</code>: set an absolute timestamp normalized to UTC.</li>
+<li><code>After(...)</code>: resolve one relative timestamp from the operation <code>TimeProvider</code>.</li>
+<li><code>Clear</code>: remove expiration.</li>
+</ul>
+<p>Due documents are immediately hidden from exact reads, existence, count, pages, enumeration, copy, and move. They remain physical records until retention runs. <code>CreateOnly</code> therefore still conflicts with an expired physical record, while clearing or extending expiration revives it.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">WithRetention</span><span class="p">(</span><span class="n">retention</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">retention</span><span class="p">.</span><span class="n">SweepInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<span class="w">    </span><span class="n">retention</span><span class="p">.</span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="p">;</span>
+<span class="w">    </span><span class="n">retention</span><span class="p">.</span><span class="n">MaxBatchesPerStore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="p">}));</span>
+</code></pre></div>
+<p><code>DocumentRetentionBackgroundService</code> resolves each named client in a fresh DI scope and invokes only <code>IDocumentStoreRetentionProvider</code>. It never emulates cleanup through public scans. In-memory, Entity Framework, Azure Blob, and Azure Table use bounded provider-native cleanup; Cosmos uses native item TTL.</p>
+<p>The defaults are enabled retention, a 15-second startup delay, one-hour interval, batch size 1000, at most 10 batches per client, no batch delay, and a 10-second stop timeout.</p>
+<h2 id="named-clients-and-di">Named Clients And DI<a class="headerlink" href="#named-clients-and-di" title="Permanent link">&para;</a></h2>
+<p><code>AddDocumentStorage</code> is the feature registration entry point. Registrations are keyed by document CLR type and normalized case-insensitive client name. At most one registration for a type is the explicit default exposed through direct <code>IDocumentStoreClient&lt;T&gt;</code> injection. Resolve other clients through <code>IDocumentStoreClientFactory.CreateClient&lt;T&gt;(name)</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureTableClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tableServiceClient</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;primary&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">StorageDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;archive&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+</code></pre></div>
+<p>Singleton, scoped, and transient client lifetimes follow normal keyed DI semantics. The factory is scoped and lookup-only; it does not construct or cache clients. Entity Framework providers receive <code>IServiceScopeFactory</code> and own one scope and <code>DbContext</code> per operation.</p>
+<p>Both <code>IDocumentStoreProvider</code> and <code>IDocumentStoreClient&lt;T&gt;</code> are keyed by the same type/name identity at the configured lifetime. Retention resolves the keyed provider directly, so custom client behaviors cannot hide retention support.</p>
+<p>Behaviors are composed between the provider adapter and the outer validating/serializing client. Invalid input never reaches logging, retry, timeout, cache, chaos, transforms, or providers.</p>
+<h2 id="behaviors">Behaviors<a class="headerlink" href="#behaviors" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Typed logging with raw keys by default. Register <code>Sha256KeyDisplayStrategy</code> only where keys are classified as sensitive.</li>
+<li>Metrics with shared operation names and key/query context.</li>
+<li>Retry for transient provider failures only.</li>
+<li>Timeout with a linked token, cancellation quiescence, caller-cancellation preservation, typed timeout errors, and injected <code>TimeProvider</code>.</li>
+<li>Exact-read caching with named-client-aware keys and mutation invalidation.</li>
+<li>Chaos behavior for controlled resilience testing.</li>
+</ul>
+<h2 id="transfers-and-maintenance">Transfers And Maintenance<a class="headerlink" href="#transfers-and-maintenance" title="Permanent link">&para;</a></h2>
+<p><code>EnumerateAsync</code> and <code>EnumerateKeysAsync</code> require a positive maximum item count. <code>DeleteByQueryAsync</code> is bounded, supports dry-run and optional continue-on-error, reads the matching entry metadata, and conditionally deletes the ETag observed during enumeration. Partial results expose every failed key in input order.</p>
+<p><code>CopyAsync</code> and <code>MoveAsync</code> work across any two clients of the same document type. They reserialize through the target client and preserve properties and expiration unless overridden. Move copies first, then conditionally deletes the source ETag. A changed source remains intact and returns <code>DocumentStoreTransferError</code>; a move to the same client/key is a successful existence-checked no-op.</p>
 <h2 id="providers">Providers<a class="headerlink" href="#providers" title="Permanent link">&para;</a></h2>
 <h3 id="in-memory">In-Memory<a class="headerlink" href="#in-memory" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>InMemoryDocumentStoreProvider</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/InMemory/InMemoryDocumentStoreProvider.cs">src/Application.Storage/Documents/InMemory/InMemoryDocumentStoreProvider.cs</a>)</li>
-<li>Keeps documents in a process-local store.</li>
-<li>Supports exact, prefix, suffix, full-scan, and key-listing queries.</li>
-<li>Supports continuation paging.</li>
-<li>Uses deterministic key ordering for pages.</li>
-<li>Useful for tests, local development, and ephemeral storage.</li>
-</ul>
+<p>Process-local provider for tests and ephemeral use. It stores copied bytes in private synchronized state and returns cloned records.</p>
 <h3 id="entity-framework">Entity Framework<a class="headerlink" href="#entity-framework" title="Permanent link">&para;</a></h3>
+<p>Annotation-mapped <code>StorageDocument</code> persistence with indexed hashes for type/partition/row identity, a concurrency version, Unix-millisecond expiration, payload/transform metadata, and provider-owned contexts. SQL Server, PostgreSQL, and SQLite run the same provider contract.</p>
+<h3 id="azure-blob">Azure Blob<a class="headerlink" href="#azure-blob" title="Permanent link">&para;</a></h3>
+<p>Requires only <code>BlobServiceClient</code> or an account connection string. The provider derives <code>bdk-doc-{hash}</code> from normalized client name and document type, creates/reuses it through <code>CreateIfNotExistsAsync</code>, and never deletes it on disposal. Logical keys are independent Base64Url path segments, so reserved characters round-trip.</p>
+<h3 id="azure-table">Azure Table<a class="headerlink" href="#azure-table" title="Permanent link">&para;</a></h3>
+<p>Requires only <code>TableServiceClient</code> or an account connection string. The provider derives <code>BdkDoc{hash}</code>, creates/reuses it, chunks payload bytes into 60 KiB <code>bdk_content_####</code> properties, and validates the complete entity against Azure Table's 1 MiB limit. All provider metadata uses <code>bdk_</code> keys.</p>
+<h3 id="cosmos-db">Cosmos DB<a class="headerlink" href="#cosmos-db" title="Permanent link">&para;</a></h3>
+<p>Uses provider-owned database/container initialization through <code>CosmosSqlProvider</code>, enables per-item TTL, persists provider continuation state inside document tokens, and applies logical expiration filtering while native deletion remains eventual.</p>
+<h2 id="azure-resource-ownership">Azure Resource Ownership<a class="headerlink" href="#azure-resource-ownership" title="Permanent link">&para;</a></h2>
+<p>Azure providers depend on an existing account, not pre-created feature resources. Resource names are deterministic from <code>normalizedClientName + "\n" + documentTypeIdentity</code>; optional prefixes are validated. Initialization is asynchronous and idempotent. Concurrent callers and nodes may race safely, cancellation/failure is retryable, unrelated account resources are untouched, and disposal never removes the table/container.</p>
+<h2 id="dashboard-and-diagnostics">Dashboard And Diagnostics<a class="headerlink" href="#dashboard-and-diagnostics" title="Permanent link">&para;</a></h2>
+<p>The Document Storage dashboard inherits the shared dashboard authorization and antiforgery conventions. It selects named clients, lists document pages from 25 to 500 rows, and presents partition/row keys, serialized JSON size, modification time, and expiration in the compact table. Manual and interval refreshes use the currently applied client, key filters, query mode, page size, continuation state, and selected document. The standard refresh interval is off by default and remembered in browser-local storage. The details dialog exposes ETags, hashes, timestamps, expiration, scalar properties, and conditional save/delete actions without adding retention or transform administration to the browsing surface.</p>
+<p><code>IDocumentStorageDiagnosticsService</code> reports non-sensitive registration identity, lifetime, capabilities, size limits, configured transform identifiers, latest retention outcome, and health. <code>DocumentStorageMcpHandler</code> exposes <code>documents.summary</code>, <code>documents.clients</code>, and <code>documents.probe</code> when the MCP runtime is registered. Neither surface exposes payloads, continuation tokens, encryption material, or secrets.</p>
+<h2 id="shared-common-apis">Shared Common APIs<a class="headerlink" href="#shared-common-apis" title="Permanent link">&para;</a></h2>
+<p>Document and Blob Storage share:</p>
 <ul>
-<li><code>EntityFrameworkDocumentStoreProvider&lt;TContext&gt;</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.EntityFramework/Storage/Documents/EntityFrameworkDocumentStoreProvider.cs">src/Infrastructure.EntityFramework/Storage/Documents/EntityFrameworkDocumentStoreProvider.cs</a>)</li>
-<li>Persists documents in a relational table through a <code>DbContext</code> implementing <code>IDocumentStoreContext</code>.</li>
-<li>Supports exact, prefix, suffix, full-scan, key-only listing, continuation paging, and server-side count.</li>
-<li>Keys are stored as <code>Type</code>, <code>PartitionKey</code>, and <code>RowKey</code>.</li>
-<li>Adds hash columns and indexes for efficient logical-key lookup.</li>
-<li>Coordinates writes and deletes with short-lived row leases plus optimistic concurrency handling.</li>
-<li>SQL Server and PostgreSQL are recommended for active multi-host document mutation workloads.</li>
-<li>SQLite is useful for development, tests, and lightweight single-node deployments.</li>
+<li><code>ByteSize</code>, <code>StreamHelper</code>, and <code>TemporaryFileHelper</code>;</li>
+<li><code>ExpirationChange</code> and <code>ExpirationHelper</code>;</li>
+<li><code>ContentHashHelper</code>;</li>
+<li><code>Base64UrlHelper</code>, <code>PropertyBagScalarCodec</code>, and <code>OpaqueContinuationTokenCodec</code>;</li>
+<li><code>ContentTransformEnvelopeCodec</code>;</li>
+<li><code>IEncryptionKeyProvider</code>;</li>
+<li>raw and SHA-256 key display strategies;</li>
+<li><code>AsyncInitializationGate</code>.</li>
+<li><code>PeriodicBackgroundService</code> and <code>PeriodicBackgroundServiceOptions</code> for the monitored retention loop.</li>
 </ul>
-<h3 id="azure-cosmos-db">Azure Cosmos DB<a class="headerlink" href="#azure-cosmos-db" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>CosmosDocumentStoreProvider</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.Azure.Cosmos/Storage/Documents/CosmosDocumentStoreProvider.cs">src/Infrastructure.Azure.Cosmos/Storage/Documents/CosmosDocumentStoreProvider.cs</a>)</li>
-<li>Stores JSON documents in a Cosmos DB container via <code>ICosmosSqlProvider&lt;CosmosStorageDocument&gt;</code>.</li>
-<li>Supports exact, prefix, suffix, full-scan, key-listing, and continuation-paged operations.</li>
-<li>Uses <code>Type</code>, <code>PartitionKey</code>, and <code>RowKey</code> fields on stored items.</li>
-<li>Key-only listing returns <code>DocumentKey</code> values without returning application payload instances.</li>
-<li>Register: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.Azure.Cosmos/Storage/Documents/ServiceCollectionExtensions.cs">src/Infrastructure.Azure.Cosmos/Storage/Documents/ServiceCollectionExtensions.cs</a></li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithCosmosClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cosmosClient</span><span class="p">);</span>
-
-<span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithCosmosClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Container</span><span class="p">(</span><span class="s">&quot;storage_documents&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">PartitionKey</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Type</span><span class="p">));</span>
-</code></pre></div>
-<h3 id="azure-blob-storage">Azure Blob Storage<a class="headerlink" href="#azure-blob-storage" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>AzureBlobDocumentStoreProvider</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.Azure.Storage/Documents/AzureBlobDocumentStoreProvider.cs">src/Infrastructure.Azure.Storage/Documents/AzureBlobDocumentStoreProvider.cs</a>)</li>
-<li>Stores each document as a blob named <code>&lt;PartitionKey&gt;__&lt;RowKey&gt;</code> in a type-scoped container.</li>
-<li>Supports exact and row-key prefix queries efficiently.</li>
-<li>Supports row-key suffix queries through client-side filtering when <code>RejectClientSideFilteredQueries</code> is disabled.</li>
-<li>Supports full scans, key-only listing, and continuation paging.</li>
-<li><code>PartitionKey</code> and <code>RowKey</code> must not contain the reserved blob-name separator <code>__</code>.</li>
-<li>Register: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs">src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs</a></li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">();</span>
-
-<span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">blobServiceClient</span><span class="p">);</span>
-</code></pre></div>
-<h3 id="azure-table-storage">Azure Table Storage<a class="headerlink" href="#azure-table-storage" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>AzureTableDocumentStoreProvider</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.Azure.Storage/Documents/AzureTableDocumentStoreProvider.cs">src/Infrastructure.Azure.Storage/Documents/AzureTableDocumentStoreProvider.cs</a>)</li>
-<li>Stores documents as table rows with <code>PartitionKey</code>, <code>RowKey</code>, and document metadata.</li>
-<li>Supports exact and row-key prefix queries efficiently.</li>
-<li>Does not support row-key suffix queries.</li>
-<li>Supports full scans, key-only listing, and continuation paging.</li>
-<li>Register: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs">src/Infrastructure.Azure.Storage/Documents/ServiceCollectionExtensions.cs</a></li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureTableClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">();</span>
-
-<span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithAzureTableClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tableServiceClient</span><span class="p">);</span>
-</code></pre></div>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
-<h3 id="di-setup">DI Setup<a class="headerlink" href="#di-setup" title="Permanent link">&para;</a></h3>
-<p>Register a client for your document type and choose a provider.</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
-</code></pre></div>
-<p>Register with provider tuning and document-query safety options:</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">        </span><span class="n">configure</span><span class="p">:</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">LeaseDuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">RetryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">RetryDelay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="n">documentStoreOptions</span><span class="p">:</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentStoreOptions</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">DefaultTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">            </span><span class="n">MaxTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
-<span class="w">            </span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">,</span>
-<span class="w">            </span><span class="n">RejectClientSideFilteredQueries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
-<span class="w">        </span><span class="p">});</span>
-</code></pre></div>
-<p>Register a custom provider:</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sp</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InMemoryDocumentStoreProvider</span><span class="p">(</span>
-<span class="w">            </span><span class="n">sp</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">ILoggerFactory</span><span class="o">&gt;</span><span class="p">());</span>
-
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentStoreClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">provider</span><span class="p">);</span>
-<span class="w">    </span><span class="p">});</span>
-</code></pre></div>
-<p>The document-storage builder registers a single standard ASP.NET Core health check for all configured typed clients:</p>
-<div class="highlight"><pre><span></span><code>DocumentStorage
-</code></pre></div>
-<p>The check probes every registered <code>IDocumentStoreClient&lt;T&gt;</code> with a non-mutating exact-key existence check for <code>__bdk/healthcheck</code> / <code>probe</code>. A missing probe document is healthy; provider failures are reported as unhealthy with the failed client ids and error details in the health-check data. The health check is tagged with <code>ready</code>, <code>storage</code>, and <code>documents</code>.</p>
-<p>Add optional client behaviors:</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">LoggingDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">RetryDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">TimeoutDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
-
-<span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">CacheDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">();</span>
-</code></pre></div>
-<h3 id="dashboard-explorer">Dashboard Explorer<a class="headerlink" href="#dashboard-explorer" title="Permanent link">&para;</a></h3>
-<p>When the host also registers the Presentation Dashboard, Document Storage contributes a server-rendered dashboard page at:</p>
-<div class="highlight"><pre><span></span><code>/_bdk/dashboard/storage/documents
-</code></pre></div>
-<p>The page is available only when <code>AddDocumentStorage(...)</code> is enabled and at least one typed document client is registered through the top-level document-storage builder. It does not expose a general-purpose REST admin API. The page renders server-side and uses dashboard-local fragment/action routes for the current browser workflow.</p>
-<p>The explorer works through the existing <code>IDocumentStoreClient&lt;T&gt;</code> contract:</p>
-<ul>
-<li>first select the registered document type/client</li>
-<li>list document keys with bounded continuation paging and selectable page sizes of 100, 250, 500, or 1000 items remembered in browser storage</li>
-<li>filter by exact partition key plus row-key prefix, suffix, or exact match when the selected provider supports that mode</li>
-<li>reset filters without leaving the page</li>
-<li>create a new document for the selected client by entering partition key, row key, and pasted or written JSON</li>
-<li>view an exact document by key in a details dialog</li>
-<li>download an individual document directly from the table</li>
-<li>edit the serialized payload with JSON validation before it is deserialized back to <code>T</code> and saved through <code>UpsertResultAsync(...)</code></li>
-<li>reject new-document creation when the entered key already exists so existing documents are not overwritten accidentally</li>
-<li>delete one exact document from the details dialog or delete checked documents after a browser confirmation alert that includes the affected keys</li>
-<li>show lightweight busy and result states while server-rendered fragments and form actions complete</li>
-</ul>
-<p>Provider-specific raw storage APIs are not required. EF, Cosmos DB, Azure Blob Storage, Azure Table Storage, and custom clients can all appear in the selector when they are registered through <code>AddDocumentStorage(...).With...Client&lt;T&gt;()</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">LoggingDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithCosmosClient</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Container</span><span class="p">(</span><span class="s">&quot;storage_documents&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">PartitionKey</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Type</span><span class="p">));</span>
-</code></pre></div>
-<p>The listing behavior still follows each selected client's <code>DocumentStoreOptions</code>. For example, a type-wide list requires full scans to be allowed by that client's provider options. When full scans are disabled, enter an exact partition key and use row-key prefix paging. The row-key mode selector defaults to prefix and only offers suffix or exact when the selected provider advertises support for that query shape.</p>
-<h3 id="using-document-storage-as-a-persistent-cache-backend">Using Document Storage As A Persistent Cache Backend<a class="headerlink" href="#using-document-storage-as-a-persistent-cache-backend" title="Permanent link">&para;</a></h3>
-<p>The same document-store infrastructure can also back the shared caching abstraction.</p>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AddCaching</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkDocumentStoreProvider</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentStoreCacheProviderConfiguration</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">SlidingExpiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
-<span class="w">            </span><span class="n">AbsoluteExpiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddHours</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-<span class="w">        </span><span class="p">});</span>
-</code></pre></div>
-<ul>
-<li>This registers <code>ICacheProvider</code> as a <code>DocumentStoreCacheProvider</code>.</li>
-<li>Cache entries are serialized into <code>CacheDocument</code> records and stored through <code>IDocumentStoreClient&lt;CacheDocument&gt;</code>.</li>
-<li>The EF variant requires the target <code>DbContext</code> to implement <code>IDocumentStoreContext</code>.</li>
-<li>Azure Storage and Cosmos DB document-store-backed cache registrations are also available.</li>
-</ul>
-<h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">PeopleService</span><span class="p">(</span><span class="n">IDocumentStoreClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="w"> </span><span class="n">documents</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SaveAsync</span><span class="p">(</span><span class="n">Person</span><span class="w"> </span><span class="n">person</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="n">person</span><span class="p">.</span><span class="n">Country</span><span class="p">,</span><span class="w"> </span><span class="n">person</span><span class="p">.</span><span class="n">Id</span><span class="p">.</span><span class="n">ToString</span><span class="p">());</span>
-
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">UpsertResultAsync</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">person</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">GetResultAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ExistsResultAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">ExistsResultAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">DeleteResultAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">DeleteResultAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="n">country</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<h3 id="query-usage">Query Usage<a class="headerlink" href="#query-usage" title="Permanent link">&para;</a></h3>
-<p>Create page and count queries with <code>DocumentQueries</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pageQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">ForKey</span><span class="p">(</span><span class="s">&quot;people&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DE-&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithRowKeyPrefix</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
-
-<span class="kt">var</span><span class="w"> </span><span class="n">countQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">ForKey</span><span class="p">(</span><span class="s">&quot;people&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DE-&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithRowKeyPrefix</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
-</code></pre></div>
-<p>Supported query shapes:</p>
-<ul>
-<li><code>WithFullMatch()</code>: Exact <code>PartitionKey</code> and exact <code>RowKey</code>.</li>
-<li><code>WithRowKeyPrefix()</code>: Exact <code>PartitionKey</code> and row keys starting with the provided <code>RowKey</code>.</li>
-<li><code>WithRowKeySuffix()</code>: Exact <code>PartitionKey</code> and row keys ending with the provided <code>RowKey</code>, when the provider supports it.</li>
-<li><code>AllowFullScan()</code>: Allows a type-wide scan for this query. Full scans also require <code>DocumentStoreOptions.AllowFullScans = true</code>.</li>
-</ul>
-<p>Paging:</p>
-<ul>
-<li><code>Take(n)</code> sets the requested page size.</li>
-<li>If <code>Take</code> is not specified, the provider uses <code>DocumentStoreOptions.DefaultTake</code>.</li>
-<li><code>DocumentStoreOptions.MaxTake</code> caps all page sizes.</li>
-<li><code>ContinueWith(token)</code> retrieves the next page for the same query shape.</li>
-<li>Continuation tokens are provider-bound and query-bound. Treat them as opaque strings.</li>
-</ul>
-<h3 id="reading-one-page">Reading One Page<a class="headerlink" href="#reading-one-page" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">ForKey</span><span class="p">(</span><span class="s">&quot;DE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;customer-&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithRowKeyPrefix</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
-
-<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">FindPageResultAsync</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Items</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// process person</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">nextToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ContinuationToken</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div>
-<h3 id="reading-all-pages">Reading All Pages<a class="headerlink" href="#reading-all-pages" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">people</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="kt">string</span><span class="w"> </span><span class="n">continuationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
-
-<span class="k">do</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">ForKey</span><span class="p">(</span><span class="s">&quot;DE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;customer-&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithRowKeyPrefix</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">continuationToken</span><span class="p">))</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">ContinueWith</span><span class="p">(</span><span class="n">continuationToken</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">pageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">FindPageResultAsync</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pageResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pageResult</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">people</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="n">people</span><span class="p">.</span><span class="n">AddRange</span><span class="p">(</span><span class="n">pageResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Items</span><span class="p">);</span>
-<span class="w">    </span><span class="n">continuationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pageResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ContinuationToken</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">continuationToken</span><span class="p">));</span>
-</code></pre></div>
-<h3 id="key-only-listing">Key-Only Listing<a class="headerlink" href="#key-only-listing" title="Permanent link">&para;</a></h3>
-<p>Use <code>ListPageResultAsync</code> when you only need keys. Providers with key-only projection support avoid payload materialization.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">keysResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">ListPageResultAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">ForKey</span><span class="p">(</span><span class="s">&quot;DE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;customer-&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithRowKeyPrefix</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">keysResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">keysResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Items</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// process key.PartitionKey and key.RowKey</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<h3 id="counting">Counting<a class="headerlink" href="#counting" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">countResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">CountResultAsync</span><span class="p">(</span>
-<span class="w">    </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">ForKey</span><span class="p">(</span><span class="s">&quot;DE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;customer-&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithRowKeyPrefix</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
-</code></pre></div>
-<h3 id="explicit-full-scans">Explicit Full Scans<a class="headerlink" href="#explicit-full-scans" title="Permanent link">&para;</a></h3>
-<p>Full scans are intentionally guarded. The query must opt in, and provider options must allow them.</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DocumentStoreOptions</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">    </span><span class="n">DefaultTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">    </span><span class="n">MaxTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
-<span class="p">};</span>
-
-<span class="kt">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DocumentQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">AllowFullScan</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
-</code></pre></div>
-<p>Use full scans for administrative and maintenance workloads. Prefer partitioned exact or prefix queries for regular application paths.</p>
-<h2 id="operations-semantics">Operations &amp; Semantics<a class="headerlink" href="#operations-semantics" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>GetResultAsync(DocumentKey)</strong>: Fetches one exact document. Both <code>PartitionKey</code> and <code>RowKey</code> must be provided.</li>
-<li><strong>FindPageResultAsync(DocumentQuery)</strong>:</li>
-<li><code>FullMatch</code>: Exact <code>PartitionKey</code> and <code>RowKey</code>.</li>
-<li><code>RowKeyPrefixMatch</code>: Exact <code>PartitionKey</code> and documents where <code>RowKey</code> starts with the provided value.</li>
-<li><code>RowKeySuffixMatch</code>: Exact <code>PartitionKey</code> and documents where <code>RowKey</code> ends with the provided value, when supported.</li>
-<li>Full scan: Type-wide page read only when both query and options allow it.</li>
-<li><strong>ListPageResultAsync(DocumentQuery)</strong>: Returns document keys only for the same query shapes.</li>
-<li><strong>CountResultAsync(DocumentCountQuery)</strong>: Counts documents matching the query shape.</li>
-<li><strong>ExistsResultAsync(DocumentKey)</strong>: Exact-key existence check.</li>
-<li><strong>UpsertResultAsync(DocumentKey, T)</strong>: Inserts or updates a single document.</li>
-<li><strong>UpsertResultAsync(IEnumerable&lt;(DocumentKey, T)&gt;)</strong>: Inserts or updates a batch; provider may optimize for fewer writes.</li>
-<li><strong>DeleteResultAsync(DocumentKey)</strong>: Removes one exact document.</li>
-</ul>
-<h3 id="query-safety-and-errors">Query Safety And Errors<a class="headerlink" href="#query-safety-and-errors" title="Permanent link">&para;</a></h3>
-<p>Document Storage returns typed Result failures for recoverable failures, including:</p>
-<ul>
-<li>invalid query shape</li>
-<li>requested page size above <code>MaxTake</code></li>
-<li>full scan not allowed</li>
-<li>unsupported provider query shape</li>
-<li>client-side filtering rejected</li>
-<li>malformed continuation token</li>
-<li>continuation token/query mismatch</li>
-<li>document not found</li>
-<li>provider failure</li>
-<li>serialization failure</li>
-<li>concurrency failure</li>
-</ul>
-<p>Caller cancellation continues to use normal .NET cancellation behavior and is not converted into a Result failure.</p>
-<p>Recommended Result handling:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">documents</span><span class="p">.</span><span class="n">GetResultAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">(</span><span class="s">&quot;DE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">var</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
-</code></pre></div>
-<h3 id="entity-framework-mutation-semantics">Entity Framework Mutation Semantics<a class="headerlink" href="#entity-framework-mutation-semantics" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Exact-key writes and deletes use a unique logical identity plus lease ownership, so concurrent writers do not create duplicate rows for the same <code>(Type, PartitionKey, RowKey)</code>.</li>
-<li>Delivery semantics are last-writer-wins with at-least-once retries, not compare-and-swap. If several hosts update the same document concurrently, one committed payload wins and callers should treat upserts as idempotent.</li>
-<li>Leases are intentionally short-lived and replay-safe. SQL Server and PostgreSQL use conditional set-based updates for lease claims; SQLite uses an optimistic fallback path.</li>
-<li>Reads are non-blocking and ignore transient leases. A leased row is still queryable until the owning mutation commits or rolls back.</li>
-</ul>
-<h3 id="multi-host-deployment-guidance">Multi-Host Deployment Guidance<a class="headerlink" href="#multi-host-deployment-guidance" title="Permanent link">&para;</a></h3>
-<ul>
-<li>SQL Server and PostgreSQL are the recommended EF providers for active multi-host document mutations.</li>
-<li>SQLite is supported for development, tests, and lightweight single-node deployments, but it is not the recommended storage engine for distributed write-heavy document workloads.</li>
-<li>If you register the EF document store client as a singleton, use the built-in DI registration so each operation resolves a fresh scoped <code>DbContext</code>.</li>
-</ul>
-<h3 id="entity-framework-schema-notes">Entity Framework Schema Notes<a class="headerlink" href="#entity-framework-schema-notes" title="Permanent link">&para;</a></h3>
-<ul>
-<li>The provider expects the consuming <code>DbContext</code> to expose <code>DbSet&lt;StorageDocument&gt;</code> through <code>IDocumentStoreContext</code>.</li>
-<li>The raw EF columns <code>Type</code>, <code>PartitionKey</code>, and <code>RowKey</code> are all fixed at a maximum length of 256 characters.</li>
-<li>The document table uses hashed lookup columns (<code>TypeHash</code>, <code>PartitionKeyHash</code>, <code>RowKeyHash</code>) to keep indexes narrow enough for relational providers while still validating the original key values. These hashes exist only in the EF persistence model.</li>
-<li>The main relational indexes are:</li>
-<li>unique logical-key index on <code>(TypeHash, PartitionKeyHash, RowKeyHash)</code></li>
-<li>lookup index on <code>(TypeHash, PartitionKeyHash, RowKey)</code></li>
-<li>The library does not ship migrations for consuming applications. The owning application updates its schema to include the document-store columns and indexes.</li>
-</ul>
-<h2 id="behaviors-client-decorators">Behaviors (Client Decorators)<a class="headerlink" href="#behaviors-client-decorators" title="Permanent link">&para;</a></h2>
-<p>Behaviors are composable decorators applied to <code>IDocumentStoreClient&lt;T&gt;</code>. Registration order defines wrapping, with the first registered behavior becoming the outermost wrapper. See <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/DocumentStoreBuilderContext.cs">src/Application.Storage/Documents/DocumentStoreBuilderContext.cs</a>.</p>
-<ul>
-<li>Logging: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/Behaviors/LoggingDocumentStoreClientBehavior.cs">LoggingDocumentStoreClientBehavior.cs</a></li>
-<li>Purpose: Structured operation logs without raw payloads or continuation-token values.</li>
-<li>Retry: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/Behaviors/RetryDocumentStoreClientBehavior.cs">RetryDocumentStoreClientBehavior.cs</a></li>
-<li>Purpose: Retry transient exceptions while returning typed validation failures as-is.</li>
-<li>Timeout: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/Behaviors/TimeoutDocumentStoreClientBehavior.cs">TimeoutDocumentStoreClientBehavior.cs</a></li>
-<li>Purpose: Enforce time budgets while preserving caller cancellation behavior.</li>
-<li>Cache: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/Behaviors/CacheDocumentStoreClientBehavior.cs">CacheDocumentStoreClientBehavior.cs</a></li>
-<li>Purpose: Cache successful exact-key reads and invalidate on writes and deletes.</li>
-<li>Chaos: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Storage/Documents/Behaviors/ChaosDocumentStoreClientBehavior.cs">ChaosDocumentStoreClientBehavior.cs</a></li>
-<li>Purpose: Fault injection for resilience testing.</li>
-</ul>
-<h3 id="built-in-behavior-matrix">Built-In Behavior Matrix<a class="headerlink" href="#built-in-behavior-matrix" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Behavior</th>
-<th>Purpose</th>
-<th>Recommended use</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Logging</td>
-<td>Emit operation logs and parameters</td>
-<td>Always, for observability</td>
-</tr>
-<tr>
-<td>Retry</td>
-<td>Retry transient failures</td>
-<td>External dependencies or intermittent stores</td>
-</tr>
-<tr>
-<td>Timeout</td>
-<td>Bound execution time</td>
-<td>Prevent runaway calls; set sensible defaults</td>
-</tr>
-<tr>
-<td>Cache</td>
-<td>Cache exact-key reads</td>
-<td>Hot exact-key paths; rely on invalidation via behavior</td>
-</tr>
-<tr>
-<td>Chaos</td>
-<td>Inject failures</td>
-<td>Test/staging only for resilience checks</td>
-</tr>
-</tbody>
-</table>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Keys: Always supply a non-empty <code>PartitionKey</code>; supply <code>RowKey</code> for exact, prefix, and suffix query shapes.</li>
-<li>Query shape: Prefer prefix filters for hierarchical keys, for example <code>customer:{id}</code> or <code>order:{date}:{id}</code>.</li>
-<li>Paging: Keep <code>Take</code> values modest and let <code>DocumentStoreOptions</code> protect application paths.</li>
-<li>Key-only reads: Use <code>ListPageResultAsync</code> when only keys are needed.</li>
-<li>Full scans: Keep full scans disabled for normal request paths.</li>
-<li>Client-side filtering: Enable it only when the data volume and provider behavior are acceptable.</li>
-<li>Batching: Use batch <code>UpsertResultAsync</code> for multiple writes.</li>
-<li>Caching: Add cache behavior for hot exact-key read paths.</li>
-<li>Resilience: Combine Retry + Timeout behaviors for resilient clients; keep handlers idempotent because mutations may be retried after transient contention.</li>
-<li>Continuation tokens: Persist continuation tokens only as opaque values and only for the matching query/provider context.</li>
-<li>Serialization: Ensure document types are compatible with the configured serializer and stable over time.</li>
-<li>Provider choice: Prefer SQL Server or PostgreSQL when multiple hosts mutate the same EF document set concurrently.</li>
-</ul>
+<p>See <a href="../common-utilities/">Common Utilities</a>, <a href="../common-serialization/">Common Serialization</a>, and <a href="../features-storage-blobs/">Blob Storage</a>.</p>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
-<p>Document Storage coverage includes:</p>
-<ul>
-<li>client delegation for the Result-native API</li>
-<li>in-memory exact reads, paging, key listing, counts, existence, upserts, deletes, and continuation tokens</li>
-<li>EF document-provider behavior across SQLite, SQL Server, and PostgreSQL</li>
-<li>Azure Blob and Azure Table provider query semantics</li>
-<li>Cosmos key-only projection, paging, count, and existence paths</li>
-<li>DI registration and singleton-safe EF client resolution</li>
-</ul>
-<h2 id="appendix-a-behaviors">Appendix A — Behaviors<a class="headerlink" href="#appendix-a-behaviors" title="Permanent link">&para;</a></h2>
-<p>Behaviors are decorators that wrap <code>IDocumentStoreClient&lt;T&gt;</code> to add cross-cutting concerns. Registration order defines wrapping. The inner-most component is the provider-backed client.</p>
-<h3 id="pipeline-model">Pipeline Model<a class="headerlink" href="#pipeline-model" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart LR
-  A[Caller] --&gt; B[Logging]
-  B --&gt; C[Retry]
-  C --&gt; D[Timeout]
-  D --&gt; E[Cache]
-  E --&gt; F[Provider-backed Client]</code></pre>
-<ul>
-<li>Outermost behavior sees every call first.</li>
-<li>Each behavior should call through to the inner client and optionally act before or after the call.</li>
-<li>Registration uses the top-level <code>AddDocumentStorage()</code> builder. Behaviors can be registered before or after provider clients and compose in the order they are added.</li>
-</ul>
-<h3 id="creating-a-custom-behavior">Creating A Custom Behavior<a class="headerlink" href="#creating-a-custom-behavior" title="Permanent link">&para;</a></h3>
-<p>Implement <code>IDocumentStoreClient&lt;T&gt;</code> and wrap an inner client. Keep methods thin, call the inner client, and add your concern around the call.</p>
-<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
-
-<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MetricsDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IDocumentStoreClient</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
-<span class="w">    </span><span class="k">where</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">class</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">()</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDocumentStoreClient</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inner</span><span class="p">;</span>
-<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IMetrics</span><span class="w"> </span><span class="n">metrics</span><span class="p">;</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">MetricsDocumentStoreClientBehavior</span><span class="p">(</span><span class="n">IDocumentStoreClient</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inner</span><span class="p">,</span><span class="w"> </span><span class="n">IMetrics</span><span class="w"> </span><span class="n">metrics</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inner</span><span class="p">;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">metrics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">metrics</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">DocumentPage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">FindPageResultAsync</span><span class="p">(</span>
-<span class="w">        </span><span class="n">DocumentQuery</span><span class="w"> </span><span class="n">query</span><span class="p">,</span>
-<span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Stopwatch</span><span class="p">.</span><span class="n">GetTimestamp</span><span class="p">();</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">FindPageResultAsync</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">metrics</span><span class="p">.</span><span class="n">Observe</span><span class="p">(</span><span class="s">&quot;documents.find_page&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Stopwatch</span><span class="p">.</span><span class="n">GetElapsedTime</span><span class="p">(</span><span class="n">start</span><span class="p">));</span>
-
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetResultAsync</span><span class="p">(</span><span class="n">DocumentKey</span><span class="w"> </span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">GetResultAsync</span><span class="p">(</span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">DocumentKeyPage</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ListPageResultAsync</span><span class="p">(</span><span class="n">DocumentQuery</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">ListPageResultAsync</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">CountResultAsync</span><span class="p">(</span><span class="n">DocumentCountQuery</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">CountResultAsync</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ExistsResultAsync</span><span class="p">(</span><span class="n">DocumentKey</span><span class="w"> </span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">ExistsResultAsync</span><span class="p">(</span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpsertResultAsync</span><span class="p">(</span><span class="n">DocumentKey</span><span class="w"> </span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">entity</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">UpsertResultAsync</span><span class="p">(</span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">entity</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">UpsertResultAsync</span><span class="p">(</span>
-<span class="w">        </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="p">(</span><span class="n">DocumentKey</span><span class="w"> </span><span class="n">DocumentKey</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">Entity</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entities</span><span class="p">,</span>
-<span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">UpsertResultAsync</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">DeleteResultAsync</span><span class="p">(</span><span class="n">DocumentKey</span><span class="w"> </span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">inner</span><span class="p">.</span><span class="n">DeleteResultAsync</span><span class="p">(</span><span class="n">documentKey</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div>
-<h3 id="registration-patterns">Registration Patterns<a class="headerlink" href="#registration-patterns" title="Permanent link">&para;</a></h3>
-<p>Behaviors are applied so that the first registered ends up as the outermost wrapper.</p>
-<p>Type-based decorator:</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">LoggingDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">RetryDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">TimeoutDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
-</code></pre></div>
-<p>Factory-based decorator:</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDocumentStorage</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">MetricsDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;&gt;</span><span class="p">((</span><span class="n">inner</span><span class="p">,</span><span class="w"> </span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">MetricsDocumentStoreClientBehavior</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span>
-<span class="w">            </span><span class="n">inner</span><span class="p">,</span>
-<span class="w">            </span><span class="n">sp</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IMetrics</span><span class="o">&gt;</span><span class="p">()))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">Person</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
-</code></pre></div>
+<p>The feature is covered by client/behavior tests, in-memory contracts, dashboard and MCP registration tests, Entity Framework contracts on SQLite/PostgreSQL/SQL Server, Azurite contracts for Blob/Table resource management and persistence, and Cosmos contracts when an emulator or configured account is available. Blob Storage contracts remain regression coverage for shared primitives.</p>
 
 
 
@@ -4257,10 +3574,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DocumentStoreProviderCapabilities | bITdevKit API Reference ">
       
-      <meta name="description" content="Describes the query capabilities of a document-store provider.">
+      <meta name="description" content="Describes the persistence, query, concurrency, expiration, and projection capabilities of a document-store provider.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class DocumentStoreProviderCapabilities
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Describes the query capabilities of a document-store provider.</p>
+  <div class="markdown summary"><p>Describes the persistence, query, concurrency, expiration, and projection capabilities of a document-store provider.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -253,7 +253,22 @@ Class DocumentStoreProviderCapabilities
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_examples">Examples</h2>
+  <pre><code class="lang-csharp">var capabilities = new DocumentStoreProviderCapabilities
+{
+    FullMatch = DocumentQuerySupport.SupportedEfficiently,
+    RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
+    SupportsContinuationPaging = true,
+    SupportsConditionalWrite = true,
+    SupportsLogicalExpiration = true
+};</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Capabilities are immutable registration metadata. The outer client uses them to reject unsupported query shapes before
+provider I/O, while health checks, diagnostics, and dashboards use them to describe effective behavior. A provider must
+not advertise a capability unless every corresponding operation honors it.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -297,7 +312,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets support for exact key matching.</p>
+  <div class="markdown level1 summary"><p>Gets support for exact partition-key and row-key matching.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -317,6 +332,9 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_FullMatch_examples">Examples</h4>
+  <pre><code class="lang-csharp">var support = capabilities.FullMatch;</code></pre>
+
 
 
 
@@ -329,7 +347,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets support for type-wide scans.</p>
+  <div class="markdown level1 summary"><p>Gets support for explicitly approved type-wide scans without a key constraint.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -349,6 +367,9 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_FullScan_examples">Examples</h4>
+  <pre><code class="lang-csharp">var support = capabilities.FullScan;</code></pre>
+
 
 
 
@@ -361,7 +382,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets support for key-only listing.</p>
+  <div class="markdown level1 summary"><p>Gets support for bounded key-only listing.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -381,7 +402,49 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_KeyListing_examples">Examples</h4>
+  <pre><code class="lang-csharp">var support = capabilities.KeyListing;</code></pre>
 
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_MaxStoredDocumentSize_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.MaxStoredDocumentSize*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_MaxStoredDocumentSize" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.MaxStoredDocumentSize">
+  MaxStoredDocumentSize
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the maximum transformed payload size accepted by the provider, in bytes, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the
+backend does not impose a lower known limit than the client configuration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long? MaxStoredDocumentSize { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_MaxStoredDocumentSize_examples">Examples</h4>
+  <pre><code class="lang-csharp">var limit = capabilities.MaxStoredDocumentSize;</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_MaxStoredDocumentSize_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This limit applies after compression or encryption and excludes provider metadata unless documented otherwise.</p>
+</div>
 
 
 
@@ -393,7 +456,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets support for row-key prefix matching.</p>
+  <div class="markdown level1 summary"><p>Gets support for matching a row-key prefix within one partition.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -413,6 +476,9 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_RowKeyPrefixMatch_examples">Examples</h4>
+  <pre><code class="lang-csharp">var support = capabilities.RowKeyPrefixMatch;</code></pre>
+
 
 
 
@@ -425,7 +491,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets support for row-key suffix matching.</p>
+  <div class="markdown level1 summary"><p>Gets support for matching a row-key suffix within one partition.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -445,6 +511,115 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_RowKeySuffixMatch_examples">Examples</h4>
+  <pre><code class="lang-csharp">var support = capabilities.RowKeySuffixMatch;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsAtomicPropertyUpdate_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsAtomicPropertyUpdate*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsAtomicPropertyUpdate" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsAtomicPropertyUpdate">
+  SupportsAtomicPropertyUpdate
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether custom properties and expiration can be updated atomically without replacing document content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SupportsAtomicPropertyUpdate { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsAtomicPropertyUpdate_examples">Examples</h4>
+  <pre><code class="lang-csharp">var canPatchMetadata = capabilities.SupportsAtomicPropertyUpdate;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsConditionalDelete_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsConditionalDelete*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsConditionalDelete" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsConditionalDelete">
+  SupportsConditionalDelete
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether deletion guarded by <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDeleteOptions.html#BridgingIT_DevKit_Application_Storage_DocumentDeleteOptions_IfMatchETag">IfMatchETag</a> is supported atomically.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SupportsConditionalDelete { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsConditionalDelete_examples">Examples</h4>
+  <pre><code class="lang-csharp">var canMoveSafely = capabilities.SupportsConditionalDelete;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsConditionalWrite_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsConditionalWrite*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsConditionalWrite" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsConditionalWrite">
+  SupportsConditionalWrite
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether create-only writes and atomic replacement guarded by <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentWriteOptions.html#BridgingIT_DevKit_Application_Storage_DocumentWriteOptions_IfMatchETag">IfMatchETag</a>
+are supported.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SupportsConditionalWrite { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsConditionalWrite_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (capabilities.SupportsConditionalWrite) { /* use IfMatchETag */ }</code></pre>
+
 
 
 
@@ -457,7 +632,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether continuation paging is supported.</p>
+  <div class="markdown level1 summary"><p>Gets whether bounded queries can return and consume provider-native continuation state.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -477,7 +652,13 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsContinuationPaging_examples">Examples</h4>
+  <pre><code class="lang-csharp">var canContinue = capabilities.SupportsContinuationPaging;</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsContinuationPaging_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The public client protects and binds native state inside an opaque Document Storage continuation token.</p>
+</div>
 
 
 
@@ -489,7 +670,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether key-only projections avoid payload materialization.</p>
+  <div class="markdown level1 summary"><p>Gets whether key-only pages avoid loading or materializing stored payload bytes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -509,6 +690,81 @@ Class DocumentStoreProviderCapabilities
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsKeyOnlyProjection_examples">Examples</h4>
+  <pre><code class="lang-csharp">var listingAvoidsPayloads = capabilities.SupportsKeyOnlyProjection;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsLogicalExpiration_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsLogicalExpiration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsLogicalExpiration" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsLogicalExpiration">
+  SupportsLogicalExpiration
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether exact reads, queries, key listings, existence checks, and counts consistently exclude documents due at
+the supplied visibility cutoff.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SupportsLogicalExpiration { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsLogicalExpiration_examples">Examples</h4>
+  <pre><code class="lang-csharp">var expirationIsFiltered = capabilities.SupportsLogicalExpiration;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsRetention_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsRetention*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsRetention" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.SupportsRetention">
+  SupportsRetention
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether the provider implements bounded physical cleanup through <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreRetentionProvider.html">IDocumentStoreRetentionProvider</a>
+or equivalent native expiration support.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SupportsRetention { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsRetention_examples">Examples</h4>
+  <pre><code class="lang-csharp">var canSweepExpired = capabilities.SupportsRetention;</code></pre>
+
 
 
 
@@ -521,7 +777,7 @@ Class DocumentStoreProviderCapabilities
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether count can be performed server-side.</p>
+  <div class="markdown level1 summary"><p>Gets whether count queries execute in the backend without enumerating matching document records in application code.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -540,6 +796,9 @@ Class DocumentStoreProviderCapabilities
   </dl>
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_SupportsServerSideCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var countIsNative = capabilities.SupportsServerSideCount;</code></pre>
 
 
 

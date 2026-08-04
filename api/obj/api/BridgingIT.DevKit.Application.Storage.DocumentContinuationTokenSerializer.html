@@ -130,8 +130,8 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
 
   <a id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Deserialize_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.Deserialize*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Deserialize_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.Deserialize(System.String)">
-  Deserialize(string)
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Deserialize_System_String_BridgingIT_DevKit_Common_IContinuationTokenProtector_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.Deserialize(System.String,BridgingIT.DevKit.Common.IContinuationTokenProtector)">
+  Deserialize(string, IContinuationTokenProtector)
   
   </h3>
 
@@ -140,7 +140,7 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Result&lt;DocumentContinuationToken&gt; Deserialize(string token)</code></pre>
+    <pre><code class="lang-csharp hljs">public static Result&lt;DocumentContinuationToken&gt; Deserialize(string token, IContinuationTokenProtector protector = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -148,6 +148,8 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
     <dt><code>token</code> <span class="xref">string</span></dt>
     <dd><p>The opaque continuation token string to deserialize.</p>
 </dd>
+    <dt><code>protector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -162,7 +164,7 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Deserialize_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Deserialize_System_String_BridgingIT_DevKit_Common_IContinuationTokenProtector__examples">Examples</h4>
   <pre><code class="lang-csharp">var result = DocumentContinuationTokenSerializer.Deserialize(page.Value.ContinuationToken);</code></pre>
 
 
@@ -172,8 +174,8 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
 
   <a id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Serialize_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.Serialize*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Serialize_BridgingIT_DevKit_Application_Storage_DocumentContinuationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.Serialize(BridgingIT.DevKit.Application.Storage.DocumentContinuationToken)">
-  Serialize(DocumentContinuationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Serialize_BridgingIT_DevKit_Application_Storage_DocumentContinuationToken_BridgingIT_DevKit_Common_IContinuationTokenProtector_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentContinuationTokenSerializer.Serialize(BridgingIT.DevKit.Application.Storage.DocumentContinuationToken,BridgingIT.DevKit.Common.IContinuationTokenProtector)">
+  Serialize(DocumentContinuationToken, IContinuationTokenProtector)
   
   </h3>
 
@@ -182,7 +184,7 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Result&lt;string&gt; Serialize(DocumentContinuationToken token)</code></pre>
+    <pre><code class="lang-csharp hljs">public static Result&lt;string&gt; Serialize(DocumentContinuationToken token, IContinuationTokenProtector protector = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -190,6 +192,8 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
     <dt><code>token</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentContinuationToken.html">DocumentContinuationToken</a></dt>
     <dd><p>The continuation token envelope to serialize.</p>
 </dd>
+    <dt><code>protector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -204,7 +208,7 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Serialize_BridgingIT_DevKit_Application_Storage_DocumentContinuationToken__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentContinuationTokenSerializer_Serialize_BridgingIT_DevKit_Application_Storage_DocumentContinuationToken_BridgingIT_DevKit_Common_IContinuationTokenProtector__examples">Examples</h4>
   <pre><code class="lang-csharp">var result = DocumentContinuationTokenSerializer.Serialize(new DocumentContinuationToken
 {
     Provider = "cosmos",

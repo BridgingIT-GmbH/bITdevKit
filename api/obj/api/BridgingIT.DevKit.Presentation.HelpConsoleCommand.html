@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HelpConsoleCommand | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Lists available console commands and writes detailed help for a selected command or group.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class HelpConsoleCommand
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Lists available console commands and writes detailed help for a selected command or group.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -281,6 +282,12 @@ Class HelpConsoleCommand
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_examples">Examples</h2>
+  <pre><code class="lang-csharp">help
+help storage
+help storage blobs
+help --filter storage</code></pre>
+
 
 
 
@@ -295,10 +302,7 @@ Class HelpConsoleCommand
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Lists all available commands or detailed help for a specific command.
-Usage: <code>help</code> | <code>help &lt;command&gt;</code>
-Alias: <code>?</code>
-Example: <code>help mem</code></p>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Presentation.HelpConsoleCommand.html">HelpConsoleCommand</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -313,6 +317,9 @@ Example: <code>help mem</code></p>
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_HelpConsoleCommand__ctor_examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddTransient&lt;IConsoleCommand, HelpConsoleCommand&gt;();</code></pre>
+
 
 
 
@@ -322,6 +329,42 @@ Example: <code>help mem</code></p>
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Filter_" data-uid="BridgingIT.DevKit.Presentation.HelpConsoleCommand.Filter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Filter" data-uid="BridgingIT.DevKit.Presentation.HelpConsoleCommand.Filter">
+  Filter
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a text filter applied to command names, aliases, groups, and descriptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[ConsoleCommandOption(&quot;filter&quot;, Alias = &quot;f&quot;, Description = &quot;Filter command names, groups, aliases, and descriptions&quot;)]
+public string Filter { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Filter_examples">Examples</h4>
+  <pre><code class="lang-csharp">help --filter storage</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Sub_" data-uid="BridgingIT.DevKit.Presentation.HelpConsoleCommand.Sub*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Sub" data-uid="BridgingIT.DevKit.Presentation.HelpConsoleCommand.Sub">
@@ -329,11 +372,12 @@ Example: <code>help mem</code></p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the subcommand name when the first argument is a group.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ConsoleCommandArgument(1, Description = &quot;Subcommand name (when first arg is a group)&quot;, Required = false)]
+    <pre><code class="lang-csharp hljs">[ConsoleCommandArgument(1, Description = &quot;Subcommand name when first arg is a group&quot;, Required = false)]
 public string Sub { get; set; }</code></pre>
   </div>
 
@@ -349,6 +393,9 @@ public string Sub { get; set; }</code></pre>
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Sub_examples">Examples</h4>
+  <pre><code class="lang-csharp">help storage blobs</code></pre>
+
 
 
 
@@ -361,7 +408,8 @@ public string Sub { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the command or group name for detailed help.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -381,6 +429,9 @@ public string Target { get; set; }</code></pre>
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_HelpConsoleCommand_Target_examples">Examples</h4>
+  <pre><code class="lang-csharp">help storage</code></pre>
+
 
 
 
@@ -397,7 +448,7 @@ public string Target { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes help listing.</p>
+  <div class="markdown level1 summary"><p>Executes the command logic asynchronously.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

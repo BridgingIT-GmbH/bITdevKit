@@ -277,6 +277,57 @@ Class GenericRepositoryResultExtensions
 
 
 
+  <a id="BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_InsertSetResultAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.InsertSetResultAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_InsertSetResultAsync__1_BridgingIT_DevKit_Domain_Repositories_IGenericRepository___0__System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.InsertSetResultAsync``1(BridgingIT.DevKit.Domain.Repositories.IGenericRepository{``0},System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken)">
+  InsertSetResultAsync&lt;TEntity&gt;(IGenericRepository&lt;TEntity&gt;, IEnumerable&lt;TEntity&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Inserts entities and returns the result as a Result object.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; InsertSetResultAsync&lt;TEntity&gt;(this IGenericRepository&lt;TEntity&gt; source, IEnumerable&lt;TEntity&gt; entities, CancellationToken cancellationToken = default) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericRepository-1.html">IGenericRepository</a>&lt;TEntity&gt;</dt>
+    <dd><p>The source repository.</p>
+</dd>
+    <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TEntity&gt;</dt>
+    <dd><p>The entities to insert.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to observe while waiting for the task to complete.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
+    <dd><p>A task that represents the asynchronous operation. The task result contains a Result object with the inserted entities.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The type of the entity.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_IsConcurrencyException_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.IsConcurrencyException*"></a>
 
   <h3 id="BridgingIT_DevKit_Domain_Repositories_GenericRepositoryResultExtensions_IsConcurrencyException_System_Exception_" data-uid="BridgingIT.DevKit.Domain.Repositories.GenericRepositoryResultExtensions.IsConcurrencyException(System.Exception)">

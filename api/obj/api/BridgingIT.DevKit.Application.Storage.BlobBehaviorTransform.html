@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BlobBehaviorTransform | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BlobBehaviorTransform | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides shared stream and metadata helpers for blob-store behaviors.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform" class="text-break">
+Class BlobBehaviorTransform  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides shared stream and metadata helpers for blob-store behaviors.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BlobBehaviorTransform</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">BlobBehaviorTransform</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var temp = BlobBehaviorTransform.CreateTemporaryStream();
+var result = await BlobBehaviorTransform.CopyAndHashAsync(source, temp, cancellationToken);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CompressionAlgorithmKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CompressionAlgorithmKey">
+  CompressionAlgorithmKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the compression algorithm.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CompressionAlgorithmKey = &quot;bdk_compression_algorithm&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CompressionContentHashKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CompressionContentHashKey">
+  CompressionContentHashKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the uncompressed content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CompressionContentHashKey = &quot;bdk_compression_content_hash&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CompressionContentTypeKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CompressionContentTypeKey">
+  CompressionContentTypeKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the uncompressed content type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CompressionContentTypeKey = &quot;bdk_compression_content_type&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CompressionLengthKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CompressionLengthKey">
+  CompressionLengthKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the uncompressed content length.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string CompressionLengthKey = &quot;bdk_compression_length&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_EncryptionAlgorithmKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.EncryptionAlgorithmKey">
+  EncryptionAlgorithmKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the encryption algorithm.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EncryptionAlgorithmKey = &quot;bdk_encryption_algorithm&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_EncryptionContentHashKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.EncryptionContentHashKey">
+  EncryptionContentHashKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the decrypted content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EncryptionContentHashKey = &quot;bdk_encryption_content_hash&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_EncryptionContentTypeKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.EncryptionContentTypeKey">
+  EncryptionContentTypeKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the decrypted content type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EncryptionContentTypeKey = &quot;bdk_encryption_content_type&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_EncryptionIvKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.EncryptionIvKey">
+  EncryptionIvKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the encryption initialization vector.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EncryptionIvKey = &quot;bdk_encryption_iv&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_EncryptionKeyIdKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.EncryptionKeyIdKey">
+  EncryptionKeyIdKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the encryption key identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EncryptionKeyIdKey = &quot;bdk_encryption_key_id&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_EncryptionLengthKey" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.EncryptionLengthKey">
+  EncryptionLengthKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the property key used to store the decrypted content length.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string EncryptionLengthKey = &quot;bdk_encryption_length&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ApplyLogicalInfo_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ApplyLogicalInfo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ApplyLogicalInfo_BridgingIT_DevKit_Application_Storage_BlobInfo_System_String_System_String_System_String_System_String_System_String___" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ApplyLogicalInfo(BridgingIT.DevKit.Application.Storage.BlobInfo,System.String,System.String,System.String,System.String,System.String[])">
+  ApplyLogicalInfo(BlobInfo, string, string, string, string, params string[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps provider metadata for transformed content back to logical blob metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static BlobInfo ApplyLogicalInfo(BlobInfo info, string algorithmKey, string lengthKey, string contentTypeKey, string contentHashKey, params string[] additionalInternalKeys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>info</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a></dt>
+    <dd><p>The provider blob metadata.</p>
+</dd>
+    <dt><code>algorithmKey</code> <span class="xref">string</span></dt>
+    <dd><p>The transformation algorithm property key.</p>
+</dd>
+    <dt><code>lengthKey</code> <span class="xref">string</span></dt>
+    <dd><p>The logical length property key.</p>
+</dd>
+    <dt><code>contentTypeKey</code> <span class="xref">string</span></dt>
+    <dd><p>The logical content type property key.</p>
+</dd>
+    <dt><code>contentHashKey</code> <span class="xref">string</span></dt>
+    <dd><p>The logical content hash property key.</p>
+</dd>
+    <dt><code>additionalInternalKeys</code> <span class="xref">string</span>[]</dt>
+    <dd><p>Additional transformation metadata keys to remove.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a></dt>
+    <dd><p>The logical blob metadata.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ApplyLogicalInfo_BridgingIT_DevKit_Application_Storage_BlobInfo_System_String_System_String_System_String_System_String_System_String____examples">Examples</h4>
+  <pre><code class="lang-csharp">var logical = BlobBehaviorTransform.ApplyLogicalInfo(info, algorithmKey, lengthKey, contentTypeKey, contentHashKey);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ApplyLogicalPage_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ApplyLogicalPage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ApplyLogicalPage_BridgingIT_DevKit_Application_Storage_BlobPage_System_Func_BridgingIT_DevKit_Application_Storage_BlobInfo_BridgingIT_DevKit_Application_Storage_BlobInfo__" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ApplyLogicalPage(BridgingIT.DevKit.Application.Storage.BlobPage,System.Func{BridgingIT.DevKit.Application.Storage.BlobInfo,BridgingIT.DevKit.Application.Storage.BlobInfo})">
+  ApplyLogicalPage(BlobPage, Func&lt;BlobInfo, BlobInfo&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps all items in a blob page from provider metadata to logical metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static BlobPage ApplyLogicalPage(BlobPage page, Func&lt;BlobInfo, BlobInfo&gt; mapInfo)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>page</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPage.html">BlobPage</a></dt>
+    <dd><p>The provider blob page.</p>
+</dd>
+    <dt><code>mapInfo</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a>, <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a>&gt;</dt>
+    <dd><p>The metadata mapping function.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPage.html">BlobPage</a></dt>
+    <dd><p>The mapped blob page.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ApplyLogicalPage_BridgingIT_DevKit_Application_Storage_BlobPage_System_Func_BridgingIT_DevKit_Application_Storage_BlobInfo_BridgingIT_DevKit_Application_Storage_BlobInfo___examples">Examples</h4>
+  <pre><code class="lang-csharp">var logicalPage = BlobBehaviorTransform.ApplyLogicalPage(page, MapInfo);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CloneProperties_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CloneProperties*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CloneProperties_BridgingIT_DevKit_Common_PropertyBag_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CloneProperties(BridgingIT.DevKit.Common.PropertyBag)">
+  CloneProperties(PropertyBag)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Clones a blob property bag.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static PropertyBag CloneProperties(PropertyBag properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>properties</code> <a class="xref" href="BridgingIT.DevKit.Common.PropertyBag.html">PropertyBag</a></dt>
+    <dd><p>The property bag to clone.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.PropertyBag.html">PropertyBag</a></dt>
+    <dd><p>A cloned property bag, or an empty bag when none was supplied.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CloneProperties_BridgingIT_DevKit_Common_PropertyBag__examples">Examples</h4>
+  <pre><code class="lang-csharp">var properties = BlobBehaviorTransform.CloneProperties(info.Properties);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ContentTypeFromMimeType_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ContentTypeFromMimeType*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ContentTypeFromMimeType_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ContentTypeFromMimeType(System.String)">
+  ContentTypeFromMimeType(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves a content type from a MIME type string.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ContentType? ContentTypeFromMimeType(string mimeType)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mimeType</code> <span class="xref">string</span></dt>
+    <dd><p>The MIME type string.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ContentType.html">ContentType</a>?</dt>
+    <dd><p>The resolved content type, or <code>null</code> when the MIME type is empty.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ContentTypeFromMimeType_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var contentType = BlobBehaviorTransform.ContentTypeFromMimeType("text/plain");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CopyAndHashAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CopyAndHashAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CopyAndHashAsync_System_IO_Stream_System_IO_Stream_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CopyAndHashAsync(System.IO.Stream,System.IO.Stream,System.Threading.CancellationToken)">
+  CopyAndHashAsync(Stream, Stream, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies a source stream to a destination stream while calculating a blob content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;BlobTransformCopyResult&gt; CopyAndHashAsync(Stream source, Stream destination, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd><p>The source stream to read.</p>
+</dd>
+    <dt><code>destination</code> <span class="xref">Stream</span></dt>
+    <dd><p>The destination stream to write.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the copy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobTransformCopyResult.html">BlobTransformCopyResult</a>&gt;</dt>
+    <dd><p>The copied length and calculated content hash.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CopyAndHashAsync_System_IO_Stream_System_IO_Stream_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var copy = await BlobBehaviorTransform.CopyAndHashAsync(source, destination, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CreateTemporaryStream_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CreateTemporaryStream*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CreateTemporaryStream" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.CreateTemporaryStream">
+  CreateTemporaryStream()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a temporary seekable stream for transformed blob content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static FileStream CreateTemporaryStream()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">FileStream</span></dt>
+    <dd><p>A temporary file stream that deletes itself when closed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_CreateTemporaryStream_examples">Examples</h4>
+  <pre><code class="lang-csharp">await using var temp = BlobBehaviorTransform.CreateTemporaryStream();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_PreserveInternalProperties_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.PreserveInternalProperties*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_PreserveInternalProperties_BridgingIT_DevKit_Application_Storage_BlobPropertiesUpdate_BridgingIT_DevKit_Application_Storage_BlobInfo_System_String_System_String_System_String_System_String_System_String___" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.PreserveInternalProperties(BridgingIT.DevKit.Application.Storage.BlobPropertiesUpdate,BridgingIT.DevKit.Application.Storage.BlobInfo,System.String,System.String,System.String,System.String,System.String[])">
+  PreserveInternalProperties(BlobPropertiesUpdate, BlobInfo, string, string, string, string, params string[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Preserves transformation metadata during logical property updates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static BlobPropertiesUpdate PreserveInternalProperties(BlobPropertiesUpdate update, BlobInfo current, string algorithmKey, string lengthKey, string contentTypeKey, string contentHashKey, params string[] additionalInternalKeys)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertiesUpdate.html">BlobPropertiesUpdate</a></dt>
+    <dd><p>The caller-supplied property update.</p>
+</dd>
+    <dt><code>current</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a></dt>
+    <dd><p>The current logical blob metadata.</p>
+</dd>
+    <dt><code>algorithmKey</code> <span class="xref">string</span></dt>
+    <dd><p>The transformation algorithm property key.</p>
+</dd>
+    <dt><code>lengthKey</code> <span class="xref">string</span></dt>
+    <dd><p>The logical length property key.</p>
+</dd>
+    <dt><code>contentTypeKey</code> <span class="xref">string</span></dt>
+    <dd><p>The logical content type property key.</p>
+</dd>
+    <dt><code>contentHashKey</code> <span class="xref">string</span></dt>
+    <dd><p>The logical content hash property key.</p>
+</dd>
+    <dt><code>additionalInternalKeys</code> <span class="xref">string</span>[]</dt>
+    <dd><p>Additional transformation metadata keys to preserve.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertiesUpdate.html">BlobPropertiesUpdate</a></dt>
+    <dd><p>A property update that preserves transformation metadata.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_PreserveInternalProperties_BridgingIT_DevKit_Application_Storage_BlobPropertiesUpdate_BridgingIT_DevKit_Application_Storage_BlobInfo_System_String_System_String_System_String_System_String_System_String____examples">Examples</h4>
+  <pre><code class="lang-csharp">var innerUpdate = BlobBehaviorTransform.PreserveInternalProperties(update, current, algorithmKey, lengthKey, contentTypeKey, contentHashKey);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ValidateContent_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ValidateContent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ValidateContent_System_IO_Stream_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ValidateContent(System.IO.Stream)">
+  ValidateContent(Stream)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates that blob content is readable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result ValidateContent(Stream content)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>content</code> <span class="xref">Stream</span></dt>
+    <dd><p>The content stream to validate.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A success result when the stream is readable; otherwise a validation failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ValidateContent_System_IO_Stream__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = BlobBehaviorTransform.ValidateContent(upload.Content);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ValidateExpectedHash_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ValidateExpectedHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ValidateExpectedHash_System_String_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.BlobBehaviorTransform.ValidateExpectedHash(System.String,System.String)">
+  ValidateExpectedHash(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates an expected content hash against an actual content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result ValidateExpectedHash(string expectedContentHash, string actualContentHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expectedContentHash</code> <span class="xref">string</span></dt>
+    <dd><p>The optional expected content hash.</p>
+</dd>
+    <dt><code>actualContentHash</code> <span class="xref">string</span></dt>
+    <dd><p>The actual calculated content hash.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A success result when the hashes match or no expected hash is supplied.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobBehaviorTransform_ValidateExpectedHash_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = BlobBehaviorTransform.ValidateExpectedHash(expectedHash, actualHash);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

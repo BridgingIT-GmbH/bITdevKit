@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FileMonitoringLocationScanJob | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Scheduled job that scans one configured file-monitoring location.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,11 +93,12 @@ Class FileMonitoringLocationScanJob
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.Jobs.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Scheduled job that scans one configured file-monitoring location.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class FileMonitoringLocationScanJob : JobBase, IJob, IRetryJobScheduling</code></pre>
+    <pre><code class="lang-csharp hljs">public class FileMonitoringLocationScanJob : JobBase&lt;FileMonitoringLocationScanJobData&gt;, IJob&lt;FileMonitoringLocationScanJobData&gt;, IJob</code></pre>
   </div>
 
 
@@ -107,7 +108,7 @@ Class FileMonitoringLocationScanJob
     <dt>Inheritance</dt>
     <dd>
       <div><span class="xref">object</span></div>
-      <div><a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html">JobBase</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBase-1.html">JobBase</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJobData.html">FileMonitoringLocationScanJobData</a>&gt;</div>
       <div><span class="xref">FileMonitoringLocationScanJob</span></div>
     </dd>
   </dl>
@@ -115,8 +116,8 @@ Class FileMonitoringLocationScanJob
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><span class="xref">IJob</span></div>
-      <div><a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.IRetryJobScheduling.html">IRetryJobScheduling</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IJob-1.html">IJob</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJobData.html">FileMonitoringLocationScanJobData</a>&gt;</div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IJob.html">IJob</a></div>
     </dd>
   </dl>
 
@@ -125,31 +126,7 @@ Class FileMonitoringLocationScanJob
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_Execute_Quartz_IJobExecutionContext_">JobBase.Execute(IJobExecutionContext)</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_Logger">JobBase.Logger</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_Name">JobBase.Name</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_Data">JobBase.Data</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_RunDate">JobBase.RunDate</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_RunSuccessDate">JobBase.RunSuccessDate</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_ElapsedMilliseconds">JobBase.ElapsedMilliseconds</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_Status">JobBase.Status</a>
-    </div>
-    <div>
-      <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobBase.html#BridgingIT_DevKit_Application_JobScheduling_JobBase_ErrorMessage">JobBase.ErrorMessage</a>
+      <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBase-1.html#BridgingIT_DevKit_Application_Jobs_JobBase_1_InferredDataType">JobBase&lt;FileMonitoringLocationScanJobData&gt;.InferredDataType</a>
     </div>
   </dd></dl>
 
@@ -288,6 +265,11 @@ Class FileMonitoringLocationScanJob
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob_examples">Examples</h2>
+  <pre><code class="lang-csharp">services.AddJobScheduler()
+    .WithJob&lt;FileMonitoringLocationScanJob&gt;("scan-inbound", job =&gt; job
+        .AddTrigger("manual", trigger =&gt; trigger.Manual()));</code></pre>
+
 
 
 
@@ -297,24 +279,27 @@ Class FileMonitoringLocationScanJob
 
   <a id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob__ctor_Microsoft_Extensions_Logging_ILoggerFactory_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)">
-  FileMonitoringLocationScanJob(ILoggerFactory, IServiceScopeFactory)
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob__ctor_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob__BridgingIT_DevKit_Application_Storage_IFileMonitoringService_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.#ctor(Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob},BridgingIT.DevKit.Application.Storage.IFileMonitoringService)">
+  FileMonitoringLocationScanJob(ILogger&lt;FileMonitoringLocationScanJob&gt;, IFileMonitoringService)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Scheduled job that scans one configured file-monitoring location.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public FileMonitoringLocationScanJob(ILoggerFactory loggerFactory, IServiceScopeFactory scopeFactory)</code></pre>
+    <pre><code class="lang-csharp hljs">public FileMonitoringLocationScanJob(ILogger&lt;FileMonitoringLocationScanJob&gt; logger, IFileMonitoringService fileMonitoringService)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
-    <dt><code>scopeFactory</code> <span class="xref">IServiceScopeFactory</span></dt>
-    <dd></dd>
+    <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.html">FileMonitoringLocationScanJob</a>&gt;</dt>
+    <dd><p>The logger.</p>
+</dd>
+    <dt><code>fileMonitoringService</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IFileMonitoringService.html">IFileMonitoringService</a></dt>
+    <dd><p>The file-monitoring service.</p>
+</dd>
   </dl>
 
 
@@ -322,6 +307,11 @@ Class FileMonitoringLocationScanJob
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob__ctor_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob__BridgingIT_DevKit_Application_Storage_IFileMonitoringService__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddJobScheduler()
+    .WithJob&lt;FileMonitoringLocationScanJob&gt;("scan-inbound", job =&gt; job
+        .AddTrigger("manual", trigger =&gt; trigger.Manual()));</code></pre>
 
 
 
@@ -332,32 +322,36 @@ Class FileMonitoringLocationScanJob
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob_Process_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.Process*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob_ExecuteAsync_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.ExecuteAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob_Process_Quartz_IJobExecutionContext_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.Process(Quartz.IJobExecutionContext,System.Threading.CancellationToken)">
-  Process(IJobExecutionContext, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJob_ExecuteAsync_BridgingIT_DevKit_Common_IJobExecutionContext_BridgingIT_DevKit_Application_Storage_FileMonitoringLocationScanJobData__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJob.ExecuteAsync(BridgingIT.DevKit.Common.IJobExecutionContext{BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJobData},System.Threading.CancellationToken)">
+  ExecuteAsync(IJobExecutionContext&lt;FileMonitoringLocationScanJobData&gt;, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the job using the supplied typed execution context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public override Task&lt;Result&gt; ExecuteAsync(IJobExecutionContext&lt;FileMonitoringLocationScanJobData&gt; context, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>context</code> <span class="xref">IJobExecutionContext</span></dt>
-    <dd></dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Common.IJobExecutionContext-1.html">IJobExecutionContext</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringLocationScanJobData.html">FileMonitoringLocationScanJobData</a>&gt;</dt>
+    <dd><p>The typed execution context.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The cancellation token.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The execution result.</p>
+</dd>
   </dl>
 
 

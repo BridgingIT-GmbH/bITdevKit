@@ -117,11 +117,50 @@ Class ConsoleCommandHistory
 
 
 
+  <h2 id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_examples">Examples</h2>
+  <pre><code class="lang-csharp">ConsoleCommandHistory.Initialize("WeatherFiesta");
+ConsoleCommandHistory.Append("storage blobs clients");</code></pre>
+
 
 
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_FilePath_" data-uid="BridgingIT.DevKit.Presentation.ConsoleCommandHistory.FilePath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_FilePath" data-uid="BridgingIT.DevKit.Presentation.ConsoleCommandHistory.FilePath">
+  FilePath
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the active history file path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string FilePath { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_FilePath_examples">Examples</h4>
+  <pre><code class="lang-csharp">var path = ConsoleCommandHistory.FilePath;</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_LastError_" data-uid="BridgingIT.DevKit.Presentation.ConsoleCommandHistory.LastError*"></a>
@@ -131,7 +170,8 @@ Class ConsoleCommandHistory
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the last history storage error, when one occurred.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -150,6 +190,9 @@ Class ConsoleCommandHistory
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_LastError_examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = ConsoleCommandHistory.LastError;</code></pre>
+
 
 
 
@@ -166,7 +209,8 @@ Class ConsoleCommandHistory
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Appends one command line to the in-memory and persisted history.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -176,7 +220,8 @@ Class ConsoleCommandHistory
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>line</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The command line to append.</p>
+</dd>
   </dl>
 
 
@@ -184,6 +229,9 @@ Class ConsoleCommandHistory
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_Append_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">ConsoleCommandHistory.Append("help storage");</code></pre>
 
 
 
@@ -197,7 +245,8 @@ Class ConsoleCommandHistory
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Clears history while optionally keeping the last entries.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -207,7 +256,8 @@ Class ConsoleCommandHistory
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>keepLast</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of most recent entries to keep.</p>
+</dd>
   </dl>
 
 
@@ -215,6 +265,9 @@ Class ConsoleCommandHistory
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_ClearKeepLast_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">ConsoleCommandHistory.ClearKeepLast(10);</code></pre>
 
 
 
@@ -228,7 +281,8 @@ Class ConsoleCommandHistory
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets all loaded history entries.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -239,13 +293,17 @@ Class ConsoleCommandHistory
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The loaded command history.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_GetAll_examples">Examples</h4>
+  <pre><code class="lang-csharp">var entries = ConsoleCommandHistory.GetAll();</code></pre>
 
 
 
@@ -259,7 +317,8 @@ Class ConsoleCommandHistory
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes history storage for the current application.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +328,8 @@ Class ConsoleCommandHistory
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assemblyName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The application or assembly name used to isolate history files.</p>
+</dd>
   </dl>
 
 
@@ -277,6 +337,39 @@ Class ConsoleCommandHistory
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_Initialize_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">ConsoleCommandHistory.Initialize("WeatherFiesta");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_Reload_" data-uid="BridgingIT.DevKit.Presentation.ConsoleCommandHistory.Reload*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_Reload" data-uid="BridgingIT.DevKit.Presentation.ConsoleCommandHistory.Reload">
+  Reload()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reloads the active history file into memory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void Reload()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ConsoleCommandHistory_Reload_examples">Examples</h4>
+  <pre><code class="lang-csharp">ConsoleCommandHistory.Reload();</code></pre>
 
 
 

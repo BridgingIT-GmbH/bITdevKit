@@ -403,6 +403,51 @@ returns an empty string.</p>
 
 
 
+  <a id="BridgingIT_DevKit_Common_HashHelper_ComputeSha256Async_" data-uid="BridgingIT.DevKit.Common.HashHelper.ComputeSha256Async*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_HashHelper_ComputeSha256Async_System_IO_Stream_System_Int32_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.HashHelper.ComputeSha256Async(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+  ComputeSha256Async(Stream, int, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes the SHA-256 hash of the given stream incrementally from its current position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;string&gt; ComputeSha256Async(Stream stream, int bufferSize = 81920, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>stream</code> <span class="xref">Stream</span></dt>
+    <dd><p>The input stream to hash.</p>
+</dd>
+    <dt><code>bufferSize</code> <span class="xref">int</span></dt>
+    <dd><p>The read buffer size used while hashing.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token used while reading the stream.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd><p>A lowercase hexadecimal SHA-256 hash. If the stream is null, returns an empty string.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 

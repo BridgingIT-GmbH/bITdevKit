@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class StorageBlob | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class StorageBlob | bITdevKit API Reference ">
+      
+      <meta name="description" content="Represents a persisted blob metadata row for the Entity Framework blob store provider.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob" class="text-break">
+Class StorageBlob  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Represents a persisted blob metadata row for the Entity Framework blob store provider.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Table(&quot;__Storage_Blobs&quot;)]
+public sealed class StorageBlob</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">StorageBlob</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_examples">Examples</h2>
+  <pre><code class="lang-csharp">var row = new StorageBlob
+{
+    Container = "reports",
+    Name = "2026/06/report.pdf",
+    ContentTypeMimeType = "application/pdf"
+};</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob__ctor" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.#ctor">
+  StorageBlob()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StorageBlob()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumContainerLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumContainerLength">
+  MaximumContainerLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for persisted raw container values in the EF provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumContainerLength = 256</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumContentHashLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumContentHashLength">
+  MaximumContentHashLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for provider-neutral content hashes in the <code>sha256:&lt;hex&gt;</code> format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumContentHashLength = 71</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumContentTypeMimeTypeLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumContentTypeMimeTypeLength">
+  MaximumContentTypeMimeTypeLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for MIME type strings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumContentTypeMimeTypeLength = 256</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumETagLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumETagLength">
+  MaximumETagLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for provider ETag values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumETagLength = 256</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumLeaseValueLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumLeaseValueLength">
+  MaximumLeaseValueLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for lease identifiers and lease owner values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumLeaseValueLength = 256</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumLookupHashLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumLookupHashLength">
+  MaximumLookupHashLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for SHA-256 lookup hashes without the algorithm prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumLookupHashLength = 64</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_MaximumNameLength" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.MaximumNameLength">
+  MaximumNameLength
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Defines the fixed maximum length for persisted raw blob names in the EF provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumNameLength = 2048</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Chunks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Chunks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Chunks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Chunks">
+  Chunks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the content chunks owned by this blob.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[InverseProperty(&quot;Blob&quot;)]
+public ICollection&lt;StorageBlobChunk&gt; Chunks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobChunk.html">StorageBlobChunk</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Chunks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var chunks = blob.Chunks;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ConcurrencyVersion_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ConcurrencyVersion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ConcurrencyVersion" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ConcurrencyVersion">
+  ConcurrencyVersion
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the provider-neutral optimistic concurrency token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+[ConcurrencyCheck]
+public Guid ConcurrencyVersion { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ConcurrencyVersion_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.ConcurrencyVersion = Guid.NewGuid();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Container_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Container*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Container" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Container">
+  Container
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the logical top-level blob container.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+[MaxLength(256)]
+public string Container { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Container_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.Container = "reports";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContainerHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ContainerHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContainerHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ContainerHash">
+  ContainerHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the SHA-256 lookup hash for <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Container">Container</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+[MaxLength(64)]
+public string ContainerHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContainerHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.ContainerHash = HashHelper.ComputeSha256(blob.Container);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContentHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ContentHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContentHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ContentHash">
+  ContentHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the provider-neutral SHA-256 content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(71)]
+public string ContentHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContentHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.ContentHash = "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContentTypeMimeType_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ContentTypeMimeType*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContentTypeMimeType" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ContentTypeMimeType">
+  ContentTypeMimeType
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the persisted MIME type string produced from the provider-neutral content type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(256)]
+public string ContentTypeMimeType { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ContentTypeMimeType_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.ContentTypeMimeType = "application/pdf";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_CreatedAt_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.CreatedAt*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_CreatedAt" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.CreatedAt">
+  CreatedAt
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the UTC creation timestamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+public DateTimeOffset CreatedAt { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_CreatedAt_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.CreatedAt = DateTimeOffset.UtcNow;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ETag_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ETag*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ETag" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ETag">
+  ETag
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the provider ETag value for conditional property updates.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(256)]
+public string ETag { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ETag_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.ETag = Guid.NewGuid().ToString("N");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ExpiresAt_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ExpiresAt*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ExpiresAt" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.ExpiresAt">
+  ExpiresAt
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the UTC expiration timestamp used by blob retention sweeping.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? ExpiresAt { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_ExpiresAt_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.ExpiresAt = DateTimeOffset.UtcNow.AddDays(30);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Id_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Id*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Id" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Id">
+  Id
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the internal blob row identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Key]
+[Required]
+[MaxLength(64)]
+public string Id { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Id_examples">Examples</h4>
+  <pre><code class="lang-csharp">var id = blob.Id;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LastModifiedAt_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LastModifiedAt*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LastModifiedAt" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LastModifiedAt">
+  LastModifiedAt
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the UTC timestamp of the last blob metadata or content update.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+public DateTimeOffset LastModifiedAt { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LastModifiedAt_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.LastModifiedAt = DateTimeOffset.UtcNow;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseAcquiredBy_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LeaseAcquiredBy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseAcquiredBy" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LeaseAcquiredBy">
+  LeaseAcquiredBy
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the logical worker that owns the active mutation lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(256)]
+public string LeaseAcquiredBy { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseAcquiredBy_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.LeaseAcquiredBy = "worker-a";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseAcquiredUntil_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LeaseAcquiredUntil*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseAcquiredUntil" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LeaseAcquiredUntil">
+  LeaseAcquiredUntil
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the UTC timestamp until which the current mutation lease remains valid.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset? LeaseAcquiredUntil { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseAcquiredUntil_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.LeaseAcquiredUntil = DateTimeOffset.UtcNow.AddMinutes(1);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LeaseId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.LeaseId">
+  LeaseId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the internal mutation lease identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(256)]
+public string LeaseId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_LeaseId_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.LeaseId = Guid.NewGuid().ToString("N");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Length_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Length*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Length" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Length">
+  Length
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the persisted blob length in bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+public long Length { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Length_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.Length = 1024;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Name_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Name*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Name" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Name">
+  Name
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the path-like blob name inside the container.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+[MaxLength(2048)]
+public string Name { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Name_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.Name = "2026/06/report.pdf";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_NameHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.NameHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_NameHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.NameHash">
+  NameHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the SHA-256 lookup hash for <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Name">Name</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Required]
+[MaxLength(64)]
+public string NameHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_NameHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.NameHash = HashHelper.ComputeSha256(blob.Name);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Properties_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Properties*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Properties" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.Properties">
+  Properties
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the strongly typed custom properties restored from <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_PropertiesJson">PropertiesJson</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NotMapped]
+public IDictionary&lt;string, object&gt; Properties { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Properties_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.Properties["source"] = "monthly-export";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_PropertiesJson_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.PropertiesJson*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_PropertiesJson" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.PropertiesJson">
+  PropertiesJson
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the JSON persistence column for <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Properties">Properties</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Column(&quot;Properties&quot;)]
+public string PropertiesJson { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_PropertiesJson_examples">Examples</h4>
+  <pre><code class="lang-csharp">blob.PropertiesJson = "{}";</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

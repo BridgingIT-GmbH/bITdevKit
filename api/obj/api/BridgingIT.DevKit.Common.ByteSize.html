@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ByteSize | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ByteSize | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides convenience helpers for calculating binary byte sizes.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.ByteSize">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_ByteSize" data-uid="BridgingIT.DevKit.Common.ByteSize" class="text-break">
+Class ByteSize  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides convenience helpers for calculating binary byte sizes.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class ByteSize</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ByteSize</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_ByteSize_examples">Examples</h2>
+  <pre><code class="lang-csharp">var maxValueSize = ByteSize.Megabytes(1);
+var chunkSize = ByteSize.Megabytes(4);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_BytesPerGigabyte" data-uid="BridgingIT.DevKit.Common.ByteSize.BytesPerGigabyte">
+  BytesPerGigabyte
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of bytes in one binary gigabyte.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long BytesPerGigabyte = 1073741824</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_BytesPerGigabyte_examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.BytesPerGigabyte;</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_BytesPerKilobyte" data-uid="BridgingIT.DevKit.Common.ByteSize.BytesPerKilobyte">
+  BytesPerKilobyte
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of bytes in one binary kilobyte.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long BytesPerKilobyte = 1024</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_BytesPerKilobyte_examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.BytesPerKilobyte;</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_BytesPerMegabyte" data-uid="BridgingIT.DevKit.Common.ByteSize.BytesPerMegabyte">
+  BytesPerMegabyte
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of bytes in one binary megabyte.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long BytesPerMegabyte = 1048576</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_BytesPerMegabyte_examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.BytesPerMegabyte;</code></pre>
+
+
+
+
+
+
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_BytesPerTerabyte" data-uid="BridgingIT.DevKit.Common.ByteSize.BytesPerTerabyte">
+  BytesPerTerabyte
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The number of bytes in one binary terabyte.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long BytesPerTerabyte = 1099511627776</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_BytesPerTerabyte_examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.BytesPerTerabyte;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_Bytes_" data-uid="BridgingIT.DevKit.Common.ByteSize.Bytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_Bytes_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.Bytes(System.Int64)">
+  Bytes(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates a raw byte count and returns it unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Bytes(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The raw byte count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The raw byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_Bytes_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.Bytes(512);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_Gigabytes_" data-uid="BridgingIT.DevKit.Common.ByteSize.Gigabytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_Gigabytes_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.Gigabytes(System.Int64)">
+  Gigabytes(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts binary gigabytes to bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Gigabytes(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The number of gigabytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The calculated byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_Gigabytes_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.Gigabytes(2);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_Kilobytes_" data-uid="BridgingIT.DevKit.Common.ByteSize.Kilobytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_Kilobytes_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.Kilobytes(System.Int64)">
+  Kilobytes(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts binary kilobytes to bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Kilobytes(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The number of kilobytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The calculated byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_Kilobytes_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.Kilobytes(64);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_Megabytes_" data-uid="BridgingIT.DevKit.Common.ByteSize.Megabytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_Megabytes_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.Megabytes(System.Int64)">
+  Megabytes(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts binary megabytes to bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Megabytes(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The number of megabytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The calculated byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_Megabytes_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.Megabytes(1);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_Terabytes_" data-uid="BridgingIT.DevKit.Common.ByteSize.Terabytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_Terabytes_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.Terabytes(System.Int64)">
+  Terabytes(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts binary terabytes to bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static long Terabytes(long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The number of terabytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd><p>The calculated byte count.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_Terabytes_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var size = ByteSize.Terabytes(1);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ByteSize_ToMegabytes_" data-uid="BridgingIT.DevKit.Common.ByteSize.ToMegabytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ByteSize_ToMegabytes_System_Int64_" data-uid="BridgingIT.DevKit.Common.ByteSize.ToMegabytes(System.Int64)">
+  ToMegabytes(long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Converts a byte count to binary megabytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static double ToMegabytes(long bytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd><p>The byte count.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">double</span></dt>
+    <dd><p>The calculated megabyte value.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ByteSize_ToMegabytes_System_Int64__examples">Examples</h4>
+  <pre><code class="lang-csharp">var megabytes = ByteSize.ToMegabytes(bytes);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

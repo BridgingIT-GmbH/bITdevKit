@@ -296,6 +296,54 @@ var accessor = factory.Create(descriptor.ClientId);</code></pre>
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientFactory_CreateClient_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.CreateClient*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientFactory_CreateClient__1_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.CreateClient``1(System.String)">
+  CreateClient&lt;T&gt;(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves a named typed document client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IDocumentStoreClient&lt;T&gt; CreateClient&lt;T&gt;(string name) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The registered client name.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The named client, or null when it is not registered.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The document type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientFactory_CreateClient__1_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var archive = factory.CreateClient&lt;Person&gt;("archive");</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientFactory_GetDescriptors_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.GetDescriptors*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientFactory_GetDescriptors" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientFactory.GetDescriptors">

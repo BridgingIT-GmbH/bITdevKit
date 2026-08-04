@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-storage-files/">
       
       
-        <link rel="prev" href="../features-storage-documents/">
+        <link rel="prev" href="../features-storage-permalinks/">
       
       
         <link rel="next" href="../features-storage-monitoring/">
@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -47,7 +47,11 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/stylesheets/themes.css">
+    
       <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/theme-picker.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -117,28 +121,227 @@
     </div>
     
       
-        <form class="md-header__option" data-md-component="palette">
+        
+<form class="md-header__option bdk-theme-picker" data-md-component="palette">
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme)"
+      data-md-color-scheme="default"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use system theme"
+      type="radio"
+      name="__palette"
+      id="__palette_0"
+    >
     
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_1"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: light)"
+      data-md-color-scheme="light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_1"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_2"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: dark)"
+      data-md-color-scheme="dark"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use dark theme"
+      type="radio"
+      name="__palette"
+      id="__palette_2"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_3"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin theme"
+      type="radio"
+      name="__palette"
+      id="__palette_3"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_4"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="darkforest"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Darkforest theme"
+      type="radio"
+      name="__palette"
+      id="__palette_4"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_5"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="carbon"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Carbon theme"
+      type="radio"
+      name="__palette"
+      id="__palette_5"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_6"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="tokionights"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Tokyo Night theme"
+      type="radio"
+      name="__palette"
+      id="__palette_6"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_7"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="matrix"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Matrix theme"
+      type="radio"
+      name="__palette"
+      id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_0"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+
+  <details class="bdk-theme-picker__details" data-bdk-theme-picker>
+    <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
+      <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
+      <span data-bdk-theme-label>System</span>
+      <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
+      <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="dark" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#66d9ef;--theme-accent:#fd971f"></span>
+        <span>Dark</span>
       </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#11111b;--theme-primary:#89b4fa;--theme-accent:#f5c2e7"></span>
+        <span>Catppuccin</span>
       </label>
-    
-  
+      <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="darkforest" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#07120d;--theme-primary:#9ece6a;--theme-accent:#e0af68"></span>
+        <span>Darkforest</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="carbon" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#161616;--theme-primary:#78a9ff;--theme-accent:#ff7eb6"></span>
+        <span>Carbon</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="tokionights" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#0f1021;--theme-primary:#7aa2f7;--theme-accent:#bb9af7"></span>
+        <span>Tokyo Night</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="matrix" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#020802;--theme-primary:#00ff66;--theme-accent:#39ff14"></span>
+        <span>Matrix</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="light" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#f7f7f2;--theme-primary:#0f62fe;--theme-accent:#8a3ffc"></span>
+        <span>Light</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="system" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#a59f99;--theme-accent:#f7f7f2"></span>
+        <span>System</span>
+      </label>
+    </div>
+  </details>
 </form>
       
     
@@ -2169,7 +2372,7 @@
   <span class="md-ellipsis">
     
   
-    StartupTasks
+    Startup Tasks
   
 
     
@@ -2225,7 +2428,35 @@
   <span class="md-ellipsis">
     
   
-    JobScheduling
+    Job Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-blobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
   
 
     
@@ -2253,7 +2484,35 @@
   <span class="md-ellipsis">
     
   
-    DocumentStorage
+    Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-permalinks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Permalinks
   
 
     
@@ -3551,6 +3810,72 @@
           
             <div class="md-content" data-md-component="content">
               
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../features-startuptasks/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Storage, Scheduling and Utilities
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
               <article class="md-content__inner md-typeset">
                 
                   
@@ -3800,7 +4125,7 @@
 <span class="w">                </span><span class="p">.</span><span class="n">RetryCount</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="w">                </span><span class="p">.</span><span class="n">RetryBackoff</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span><span class="p">(</span><span class="mi">250</span><span class="p">))</span>
 <span class="w">                </span><span class="p">.</span><span class="n">PageSize</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="w">                </span><span class="p">.</span><span class="n">MaximumBufferedContentSize</span><span class="p">(</span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">))</span>
+<span class="w">                </span><span class="p">.</span><span class="n">MaximumBufferedContentSize</span><span class="p">(</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithLogging</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)));</span>
 </code></pre></div>
@@ -4390,35 +4715,39 @@
 </ul>
 <h2 id="appendix-b-filemonitoringlocationscanjob">Appendix B: FileMonitoringLocationScanJob<a class="headerlink" href="#appendix-b-filemonitoringlocationscanjob" title="Permanent link">&para;</a></h2>
 <h3 id="overview_2">Overview<a class="headerlink" href="#overview_2" title="Permanent link">&para;</a></h3>
-<p>The <code>FileMonitoringLocationScanJob</code> is a scheduled job that triggers on-demand scans for a specified location using the <code>IFileMonitoringService</code>. It integrates with the <code>JobScheduling</code> feature to run scans at defined intervals, supporting retry logic and configurable scan options. The job is annotated with <code>[DisallowConcurrentExecution]</code>, ensuring that only one instance runs at a time to prevent overlapping scans.</p>
+<p>The <code>FileMonitoringLocationScanJob</code> is a scheduled job that triggers on-demand scans for a specified location using the <code>IFileMonitoringService</code>. It integrates with the <code>Application.Jobs</code> feature to run scans at defined intervals, supporting retry logic and configurable scan options. Configure job-level concurrency when overlapping scans must be prevented.</p>
 <h3 id="usage_2">Usage<a class="headerlink" href="#usage_2" title="Permanent link">&para;</a></h3>
 <h4 id="registering-the-job">Registering the Job<a class="headerlink" href="#registering-the-job" title="Permanent link">&para;</a></h4>
-<p>Register the <code>FileMonitoringLocationScanJob</code> using the <code>AddJobScheduling</code> extension, specifying the location name and scan options via job data:</p>
-<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="mi">5000</span><span class="p">),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">FileMonitoringLocationScanJob</span><span class="o">&gt;</span><span class="p">()</span>
+<p>Register the <code>FileMonitoringLocationScanJob</code> using <code>AddJobScheduler</code>, specifying the location name and scan options via the typed <code>FileMonitoringLocationScanJobData</code> payload:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddJobScheduler</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">FileMonitoringLocationScanJob</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;scan_inbound&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">job</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">&quot;Scans the inbound location.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithConcurrency</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithRetry</span><span class="p">(</span><span class="n">retry</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">retry</span><span class="p">.</span><span class="n">MaxAttempts</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="n">FixedDelay</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AddTrigger</span><span class="p">(</span><span class="s">&quot;schedule&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">trigger</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">trigger</span>
 <span class="w">            </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">EveryMinute</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;scan_inbound&quot;</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">LocationName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;inbound&quot;</span><span class="p">)</span><span class="w">         </span><span class="c1">// mandatory</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">DelayPerFile</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;00:00:01&quot;</span><span class="p">)</span><span class="w">        </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">WaitForProcessing</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="p">)</span><span class="w">       </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">BatchSize</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;10&quot;</span><span class="p">)</span><span class="w">                 </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">ProgressIntervalPercentage</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;5&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">FileFilter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.txt&quot;</span><span class="p">)</span><span class="w">              </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.tmp;*.log&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">MaxFilesToScan</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;100&quot;</span><span class="p">)</span><span class="w">           </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">Timeout</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;00:01:00&quot;</span><span class="p">)</span><span class="w">             </span><span class="c1">// optional</span>
-<span class="w">            </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
-<span class="p">});</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Data</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileMonitoringLocationScanJobData</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">LocationName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;inbound&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">DelayPerFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">                </span><span class="n">WaitForProcessing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">                </span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">                </span><span class="n">ProgressIntervalPercentage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">                </span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;.txt&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;.tmp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.log&quot;</span><span class="p">],</span>
+<span class="w">                </span><span class="n">MaxFilesToScan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">            </span><span class="p">})));</span>
 </code></pre></div>
 <ul>
 <li><strong>Cron Schedule</strong>: <code>CronExpressions.EveryMinute</code> runs the job every minute.</li>
-<li><strong>Job Data</strong>: <code>DataKeys</code> define the location name and scan options (e.g., <code>DelayPerFile</code>, <code>BatchSize</code>).</li>
-<li><strong>Retry Logic</strong>: The job implements <code>IRetryJobScheduling</code> with 3 retry attempts and a 1-second backoff.</li>
+<li><strong>Job Data</strong>: <code>FileMonitoringLocationScanJobData</code> defines the location name and scan options (e.g., <code>DelayPerFile</code>, <code>BatchSize</code>).</li>
+<li><strong>Retry Logic</strong>: Configure retry through the Jobs registration with <code>WithRetry(...)</code>.</li>
 </ul>
 <h4 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h4>
 <ol>
-<li>The job retrieves the location name from the job data (<code>DataKeys.LocationName</code>).</li>
-<li>It constructs a <code>FileScanOptions</code> object based on the job data, setting properties like <code>DelayPerFile</code>, <code>BatchSize</code>, and <code>Timeout</code>.</li>
+<li>The job retrieves the location name from <code>FileMonitoringLocationScanJobData.LocationName</code>.</li>
+<li>It constructs a <code>FileScanOptions</code> object based on the typed data, setting properties like <code>DelayPerFile</code>, <code>BatchSize</code>, and <code>Timeout</code>.</li>
 <li>It calls <code>IFileMonitoringService.ScanLocationAsync</code> to perform the scan, logging progress and events.</li>
 <li>Events are logged using structured logging (<code>TypedLogger</code>), capturing details like files scanned, events detected, and elapsed time.</li>
 </ol>
@@ -4429,7 +4758,7 @@ STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </sp
 STR<span class="w"> </span>job:<span class="w"> </span>event<span class="w"> </span>processed<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">eventType</span><span class="o">=</span>Added,<span class="w"> </span><span class="nv">filePath</span><span class="o">=</span>file1.txt,<span class="w"> </span><span class="nv">size</span><span class="o">=</span><span class="m">1024</span>,<span class="w"> </span><span class="nv">detected</span><span class="o">=</span><span class="m">2025</span>-03-28T12:00:00Z<span class="o">)</span>
 </code></pre></div>
 <h4 id="retry-handling">Retry Handling<a class="headerlink" href="#retry-handling" title="Permanent link">&para;</a></h4>
-<p>The job implements <code>IRetryJobScheduling</code> with 3 attempts and a 1-second backoff. If a scan fails (e.g., due to a transient error), the job will retry up to 3 times:</p>
+<p>Configure retries on the Jobs registration. For example, <code>WithRetry(retry =&gt; retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))</code> retries transient scan failures up to 3 times:</p>
 <div class="highlight"><pre><span></span><code>STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>started<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound<span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>failed<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">attempt</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>started<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound<span class="o">)</span>
@@ -4520,10 +4849,10 @@ STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </sp
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

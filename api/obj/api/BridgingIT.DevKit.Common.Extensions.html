@@ -117,6 +117,11 @@ Class Extensions
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_Extensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">var suffix = "archives/2026/report.pdf".TruncateLeft(10);
+var prefix = "archives/2026/report.pdf".TruncateRight(10);
+// suffix is "report.pdf" and prefix is "archives/2".</code></pre>
+
 
 
 
@@ -184,7 +189,8 @@ var batches = numbers.Batch(3);
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Concatenates two argument arrays, treating null arrays as empty.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -194,21 +200,28 @@ var batches = numbers.Batch(3);
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>args0</code> <span class="xref">object</span>[]</dt>
-    <dd></dd>
+    <dd><p>The first argument array.</p>
+</dd>
     <dt><code>args1</code> <span class="xref">object</span>[]</dt>
-    <dd></dd>
+    <dd><p>The second argument array.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">object</span>[]</dt>
-    <dd></dd>
+    <dd><p>The combined arguments, or the non-empty input array when the other input is null or empty.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ConcatArgs_System_Object___System_Object____examples">Examples</h4>
+  <pre><code class="lang-csharp">var arguments = new object[] { "first" }.ConcatArgs(["second"]);
+// ["first", "second"]</code></pre>
 
 
 
@@ -352,7 +365,8 @@ var batches = numbers.Batch(3);
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns null when a string is null or empty.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -362,19 +376,24 @@ var batches = numbers.Batch(3);
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The original string when it has content; otherwise null.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_EmptyToNull_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = "".EmptyToNull();</code></pre>
 
 
 
@@ -388,7 +407,8 @@ var batches = numbers.Batch(3);
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns null when an enumerable is null or empty.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -398,24 +418,30 @@ var batches = numbers.Batch(3);
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The enumerable to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The original enumerable when it has elements; otherwise null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_EmptyToNull__1_System_Collections_Generic_IEnumerable___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var items = Array.Empty&lt;int&gt;().EmptyToNull();</code></pre>
 
 
 
@@ -1151,7 +1177,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a GUID is <span class="xref">System.Guid.Empty</span>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1161,19 +1188,24 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The GUID to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the GUID is empty; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_IsEmpty_System_Guid__examples">Examples</h4>
+  <pre><code class="lang-csharp">var empty = id.IsEmpty();</code></pre>
 
 
 
@@ -1187,7 +1219,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a stream is null or has no bytes.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1197,19 +1230,24 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Stream</span></dt>
-    <dd></dd>
+    <dd><p>The stream to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">source</code> is null or its length is zero; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty_System_IO_Stream__examples">Examples</h4>
+  <pre><code class="lang-csharp">var empty = stream.IsNullOrEmpty();</code></pre>
 
 
 
@@ -1223,7 +1261,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a collection is null or has no elements.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1233,24 +1272,30 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">ICollection</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">source</code> is null or empty; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty__1_System_Collections_Generic_ICollection___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var empty = items.IsNullOrEmpty();</code></pre>
 
 
 
@@ -1264,7 +1309,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an enumerable is null or has no elements.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1274,24 +1320,30 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The enumerable to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">source</code> is null or empty; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_IsNullOrEmpty__1_System_Collections_Generic_IEnumerable___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var empty = items.IsNullOrEmpty();</code></pre>
 
 
 
@@ -2119,7 +2171,8 @@ var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an enumerable contains at least one non-null element.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2129,24 +2182,30 @@ var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The enumerable to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a non-null element exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_SafeAny__1_System_Collections_Generic_IEnumerable___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var hasValues = items.SafeAny();</code></pre>
 
 
 
@@ -2160,7 +2219,8 @@ var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an enumerable contains an element that satisfies a predicate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2170,26 +2230,33 @@ var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The enumerable to inspect.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The predicate to evaluate. When null, non-null elements are checked.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a matching element exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_SafeAny__1_System_Collections_Generic_IEnumerable___0__System_Func___0_System_Boolean___examples">Examples</h4>
+  <pre><code class="lang-csharp">var hasActive = users.SafeAny(user =&gt; user.IsActive);</code></pre>
 
 
 
@@ -2712,7 +2779,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the substring between two zero-based indexes.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2722,23 +2790,30 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to slice.</p>
+</dd>
     <dt><code>start</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The inclusive start index.</p>
+</dd>
     <dt><code>end</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The exclusive end index. Values lower than <code class="paramref">start</code> use the end of the string.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The selected substring.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_Slice_System_String_System_Int32_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = "abcdef".Slice(1, 4); // "bcd"</code></pre>
 
 
 
@@ -2752,7 +2827,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the portion of a string between the first matching start and end delimiters.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2762,25 +2838,33 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to slice.</p>
+</dd>
     <dt><code>start</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The delimiter after which the slice begins.</p>
+</dd>
     <dt><code>end</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The delimiter before which the slice ends.</p>
+</dd>
     <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
-    <dd></dd>
+    <dd><p>The comparison mode for both delimiters.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The portion between the delimiters.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_Slice_System_String_System_String_System_String_System_StringComparison__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = "[content]".Slice("[", "]"); // "content"</code></pre>
 
 
 
@@ -2794,7 +2878,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the portion of a string after its first matching delimiter.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2804,23 +2889,30 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to slice.</p>
+</dd>
     <dt><code>from</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The delimiter after which the slice begins.</p>
+</dd>
     <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
-    <dd></dd>
+    <dd><p>The comparison mode for the delimiter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The portion after the delimiter, or an empty string when it is not found.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_SliceFrom_System_String_System_String_System_StringComparison__examples">Examples</h4>
+  <pre><code class="lang-csharp">var fileName = "archive/report.pdf".SliceFrom("/"); // "report.pdf"</code></pre>
 
 
 
@@ -2834,7 +2926,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the portion of a string after its last matching delimiter.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2844,23 +2937,30 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to slice.</p>
+</dd>
     <dt><code>from</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The delimiter after which the slice begins.</p>
+</dd>
     <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
-    <dd></dd>
+    <dd><p>The comparison mode for the delimiter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The portion after the delimiter, or an empty string when it is not found.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_SliceFromLast_System_String_System_String_System_StringComparison__examples">Examples</h4>
+  <pre><code class="lang-csharp">var fileName = "archive/2026/report.pdf".SliceFromLast("/"); // "report.pdf"</code></pre>
 
 
 
@@ -2874,7 +2974,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the portion of a string before its first matching delimiter.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2884,23 +2985,30 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to slice.</p>
+</dd>
     <dt><code>till</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The delimiter before which the slice ends.</p>
+</dd>
     <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
-    <dd></dd>
+    <dd><p>The comparison mode for the delimiter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The portion before the delimiter, or the original string when it is not found.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_SliceTill_System_String_System_String_System_StringComparison__examples">Examples</h4>
+  <pre><code class="lang-csharp">var directory = "archive/report.pdf".SliceTill("/"); // "archive"</code></pre>
 
 
 
@@ -2914,7 +3022,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the portion of a string before its last matching delimiter.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2924,23 +3033,30 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to slice.</p>
+</dd>
     <dt><code>till</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The delimiter before which the slice ends.</p>
+</dd>
     <dt><code>comparison</code> <span class="xref">StringComparison</span></dt>
-    <dd></dd>
+    <dd><p>The comparison mode for the delimiter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The portion before the delimiter, or the original string when it is not found.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_SliceTillLast_System_String_System_String_System_StringComparison__examples">Examples</h4>
+  <pre><code class="lang-csharp">var directory = "archive/2026/report.pdf".SliceTillLast("/"); // "archive/2026"</code></pre>
 
 
 
@@ -2954,7 +3070,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a string begins with any supplied prefix.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2964,23 +3081,30 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to inspect.</p>
+</dd>
     <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The prefixes to compare.</p>
+</dd>
     <dt><code>comp</code> <span class="xref">StringComparison</span></dt>
-    <dd></dd>
+    <dd><p>The comparison mode.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a prefix matches; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_StartsWithAny_System_String_System_Collections_Generic_IEnumerable_System_String__System_StringComparison__examples">Examples</h4>
+  <pre><code class="lang-csharp">var isHttp = url.StartsWithAny(["http://", "https://"]);</code></pre>
 
 
 
@@ -3227,7 +3351,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Joins an enumerable into a string using the specified character separator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3237,26 +3362,33 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The values to join.</p>
+</dd>
     <dt><code>seperator</code> <span class="xref">char</span></dt>
-    <dd></dd>
+    <dd><p>The separator placed between values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The joined values, or an empty string when <code class="paramref">source</code> is null or empty.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ToString__1_System_Collections_Generic_IEnumerable___0__System_Char__examples">Examples</h4>
+  <pre><code class="lang-csharp">var csv = new[] { 1, 2, 3 }.ToString(','); // "1,2,3"</code></pre>
 
 
 
@@ -3270,7 +3402,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Joins an enumerable into a string using the specified separator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3280,26 +3413,33 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The values to join.</p>
+</dd>
     <dt><code>separator</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The separator placed between values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The joined values, or an empty string when <code class="paramref">source</code> is null or empty.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The element type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ToString__1_System_Collections_Generic_IEnumerable___0__System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var csv = new[] { 1, 2, 3 }.ToString(","); // "1,2,3"</code></pre>
 
 
 
@@ -3313,7 +3453,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Converts a value to the specified target type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3323,27 +3464,39 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value to convert.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The converted value, or the default value of <code class="typeparamref">T</code> when <code class="paramref">value</code> is null and cannot be converted.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The target type.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object__examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = "42".ToType&lt;int&gt;();</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when the value cannot be converted to <code class="typeparamref">T</code>.</p>
+</dd>
+  </dl>
 
 
 
@@ -3401,7 +3554,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Retains at most the specified number of characters from the end of a string.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3411,15 +3565,18 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to truncate.</p>
+</dd>
     <dt><code>length</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum number of terminal characters to retain.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The original string when it fits; otherwise its terminal characters. Null and empty values are returned unchanged.</p>
+</dd>
   </dl>
 
 
@@ -3427,7 +3584,14 @@ var tree = items.ToHierarchy(
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_TruncateLeft_System_String_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var fileName = "archives/2026/report.pdf".TruncateLeft(10);
+// "report.pdf"</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_TruncateLeft_System_String_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A negative <code class="paramref">length</code> is treated as zero.</p>
+</div>
 
 
 
@@ -3439,7 +3603,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Retains at most the specified number of characters from the beginning of a string.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3449,15 +3614,18 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to truncate.</p>
+</dd>
     <dt><code>length</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum number of initial characters to retain.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The original string when it fits; otherwise its initial characters. Null and empty values are returned unchanged.</p>
+</dd>
   </dl>
 
 
@@ -3465,7 +3633,14 @@ var tree = items.ToHierarchy(
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_TruncateRight_System_String_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var prefix = "archives/2026/report.pdf".TruncateRight(10);
+// "archives/2"</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Extensions_TruncateRight_System_String_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A negative <code class="paramref">length</code> is treated as zero.</p>
+</div>
 
 
 

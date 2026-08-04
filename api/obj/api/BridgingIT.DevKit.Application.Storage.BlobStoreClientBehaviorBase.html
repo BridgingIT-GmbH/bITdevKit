@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BlobStoreClientBehaviorBase | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BlobStoreClientBehaviorBase | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides a reusable base for blob-store client decorators.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase" class="text-break">
+Class BlobStoreClientBehaviorBase  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides a reusable base for blob-store client decorators.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class BlobStoreClientBehaviorBase : IBlobStoreClient, IBlobStoreClientDecorator</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">BlobStoreClientBehaviorBase</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClientDecorator.html">IBlobStoreClientDecorator</a></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist derived">
+    <dt>Derived</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStorePermalinkBehavior.html">BlobStorePermalinkBehavior</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.LoggingBlobStoreClientBehavior.html">LoggingBlobStoreClientBehavior</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.MetricsBlobStoreClientBehavior.html">MetricsBlobStoreClientBehavior</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehavior.html">RetryBlobStoreClientBehavior</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Application.Storage.TimeoutBlobStoreClientBehavior.html">TimeoutBlobStoreClientBehavior</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_DownloadBytesAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_">BlobBytesStorageExtensions.DownloadBytesAsync(IBlobStoreClient, BlobKey, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobBytesStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobBytesStorageExtensions_UploadBytesAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_Byte___BridgingIT_DevKit_Application_Storage_BlobBytesUploadOptions_System_Threading_CancellationToken_">BlobBytesStorageExtensions.UploadBytesAsync(IBlobStoreClient, BlobKey, byte[], BlobBytesUploadOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobContentStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobContentStorageExtensions_DownloadObjectAsync__1_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobObjectDownloadOptions_System_Threading_CancellationToken_">BlobContentStorageExtensions.DownloadObjectAsync&lt;T&gt;(IBlobStoreClient, BlobKey, BlobObjectDownloadOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobContentStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobContentStorageExtensions_DownloadTextAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobTextDownloadOptions_System_Threading_CancellationToken_">BlobContentStorageExtensions.DownloadTextAsync(IBlobStoreClient, BlobKey, BlobTextDownloadOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobContentStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobContentStorageExtensions_UploadObjectAsync__1_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey___0_BridgingIT_DevKit_Application_Storage_BlobObjectUploadOptions_System_Threading_CancellationToken_">BlobContentStorageExtensions.UploadObjectAsync&lt;T&gt;(IBlobStoreClient, BlobKey, T, BlobObjectUploadOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobContentStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobContentStorageExtensions_UploadTextAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_String_BridgingIT_DevKit_Application_Storage_BlobTextUploadOptions_System_Threading_CancellationToken_">BlobContentStorageExtensions.UploadTextAsync(IBlobStoreClient, BlobKey, string, BlobTextUploadOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobEnumerationExtensions.html#BridgingIT_DevKit_Application_Storage_BlobEnumerationExtensions_EnumerateAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobQuery_BridgingIT_DevKit_Application_Storage_BlobEnumerationOptions_System_Threading_CancellationToken_">BlobEnumerationExtensions.EnumerateAsync(IBlobStoreClient, BlobQuery, BlobEnumerationOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobEnumerationExtensions.html#BridgingIT_DevKit_Application_Storage_BlobEnumerationExtensions_ListAllAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobQuery_BridgingIT_DevKit_Application_Storage_BlobEnumerationOptions_System_Threading_CancellationToken_">BlobEnumerationExtensions.ListAllAsync(IBlobStoreClient, BlobQuery, BlobEnumerationOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobFileStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobFileStorageExtensions_DownloadToFileAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_BridgingIT_DevKit_Application_Storage_BlobFileDownloadOptions_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BlobFileStorageExtensions.DownloadToFileAsync(IBlobStoreClient, BlobKey, IFileStorageProvider, string, BlobFileDownloadOptions, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobFileStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobFileStorageExtensions_UploadFileAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobFileUploadOptions_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BlobFileStorageExtensions.UploadFileAsync(IBlobStoreClient, IFileStorageProvider, string, BlobKey, BlobFileUploadOptions, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertyStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobPropertyStorageExtensions_MergePropertiesAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Common_PropertyBag_BridgingIT_DevKit_Application_Storage_BlobPropertyPatchOptions_System_Threading_CancellationToken_">BlobPropertyStorageExtensions.MergePropertiesAsync(IBlobStoreClient, BlobKey, PropertyBag, BlobPropertyPatchOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertyStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobPropertyStorageExtensions_RemovePropertyAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_String_BridgingIT_DevKit_Application_Storage_BlobPropertyPatchOptions_System_Threading_CancellationToken_">BlobPropertyStorageExtensions.RemovePropertyAsync(IBlobStoreClient, BlobKey, string, BlobPropertyPatchOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertyStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobPropertyStorageExtensions_SetPropertyAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_String_System_Object_BridgingIT_DevKit_Application_Storage_BlobPropertyPatchOptions_System_Threading_CancellationToken_">BlobPropertyStorageExtensions.SetPropertyAsync(IBlobStoreClient, BlobKey, string, object, BlobPropertyPatchOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobTransferStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobTransferStorageExtensions_CopyToAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobCopyOptions_System_Threading_CancellationToken_">BlobTransferStorageExtensions.CopyToAsync(IBlobStoreClient, BlobKey, IBlobStoreClient, BlobKey, BlobCopyOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobTransferStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobTransferStorageExtensions_DeleteByPrefixAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String_System_String_BridgingIT_DevKit_Application_Storage_BlobDeletePrefixOptions_System_Threading_CancellationToken_">BlobTransferStorageExtensions.DeleteByPrefixAsync(IBlobStoreClient, string, string, BlobDeletePrefixOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobTransferStorageExtensions.html#BridgingIT_DevKit_Application_Storage_BlobTransferStorageExtensions_MoveToAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobMoveOptions_System_Threading_CancellationToken_">BlobTransferStorageExtensions.MoveToAsync(IBlobStoreClient, BlobKey, IBlobStoreClient, BlobKey, BlobMoveOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobVerifiedDownloadExtensions.html#BridgingIT_DevKit_Application_Storage_BlobVerifiedDownloadExtensions_DownloadVerifiedToAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_System_IO_Stream_BridgingIT_DevKit_Application_Storage_BlobDownloadVerificationOptions_System_Threading_CancellationToken_">BlobVerifiedDownloadExtensions.DownloadVerifiedToAsync(IBlobStoreClient, BlobKey, Stream, BlobDownloadVerificationOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobVerifiedDownloadExtensions.html#BridgingIT_DevKit_Application_Storage_BlobVerifiedDownloadExtensions_DownloadVerifiedToFileAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_IFileStorageProvider_System_String_BridgingIT_DevKit_Application_Storage_BlobFileDownloadOptions_BridgingIT_DevKit_Application_Storage_BlobDownloadVerificationOptions_System_IProgress_BridgingIT_DevKit_Application_Storage_FileProgress__System_Threading_CancellationToken_">BlobVerifiedDownloadExtensions.DownloadVerifiedToFileAsync(IBlobStoreClient, BlobKey, IFileStorageProvider, string, BlobFileDownloadOptions, BlobDownloadVerificationOptions, IProgress&lt;FileProgress&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkExtensions.html#BridgingIT_DevKit_Application_Storage_StoragePermalinkExtensions_GetPermalinkAsync_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_StoragePermalinkCreateOptions_System_Threading_CancellationToken_">StoragePermalinkExtensions.GetPermalinkAsync(IBlobStoreClient, BlobKey, StoragePermalinkCreateOptions, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_examples">Examples</h2>
+  <pre><code class="lang-csharp">public sealed class CustomBehavior(IBlobStoreClient inner) : BlobStoreClientBehaviorBase(inner);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,System.String)">
+  BlobStoreClientBehaviorBase(IBlobStoreClient, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides a reusable base for blob-store client decorators.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected BlobStoreClientBehaviorBase(IBlobStoreClient inner, string storeName = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></dt>
+    <dd><p>The decorated blob-store client.</p>
+</dd>
+    <dt><code>storeName</code> <span class="xref">string</span></dt>
+    <dd><p>The configured blob-store client name.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">public sealed class CustomBehavior(IBlobStoreClient inner) : BlobStoreClientBehaviorBase(inner);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_Inner_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.Inner*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_Inner" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.Inner">
+  Inner
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the decorated inner blob-store client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IBlobStoreClient Inner { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_Inner_examples">Examples</h4>
+  <pre><code class="lang-csharp">var inner = this.Inner;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_InnerClient_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.InnerClient*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_InnerClient" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.InnerClient">
+  InnerClient
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the decorated Blob Storage client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IBlobStoreClient InnerClient { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_StoreName_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.StoreName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_StoreName" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.StoreName">
+  StoreName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the configured blob-store client name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected string StoreName { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_StoreName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var store = this.StoreName;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_DeleteAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.DeleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_DeleteAsync_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobDeleteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.DeleteAsync(BridgingIT.DevKit.Application.Storage.BlobKey,BridgingIT.DevKit.Application.Storage.BlobDeleteOptions,System.Threading.CancellationToken)">
+  DeleteAsync(BlobKey, BlobDeleteOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes a blob by exact key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&gt; DeleteAsync(BlobKey key, BlobDeleteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a></dt>
+    <dd><p>The exact blob key.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDeleteOptions.html">BlobDeleteOptions</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>A result indicating whether the delete completed successfully.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_DeleteAsync_BridgingIT_DevKit_Application_Storage_BlobKey_BridgingIT_DevKit_Application_Storage_BlobDeleteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await blobs.DeleteAsync(key, new BlobDeleteOptions { IfMatchETag = etag }, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_DownloadAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.DownloadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_DownloadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.DownloadAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)">
+  DownloadAsync(BlobKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Downloads one blob by exact key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobDownload&gt;&gt; DownloadAsync(BlobKey key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a></dt>
+    <dd><p>The exact blob key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDownload.html">BlobDownload</a>&gt;&gt;</dt>
+    <dd><p>A result containing the download stream and metadata.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_DownloadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await blobs.DownloadAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExecuteAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ExecuteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExecuteAsync_System_String_BridgingIT_DevKit_Application_Storage_BlobStoreOperationContext_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ExecuteAsync(System.String,BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result}},System.Threading.CancellationToken)">
+  ExecuteAsync(string, BlobStoreOperationContext, Func&lt;CancellationToken, Task&lt;Result&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes one non-value blob operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected abstract Task&lt;Result&gt; ExecuteAsync(string operation, BlobStoreOperationContext context, Func&lt;CancellationToken, Task&lt;Result&gt;&gt; next, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">string</span></dt>
+    <dd><p>The low-cardinality operation name.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext.html">BlobStoreOperationContext</a></dt>
+    <dd><p>The sanitized operation context.</p>
+</dd>
+    <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;&gt;</dt>
+    <dd><p>The next client delegate.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The caller cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The operation result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExecuteAsync_System_String_BridgingIT_DevKit_Application_Storage_BlobStoreOperationContext_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">return await this.ExecuteAsync("delete", context, next, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExecuteAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ExecuteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExecuteAsync__1_System_String_BridgingIT_DevKit_Application_Storage_BlobStoreOperationContext_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ExecuteAsync``1(System.String,BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}},System.Threading.CancellationToken)">
+  ExecuteAsync&lt;T&gt;(string, BlobStoreOperationContext, Func&lt;CancellationToken, Task&lt;Result&lt;T&gt;&gt;&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes one value-returning blob operation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected abstract Task&lt;Result&lt;T&gt;&gt; ExecuteAsync&lt;T&gt;(string operation, BlobStoreOperationContext context, Func&lt;CancellationToken, Task&lt;Result&lt;T&gt;&gt;&gt; next, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>operation</code> <span class="xref">string</span></dt>
+    <dd><p>The low-cardinality operation name.</p>
+</dd>
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext.html">BlobStoreOperationContext</a></dt>
+    <dd><p>The sanitized operation context.</p>
+</dd>
+    <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;&gt;</dt>
+    <dd><p>The next client delegate.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The caller cancellation token.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;&gt;</dt>
+    <dd><p>The operation result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The result value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExecuteAsync__1_System_String_BridgingIT_DevKit_Application_Storage_BlobStoreOperationContext_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">return await this.ExecuteAsync("exists", context, next, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExistsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ExistsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExistsAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ExistsAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)">
+  ExistsAsync(BlobKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Checks exact-key existence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(BlobKey key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a></dt>
+    <dd><p>The exact blob key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A result containing <code>true</code> when the blob exists; otherwise <code>false</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ExistsAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var exists = await blobs.ExistsAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_GetPropertiesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.GetPropertiesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_GetPropertiesAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.GetPropertiesAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)">
+  GetPropertiesAsync(BlobKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets blob properties without downloading content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobInfo&gt;&gt; GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a></dt>
+    <dd><p>The exact blob key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a>&gt;&gt;</dt>
+    <dd><p>A result containing blob information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_GetPropertiesAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var properties = await blobs.GetPropertiesAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ListPageAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ListPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ListPageAsync_BridgingIT_DevKit_Application_Storage_BlobQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.ListPageAsync(BridgingIT.DevKit.Application.Storage.BlobQuery,System.Threading.CancellationToken)">
+  ListPageAsync(BlobQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists one bounded page of blob information.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobPage&gt;&gt; ListPageAsync(BlobQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobQuery.html">BlobQuery</a></dt>
+    <dd><p>The listing query.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPage.html">BlobPage</a>&gt;&gt;</dt>
+    <dd><p>A result containing one page of blob information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_ListPageAsync_BridgingIT_DevKit_Application_Storage_BlobQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await blobs.ListPageAsync(query, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_UpdatePropertiesAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.UpdatePropertiesAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_BlobPropertiesUpdate_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.UpdatePropertiesAsync(BridgingIT.DevKit.Application.Storage.BlobPropertiesUpdate,System.Threading.CancellationToken)">
+  UpdatePropertiesAsync(BlobPropertiesUpdate, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates blob properties without downloading content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobInfo&gt;&gt; UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>update</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobPropertiesUpdate.html">BlobPropertiesUpdate</a></dt>
+    <dd><p>The property update model.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a>&gt;&gt;</dt>
+    <dd><p>A result containing updated blob information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_UpdatePropertiesAsync_BridgingIT_DevKit_Application_Storage_BlobPropertiesUpdate_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await blobs.UpdatePropertiesAsync(update, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_UploadAsync_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.UploadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_UploadAsync_BridgingIT_DevKit_Application_Storage_BlobUpload_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorBase.UploadAsync(BridgingIT.DevKit.Application.Storage.BlobUpload,System.Threading.CancellationToken)">
+  UploadAsync(BlobUpload, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Uploads one blob from a caller-owned stream.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;BlobInfo&gt;&gt; UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>upload</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUpload.html">BlobUpload</a></dt>
+    <dd><p>The upload model.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobInfo.html">BlobInfo</a>&gt;&gt;</dt>
+    <dd><p>A result containing the stored blob information.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorBase_UploadAsync_BridgingIT_DevKit_Application_Storage_BlobUpload_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await blobs.UploadAsync(upload, cancellationToken);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -372,7 +372,7 @@ public Guid ConcurrencyVersion { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string Content { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public byte[] Content { get; set; }</code></pre>
   </div>
 
 
@@ -381,7 +381,7 @@ public Guid ConcurrencyVersion { get; set; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">string</span></dt>
+    <dt><span class="xref">byte</span>[]</dt>
     <dd></dd>
   </dl>
 
@@ -404,7 +404,7 @@ public Guid ConcurrencyVersion { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[MaxLength(64)]
+    <pre><code class="lang-csharp hljs">[MaxLength(80)]
 public string ContentHash { get; set; }</code></pre>
   </div>
 
@@ -448,6 +448,38 @@ public DateTimeOffset CreatedDate { get; set; }</code></pre>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_ExpiresAtUnixMilliseconds_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.ExpiresAtUnixMilliseconds*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_ExpiresAtUnixMilliseconds" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.ExpiresAtUnixMilliseconds">
+  ExpiresAtUnixMilliseconds
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the logical expiration timestamp as Unix milliseconds.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long? ExpiresAtUnixMilliseconds { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span>?</dt>
     <dd></dd>
   </dl>
 
@@ -739,6 +771,105 @@ public string RowKey { get; set; }</code></pre>
     <pre><code class="lang-csharp hljs">[Required]
 [MaxLength(64)]
 public string RowKeyHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_StoredContentHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.StoredContentHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_StoredContentHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.StoredContentHash">
+  StoredContentHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the transformed payload checksum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(80)]
+public string StoredContentHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_TransformMetadata_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.TransformMetadata*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_TransformMetadata" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.TransformMetadata">
+  TransformMetadata
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets provider-neutral transform metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[NotMapped]
+public IDictionary&lt;string, object&gt; TransformMetadata { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_TransformMetadataJson_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.TransformMetadataJson*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_TransformMetadataJson" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.TransformMetadataJson">
+  TransformMetadataJson
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets serialized transform metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Column(&quot;TransformMetadata&quot;)]
+public string TransformMetadataJson { get; set; }</code></pre>
   </div>
 
 

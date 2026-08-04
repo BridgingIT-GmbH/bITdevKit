@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface IDocumentStoreContext | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Defines the Entity Framework context surface required by the Document Storage provider.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Interface IDocumentStoreContext
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Defines the Entity Framework context surface required by the Document Storage provider.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -242,7 +243,19 @@ Interface IDocumentStoreContext
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_IDocumentStoreContext_examples">Examples</h2>
+  <pre><code class="lang-csharp">public sealed class AppDbContext(DbContextOptions&lt;AppDbContext&gt; options)
+    : DbContext(options), IDocumentStoreContext
+{
+    public DbSet&lt;StorageDocument&gt; StorageDocuments { get; set; }
+}</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_IDocumentStoreContext_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Application DbContext types implement this interface and expose the annotated <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html">StorageDocument</a> entity set.
+The provider creates and owns a dependency-injection scope and context for every operation; callers do not pass context
+instances into the provider.</p>
+</div>
 
 
   <h2 class="section" id="properties">Properties
@@ -256,7 +269,8 @@ Interface IDocumentStoreContext
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the annotated entity set used to persist serialized documents and metadata.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -274,6 +288,9 @@ Interface IDocumentStoreContext
   </dl>
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_IDocumentStoreContext_StorageDocuments_examples">Examples</h4>
+  <pre><code class="lang-csharp">var query = context.StorageDocuments.AsNoTracking();</code></pre>
 
 
 

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DocumentStoreClientExtensions | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DocumentStoreClientExtensions | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides bounded enumeration, query maintenance, and cross-client typed transfer operations.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions" class="text-break">
+Class DocumentStoreClientExtensions  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides bounded enumeration, query maintenance, and cross-client typed transfer operations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DocumentStoreClientExtensions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DocumentStoreClientExtensions</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">await foreach (var entry in client.EnumerateAsync(query, options, cancellationToken)) { }</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>These operations compose the core client API and therefore retain its validation, behaviors, serialization, transforms,
+expiration, integrity, and concurrency semantics. Enumeration and maintenance require explicit positive bounds.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_CopyAsync_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.CopyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_CopyAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentTransferOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.CopyAsync``1(BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.DocumentTransferOptions,System.Threading.CancellationToken)">
+  CopyAsync&lt;T&gt;(IDocumentStoreClient&lt;T&gt;, DocumentKey, IDocumentStoreClient&lt;T&gt;, DocumentKey, DocumentTransferOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies a visible typed document through the target client's serializer, transforms, and provider.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;DocumentTransferResult&gt;&gt; CopyAsync&lt;T&gt;(this IDocumentStoreClient&lt;T&gt; source, DocumentKey sourceKey, IDocumentStoreClient&lt;T&gt; target, DocumentKey targetKey, DocumentTransferOptions options = null, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The source client.</p>
+</dd>
+    <dt><code>sourceKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact visible source key.</p>
+</dd>
+    <dt><code>target</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The target client, which can use another named registration or provider.</p>
+</dd>
+    <dt><code>targetKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The destination key.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTransferOptions.html">DocumentTransferOptions</a></dt>
+    <dd><p>Optional create-only, property, and expiration behavior.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel read and write operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTransferResult.html">DocumentTransferResult</a>&gt;&gt;</dt>
+    <dd><p>A result containing observed source and committed target metadata.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The shared application document type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_CopyAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentTransferOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await source.CopyAsync(sourceKey, archive, targetKey, options, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_DeleteByQueryAsync_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.DeleteByQueryAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_DeleteByQueryAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentQuery_BridgingIT_DevKit_Application_Storage_DocumentDeleteByQueryOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.DeleteByQueryAsync``1(BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentQuery,BridgingIT.DevKit.Application.Storage.DocumentDeleteByQueryOptions,System.Threading.CancellationToken)">
+  DeleteByQueryAsync&lt;T&gt;(IDocumentStoreClient&lt;T&gt;, DocumentQuery, DocumentDeleteByQueryOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Discovers matching keys through bounded key-only pages and optionally deletes their physical records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;DocumentBatchResult&lt;DocumentKey&gt;&gt;&gt; DeleteByQueryAsync&lt;T&gt;(this IDocumentStoreClient&lt;T&gt; client, DocumentQuery query, DocumentDeleteByQueryOptions options, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>client</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The client used for key discovery and deletion.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The bounded matching query and optional full-scan approval.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDeleteByQueryOptions.html">DocumentDeleteByQueryOptions</a></dt>
+    <dd><p>The mandatory total bound, dry-run mode, and failure policy.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel paging and deletion.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentBatchResult-1.html">DocumentBatchResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;&gt;&gt;</dt>
+    <dd><p>A result reporting processed keys and the first failed key when processing stops.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The application document type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_DeleteByQueryAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentQuery_BridgingIT_DevKit_Application_Storage_DocumentDeleteByQueryOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await client.DeleteByQueryAsync(query, options, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_EnumerateAsync_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.EnumerateAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_EnumerateAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentQuery_BridgingIT_DevKit_Application_Storage_DocumentEnumerationOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.EnumerateAsync``1(BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentQuery,BridgingIT.DevKit.Application.Storage.DocumentEnumerationOptions,System.Threading.CancellationToken)">
+  EnumerateAsync&lt;T&gt;(IDocumentStoreClient&lt;T&gt;, DocumentQuery, DocumentEnumerationOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enumerates visible documents through bounded pages up to a mandatory maximum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IAsyncEnumerable&lt;DocumentEntry&lt;T&gt;&gt; EnumerateAsync&lt;T&gt;(this IDocumentStoreClient&lt;T&gt; client, DocumentQuery query, DocumentEnumerationOptions options, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>client</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The client used to request document pages.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The initial bounded query and optional full-scan approval.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEnumerationOptions.html">DocumentEnumerationOptions</a></dt>
+    <dd><p>The mandatory total enumeration bound.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel paging and enumeration.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IAsyncEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEntry-1.html">DocumentEntry</a>&lt;T&gt;&gt;</dt>
+    <dd><p>An asynchronous sequence containing at most <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEnumerationOptions.html#BridgingIT_DevKit_Application_Storage_DocumentEnumerationOptions_MaxItems">MaxItems</a> entries.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The application document type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_EnumerateAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentQuery_BridgingIT_DevKit_Application_Storage_DocumentEnumerationOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await foreach (var entry in client.EnumerateAsync(query, options, cancellationToken)) { }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_EnumerateKeysAsync_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.EnumerateKeysAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_EnumerateKeysAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentQuery_BridgingIT_DevKit_Application_Storage_DocumentEnumerationOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.EnumerateKeysAsync``1(BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentQuery,BridgingIT.DevKit.Application.Storage.DocumentEnumerationOptions,System.Threading.CancellationToken)">
+  EnumerateKeysAsync&lt;T&gt;(IDocumentStoreClient&lt;T&gt;, DocumentQuery, DocumentEnumerationOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enumerates visible keys through bounded key-only pages up to a mandatory maximum.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IAsyncEnumerable&lt;DocumentKey&gt; EnumerateKeysAsync&lt;T&gt;(this IDocumentStoreClient&lt;T&gt; client, DocumentQuery query, DocumentEnumerationOptions options, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>client</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The client used to request key pages.</p>
+</dd>
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The initial bounded query and optional full-scan approval.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEnumerationOptions.html">DocumentEnumerationOptions</a></dt>
+    <dd><p>The mandatory total enumeration bound.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel paging and enumeration.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IAsyncEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a>&gt;</dt>
+    <dd><p>An asynchronous sequence containing at most <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentEnumerationOptions.html#BridgingIT_DevKit_Application_Storage_DocumentEnumerationOptions_MaxItems">MaxItems</a> keys.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The application document type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_EnumerateKeysAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentQuery_BridgingIT_DevKit_Application_Storage_DocumentEnumerationOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await foreach (var key in client.EnumerateKeysAsync(query, options, cancellationToken)) { }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_MoveAsync_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.MoveAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_MoveAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentTransferOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientExtensions.MoveAsync``1(BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{``0},BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.DocumentTransferOptions,System.Threading.CancellationToken)">
+  MoveAsync&lt;T&gt;(IDocumentStoreClient&lt;T&gt;, DocumentKey, IDocumentStoreClient&lt;T&gt;, DocumentKey, DocumentTransferOptions, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies first and then conditionally deletes the source using the ETag observed by the copy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;DocumentTransferResult&gt;&gt; MoveAsync&lt;T&gt;(this IDocumentStoreClient&lt;T&gt; source, DocumentKey sourceKey, IDocumentStoreClient&lt;T&gt; target, DocumentKey targetKey, DocumentTransferOptions options = null, CancellationToken cancellationToken = default) where T : class, new()</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The source client.</p>
+</dd>
+    <dt><code>sourceKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact visible source key.</p>
+</dd>
+    <dt><code>target</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd><p>The target client, which can use another named registration or provider.</p>
+</dd>
+    <dt><code>targetKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The destination key.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTransferOptions.html">DocumentTransferOptions</a></dt>
+    <dd><p>Optional target create-only, property, and expiration behavior.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel read, write, and conditional delete operations.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTransferResult.html">DocumentTransferResult</a>&gt;&gt;</dt>
+    <dd><p>A result reporting source and target metadata and whether source deletion completed. If the source changes after the
+copy, the target remains committed and a transfer failure reports that the source was retained.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>The shared application document type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientExtensions_MoveAsync__1_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient___0__BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentTransferOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await source.MoveAsync(sourceKey, archive, targetKey, options, cancellationToken);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

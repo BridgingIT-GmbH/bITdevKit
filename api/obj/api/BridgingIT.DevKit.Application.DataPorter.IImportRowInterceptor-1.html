@@ -298,6 +298,48 @@ Interface IImportRowInterceptor&lt;TTarget&gt;
 
 
 
+  <a id="BridgingIT_DevKit_Application_DataPorter_IImportRowInterceptor_1_AfterImportCompletedAsync_" data-uid="BridgingIT.DevKit.Application.DataPorter.IImportRowInterceptor`1.AfterImportCompletedAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_DataPorter_IImportRowInterceptor_1_AfterImportCompletedAsync_BridgingIT_DevKit_Application_DataPorter_ImportCompletionContext__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.DataPorter.IImportRowInterceptor`1.AfterImportCompletedAsync(BridgingIT.DevKit.Application.DataPorter.ImportCompletionContext{`0},System.Threading.CancellationToken)">
+  AfterImportCompletedAsync(ImportCompletionContext&lt;TTarget&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Invoked once after all rows have been processed and the import result is available.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&gt; AfterImportCompletedAsync(ImportCompletionContext&lt;TTarget&gt; context, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.DataPorter.ImportCompletionContext-1.html">ImportCompletionContext</a>&lt;TTarget&gt;</dt>
+    <dd><p>The import completion context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>A token to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
+    <dd><p>The completion result.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_DataPorter_IImportRowInterceptor_1_BeforeImportAsync_" data-uid="BridgingIT.DevKit.Application.DataPorter.IImportRowInterceptor`1.BeforeImportAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_DataPorter_IImportRowInterceptor_1_BeforeImportAsync_BridgingIT_DevKit_Application_DataPorter_ImportRowContext__0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.DataPorter.IImportRowInterceptor`1.BeforeImportAsync(BridgingIT.DevKit.Application.DataPorter.ImportRowContext{`0},System.Threading.CancellationToken)">

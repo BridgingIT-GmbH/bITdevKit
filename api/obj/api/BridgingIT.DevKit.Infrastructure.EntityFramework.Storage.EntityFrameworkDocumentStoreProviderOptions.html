@@ -254,8 +254,9 @@ Class EntityFrameworkDocumentStoreProviderOptions
 
 
   <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkDocumentStoreProviderOptions_examples">Examples</h2>
-  <pre><code class="lang-csharp">services.AddEntityFrameworkDocumentStoreClient&lt;Person, AppDbContext&gt;(
-    configure: options =&gt;
+  <pre><code class="lang-csharp">services.AddDocumentStorage()
+    .WithEntityFrameworkClient&lt;Person, AppDbContext&gt;(
+    configureProvider: options =&gt;
     {
         options.LeaseDuration = TimeSpan.FromSeconds(15);
         options.RetryCount = 5;

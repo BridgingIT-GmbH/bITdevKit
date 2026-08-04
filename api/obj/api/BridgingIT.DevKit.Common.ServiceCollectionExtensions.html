@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ServiceCollectionExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides helpers for inspecting service registrations.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ServiceCollectionExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides helpers for inspecting service registrations.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -115,6 +116,9 @@ Class ServiceCollectionExtensions
 
 
 
+
+  <h2 id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">var isRegistered = services.IsAdded&lt;IMyService&gt;();</code></pre>
 
 
 
@@ -202,7 +206,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds the first registration for a service type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -212,24 +217,30 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd></dd>
+    <dd><p>The service collection to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ServiceDescriptor</span></dt>
-    <dd></dd>
+    <dd><p>The first matching descriptor, or null when no registration exists.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TServiceType</code></dt>
-    <dd></dd>
+    <dd><p>The service type to find.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_Find__1_Microsoft_Extensions_DependencyInjection_IServiceCollection__examples">Examples</h4>
+  <pre><code class="lang-csharp">var descriptor = services.Find&lt;IMyService&gt;();</code></pre>
 
 
 
@@ -243,7 +254,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds the zero-based index of the first registration for a service type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -253,24 +265,30 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd></dd>
+    <dd><p>The service collection to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The registration index, or <code>-1</code> when no registration exists.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TServiceType</code></dt>
-    <dd></dd>
+    <dd><p>The service type to find.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_IndexOf__1_Microsoft_Extensions_DependencyInjection_IServiceCollection__examples">Examples</h4>
+  <pre><code class="lang-csharp">var index = services.IndexOf&lt;IMyService&gt;();</code></pre>
 
 
 
@@ -284,7 +302,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a service type has at least one registration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -294,24 +313,30 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd></dd>
+    <dd><p>The service collection to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a registration exists; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TServiceType</code></dt>
-    <dd></dd>
+    <dd><p>The service type to find.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_IsAdded__1_Microsoft_Extensions_DependencyInjection_IServiceCollection__examples">Examples</h4>
+  <pre><code class="lang-csharp">var isRegistered = services.IsAdded&lt;IMyService&gt;();</code></pre>
 
 
 

@@ -366,6 +366,41 @@ Class DocumentStorageOptions
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_Retention_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.Retention*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_Retention" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.Retention">
+  Retention
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the hosted document-retention sweeper options.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StorageRetentionOptions Retention { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageRetentionOptions.html">StorageRetentionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_Retention_examples">Examples</h4>
+  <pre><code class="lang-csharp">options.Retention.BatchSize = 500;</code></pre>
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -448,6 +483,48 @@ Class DocumentStorageOptions
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_UseLifetime_Microsoft_Extensions_DependencyInjection_ServiceLifetime__examples">Examples</h4>
   <pre><code class="lang-csharp">options.UseLifetime(ServiceLifetime.Singleton);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_WithRetention_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.WithRetention*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_WithRetention_System_Action_BridgingIT_DevKit_Application_Storage_StorageRetentionOptions__" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.WithRetention(System.Action{BridgingIT.DevKit.Application.Storage.StorageRetentionOptions})">
+  WithRetention(Action&lt;StorageRetentionOptions&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures hosted physical cleanup of expired documents.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentStorageOptions WithRetention(Action&lt;StorageRetentionOptions&gt; configure)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StorageRetentionOptions.html">StorageRetentionOptions</a>&gt;</dt>
+    <dd><p>The retention options callback.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStorageOptions.html">DocumentStorageOptions</a></dt>
+    <dd><p>The current options instance.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStorageOptions_WithRetention_System_Action_BridgingIT_DevKit_Application_Storage_StorageRetentionOptions___examples">Examples</h4>
+  <pre><code class="lang-csharp">options.WithRetention(x =&gt; x.SweepInterval = TimeSpan.FromMinutes(15));</code></pre>
 
 
 

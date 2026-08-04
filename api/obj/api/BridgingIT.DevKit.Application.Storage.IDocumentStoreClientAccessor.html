@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface IDocumentStoreClientAccessor | bITdevKit API Reference ">
       
-      <meta name="description" content="Provides non-generic dashboard access to one selected typed document-store client.">
+      <meta name="description" content="Provides non-generic, JSON-oriented access to one selected typed document client for operational presentation surfaces.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Interface IDocumentStoreClientAccessor
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides non-generic dashboard access to one selected typed document-store client.</p>
+  <div class="markdown summary"><p>Provides non-generic, JSON-oriented access to one selected typed document client for operational presentation surfaces.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -244,9 +244,14 @@ Interface IDocumentStoreClientAccessor
 
 
   <h2 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_examples">Examples</h2>
-  <pre><code class="lang-csharp">var json = await accessor.GetJsonResultAsync(new DocumentKey("people", "person-1"), ct);</code></pre>
+  <pre><code class="lang-csharp">var entry = await accessor.GetEntryJsonAsync(key, cancellationToken);</code></pre>
 
 
+  <h2 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The dashboard uses this adapter after selecting a <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.html">DocumentStoreClientDescriptor</a>. Implementations delegate
+to the same container-owned typed client used by application code, preserving behaviors, validation, concurrency,
+expiration, and provider lifetime. It is not a second persistence API for normal application use.</p>
+</div>
 
 
   <h2 class="section" id="properties">Properties
@@ -260,7 +265,7 @@ Interface IDocumentStoreClientAccessor
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the selected client descriptor.</p>
+  <div class="markdown level1 summary"><p>Gets immutable registration identity, provider, lifetime, type, and capability metadata.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -281,7 +286,42 @@ Interface IDocumentStoreClientAccessor
 
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_Descriptor_examples">Examples</h4>
-  <pre><code class="lang-csharp">var descriptor = accessor.Descriptor;</code></pre>
+  <pre><code class="lang-csharp">Console.WriteLine(accessor.Descriptor.Name);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_PermalinksEnabled_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.PermalinksEnabled*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_PermalinksEnabled" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.PermalinksEnabled">
+  PermalinksEnabled
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether this client registration opted into Storage Permalink tracking.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool PermalinksEnabled { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_PermalinksEnabled_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (accessor.PermalinksEnabled) { /* expose permalink actions */ }</code></pre>
 
 
 
@@ -292,35 +332,35 @@ Interface IDocumentStoreClientAccessor
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_CountResultAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.CountResultAsync*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_CountAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.CountAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_CountResultAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.CountResultAsync(BridgingIT.DevKit.Application.Storage.DocumentCountQuery,System.Threading.CancellationToken)">
-  CountResultAsync(DocumentCountQuery, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.CountAsync(BridgingIT.DevKit.Application.Storage.DocumentCountQuery,System.Threading.CancellationToken)">
+  CountAsync(DocumentCountQuery, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Counts documents for the selected typed client.</p>
+  <div class="markdown level1 summary"><p>Counts documents matching a validated query that are logically visible at the operation cutoff.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;long&gt;&gt; CountResultAsync(DocumentCountQuery query, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;long&gt;&gt; CountAsync(DocumentCountQuery query, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentCountQuery.html">DocumentCountQuery</a></dt>
-    <dd><p>The count query.</p>
+    <dd><p>The count query and explicit full-scan approval.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd><p>A Result containing the matching count.</p>
+    <dd><p>A result containing the matching document count.</p>
 </dd>
   </dl>
 
@@ -329,43 +369,46 @@ Interface IDocumentStoreClientAccessor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_CountResultAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var count = await accessor.CountResultAsync(DocumentQueries.Count().AllowFullScan().Build(), ct);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_CountAsync_BridgingIT_DevKit_Application_Storage_DocumentCountQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = await accessor.CountAsync(query, cancellationToken);</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_DeleteResultAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.DeleteResultAsync*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_DeleteAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.DeleteAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_DeleteResultAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.DeleteResultAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
-  DeleteResultAsync(DocumentKey, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_DeleteAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentDeleteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.DeleteAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.DocumentDeleteOptions,System.Threading.CancellationToken)">
+  DeleteAsync(DocumentKey, DocumentDeleteOptions, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes one exact document through the selected typed client.</p>
+  <div class="markdown level1 summary"><p>Deletes one physical document, optionally guarded by the ETag displayed by the dashboard.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Result&gt; DeleteResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">Task&lt;Result&gt; DeleteAsync(DocumentKey key, DocumentDeleteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd><p>The exact document key.</p>
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentDeleteOptions.html">DocumentDeleteOptions</a></dt>
+    <dd><p>Optional conditional-delete settings.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating whether the delete succeeded.</p>
+    <dd><p>A successful result for deletion or an already absent record; ETag mismatch returns a conflict.</p>
 </dd>
   </dl>
 
@@ -374,43 +417,178 @@ Interface IDocumentStoreClientAccessor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_DeleteResultAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await accessor.DeleteResultAsync(new DocumentKey("people", "person-1"), ct);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_DeleteAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_DocumentDeleteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await accessor.DeleteAsync(key, options, cancellationToken);</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetJsonResultAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetJsonResultAsync*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ExistsAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.ExistsAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetJsonResultAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetJsonResultAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
-  GetJsonResultAsync(DocumentKey, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.ExistsAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  ExistsAsync(DocumentKey, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets one exact document and renders it as serialized text.</p>
+  <div class="markdown level1 summary"><p>Determines whether an exact-key document exists and is logically visible.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;string&gt;&gt; GetJsonResultAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;bool&gt;&gt; ExistsAsync(DocumentKey key, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd><p>The exact document key.</p>
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd><p>A result containing true only when a non-expired document exists.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ExistsAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var exists = await accessor.ExistsAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_FindJsonPageAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.FindJsonPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_FindJsonPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.FindJsonPageAsync(BridgingIT.DevKit.Application.Storage.DocumentQuery,System.Threading.CancellationToken)">
+  FindJsonPageAsync(DocumentQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one bounded page of dashboard-safe JSON entries with metadata and serialized sizes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;DocumentJsonPage&gt;&gt; FindJsonPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
+    <dd><p>The bounded query, filters, continuation token, and explicit full-scan approval.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentJsonPage.html">DocumentJsonPage</a>&gt;&gt;</dt>
+    <dd><p>A result containing JSON entries and an optional continuation token.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_FindJsonPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await accessor.FindJsonPageAsync(query, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetEntryJsonAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetEntryJsonAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetEntryJsonAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetEntryJsonAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  GetEntryJsonAsync(DocumentKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one dashboard-safe JSON payload together with provider-neutral metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;DocumentJsonEntry&gt;&gt; GetEntryJsonAsync(DocumentKey key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentJsonEntry.html">DocumentJsonEntry</a>&gt;&gt;</dt>
+    <dd><p>A result containing JSON and metadata used for display and conditional mutation.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetEntryJsonAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var entry = await accessor.GetEntryJsonAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetJsonAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetJsonAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetJsonAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetJsonAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.Threading.CancellationToken)">
+  GetJsonAsync(DocumentKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets one typed document serialized into dashboard-safe JSON.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;string&gt;&gt; GetJsonAsync(DocumentKey key, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;&gt;</dt>
-    <dd><p>A Result containing serialized document content.</p>
+    <dd><p>A result containing JSON content, or a not-found failure for a missing or expired document.</p>
 </dd>
   </dl>
 
@@ -419,43 +597,91 @@ Interface IDocumentStoreClientAccessor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetJsonResultAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await accessor.GetJsonResultAsync(new DocumentKey("people", "person-1"), ct);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetJsonAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var json = await accessor.GetJsonAsync(key, cancellationToken);</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ListPageResultAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.ListPageResultAsync*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetPermalinkAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetPermalinkAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ListPageResultAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.ListPageResultAsync(BridgingIT.DevKit.Application.Storage.DocumentQuery,System.Threading.CancellationToken)">
-  ListPageResultAsync(DocumentQuery, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetPermalinkAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_StoragePermalinkCreateOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.GetPermalinkAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,BridgingIT.DevKit.Application.Storage.StoragePermalinkCreateOptions,System.Threading.CancellationToken)">
+  GetPermalinkAsync(DocumentKey, StoragePermalinkCreateOptions, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Lists one page of document keys for the selected typed client.</p>
+  <div class="markdown level1 summary"><p>Verifies the document and gets or creates its stable permalink when this registration opted into permalink behavior.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;DocumentKeyPage&gt;&gt; ListPageResultAsync(DocumentQuery query, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;StoragePermalinkEntry&gt;&gt; GetPermalinkAsync(DocumentKey key, StoragePermalinkCreateOptions options = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The exact partition and row key.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkCreateOptions.html">StoragePermalinkCreateOptions</a></dt>
+    <dd><p>Optional initial permalink expiration.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel verification and registry access.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.StoragePermalinkEntry.html">StoragePermalinkEntry</a>&gt;&gt;</dt>
+    <dd><p>The stable permalink entry, or a not-enabled result when the client did not opt in.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_GetPermalinkAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_BridgingIT_DevKit_Application_Storage_StoragePermalinkCreateOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var link = await accessor.GetPermalinkAsync(key, options, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ListPageAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.ListPageAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.ListPageAsync(BridgingIT.DevKit.Application.Storage.DocumentQuery,System.Threading.CancellationToken)">
+  ListPageAsync(DocumentQuery, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists one bounded page of logically visible document keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Result&lt;DocumentKeyPage&gt;&gt; ListPageAsync(DocumentQuery query, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>query</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentQuery.html">DocumentQuery</a></dt>
-    <dd><p>The document query.</p>
+    <dd><p>The bounded query, filters, continuation token, and explicit full-scan approval.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKeyPage.html">DocumentKeyPage</a>&gt;&gt;</dt>
-    <dd><p>A Result containing the key page.</p>
+    <dd><p>A result containing a key-only page and optional continuation token.</p>
 </dd>
   </dl>
 
@@ -464,46 +690,49 @@ Interface IDocumentStoreClientAccessor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ListPageResultAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await accessor.ListPageResultAsync(DocumentQueries.Query().Take(50).Build(), ct);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_ListPageAsync_BridgingIT_DevKit_Application_Storage_DocumentQuery_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var page = await accessor.ListPageAsync(query, cancellationToken);</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_UpsertJsonResultAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.UpsertJsonResultAsync*"></a>
+  <a id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_UpsertJsonAsync_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.UpsertJsonAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_UpsertJsonResultAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.UpsertJsonResultAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.String,System.Threading.CancellationToken)">
-  UpsertJsonResultAsync(DocumentKey, string, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_UpsertJsonAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_String_BridgingIT_DevKit_Application_Storage_DocumentWriteOptions_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.IDocumentStoreClientAccessor.UpsertJsonAsync(BridgingIT.DevKit.Application.Storage.DocumentKey,System.String,BridgingIT.DevKit.Application.Storage.DocumentWriteOptions,System.Threading.CancellationToken)">
+  UpsertJsonAsync(DocumentKey, string, DocumentWriteOptions, CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Parses serialized text into the selected document type and upserts it through the typed client.</p>
+  <div class="markdown level1 summary"><p>Deserializes JSON into the selected client type and writes it through the normal typed client pipeline.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;Result&gt; UpsertJsonResultAsync(DocumentKey documentKey, string content, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">Task&lt;Result&gt; UpsertJsonAsync(DocumentKey key, string content, DocumentWriteOptions options = null, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>documentKey</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
-    <dd><p>The exact document key.</p>
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentKey.html">DocumentKey</a></dt>
+    <dd><p>The partition and row key under which the document is written.</p>
 </dd>
     <dt><code>content</code> <span class="xref">string</span></dt>
-    <dd><p>The serialized document content.</p>
+    <dd><p>The JSON payload to deserialize.</p>
+</dd>
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentWriteOptions.html">DocumentWriteOptions</a></dt>
+    <dd><p>Optional ETag, create-only, integrity, property, and expiration settings.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating whether the upsert succeeded.</p>
+    <dd><p>A result indicating whether deserialization, validation, and persistence succeeded.</p>
 </dd>
   </dl>
 
@@ -512,8 +741,8 @@ Interface IDocumentStoreClientAccessor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_UpsertJsonResultAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_String_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await accessor.UpsertJsonResultAsync(new DocumentKey("people", "person-1"), json, ct);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_IDocumentStoreClientAccessor_UpsertJsonAsync_BridgingIT_DevKit_Application_Storage_DocumentKey_System_String_BridgingIT_DevKit_Application_Storage_DocumentWriteOptions_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await accessor.UpsertJsonAsync(key, json, options, cancellationToken);</code></pre>
 
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class StringExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides string-specific extension methods.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class StringExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides string-specific extension methods.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -116,6 +117,9 @@ Class StringExtensions
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_StringExtensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">var value = "red red blue".Distinct();</code></pre>
+
 
 
 
@@ -130,7 +134,8 @@ Class StringExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes duplicate space-delimited words while retaining their first occurrence and order.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,19 +145,24 @@ Class StringExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string containing space-delimited words.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>A string containing distinct words separated by one space.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_StringExtensions_Distinct_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = "red red blue".Distinct(); // "red blue"</code></pre>
 
 
 

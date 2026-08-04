@@ -267,8 +267,8 @@ Class DocumentStoreClientDescriptor
 
   <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor__ctor_System_String_System_Type_System_String_System_String_BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.#ctor(System.String,System.Type,System.String,System.String,BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities)">
-  DocumentStoreClientDescriptor(string, Type, string, string, DocumentStoreProviderCapabilities)
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor__ctor_System_String_System_Type_System_String_System_String_BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_System_String_System_Boolean_Microsoft_Extensions_DependencyInjection_ServiceLifetime_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_System_String__" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.#ctor(System.String,System.Type,System.String,System.String,BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities,System.String,System.Boolean,Microsoft.Extensions.DependencyInjection.ServiceLifetime,BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity,System.Collections.Generic.IReadOnlyList{System.String})">
+  DocumentStoreClientDescriptor(string, Type, string, string, DocumentStoreProviderCapabilities, string, bool, ServiceLifetime, DocumentTypeIdentity, IReadOnlyList&lt;string&gt;)
   
   </h3>
 
@@ -277,7 +277,7 @@ Class DocumentStoreClientDescriptor
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DocumentStoreClientDescriptor(string clientId, Type documentType, string documentTypeName, string providerName, DocumentStoreProviderCapabilities capabilities = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public DocumentStoreClientDescriptor(string clientId, Type documentType, string documentTypeName, string providerName, DocumentStoreProviderCapabilities capabilities = null, string name = &quot;default&quot;, bool isDefault = true, ServiceLifetime lifetime = ServiceLifetime.Scoped, DocumentTypeIdentity typeIdentity = default, IReadOnlyList&lt;string&gt; transformIdentifiers = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -297,6 +297,16 @@ Class DocumentStoreClientDescriptor
     <dt><code>capabilities</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentStoreProviderCapabilities.html">DocumentStoreProviderCapabilities</a></dt>
     <dd><p>The query capabilities supported by the selected provider.</p>
 </dd>
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>isDefault</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>lifetime</code> <span class="xref">ServiceLifetime</span></dt>
+    <dd></dd>
+    <dt><code>typeIdentity</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd></dd>
+    <dt><code>transformIdentifiers</code> <span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
   </dl>
 
 
@@ -305,7 +315,7 @@ Class DocumentStoreClientDescriptor
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor__ctor_System_String_System_Type_System_String_System_String_BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor__ctor_System_String_System_Type_System_String_System_String_BridgingIT_DevKit_Application_Storage_DocumentStoreProviderCapabilities_System_String_System_Boolean_Microsoft_Extensions_DependencyInjection_ServiceLifetime_BridgingIT_DevKit_Application_Storage_DocumentTypeIdentity_System_Collections_Generic_IReadOnlyList_System_String___examples">Examples</h4>
   <pre><code class="lang-csharp">var descriptor = new DocumentStoreClientDescriptor(
     "myapp.person",
     typeof(Person),
@@ -462,6 +472,111 @@ Class DocumentStoreClientDescriptor
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_IsDefault_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.IsDefault*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_IsDefault" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.IsDefault">
+  IsDefault
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether direct unkeyed <code>IDocumentStoreClient&lt;T&gt;</code> injection resolves this registration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDefault { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_IsDefault_examples">Examples</h4>
+  <pre><code class="lang-csharp">var isDefault = descriptor.IsDefault;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_Lifetime_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.Lifetime*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_Lifetime" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.Lifetime">
+  Lifetime
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the dependency-injection lifetime shared by the keyed provider and client graph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServiceLifetime Lifetime { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ServiceLifetime</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_Lifetime_examples">Examples</h4>
+  <pre><code class="lang-csharp">var lifetime = descriptor.Lifetime;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_Name_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.Name*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_Name" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.Name">
+  Name
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the normalized case-insensitive client name used by keyed dependency injection and operational surfaces.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_Name_examples">Examples</h4>
+  <pre><code class="lang-csharp">var name = descriptor.Name;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_ProviderName_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.ProviderName*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_ProviderName" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.ProviderName">
@@ -491,6 +606,76 @@ Class DocumentStoreClientDescriptor
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_ProviderName_examples">Examples</h4>
   <pre><code class="lang-csharp">var provider = descriptor.ProviderName;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_TransformIdentifiers_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.TransformIdentifiers*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_TransformIdentifiers" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.TransformIdentifiers">
+  TransformIdentifiers
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the non-sensitive payload transform identifiers configured for this client.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;string&gt; TransformIdentifiers { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_TransformIdentifiers_examples">Examples</h4>
+  <pre><code class="lang-csharp">foreach (var id in descriptor.TransformIdentifiers) { Console.WriteLine(id); }</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_TypeIdentity_" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.TypeIdentity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_TypeIdentity" data-uid="BridgingIT.DevKit.Application.Storage.DocumentStoreClientDescriptor.TypeIdentity">
+  TypeIdentity
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the stable persisted namespace and continuation-token type identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DocumentTypeIdentity TypeIdentity { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.DocumentTypeIdentity.html">DocumentTypeIdentity</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_DocumentStoreClientDescriptor_TypeIdentity_examples">Examples</h4>
+  <pre><code class="lang-csharp">var typeIdentity = descriptor.TypeIdentity;</code></pre>
 
 
 

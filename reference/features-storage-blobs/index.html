@@ -1,0 +1,4500 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+      
+      
+      
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-storage-blobs/">
+      
+      
+        <link rel="prev" href="../features-jobscheduling/">
+      
+      
+        <link rel="next" href="../features-storage-documents/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Blob Storage - bITdevKit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/themes.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/theme-picker.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#blob-storage-feature-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bITdevKit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Blob Storage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        
+<form class="md-header__option bdk-theme-picker" data-md-component="palette">
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme)"
+      data-md-color-scheme="default"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use system theme"
+      type="radio"
+      name="__palette"
+      id="__palette_0"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_1"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: light)"
+      data-md-color-scheme="light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_1"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_2"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: dark)"
+      data-md-color-scheme="dark"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use dark theme"
+      type="radio"
+      name="__palette"
+      id="__palette_2"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_3"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin theme"
+      type="radio"
+      name="__palette"
+      id="__palette_3"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_4"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="darkforest"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Darkforest theme"
+      type="radio"
+      name="__palette"
+      id="__palette_4"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_5"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="carbon"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Carbon theme"
+      type="radio"
+      name="__palette"
+      id="__palette_5"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_6"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="tokionights"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Tokyo Night theme"
+      type="radio"
+      name="__palette"
+      id="__palette_6"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_7"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="matrix"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Matrix theme"
+      type="radio"
+      name="__palette"
+      id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_0"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+
+  <details class="bdk-theme-picker__details" data-bdk-theme-picker>
+    <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
+      <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
+      <span data-bdk-theme-label>System</span>
+      <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
+      <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="dark" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#66d9ef;--theme-accent:#fd971f"></span>
+        <span>Dark</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#11111b;--theme-primary:#89b4fa;--theme-accent:#f5c2e7"></span>
+        <span>Catppuccin</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="darkforest" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#07120d;--theme-primary:#9ece6a;--theme-accent:#e0af68"></span>
+        <span>Darkforest</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="carbon" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#161616;--theme-primary:#78a9ff;--theme-accent:#ff7eb6"></span>
+        <span>Carbon</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="tokionights" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#0f1021;--theme-primary:#7aa2f7;--theme-accent:#bb9af7"></span>
+        <span>Tokyo Night</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="matrix" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#020802;--theme-primary:#00ff66;--theme-accent:#39ff14"></span>
+        <span>Matrix</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="light" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#f7f7f2;--theme-primary:#0f62fe;--theme-accent:#8a3ffc"></span>
+        <span>Light</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="system" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#a59f99;--theme-accent:#f7f7f2"></span>
+        <span>System</span>
+      </label>
+    </div>
+  </details>
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    bITdevKit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-options-builders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Options Builders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-observability-tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Observability Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Domain and Application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Domain and Application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-repositories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-commands-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Commands and Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-dataporter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataPorter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution, Messaging and Modularity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Execution, Messaging and Modularity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-requester-notifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester and Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-orchestrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-filtering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filtering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security and Access
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security and Access
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-entitypermissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entity Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-identityprovider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation and Hosts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation and Hosts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-endpoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli-mcp-clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Client Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-exception-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exception Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-appstate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, Scheduling and Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage, Scheduling and Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-startuptasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startup Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobscheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compression-and-encryption-behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compression and Encryption Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-type-detection-and-checksum-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Type Detection and Checksum Verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-caching-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download Caching Behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chaos-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chaos Behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entity-framework-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-commit-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Commit Semantics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#named-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Named Clients
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expiration-and-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expiration and Retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expected Hash
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verified-download" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verified Download
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-storage-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Storage Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#text-and-serialized-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text and Serialized Content
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exists
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#listing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Scan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delete
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copy-move-and-prefix-delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Copy, Move, and Prefix Delete
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health Checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagnostics-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostics Snapshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcp-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Diagnostics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maintenance-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintenance Jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-storage-primitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Storage Primitives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-permalinks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Permalinks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-log-entries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Entries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing and Test Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing and Test Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-fake-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Authentication for Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-common-xunit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Common XUnit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compression-and-encryption-behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compression and Encryption Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-type-detection-and-checksum-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content-Type Detection and Checksum Verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-caching-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download Caching Behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chaos-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chaos Behavior
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entity-framework-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-commit-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Commit Semantics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#named-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Named Clients
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expiration-and-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expiration and Retention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expected Hash
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verified-download" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verified Download
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-storage-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Storage Integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#text-and-serialized-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text and Serialized Content
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exists
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#listing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Scan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delete
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#copy-move-and-prefix-delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Copy, Move, and Prefix Delete
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health Checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagnostics-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagnostics Snapshot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcp-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Diagnostics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maintenance-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintenance Jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-storage-primitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Storage Primitives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../features-startuptasks/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Storage, Scheduling and Utilities
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="blob-storage-feature-documentation">Blob Storage Feature Documentation<a class="headerlink" href="#blob-storage-feature-documentation" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Store binary content through Result-native, stream-first, provider-neutral blob clients.</p>
+</blockquote>
+<div class="toc">
+<ul>
+<li><a href="#blob-storage-feature-documentation">Blob Storage Feature Documentation</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#key-rules">Key Rules</a></li>
+<li><a href="#registration">Registration</a></li>
+<li><a href="#http-endpoints">HTTP Endpoints</a></li>
+<li><a href="#dashboard">Dashboard</a></li>
+<li><a href="#compression-and-encryption-behaviors">Compression and Encryption Behaviors</a></li>
+<li><a href="#content-type-detection-and-checksum-verification">Content-Type Detection and Checksum Verification</a></li>
+<li><a href="#download-caching-behavior">Download Caching Behavior</a></li>
+<li><a href="#chaos-behavior">Chaos Behavior</a></li>
+<li><a href="#entity-framework-context">Entity Framework Context</a></li>
+<li><a href="#azure-commit-semantics">Azure Commit Semantics</a></li>
+<li><a href="#named-clients">Named Clients</a></li>
+<li><a href="#upload">Upload</a></li>
+<li><a href="#expiration-and-retention">Expiration and Retention</a></li>
+<li><a href="#expected-hash">Expected Hash</a></li>
+<li><a href="#download">Download</a></li>
+<li><a href="#verified-download">Verified Download</a></li>
+<li><a href="#file-storage-integration">File Storage Integration</a></li>
+<li><a href="#text-and-serialized-content">Text and Serialized Content</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#exists">Exists</a></li>
+<li><a href="#listing">Listing</a></li>
+<li><a href="#full-scan">Full Scan</a></li>
+<li><a href="#delete">Delete</a></li>
+<li><a href="#copy-move-and-prefix-delete">Copy, Move, and Prefix Delete</a></li>
+<li><a href="#health-checks">Health Checks</a></li>
+<li><a href="#diagnostics-snapshot">Diagnostics Snapshot</a></li>
+<li><a href="#mcp-diagnostics">MCP Diagnostics</a></li>
+<li><a href="#maintenance-jobs">Maintenance Jobs</a></li>
+<li><a href="#shared-storage-primitives">Shared Storage Primitives</a></li>
+<li><a href="#errors">Errors</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Blob Storage stores binary payloads such as reports, exports, attachments, images, and generated artifacts. It is separate from Document Storage: blob clients store streams under a <code>BlobKey</code>, while document clients store typed JSON-like documents.</p>
+<p>The public API is provider-neutral and Result-native. Consumers resolve named clients through <code>IBlobStoreClientFactory</code>, then call upload, download, properties, exists, list, and delete operations that return <code>Result</code> or <code>Result&lt;T&gt;</code>.</p>
+<p>Implemented providers:</p>
+<ul>
+<li>In-memory</li>
+<li>Entity Framework Core</li>
+<li>Azure Blob Storage</li>
+</ul>
+<h2 id="key-rules">Key Rules<a class="headerlink" href="#key-rules" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>BlobKey</code> contains <code>Container</code> and <code>Name</code>.</li>
+<li>Upload and download are stream-first.</li>
+<li>Caller-provided upload streams are not disposed by Blob Storage.</li>
+<li>Returned <code>BlobDownload</code> instances own the returned content stream and should be disposed by the caller.</li>
+<li><code>ContentType?</code> is used in public models, with MIME conversion through <code>ContentTypeExtensions</code>.</li>
+<li>Content hashes use <code>sha256:&lt;lowercase-64-character-hex&gt;</code>.</li>
+<li><code>ExpectedContentHash</code> is validated before content is committed.</li>
+<li><code>BlobStoreOptions.MaxBlobSize</code> is enforced per named client.</li>
+<li>Properties, list, and exists operations do not download blob content.</li>
+<li>Listing returns <code>BlobInfo</code> only, never content streams.</li>
+<li>Full container scans require global client configuration and query-level approval.</li>
+<li>Delete is idempotent.</li>
+<li>Range downloads, resumable uploads, resumable downloads, and public lease APIs are not part of this feature.</li>
+<li>Optional HTTP endpoints live in <code>Presentation.Web.Storage</code> and are registered separately for maintenance metadata operations and read-only content downloads.</li>
+<li>Optional dashboard pages live in <code>Presentation.Web.Storage</code> and are discovered by the DevKit dashboard when Blob Storage has registered clients.</li>
+</ul>
+<h2 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">&para;</a></h2>
+<p>Register Blob Storage once, then add named clients. The first registered behavior is the outermost decorator.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Azure.Storage.Blobs</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.DependencyInjection</span><span class="p">;</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobServiceClient</span><span class="p">(</span><span class="n">connectionString</span><span class="p">));</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithRetention</span><span class="p">(</span><span class="n">retention</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">retention</span><span class="p">.</span><span class="n">StartupDelay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<span class="w">            </span><span class="n">retention</span><span class="p">.</span><span class="n">SweepInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">            </span><span class="n">retention</span><span class="p">.</span><span class="n">BatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithLoggingBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithMetricsBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithContentTypeDetectionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCacheBehavior</span><span class="p">(</span><span class="n">cache</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">cache</span><span class="p">.</span><span class="n">SlidingExpiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">        </span><span class="n">cache</span><span class="p">.</span><span class="n">MaxCachedBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithRetryBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithTimeoutBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;transient&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">50</span><span class="p">);</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ChunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">configure</span><span class="p">:</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxTake</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="p">;</span>
+<span class="w">    </span><span class="p">});</span>
+</code></pre></div>
+<p><code>WithAzureBlobClient</code> maps <code>BlobKey.Container</code> to the native Azure container and <code>BlobKey.Name</code> to the native blob name. There is no registration-level container override.</p>
+<p><code>AddBlobStorage</code> also registers the provider-neutral <code>IBlobStorageDiagnosticsService</code> and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.</p>
+<p>When Blob Storage is registered in a DevKit web host with local MCP enabled, <code>AddBlobStorage</code> contributes the Blob Storage MCP handler automatically. Local AI agents can inspect blob client registrations and probe status through <code>bdk mcp</code> without an additional blob-specific MCP registration call.</p>
+<p>The MCP handler is diagnostics-only. It exposes registration, provider capability, and non-mutating health probe data; it does not expose blob content, raw provider clients, provider SDK types, or mutating blob operations. If MCP is disabled by the DevKit local tooling policy, the handler is not registered.</p>
+<h2 id="http-endpoints">HTTP Endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
+<p><code>Presentation.Web.Storage</code> can expose Blob Storage over Minimal API endpoints. Maintenance endpoints and read-only content endpoints are deliberately separate so applications can protect or expose them differently.</p>
+<p>Both endpoint groups require authorization by default. Use the shared endpoint-options methods to select policies or roles. Call <code>AllowAnonymous()</code> explicitly only for content that is intentionally public.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddMaintenanceEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/storage/blobs&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddReadEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/storage/blobs&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AllowAnonymous</span><span class="p">());</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
+</code></pre></div>
+<p>Maintenance endpoints do not upload or download blob content. They expose registered clients, provider capabilities, exact-key existence checks, properties, property updates, metadata listing, and idempotent deletes:</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET    /_bdk/api/storage/blobs/clients</span>
+<span class="err">GET    /_bdk/api/storage/blobs/{storeName}/provider</span>
+<span class="err">GET    /_bdk/api/storage/blobs/{storeName}/blobs/exists?container=reports&amp;name=2026/report.pdf</span>
+<span class="err">GET    /_bdk/api/storage/blobs/{storeName}/blobs/properties?container=reports&amp;name=2026/report.pdf</span>
+<span class="err">PATCH  /_bdk/api/storage/blobs/{storeName}/blobs/properties</span>
+<span class="err">GET    /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&amp;prefix=2026/&amp;take=100</span>
+<span class="err">DELETE /_bdk/api/storage/blobs/{storeName}/blobs?container=reports&amp;name=2026/report.pdf</span>
+</code></pre></div>
+<p>The read endpoint is content-only and streams a single exact-key blob through the configured named client:</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/storage/blobs/{storeName}/content?container=reports&amp;name=2026/report.pdf</span>
+</code></pre></div>
+<p>Full scans through the list endpoint still require both global client approval and <code>allowFullScan=true</code> on the query. The HTTP response models stay provider-neutral and use MIME strings at the presentation boundary while the Application models continue to use <code>ContentType?</code>.</p>
+<h2 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h2>
+<p><code>Presentation.Web.Storage</code> contributes a Blob Storage dashboard page when the DevKit dashboard is enabled and at least one blob client is registered.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">();</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowFullScans</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
+</code></pre></div>
+<p>The page key is <code>storage.blobs</code> and the default route is:</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/dashboard/storage/blobs</span>
+</code></pre></div>
+<p>The dashboard page is provider-neutral and uses the configured <code>IBlobStoreClientFactory</code>. It lets operators:</p>
+<ul>
+<li>switch between registered named blob clients</li>
+<li>list <code>BlobInfo</code> metadata by container and prefix</li>
+<li>select discovered provider containers and retain prefix history per store and container</li>
+<li>opt into approved full scans with the same query-level approval required by the client API</li>
+<li>remember full-scan consent in local browser storage, selected by default</li>
+<li>upload a local file into a selected container and optional prefix, with optional UTC expiration</li>
+<li>download an exact blob through the selected client</li>
+<li>inspect content metadata, timestamps, ETags, hashes, and scalar properties in a compact details dialog</li>
+<li>conditionally delete an exact blob using the ETag shown by the current row</li>
+</ul>
+<p>The compact list shows content type, size, modification time, expiration, and content hash. Manual and interval refreshes use the currently applied store, container, prefix, page size, full-scan consent, and continuation state. The standard refresh interval is off by default and remembered in browser-local storage. The dashboard renders metadata only and does not download blob content for list, exists, or property-style operations. The download action streams the selected blob and disposes the returned <code>BlobDownload</code>.</p>
+<h2 id="compression-and-encryption-behaviors">Compression and Encryption Behaviors<a class="headerlink" href="#compression-and-encryption-behaviors" title="Permanent link">&para;</a></h2>
+<p>Blob Storage can transparently transform content with provider-neutral client behaviors. These behaviors do not change <code>IBlobStoreClient</code> or provider contracts.</p>
+<p>Register compression before encryption when both are used. The first registered behavior is outermost, so upload content is compressed first and then encrypted; downloads are decrypted first and then decompressed.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.IO.Compression</span><span class="p">;</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">IEncryptionKeyProvider</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">DictionaryEncryptionKeyProvider</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;primary&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="p">[]</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="na">[&quot;primary&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Convert</span><span class="p">.</span><span class="n">FromBase64String</span><span class="p">(</span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;BlobStorage:EncryptionKey&quot;</span><span class="p">])</span>
+<span class="w">    </span><span class="p">}));</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCompressionBehavior</span><span class="p">(</span><span class="n">compression</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">compression</span><span class="p">.</span><span class="n">Level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CompressionLevel</span><span class="p">.</span><span class="n">Optimal</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Compression uses GZip. Encryption uses AES with a random initialization vector per upload. Both behaviors write transformed bytes to the underlying provider and keep the logical blob shape visible to callers:</p>
+<p><code>IEncryptionKeyProvider.GetActiveKeyAsync</code> selects the key used for new uploads. Downloads resolve the key id stored with the encrypted blob through <code>GetKeyAsync</code>, so providers can retain old keys while rotating the active write key. Encrypted clients fail when the active key or a referenced historical key is unavailable.</p>
+<ul>
+<li><code>DownloadAsync</code> returns decompressed and decrypted content.</li>
+<li><code>BlobInfo.Length</code>, <code>ContentType</code>, and <code>ContentHash</code> describe the logical content, not the stored transformed bytes.</li>
+<li><code>ExpectedContentHash</code> is checked against the caller-provided logical upload content before the transformed bytes are committed.</li>
+<li>Internal behavior metadata is removed from public <code>BlobInfo.Properties</code>.</li>
+<li><code>UpdatePropertiesAsync</code> preserves the internal transform metadata so property updates do not make existing transformed blobs unreadable.</li>
+<li>Upload streams remain caller-owned. Returned download streams remain owned by <code>BlobDownload</code>.</li>
+</ul>
+<p>Transform behaviors use temporary files while preparing transformed upload and download streams. They avoid loading full blobs into memory solely for compression or encryption, but they do require local temporary disk space for the transformed payload.</p>
+<h2 id="content-type-detection-and-checksum-verification">Content-Type Detection and Checksum Verification<a class="headerlink" href="#content-type-detection-and-checksum-verification" title="Permanent link">&para;</a></h2>
+<p>Use <code>WithContentTypeDetectionBehavior()</code> when uploads that omit <code>ContentType</code> should infer it from the blob name extension. The behavior uses <code>ContentTypeExtensions.FromFileName(...)</code> and does not inspect or sniff stream content. Extensionless blob names stay unchanged.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithContentTypeDetectionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/summary.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span>
+<span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Use <code>WithChecksumVerificationBehavior()</code> when every <code>DownloadAsync</code> call should verify downloaded bytes against <code>BlobInfo.ContentHash</code> before the caller receives a stream.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Checksum verification returns <code>BlobStoreIntegrityError</code> when the stored hash is missing or when downloaded bytes do not match the hash. Set <code>AllowMissingContentHash</code> only for stores where missing hashes are accepted:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">AllowMissingContentHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">});</span>
+</code></pre></div>
+<p>The verification behavior copies the downloaded stream to a temporary stream while hashing, then returns the verified stream to the caller. It avoids buffering full blobs in memory, but it requires temporary disk space.</p>
+<p>When combined with compression or encryption, register checksum verification before the transform behaviors so it verifies the logical caller-visible bytes:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCompressionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="download-caching-behavior">Download Caching Behavior<a class="headerlink" href="#download-caching-behavior" title="Permanent link">&para;</a></h2>
+<p>Use <code>WithCacheBehavior()</code> when repeated exact-key downloads should be served from an <code>ICacheProvider</code>. The behavior caches only successful <code>DownloadAsync</code> results and stores <code>BlobInfo</code> plus the downloaded bytes. Every cache hit returns a new read-only <code>MemoryStream</code>, so callers still own and dispose the returned <code>BlobDownload</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCacheBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">SlidingExpiration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxCachedBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Register an <code>ICacheProvider</code> before resolving blob clients. The same cache providers used by document storage can be reused for blob downloads.</p>
+<p>Caching is exact-key only:</p>
+<ul>
+<li><code>DownloadAsync</code> reads through the cache.</li>
+<li><code>UploadAsync</code>, <code>UpdatePropertiesAsync</code>, and <code>DeleteAsync</code> invalidate the cached download for the affected blob.</li>
+<li><code>GetPropertiesAsync</code>, <code>ExistsAsync</code>, and <code>ListPageAsync</code> do not cache or download content.</li>
+<li>Blobs larger than <code>MaxCachedBlobSize</code> keep normal streaming behavior and are not cached.</li>
+</ul>
+<p>When combined with compression, encryption, or checksum verification, register cache first when you want to cache caller-visible logical bytes and avoid repeating downstream transforms:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCacheBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChecksumVerificationBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithCompressionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEncryptionBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithAzureBlobClient</span><span class="p">(</span><span class="s">&quot;media&quot;</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="chaos-behavior">Chaos Behavior<a class="headerlink" href="#chaos-behavior" title="Permanent link">&para;</a></h2>
+<p>Use <code>WithChaosBehavior()</code> in tests, local development, or controlled resilience drills to inject Result-native upload and download failures without changing providers or application code.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChaosBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UploadFailureRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">DownloadFailureRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Injected failures return <code>BlobStoreProviderError</code>, so retry behavior treats them like transient provider failures when retry wraps chaos. Register retry first when you want injected failures to be retried because the first registered behavior is outermost:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithRetryBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Attempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChaosBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">DownloadFailureRate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">);</span>
+</code></pre></div>
+<p>Chaos injection short-circuits only <code>UploadAsync</code> and <code>DownloadAsync</code>; properties, exists, list, and delete operations are delegated unchanged.</p>
+<p>For deterministic tests, fail every Nth upload or download instead of using probabilities:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithChaosBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FailUploadsEvery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FailDownloadsEvery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">});</span>
+</code></pre></div>
+<p>Keep chaos behavior opt-in. Do not enable it for normal production traffic unless the deployment is explicitly running a resilience experiment.</p>
+<h2 id="entity-framework-context">Entity Framework Context<a class="headerlink" href="#entity-framework-context" title="Permanent link">&para;</a></h2>
+<p>An EF Core context used for blob storage must implement <code>IBlobStoreContext</code>. Consuming applications own their migrations.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Infrastructure.EntityFramework.Storage</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">AppDbContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">)</span>
+<span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">DbContext</span><span class="p">(</span><span class="n">options</span><span class="p">),</span><span class="w"> </span><span class="n">IBlobStoreContext</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">StorageBlob</span><span class="o">&gt;</span><span class="w"> </span><span class="n">StorageBlobs</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">StorageBlobChunk</span><span class="o">&gt;</span><span class="w"> </span><span class="n">StorageBlobChunks</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="azure-commit-semantics">Azure Commit Semantics<a class="headerlink" href="#azure-commit-semantics" title="Permanent link">&para;</a></h2>
+<p>Azure uploads stage uniquely named blocks while streaming and hashing the caller content once. The provider enforces size and expected-hash constraints before committing the block list. Content type, custom metadata, content hash, expiration metadata/tags, overwrite conditions, and the staged block ids are applied in the final commit, so cancellation or validation failure does not replace the currently committed blob.</p>
+<p>Azure property updates read a complete state snapshot and apply headers, metadata, and tags through ETag-conditional mutations. On an operation error or cancellation, the provider restores the original state with a non-cancelable cleanup token. If restoration also fails, the result contains <code>BlobStorePartialUpdateError</code> with both failure descriptions.</p>
+<h2 id="named-clients">Named Clients<a class="headerlink" href="#named-clients" title="Permanent link">&para;</a></h2>
+<p>Resolve clients by configured store name only.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">factory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IBlobStoreClientFactory</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">blobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateClient</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p><code>factory.GetRegistrations()</code> returns the configured names, provider names, capabilities, and lifetimes for diagnostics without exposing provider instances.</p>
+<p>Named providers and clients are keyed DI services. Singleton, scoped, and transient lifetimes follow standard container semantics; the factory only performs keyed lookup and does not construct or cache clients itself. EF-backed singleton clients remain safe because each provider operation creates and owns a new DI scope and <code>DbContext</code>. A downloaded EF stream keeps its operation scope alive until the returned <code>BlobDownload</code> is disposed.</p>
+<p>Register an <code>IContinuationTokenProtector</code> to require HMAC-protected paging tokens across all Blob Storage clients:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">IContinuationTokenProtector</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">HmacContinuationTokenProtector</span><span class="p">(</span><span class="n">configuration</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">byte</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Storage:ContinuationTokenKey&quot;</span><span class="p">)));</span>
+</code></pre></div>
+<p>When protection is configured, unsigned, modified, incorrectly signed, and wrong-purpose tokens are rejected. Without a protector, Blob Storage emits unsigned opaque tokens.</p>
+<h2 id="upload">Upload<a class="headerlink" href="#upload" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+
+<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">&quot;report.pdf&quot;</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">PDF</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="na">[&quot;customerId&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;42&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;monthly-export&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="n">OverwriteMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlobOverwriteMode</span><span class="p">.</span><span class="n">Overwrite</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">uploadResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">uploadResult</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uploadResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">mimeType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">ContentType</span><span class="o">?.</span><span class="n">MimeType</span><span class="p">();</span>
+</code></pre></div>
+<p>Blob Storage reads from the supplied stream but does not dispose it.</p>
+<h2 id="expiration-and-retention">Expiration and Retention<a class="headerlink" href="#expiration-and-retention" title="Permanent link">&para;</a></h2>
+<p>Set <code>BlobUpload.ExpiresAt</code> when a blob should be automatically deleted after a UTC timestamp. Providers normalize non-UTC <code>DateTimeOffset</code> values to UTC before storing metadata. The timestamp is returned through <code>BlobInfo.ExpiresAt</code>, can be replaced or cleared through <code>BlobPropertiesUpdate.ExpiresAt</code>, and is provider-neutral.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;exports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;daily/report.csv&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">propertiesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UpdatePropertiesAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobPropertiesUpdate</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;exports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;daily/report.csv&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ExpiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddDays</span><span class="p">(</span><span class="mi">14</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;daily-export&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>The hosted retention service is registered by <code>AddBlobStorage</code>. It starts after the host application has started, logs sweep progress, and calls provider-native retention sweep paths. It does not use public <code>ListPageAsync</code> scans. Providers that do not support retention are skipped.</p>
+<p>Provider behavior:</p>
+<ul>
+<li>In-memory keeps expiration with the in-memory entry and deletes due entries under the context lock.</li>
+<li>Entity Framework stores expiration in <code>StorageBlob.ExpiresAt</code> with an index. Sweeps query due rows by that index, acquire the existing internal blob lease, then delete chunks and metadata in batches.</li>
+<li>Azure Blob Storage stores expiration as metadata for property round-trips and as a fixed-width blob index tag for efficient native tag queries. The DevKit sweeper deletes blobs found through the tag index. Azure account-level lifecycle management can also be used for coarse retention classes, but exact per-blob <code>ExpiresAt</code> deletion is handled by the DevKit sweeper.</li>
+</ul>
+<p>Multiple application nodes can run the background service at the same time. Provider sweeps must be idempotent and lease- or condition-protected; a blob already deleted by another node is treated as a successful cleanup outcome.</p>
+<h2 id="expected-hash">Expected Hash<a class="headerlink" href="#expected-hash" title="Permanent link">&para;</a></h2>
+<p>Use the blob hash helper when the content stream is seekable. Reset the stream before upload because hashing reads from the current position.</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">&quot;report.pdf&quot;</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">hashResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">BlobContentHash</span><span class="p">.</span><span class="n">ComputeSha256Async</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hashResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">hashResult</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">source</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobUpload</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">PDF</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ExpectedContentHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hashResult</span><span class="p">.</span><span class="n">Value</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>The expected value must use <code>sha256:&lt;lowercase-64-character-hex&gt;</code>. A mismatch returns <code>BlobStoreIntegrityError</code> and does not commit partial content.</p>
+<h2 id="download">Download<a class="headerlink" href="#download" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">downloadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">downloadResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">download</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">downloadResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">download</span><span class="p">.</span><span class="n">Content</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">targetStream</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The caller owns and disposes the returned <code>BlobDownload</code>, which disposes the returned content stream.</p>
+<h2 id="verified-download">Verified Download<a class="headerlink" href="#verified-download" title="Permanent link">&para;</a></h2>
+<p>Use <code>DownloadVerifiedToAsync</code> when the destination should only be considered valid after the downloaded bytes match the stored SHA-256 content hash.</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;report.pdf&quot;</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">verifiedResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadVerifiedToAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">target</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">verifiedResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">verifiedResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">CalculatedContentHash</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">verifiedResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">BytesTransferred</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>By default the helper requires <code>BlobInfo.ContentHash</code>. Set <code>AllowMissingContentHash</code> only when the caller explicitly accepts an unverified copy.</p>
+<p>The file-storage variant stages to a temporary provider path and promotes it only after verification succeeds:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">verifiedFileResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadVerifiedToFileAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">fileStorage</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;incoming/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="file-storage-integration">File Storage Integration<a class="headerlink" href="#file-storage-integration" title="Permanent link">&para;</a></h2>
+<p>Blob Storage can transfer content to and from any <code>IFileStorageProvider</code> without changing the core blob client contract. This keeps blob operations provider-neutral while allowing files to come from local disk, in-memory storage, network shares, SQL-backed file storage, or any other configured file provider.</p>
+<p>Upload a file-provider path into blob storage:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">fileFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IFileStorageProviderFactory</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">fileStorage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fileFactory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;exports&quot;</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadFileAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">fileStorage</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;outgoing/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobFileUploadOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">InferContentTypeFromFileName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ExpectedContentHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectedHash</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;file-storage&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="n">OverwriteMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlobOverwriteMode</span><span class="p">.</span><span class="n">Overwrite</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p><code>UploadFileAsync</code> opens and disposes the file-provider read stream after the blob upload completes. If <code>ContentType</code> is not supplied and <code>InferContentTypeFromFileName</code> is true, the content type is inferred through <code>ContentTypeExtensions.FromFileName</code>.</p>
+<p>Download a blob into file storage:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">transferResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadToFileAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">fileStorage</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;incoming/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobFileDownloadOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">UseTemporaryWrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">transferResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">filePath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transferResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">FilePath</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transferResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">BytesTransferred</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>DownloadToFileAsync</code> disposes the returned <code>BlobDownload</code> after the file write. When <code>UseTemporaryWrite</code> is true, the file provider can stage the write and publish it on successful close.</p>
+<p>An existing <code>BlobDownload</code> can also be written to file storage:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">downloadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">downloadResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">download</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">downloadResult</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">saveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">download</span><span class="p">.</span><span class="n">SaveToFileAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">fileStorage</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;incoming/report.pdf&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>SaveToFileAsync</code> does not dispose the <code>BlobDownload</code>; ownership stays with the caller.</p>
+<h2 id="text-and-serialized-content">Text and Serialized Content<a class="headerlink" href="#text-and-serialized-content" title="Permanent link">&para;</a></h2>
+<p>Blob Storage also includes small convenience helpers for textual content and serialized class instances. These helpers are extension methods on <code>IBlobStoreClient</code>; they do not change the core stream-first blob client contract.</p>
+<p>Use <code>UploadTextAsync</code> and <code>DownloadTextAsync</code> for text payloads:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadTextAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;notes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;release-notes.txt&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;Released on 2026-07-14&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobTextUploadOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">TXT</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="na">[&quot;source&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;release&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="n">OverwriteMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlobOverwriteMode</span><span class="p">.</span><span class="n">Overwrite</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">textResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadTextAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;notes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;release-notes.txt&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">textResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Info</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Text helpers use UTF-8 by default. Supply <code>Encoding</code> in <code>BlobTextUploadOptions</code> or <code>BlobTextDownloadOptions</code> when a different encoding is required.</p>
+<p>Use <code>UploadObjectAsync&lt;T&gt;</code> and <code>DownloadObjectAsync&lt;T&gt;</code> for class instances:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadObjectAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;profiles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ada.json&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">profile</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobObjectUploadOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">JSON</span><span class="p">,</span>
+<span class="w">        </span><span class="n">ExpectedContentHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectedHash</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">profileResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadObjectAsync</span><span class="o">&lt;</span><span class="n">UserProfile</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;profiles&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ada.json&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">profileResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">profileResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">profileResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Info</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Object helpers use <code>SystemTextJsonSerializer</code> by default. Supply an <code>ISerializer</code> through <code>BlobObjectUploadOptions.Serializer</code> or <code>BlobObjectDownloadOptions.Serializer</code> to use another DevKit serializer.</p>
+<p>The text and object helpers use <code>ContentTypeExtensions.IsText()</code> and <code>IsBinary()</code> to reject binary content types by default. Missing content types are allowed for downloads unless <code>RequireTextContentType</code> is set. These helpers buffer the text or serialized object in memory; use <code>UploadAsync</code>, <code>DownloadAsync</code>, <code>UploadFileAsync</code>, and <code>DownloadToFileAsync</code> for large files and binary streams.</p>
+<p>Use <code>UploadBytesAsync</code> and <code>DownloadBytesAsync</code> for small binary payloads that are already in memory:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">uploadResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UploadBytesAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;thumbnail.bin&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">bytes</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobBytesUploadOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">BIN</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="na">[&quot;kind&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;thumbnail&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">bytesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DownloadBytesAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;thumbnail.bin&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>The byte helpers intentionally buffer content in memory and are not a replacement for stream-first large blob operations.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<p>Properties operations return or update <code>BlobInfo</code> without downloading content.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">propertiesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">GetPropertiesAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">customerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Properties</span><span class="p">.</span><span class="n">Get</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;customerId&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">updateResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">UpdatePropertiesAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">BlobPropertiesUpdate</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">PDF</span><span class="p">,</span>
+<span class="w">            </span><span class="n">IfMatchETag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">propertiesResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ETag</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="na">[&quot;customerId&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span>
+<span class="w">                </span><span class="na">[&quot;reviewed&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>When supplied, <code>IfMatchETag</code> is used for optimistic property updates. A stale ETag returns a conflict Result failure.</p>
+<p>For small property-only changes, patch helpers read current properties, apply a local mutation, and update with the current ETag:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">SetPropertyAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;reviewed&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">true</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">MergePropertiesAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">PropertyBag</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="na">[&quot;reviewer&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;qa&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">RemovePropertyAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;temporary&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>These helpers do not download or rewrite blob content.</p>
+<h2 id="exists">Exists<a class="headerlink" href="#exists" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">existsResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ExistsAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">existsResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">existsResult</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// The blob exists.</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="listing">Listing<a class="headerlink" href="#listing" title="Permanent link">&para;</a></h2>
+<p>Use prefix listing for bounded reads. Continuation tokens are opaque and query-bound.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListPageAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">BlobQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithPrefix</span><span class="p">(</span><span class="s">&quot;2026/06/&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pageResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">blob</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">pageResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Items</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blob</span><span class="p">.</span><span class="n">Key</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blob</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pageResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">HasMore</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">nextPageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListPageAsync</span><span class="p">(</span>
+<span class="w">            </span><span class="n">BlobQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
+<span class="w">                </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">WithPrefix</span><span class="p">(</span><span class="s">&quot;2026/06/&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">ContinueWith</span><span class="p">(</span><span class="n">pageResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ContinuationToken</span><span class="p">)</span>
+<span class="w">                </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="full-scan">Full Scan<a class="headerlink" href="#full-scan" title="Permanent link">&para;</a></h2>
+<p>Full scans require both <code>BlobStoreOptions.AllowFullScans = true</code> on the named client and <code>.AllowFullScan()</code> on the query.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">pageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListPageAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">BlobQueries</span><span class="p">.</span><span class="n">Query</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">InContainer</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AllowFullScan</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Take</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Build</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Prefer prefix queries for normal workflows.</p>
+<p>Use <code>EnumerateAsync</code> when a workflow should stream pages through an async sequence while preserving Result-native failures:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nf">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">EnumerateAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobQuery</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2026/06/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Take</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">item</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">item</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Key</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Use <code>ListAllAsync</code> only for bounded result sets that are safe to materialize:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">allResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">ListAllAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobQuery</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2026/06/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Take</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobEnumerationOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MaxItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="delete">Delete<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Deleting a missing blob returns success.</p>
+<p>Use <code>BlobDeleteOptions.IfMatchETag</code> when deletion must apply only to the version that was previously read:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">info</span><span class="p">.</span><span class="n">Key</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobDeleteOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">IfMatchETag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">ETag</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>An ETag mismatch returns <code>BlobStoreConflictError</code> and leaves the current blob unchanged.</p>
+<h2 id="copy-move-and-prefix-delete">Copy, Move, and Prefix Delete<a class="headerlink" href="#copy-move-and-prefix-delete" title="Permanent link">&para;</a></h2>
+<p>Blob-to-blob transfer helpers are extension methods over the public <code>IBlobStoreClient</code> contract. They can copy or move between different providers because they only depend on download, upload, and delete operations.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">archiveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">archiveBlobs</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;archive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2026/06/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">moveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">MoveToAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tmp/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">archiveBlobs</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">BlobKey</span><span class="p">(</span><span class="s">&quot;archive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tmp/report.pdf&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Copies and moves preserve the source expiration by default. Set <code>BlobCopyOptions.PreserveExpiration</code> to <code>false</code> to create a non-expiring target, or use <code>ExpiresAtOverride</code> to set a new expiration. The override wins when both are supplied.</p>
+<p><code>MoveToAsync</code> copies first and conditionally deletes the source using the ETag observed during the copy. If the source changes, the copied target remains and <code>BlobStoreTransferError</code> reports that the source was not deleted. Moving to the same client and key verifies that the blob exists and returns a successful no-op with <code>SourceDeleted = false</code>.</p>
+<p>Use <code>DeleteByPrefixAsync</code> for guarded cleanup workflows:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">dryRun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteByPrefixAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;tmp/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">BlobDeletePrefixOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">DryRun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">        </span><span class="n">MaxItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">blobs</span><span class="p">.</span><span class="n">DeleteByPrefixAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;tmp/&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Prefix delete requires a non-empty prefix unless <code>AllowFullScan</code> is explicitly set. Use dry runs before scheduled cleanup jobs.</p>
+<h2 id="health-checks">Health Checks<a class="headerlink" href="#health-checks" title="Permanent link">&para;</a></h2>
+<p>When Blob Storage is enabled and at least one named client is registered, the package registers one aggregate health check named <code>BlobStorage</code>. The check probes every registered client with a non-mutating <code>ExistsAsync</code> probe. Missing probe blobs are healthy; provider failures make the aggregate health check unhealthy and identify failed client names in readable health-check data.</p>
+<h2 id="diagnostics-snapshot">Diagnostics Snapshot<a class="headerlink" href="#diagnostics-snapshot" title="Permanent link">&para;</a></h2>
+<p><code>IBlobStorageDiagnosticsService</code> returns a static provider-neutral snapshot of registered blob clients and their non-mutating probe status.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">diagnostics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IBlobStorageDiagnosticsService</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">snapshotResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">diagnostics</span><span class="p">.</span><span class="n">GetSnapshotAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshotResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">snapshotResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Clients</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">ProviderName</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">healthy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">IsHealthy</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The snapshot includes client names, provider names, capabilities, and readable health details. It does not expose provider instances or provider-specific SDK types.</p>
+<h2 id="mcp-diagnostics">MCP Diagnostics<a class="headerlink" href="#mcp-diagnostics" title="Permanent link">&para;</a></h2>
+<p>Blob Storage is exposed to local AI agents through the DevKit MCP runtime automatically when <code>AddBlobStorage()</code> runs in a DevKit web host with MCP enabled. The MCP adapter uses the diagnostics service that <code>AddBlobStorage</code> registers automatically.</p>
+<table>
+<thead>
+<tr>
+<th>MCP tool</th>
+<th>Runtime operation</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bdk_blobs_summary</code></td>
+<td><code>blobs.summary</code></td>
+<td>Summarizes registered blob clients and health counts.</td>
+</tr>
+<tr>
+<td><code>bdk_blobs_clients</code></td>
+<td><code>blobs.clients</code></td>
+<td>Lists clients, provider names, capabilities and probe status.</td>
+</tr>
+<tr>
+<td><code>bdk_blobs_probe</code></td>
+<td><code>blobs.probe</code></td>
+<td>Returns probe details for one named blob client.</td>
+</tr>
+</tbody>
+</table>
+<p>Example agent prompt:</p>
+<div class="highlight"><pre><span></span><code>Use bdk MCP to inspect Blob Storage clients. Call bdk_blobs_summary first, then bdk_blobs_clients if any client is unhealthy.
+</code></pre></div>
+<p>The MCP operations use the same <code>IBlobStorageDiagnosticsService</code> as application diagnostics. They run non-mutating <code>ExistsAsync</code> probes against a reserved health probe key and treat a missing probe blob as healthy.</p>
+<h2 id="maintenance-jobs">Maintenance Jobs<a class="headerlink" href="#maintenance-jobs" title="Permanent link">&para;</a></h2>
+<p><code>Application.Storage.Jobs</code> includes <code>BlobDeletePrefixMaintenanceJob</code> for deleting blobs by prefix through a named blob client.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddJobScheduler</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">BlobDeletePrefixMaintenanceJob</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;blob-delete-prefix&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">job</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Description</span><span class="p">(</span><span class="s">&quot;Deletes temporary report blobs.&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithConcurrency</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithRetry</span><span class="p">(</span><span class="n">retry</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">retry</span><span class="p">.</span><span class="n">MaxAttempts</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="n">FixedDelay</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AddTrigger</span><span class="p">(</span><span class="s">&quot;nightly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">trigger</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">trigger</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">DailyAt2AM</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Data</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobDeletePrefixMaintenanceJobData</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">StoreName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reports&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">Prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tmp/&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">DryRun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">                </span><span class="n">MaxItems</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
+<span class="w">            </span><span class="p">})));</span>
+</code></pre></div>
+<p>The job uses the new <code>Application.Jobs</code> feature. It receives <code>BlobDeletePrefixMaintenanceJobData</code>, resolves the named blob client through <code>IBlobStoreClientFactory</code>, and calls <code>DeleteByPrefixAsync</code> directly. The job writes candidate/deleted counts into the execution context items and returns Result failures for expected delete or query failures.</p>
+<h2 id="shared-storage-primitives">Shared Storage Primitives<a class="headerlink" href="#shared-storage-primitives" title="Permanent link">&para;</a></h2>
+<p>Blob Storage and Document Storage use the same <code>StorageRetentionOptions</code>, <code>ExpirationChange</code>/<code>ExpirationHelper</code>, <code>ContentHashHelper</code>, key-display strategies, Base64Url/token codecs, stream helpers, temporary-file leases, encryption-key resolution, and transform-envelope conventions. This alignment does not merge the APIs: Blob Storage remains stream-first binary storage, while Document Storage remains typed and queryable by partition/row key.</p>
+<h2 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h2>
+<p>Expected failures are Result failures, not exceptions. Common typed errors include:</p>
+<ul>
+<li><code>BlobStoreValidationError</code></li>
+<li><code>BlobStoreNotFoundError</code></li>
+<li><code>BlobStoreQueryTooBroadError</code></li>
+<li><code>BlobStorePageSizeExceededError</code></li>
+<li><code>BlobStoreInvalidContinuationTokenError</code></li>
+<li><code>BlobStoreConflictError</code></li>
+<li><code>BlobStoreLeaseError</code></li>
+<li><code>BlobStoreSerializationError</code></li>
+<li><code>BlobStoreProviderError</code></li>
+<li><code>BlobStoreTransferError</code></li>
+<li><code>BlobStoreSizeLimitExceededError</code></li>
+<li><code>BlobStoreIntegrityError</code></li>
+<li><code>BlobStoreTimeoutError</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/bridgingIT/bITdevKit" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.nuget.org/packages?q=bitdevkit" target="_blank" rel="noopener" title="NuGet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M224.3-2.5c19.8-11.4 44.2-11.4 64 0L464.2 99c19.8 11.4 32 32.6 32 55.4v203c0 22.9-12.2 44-32 55.4L288.3 514.5a64.16 64.16 0 0 1-64 0L48.5 413c-19.8-11.4-32-32.6-32-55.4v-203c0-22.9 12.2-44 32-55.4zm207.8 360V191.4l-143.8 83v166.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
+      
+        <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+    
+  </body>
+</html>

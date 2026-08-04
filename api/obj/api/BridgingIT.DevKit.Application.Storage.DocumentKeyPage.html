@@ -254,10 +254,10 @@ Class DocumentKeyPage
 
 
   <h2 id="BridgingIT_DevKit_Application_Storage_DocumentKeyPage_examples">Examples</h2>
-  <pre><code class="lang-csharp">var page = await documents.ListPageResultAsync(query, cancellationToken);
+  <pre><code class="lang-csharp">var page = await documents.ListPageAsync(query, cancellationToken);
 foreach (var key in page.Value.Items)
 {
-    var document = await documents.GetResultAsync(key, cancellationToken);
+    var document = await documents.GetAsync(key, cancellationToken);
 }</code></pre>
 
 

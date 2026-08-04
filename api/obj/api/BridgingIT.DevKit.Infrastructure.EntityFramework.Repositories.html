@@ -91,8 +91,59 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertBatch-1.html">EntityBulkInsertBatch&lt;TEntity&gt;</a></dt>
+      <dd><p>Represents provider-neutral Entity Framework metadata and values prepared for one entity bulk insert operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertColumn-1.html">EntityBulkInsertColumn&lt;TEntity&gt;</a></dt>
+      <dd><p>Describes one provider-neutral writable database column in an entity bulk insert batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertMappingAnalysis-1.html">EntityBulkInsertMappingAnalysis&lt;TEntity&gt;</a></dt>
+      <dd><p>Represents side-effect-free EF model, graph, tracking, and value-source analysis for a bulk insert.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertMappingBuilder-1.html">EntityBulkInsertMappingBuilder&lt;TEntity&gt;</a></dt>
+      <dd><p>Analyzes and builds provider-neutral Entity Framework values for one entity bulk insert operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertOptions.html">EntityBulkInsertOptions</a></dt>
+      <dd><p>Configures provider-neutral behavior for explicit entity bulk insert operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertPreconditionError.html">EntityBulkInsertPreconditionError</a></dt>
+      <dd><p>Reports a safe, provider-neutral precondition failure before an entity bulk insert is executed.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertProviderError.html">EntityBulkInsertProviderError</a></dt>
+      <dd><p>Reports a provider-selection, transaction, or native-write failure for an entity bulk insert.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertShadowPropertyContext-1.html">EntityBulkInsertShadowPropertyContext&lt;TEntity&gt;</a></dt>
+      <dd><p>Identifies the entity and EF shadow property for which a deterministic value is requested.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInserterOutboxDomainEventBehavior-2.html">EntityBulkInserterOutboxDomainEventBehavior&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Persists aggregate domain events to the EF outbox in the same transaction as an entity bulk insert.
+When it owns the transaction, events are cleared and immediately queued only after the commit succeeds.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkDatabaseTransaction.html">EntityFrameworkDatabaseTransaction</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkEntityBulkInserter-2.html">EntityFrameworkEntityBulkInserter&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Executes exactly one provider-native entity bulk insert operation.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityFrameworkEntityUpdateSet-1.html">EntityFrameworkEntityUpdateSet&lt;TEntity&gt;</a></dt>
@@ -196,8 +247,49 @@ It provides a wrapper around the generic repository to handle CRUD operations fo
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.PostgresEntityBulkInsertProvider.html">PostgresEntityBulkInsertProvider</a></dt>
+      <dd><p>Placeholder for PostgreSQL-native entity bulk insert support.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.ResilientTransaction.html">ResilientTransaction</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.SqlServerEntityBulkInsertOptions.html">SqlServerEntityBulkInsertOptions</a></dt>
+      <dd><p>Configures SQL Server-specific behavior for entity bulk insert operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.SqlServerEntityBulkInsertProvider.html">SqlServerEntityBulkInsertProvider</a></dt>
+      <dd><p>Writes prepared entity bulk insert batches through SQL Server <span class="xref">Microsoft.Data.SqlClient.SqlBulkCopy</span>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.SqliteEntityBulkInsertProvider.html">SqliteEntityBulkInsertProvider</a></dt>
+      <dd><p>Placeholder for SQLite-native entity bulk insert support.</p>
+</dd>
+    </dl>
+    <h3 id="interfaces">
+Interfaces
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.IEntityBulkInsertProvider.html">IEntityBulkInsertProvider</a></dt>
+      <dd><p>Writes prepared entity bulk insert batches through one Entity Framework database provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.IEntityBulkInsertShadowValueProvider-1.html">IEntityBulkInsertShadowValueProvider&lt;TEntity&gt;</a></dt>
+      <dd><p>Supplies deterministic values for writable EF shadow properties during native bulk insertion.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertColumnSource.html">EntityBulkInsertColumnSource</a></dt>
+      <dd><p>Identifies how a native bulk insert column obtains its value.</p>
+</dd>
     </dl>
 
 

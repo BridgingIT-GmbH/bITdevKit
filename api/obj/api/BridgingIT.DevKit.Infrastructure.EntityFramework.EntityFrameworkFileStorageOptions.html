@@ -280,7 +280,7 @@ Class EntityFrameworkFileStorageOptions
     RetryCount = 3,
     RetryBackoff = TimeSpan.FromMilliseconds(250),
     PageSize = 100,
-    MaximumBufferedContentSize = 4 * 1024 * 1024
+    MaximumBufferedContentSize = ByteSize.Megabytes(4)
 };</code></pre>
 
 
@@ -383,7 +383,7 @@ Class EntityFrameworkFileStorageOptions
 
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkFileStorageOptions_MaximumBufferedContentSize_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.MaximumBufferedContentSize = 4 * 1024 * 1024;</code></pre>
+  <pre><code class="lang-csharp">options.MaximumBufferedContentSize = ByteSize.Megabytes(4);</code></pre>
 
 
 

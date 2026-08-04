@@ -1,0 +1,285 @@
+/*
+ * bITdevKit documentation palettes.
+ *
+ * Keep these semantic tokens aligned with the developer dashboard palettes in
+ * src/Presentation.Web/Dashboard/Pages/_DashboardLayout.cshtml.
+ */
+
+[data-md-color-scheme] {
+  --md-default-bg-color: var(--bdk-bg);
+  --md-default-fg-color: var(--bdk-text);
+  --md-default-fg-color--light: var(--bdk-muted);
+  --md-default-fg-color--lighter: color-mix(in srgb, var(--bdk-muted) 72%, transparent);
+  --md-default-fg-color--lightest: color-mix(in srgb, var(--bdk-muted) 32%, transparent);
+  --md-primary-fg-color: var(--bdk-navbar);
+  --md-primary-fg-color--light: var(--bdk-surface);
+  --md-primary-fg-color--dark: var(--bdk-sidebar);
+  --md-primary-bg-color: var(--bdk-text);
+  --md-primary-bg-color--light: var(--bdk-muted);
+  --md-accent-fg-color: var(--bdk-active-fg);
+  --md-accent-fg-color--transparent: var(--bdk-active-bg);
+  --md-typeset-color: var(--bdk-text);
+  --md-typeset-a-color: var(--bdk-primary);
+  --md-code-fg-color: var(--bdk-code-text);
+  --md-code-bg-color: var(--bdk-code-bg);
+  --md-code-hl-color: var(--bdk-active-bg);
+  --md-code-hl-number-color: var(--bdk-secondary);
+  --md-code-hl-special-color: var(--bdk-danger);
+  --md-code-hl-function-color: var(--bdk-primary);
+  --md-code-hl-constant-color: var(--bdk-secondary);
+  --md-code-hl-keyword-color: var(--bdk-danger);
+  --md-code-hl-string-color: var(--bdk-warning);
+  --md-code-hl-name-color: var(--bdk-text);
+  --md-code-hl-operator-color: var(--bdk-muted);
+  --md-code-hl-punctuation-color: var(--bdk-muted);
+  --md-code-hl-comment-color: var(--bdk-muted);
+  --md-code-hl-generic-color: var(--bdk-info);
+  --md-code-hl-variable-color: var(--bdk-text);
+  --md-footer-bg-color: var(--bdk-navbar);
+  --md-footer-bg-color--dark: var(--bdk-sidebar);
+  --md-footer-fg-color: var(--bdk-text);
+  --md-footer-fg-color--light: var(--bdk-muted);
+  --md-footer-fg-color--lighter: var(--bdk-muted);
+  accent-color: var(--bdk-active-fg);
+}
+
+[data-md-color-scheme="default"],
+[data-md-color-scheme="light"] {
+  --bdk-primary: #0f62fe;
+  --bdk-primary-rgb: 15, 98, 254;
+  --bdk-secondary: #8a3ffc;
+  --bdk-secondary-rgb: 138, 63, 252;
+  --bdk-success: #198038;
+  --bdk-success-rgb: 25, 128, 56;
+  --bdk-info: #0072c3;
+  --bdk-info-rgb: 0, 114, 195;
+  --bdk-warning: #b28600;
+  --bdk-warning-rgb: 178, 134, 0;
+  --bdk-danger: #da1e28;
+  --bdk-danger-rgb: 218, 30, 40;
+  --bdk-bg: #f7f7f2;
+  --bdk-surface: #fffef8;
+  --bdk-surface-muted: #efeee7;
+  --bdk-navbar: #f7f7f2;
+  --bdk-sidebar: #efeee7;
+  --bdk-text: #171717;
+  --bdk-muted: #5f5b50;
+  --bdk-border: #cbc8bd;
+  --bdk-border-rgb: 23, 23, 23;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.16);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.24);
+  --bdk-code-bg: #eceae0;
+  --bdk-code-text: #553f00;
+  --bdk-active-bg: rgba(var(--bdk-primary-rgb), 0.1);
+  --bdk-active-fg: var(--bdk-primary);
+  color-scheme: light;
+}
+
+[data-md-color-scheme="dark"] {
+  --bdk-primary: #66d9ef;
+  --bdk-primary-rgb: 102, 217, 239;
+  --bdk-secondary: #fd971f;
+  --bdk-secondary-rgb: 253, 151, 31;
+  --bdk-success: #a6e22e;
+  --bdk-success-rgb: 166, 226, 46;
+  --bdk-info: #66d9ef;
+  --bdk-info-rgb: 102, 217, 239;
+  --bdk-warning: #fd971f;
+  --bdk-warning-rgb: 253, 151, 31;
+  --bdk-danger: #f92672;
+  --bdk-danger-rgb: 249, 38, 114;
+  --bdk-bg: #151414;
+  --bdk-surface: #171616;
+  --bdk-surface-muted: #1d1c1c;
+  --bdk-navbar: #171616;
+  --bdk-sidebar: #111010;
+  --bdk-text: #f8f8f2;
+  --bdk-muted: #a59f99;
+  --bdk-border: #302d2d;
+  --bdk-border-rgb: 248, 248, 242;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.12);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.18);
+  --bdk-code-bg: #0f0e0e;
+  --bdk-code-text: #e6db74;
+  --bdk-active-bg: rgba(var(--bdk-secondary-rgb), 0.12);
+  --bdk-active-fg: var(--bdk-secondary);
+  color-scheme: dark;
+}
+
+[data-md-color-scheme="catppuccin"] {
+  --bdk-primary: #89b4fa;
+  --bdk-primary-rgb: 137, 180, 250;
+  --bdk-secondary: #f5c2e7;
+  --bdk-secondary-rgb: 245, 194, 231;
+  --bdk-success: #a6e3a1;
+  --bdk-success-rgb: 166, 227, 161;
+  --bdk-info: #94e2d5;
+  --bdk-info-rgb: 148, 226, 213;
+  --bdk-warning: #f9e2af;
+  --bdk-warning-rgb: 249, 226, 175;
+  --bdk-danger: #f38ba8;
+  --bdk-danger-rgb: 243, 139, 168;
+  --bdk-bg: #11111b;
+  --bdk-surface: #181825;
+  --bdk-surface-muted: #1e1e2e;
+  --bdk-navbar: #11111b;
+  --bdk-sidebar: #0b0b13;
+  --bdk-text: #cdd6f4;
+  --bdk-muted: #a6adc8;
+  --bdk-border: #313244;
+  --bdk-border-rgb: 205, 214, 244;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.12);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.2);
+  --bdk-code-bg: #0b0b13;
+  --bdk-code-text: #f9e2af;
+  --bdk-active-bg: rgba(var(--bdk-secondary-rgb), 0.12);
+  --bdk-active-fg: var(--bdk-secondary);
+  color-scheme: dark;
+}
+
+[data-md-color-scheme="darkforest"] {
+  --bdk-primary: #9ece6a;
+  --bdk-primary-rgb: 158, 206, 106;
+  --bdk-secondary: #e0af68;
+  --bdk-secondary-rgb: 224, 175, 104;
+  --bdk-success: #73daca;
+  --bdk-success-rgb: 115, 218, 202;
+  --bdk-info: #7dcfff;
+  --bdk-info-rgb: 125, 207, 255;
+  --bdk-warning: #e0af68;
+  --bdk-warning-rgb: 224, 175, 104;
+  --bdk-danger: #f7768e;
+  --bdk-danger-rgb: 247, 118, 142;
+  --bdk-bg: #07120d;
+  --bdk-surface: #0c1d14;
+  --bdk-surface-muted: #102719;
+  --bdk-navbar: #07120d;
+  --bdk-sidebar: #050d09;
+  --bdk-text: #d6e8d1;
+  --bdk-muted: #91aa8a;
+  --bdk-border: #244432;
+  --bdk-border-rgb: 214, 232, 209;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.11);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.19);
+  --bdk-code-bg: #050d09;
+  --bdk-code-text: #e0af68;
+  --bdk-active-bg: rgba(var(--bdk-primary-rgb), 0.12);
+  --bdk-active-fg: var(--bdk-primary);
+  color-scheme: dark;
+}
+
+[data-md-color-scheme="carbon"] {
+  --bdk-primary: #78a9ff;
+  --bdk-primary-rgb: 120, 169, 255;
+  --bdk-secondary: #ff7eb6;
+  --bdk-secondary-rgb: 255, 126, 182;
+  --bdk-success: #42be65;
+  --bdk-success-rgb: 66, 190, 101;
+  --bdk-info: #33b1ff;
+  --bdk-info-rgb: 51, 177, 255;
+  --bdk-warning: #f1c21b;
+  --bdk-warning-rgb: 241, 194, 27;
+  --bdk-danger: #fa4d56;
+  --bdk-danger-rgb: 250, 77, 86;
+  --bdk-bg: #161616;
+  --bdk-surface: #262626;
+  --bdk-surface-muted: #393939;
+  --bdk-navbar: #161616;
+  --bdk-sidebar: #0f0f0f;
+  --bdk-text: #f4f4f4;
+  --bdk-muted: #c6c6c6;
+  --bdk-border: #525252;
+  --bdk-border-rgb: 244, 244, 244;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.12);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.22);
+  --bdk-code-bg: #0f0f0f;
+  --bdk-code-text: #f1c21b;
+  --bdk-active-bg: rgba(var(--bdk-primary-rgb), 0.13);
+  --bdk-active-fg: var(--bdk-secondary);
+  color-scheme: dark;
+}
+
+[data-md-color-scheme="tokionights"] {
+  --bdk-primary: #7aa2f7;
+  --bdk-primary-rgb: 122, 162, 247;
+  --bdk-secondary: #bb9af7;
+  --bdk-secondary-rgb: 187, 154, 247;
+  --bdk-success: #9ece6a;
+  --bdk-success-rgb: 158, 206, 106;
+  --bdk-info: #2ac3de;
+  --bdk-info-rgb: 42, 195, 222;
+  --bdk-warning: #ff9e64;
+  --bdk-warning-rgb: 255, 158, 100;
+  --bdk-danger: #f7768e;
+  --bdk-danger-rgb: 247, 118, 142;
+  --bdk-bg: #0f1021;
+  --bdk-surface: #16172d;
+  --bdk-surface-muted: #1f2335;
+  --bdk-navbar: #0f1021;
+  --bdk-sidebar: #090a16;
+  --bdk-text: #c0caf5;
+  --bdk-muted: #9aa5ce;
+  --bdk-border: #3b4261;
+  --bdk-border-rgb: 192, 202, 245;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.13);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.24);
+  --bdk-code-bg: #090a16;
+  --bdk-code-text: #ff9e64;
+  --bdk-active-bg: rgba(var(--bdk-secondary-rgb), 0.14);
+  --bdk-active-fg: var(--bdk-secondary);
+  color-scheme: dark;
+}
+
+[data-md-color-scheme="matrix"] {
+  --bdk-primary: #00ff66;
+  --bdk-primary-rgb: 0, 255, 102;
+  --bdk-secondary: #39ff14;
+  --bdk-secondary-rgb: 57, 255, 20;
+  --bdk-success: #00ff66;
+  --bdk-success-rgb: 0, 255, 102;
+  --bdk-info: #8cffb0;
+  --bdk-info-rgb: 140, 255, 176;
+  --bdk-warning: #b7ff4a;
+  --bdk-warning-rgb: 183, 255, 74;
+  --bdk-danger: #ff4d6d;
+  --bdk-danger-rgb: 255, 77, 109;
+  --bdk-bg: #020802;
+  --bdk-surface: #041204;
+  --bdk-surface-muted: #071d07;
+  --bdk-navbar: #020802;
+  --bdk-sidebar: #000400;
+  --bdk-text: #b6ffbf;
+  --bdk-muted: #73c77c;
+  --bdk-border: #124512;
+  --bdk-border-rgb: 0, 255, 102;
+  --bdk-panel-border: rgba(var(--bdk-border-rgb), 0.18);
+  --bdk-panel-border-hover: rgba(var(--bdk-border-rgb), 0.34);
+  --bdk-code-bg: #000400;
+  --bdk-code-text: #b7ff4a;
+  --bdk-active-bg: rgba(var(--bdk-primary-rgb), 0.14);
+  --bdk-active-fg: var(--bdk-primary);
+  color-scheme: dark;
+}
+
+/* Custom schemes need explicit light/dark image behavior. */
+[data-md-color-scheme="light"] img[src$="#only-dark"],
+[data-md-color-scheme="light"] img[src$="#gh-dark-mode-only"],
+[data-md-color-scheme="default"] img[src$="#only-dark"],
+[data-md-color-scheme="default"] img[src$="#gh-dark-mode-only"] {
+  display: none;
+}
+
+[data-md-color-scheme="dark"] img[src$="#only-light"],
+[data-md-color-scheme="dark"] img[src$="#gh-light-mode-only"],
+[data-md-color-scheme="catppuccin"] img[src$="#only-light"],
+[data-md-color-scheme="catppuccin"] img[src$="#gh-light-mode-only"],
+[data-md-color-scheme="darkforest"] img[src$="#only-light"],
+[data-md-color-scheme="darkforest"] img[src$="#gh-light-mode-only"],
+[data-md-color-scheme="carbon"] img[src$="#only-light"],
+[data-md-color-scheme="carbon"] img[src$="#gh-light-mode-only"],
+[data-md-color-scheme="tokionights"] img[src$="#only-light"],
+[data-md-color-scheme="tokionights"] img[src$="#gh-light-mode-only"],
+[data-md-color-scheme="matrix"] img[src$="#only-light"],
+[data-md-color-scheme="matrix"] img[src$="#gh-light-mode-only"] {
+  display: none;
+}

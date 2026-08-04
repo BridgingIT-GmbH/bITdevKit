@@ -306,6 +306,100 @@ Interface ICosmosSqlProvider&lt;TItem&gt;
 
   <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.DeleteItemAsync*"></a>
 
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_System_String_System_Object_System_Guid_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.DeleteItemAsync(System.String,System.Object,System.Guid,System.Threading.CancellationToken)">
+  DeleteItemAsync(string, object, Guid, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an item using an explicitly observed concurrency version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; DeleteItemAsync(string id, object partitionKeyValue, Guid expectedVersion, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd><p>The identifier of the item to delete.</p>
+</dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The partition key value.</p>
+</dd>
+    <dt><code>expectedVersion</code> <span class="xref">Guid</span></dt>
+    <dd><p>The required current Cosmos ETag represented as a version.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when Cosmos deleted the expected version.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_System_String_System_Object_System_Guid_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await provider.DeleteItemAsync(id, partition, version, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.DeleteItemAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_System_String_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.DeleteItemAsync(System.String,System.Object,System.String,System.Threading.CancellationToken)">
+  DeleteItemAsync(string, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes an item only when the supplied opaque Cosmos ETag still matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;bool&gt; DeleteItemAsync(string id, object partitionKeyValue, string ifMatchETag, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>id</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd></dd>
+    <dt><code>ifMatchETag</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.DeleteItemAsync*"></a>
+
   <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_DeleteItemAsync_System_String_System_Object_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.DeleteItemAsync(System.String,System.Object,System.Threading.CancellationToken)">
   DeleteItemAsync(string, object, CancellationToken)
   
@@ -769,6 +863,57 @@ orderDescending: true
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_ReadItemsPageResultAsync__1_System_Linq_Expressions_Expression_System_Func__0_System_Boolean___System_Linq_Expressions_Expression_System_Func__0___0___System_Nullable_System_Int32__System_Linq_Expressions_Expression_System_Func__0_System_Object___System_Boolean_System_Object_System_String_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var page = await provider.ReadItemsPageResultAsync(x =&gt; x.Type == "type", x =&gt; new { x.Id });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_UpsertItemAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.UpsertItemAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_UpsertItemAsync__0_System_Object_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.ICosmosSqlProvider`1.UpsertItemAsync(`0,System.Object,System.String,System.Threading.CancellationToken)">
+  UpsertItemAsync(TItem, object, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Upserts an item only when the supplied opaque Cosmos ETag still matches.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;TItem&gt; UpsertItemAsync(TItem item, object partitionKeyValue, string ifMatchETag, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>item</code> <span class="xref">TItem</span></dt>
+    <dd><p>The item to replace.</p>
+</dd>
+    <dt><code>partitionKeyValue</code> <span class="xref">object</span></dt>
+    <dd><p>The partition key value.</p>
+</dd>
+    <dt><code>ifMatchETag</code> <span class="xref">string</span></dt>
+    <dd><p>The exact Cosmos ETag required for replacement.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the operation.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TItem&gt;</dt>
+    <dd><p>The committed item.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ICosmosSqlProvider_1_UpsertItemAsync__0_System_Object_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var saved = await provider.UpsertItemAsync(item, partition, etag, cancellationToken);</code></pre>
 
 
 

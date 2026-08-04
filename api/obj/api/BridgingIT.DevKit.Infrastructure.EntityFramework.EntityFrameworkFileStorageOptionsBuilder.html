@@ -281,7 +281,7 @@ Class EntityFrameworkFileStorageOptionsBuilder
     .RetryCount(3)
     .RetryBackoff(TimeSpan.FromMilliseconds(250))
     .PageSize(100)
-    .MaximumBufferedContentSize(4 * 1024 * 1024)
+    .MaximumBufferedContentSize(ByteSize.Megabytes(4))
     .Build();</code></pre>
 
 
@@ -451,7 +451,7 @@ var options = new EntityFrameworkFileStorageOptionsBuilder()
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkFileStorageOptionsBuilder_MaximumBufferedContentSize_System_Nullable_System_Int64___examples">Examples</h4>
   <pre><code class="lang-csharp">var options = new EntityFrameworkFileStorageOptionsBuilder()
-    .MaximumBufferedContentSize(4 * 1024 * 1024)
+    .MaximumBufferedContentSize(ByteSize.Megabytes(4))
     .Build();</code></pre>
 
 

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BlobContentHash | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BlobContentHash | bITdevKit API Reference ">
+      
+      <meta name="description" content="Provides blob content SHA-256 hash helpers.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash">
+
+
+
+  <h1 id="BridgingIT_DevKit_Application_Storage_BlobContentHash" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash" class="text-break">
+Class BlobContentHash  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Application.html">Application</a>.<a class="xref" href="BridgingIT.DevKit.Application.Storage.html">Storage</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Provides blob content SHA-256 hash helpers.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BlobContentHash</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">BlobContentHash</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Application_Storage_BlobContentHash_examples">Examples</h2>
+  <pre><code class="lang-csharp">var result = await BlobContentHash.ComputeSha256Async(upload.Content, cancellationToken);</code></pre>
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobContentHash_Prefix" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.Prefix">
+  Prefix
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider-neutral SHA-256 blob hash prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string Prefix = &quot;sha256:&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobContentHash_Prefix_examples">Examples</h4>
+  <pre><code class="lang-csharp">var prefix = BlobContentHash.Prefix;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobContentHash_ComputeSha256Async_" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.ComputeSha256Async*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobContentHash_ComputeSha256Async_System_IO_Stream_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.ComputeSha256Async(System.IO.Stream,System.Threading.CancellationToken)">
+  ComputeSha256Async(Stream, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Computes a provider-neutral SHA-256 blob content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;string&gt;&gt; ComputeSha256Async(Stream content, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>content</code> <span class="xref">Stream</span></dt>
+    <dd><p>The readable content stream to hash from its current position.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The cancellation token used while reading the stream.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;&gt;</dt>
+    <dd><p>A result containing the formatted SHA-256 blob content hash.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobContentHash_ComputeSha256Async_System_IO_Stream_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var hash = await BlobContentHash.ComputeSha256Async(content, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobContentHash_IsSha256Hash_" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.IsSha256Hash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobContentHash_IsSha256Hash_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.IsSha256Hash(System.String)">
+  IsSha256Hash(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Determines whether a value uses the provider-neutral SHA-256 blob hash format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsSha256Hash(string contentHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>contentHash</code> <span class="xref">string</span></dt>
+    <dd><p>The content hash value to inspect.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><code>true</code> when the value matches <code>sha256:&lt;lowercase-64-character-hex&gt;</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobContentHash_IsSha256Hash_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var valid = BlobContentHash.IsSha256Hash(hash);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobContentHash_ValidateExpectedHash_" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.ValidateExpectedHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobContentHash_ValidateExpectedHash_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.BlobContentHash.ValidateExpectedHash(System.String)">
+  ValidateExpectedHash(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates an optional expected blob content hash.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Result ValidateExpectedHash(string expectedContentHash)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>expectedContentHash</code> <span class="xref">string</span></dt>
+    <dd><p>The expected content hash value.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dd><p>A success result when the value is null, empty, or in the required format.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobContentHash_ValidateExpectedHash_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var validation = BlobContentHash.ValidateExpectedHash(upload.ExpectedContentHash);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

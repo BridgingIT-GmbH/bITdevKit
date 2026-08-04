@@ -263,8 +263,8 @@ Class WebConsoleHub
 
   <a id="BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleHub.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__ctor_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleSessionManager_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebAnsiConsoleFactory_BridgingIT_DevKit_Presentation_ConsoleCommandExecutor_System_IServiceProvider_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__" data-uid="BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleHub.#ctor(BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleSessionManager,BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebAnsiConsoleFactory,BridgingIT.DevKit.Presentation.ConsoleCommandExecutor,System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleHub})">
-  WebConsoleHub(WebConsoleSessionManager, WebAnsiConsoleFactory, ConsoleCommandExecutor, IServiceProvider, ILogger&lt;WebConsoleHub&gt;)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__ctor_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleSessionManager_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebAnsiConsoleFactory_BridgingIT_DevKit_Presentation_ConsoleCommandExecutor_System_IServiceProvider_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__" data-uid="BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleHub.#ctor(BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleSessionManager,BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebAnsiConsoleFactory,BridgingIT.DevKit.Presentation.ConsoleCommandExecutor,System.IServiceProvider,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleHub})">
+  WebConsoleHub(WebConsoleSessionManager, WebAnsiConsoleFactory, ConsoleCommandExecutor, IServiceProvider, IWebHostEnvironment, ILogger&lt;WebConsoleHub&gt;)
   
   </h3>
 
@@ -273,7 +273,7 @@ Class WebConsoleHub
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public WebConsoleHub(WebConsoleSessionManager sessions, WebAnsiConsoleFactory consoleFactory, ConsoleCommandExecutor executor, IServiceProvider services, ILogger&lt;WebConsoleHub&gt; logger)</code></pre>
+    <pre><code class="lang-csharp hljs">public WebConsoleHub(WebConsoleSessionManager sessions, WebAnsiConsoleFactory consoleFactory, ConsoleCommandExecutor executor, IServiceProvider services, IWebHostEnvironment environment, ILogger&lt;WebConsoleHub&gt; logger)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -286,6 +286,8 @@ Class WebConsoleHub
     <dd></dd>
     <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
     <dd></dd>
+    <dt><code>environment</code> <span class="xref">IWebHostEnvironment</span></dt>
+    <dd></dd>
     <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.WebConsoleHub.html">WebConsoleHub</a>&gt;</dt>
     <dd></dd>
   </dl>
@@ -296,7 +298,7 @@ Class WebConsoleHub
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__ctor_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleSessionManager_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebAnsiConsoleFactory_BridgingIT_DevKit_Presentation_ConsoleCommandExecutor_System_IServiceProvider_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub___examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub__ctor_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleSessionManager_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebAnsiConsoleFactory_BridgingIT_DevKit_Presentation_ConsoleCommandExecutor_System_IServiceProvider_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_ConsoleCommands_Dashboard_WebConsoleHub___examples">Examples</h4>
   <pre><code class="lang-csharp">endpoints.MapHub&lt;WebConsoleHub&gt;("/_bdk/dashboard/console/hub");</code></pre>
 
 

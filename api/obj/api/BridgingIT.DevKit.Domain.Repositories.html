@@ -112,6 +112,58 @@ and consumers to query or await readiness.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterAuditStateBehaviorOptions.html">EntityBulkInserterAuditStateBehaviorOptions</a></dt>
+      <dd><p>Configures the audit identity written by <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterAuditStateBehavior-1.html">EntityBulkInserterAuditStateBehavior&lt;TEntity&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterAuditStateBehavior-1.html">EntityBulkInserterAuditStateBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Initializes and stamps audit state for every entity in a bulk-insert batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterCancellationBehavior-1.html">EntityBulkInserterCancellationBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Stops a bulk insert before the batch is inspected when cancellation was requested.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterConcurrencyBehavior-1.html">EntityBulkInserterConcurrencyBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Assigns a fresh sequential concurrency value to every entity in a bulk-insert batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterDomainEventBehavior-1.html">EntityBulkInserterDomainEventBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Registers one created domain event for every aggregate in a bulk-insert batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterDomainEventMetricsBehavior-1.html">EntityBulkInserterDomainEventMetricsBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Emits metrics for domain events currently registered on bulk-insert aggregates.
+Register this after <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterDomainEventBehavior-1.html">EntityBulkInserterDomainEventBehavior&lt;TEntity&gt;</a> to include created events.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterDomainEventPublisherBehavior-1.html">EntityBulkInserterDomainEventPublisherBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Publishes aggregate domain events after a successful bulk insert and clears them only after publication succeeds.
+This post-persistence publication is non-atomic and must not be combined with the Outbox behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterLoggingBehavior-1.html">EntityBulkInserterLoggingBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Emits payload-free bulk-insert lifecycle logs including operation identity, counts, and duration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterMetricsBehavior-1.html">EntityBulkInserterMetricsBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Emits BulkInserter-specific total, current, failure, and duration metrics around the decorated inserter.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityBulkInserterTracingBehavior-1.html">EntityBulkInserterTracingBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Creates one activity around the full bulk insert operation with non-payload diagnostic tags.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.EntityGuidIdGenerator-1.html">EntityGuidIdGenerator&lt;TEntity&gt;</a></dt>
       <dd><p>Provides functionality to generate and validate GUID-based IDs for entities.</p>
 </dd>
@@ -552,6 +604,11 @@ and consumers to wait asynchronously for readiness or be notified of failure.</p
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseTransaction.html">IDatabaseTransaction</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityBulkInserter-1.html">IEntityBulkInserter&lt;TEntity&gt;</a></dt>
+      <dd><p>Inserts entity batches through an explicitly configured high-performance persistence capability.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityIdGenerator-1.html">IEntityIdGenerator&lt;TEntity&gt;</a></dt>

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -47,7 +47,11 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/stylesheets/themes.css">
+    
       <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/theme-picker.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -117,28 +121,227 @@
     </div>
     
       
-        <form class="md-header__option" data-md-component="palette">
+        
+<form class="md-header__option bdk-theme-picker" data-md-component="palette">
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme)"
+      data-md-color-scheme="default"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use system theme"
+      type="radio"
+      name="__palette"
+      id="__palette_0"
+    >
     
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_1"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: light)"
+      data-md-color-scheme="light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_1"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_2"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: dark)"
+      data-md-color-scheme="dark"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use dark theme"
+      type="radio"
+      name="__palette"
+      id="__palette_2"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_3"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin theme"
+      type="radio"
+      name="__palette"
+      id="__palette_3"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_4"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="darkforest"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Darkforest theme"
+      type="radio"
+      name="__palette"
+      id="__palette_4"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_5"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="carbon"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Carbon theme"
+      type="radio"
+      name="__palette"
+      id="__palette_5"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_6"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="tokionights"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Tokyo Night theme"
+      type="radio"
+      name="__palette"
+      id="__palette_6"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_7"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="matrix"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Matrix theme"
+      type="radio"
+      name="__palette"
+      id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_0"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+
+  <details class="bdk-theme-picker__details" data-bdk-theme-picker>
+    <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
+      <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
+      <span data-bdk-theme-label>System</span>
+      <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
+      <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="dark" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#66d9ef;--theme-accent:#fd971f"></span>
+        <span>Dark</span>
       </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#11111b;--theme-primary:#89b4fa;--theme-accent:#f5c2e7"></span>
+        <span>Catppuccin</span>
       </label>
-    
-  
+      <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="darkforest" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#07120d;--theme-primary:#9ece6a;--theme-accent:#e0af68"></span>
+        <span>Darkforest</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="carbon" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#161616;--theme-primary:#78a9ff;--theme-accent:#ff7eb6"></span>
+        <span>Carbon</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="tokionights" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#0f1021;--theme-primary:#7aa2f7;--theme-accent:#bb9af7"></span>
+        <span>Tokyo Night</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="matrix" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#020802;--theme-primary:#00ff66;--theme-accent:#39ff14"></span>
+        <span>Matrix</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="light" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#f7f7f2;--theme-primary:#0f62fe;--theme-accent:#8a3ffc"></span>
+        <span>Light</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="system" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#a59f99;--theme-accent:#f7f7f2"></span>
+        <span>System</span>
+      </label>
+    </div>
+  </details>
 </form>
       
     
@@ -1442,6 +1645,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#bytesize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ByteSize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shortener" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shortener
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#content-types" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1457,6 +1682,72 @@
     <span class="md-ellipsis">
       
         CompressionHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encryptionhelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EncryptionHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encryption-key-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encryption Key Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-operations-and-temporary-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Operations And Temporary Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base64url-encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base64Url Encoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-scalar-encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Scalar Encoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opaque-continuation-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opaque Continuation Tokens
       
     </span>
   </a>
@@ -1528,6 +1819,17 @@
     <span class="md-ellipsis">
       
         Other Helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storage-neutral-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage-Neutral Utilities
       
     </span>
   </a>
@@ -2935,7 +3237,7 @@
   <span class="md-ellipsis">
     
   
-    StartupTasks
+    Startup Tasks
   
 
     
@@ -2991,7 +3293,35 @@
   <span class="md-ellipsis">
     
   
-    JobScheduling
+    Job Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-blobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
   
 
     
@@ -3019,7 +3349,35 @@
   <span class="md-ellipsis">
     
   
-    DocumentStorage
+    Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-permalinks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Permalinks
   
 
     
@@ -3885,6 +4243,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#bytesize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ByteSize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shortener" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shortener
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#content-types" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3900,6 +4280,72 @@
     <span class="md-ellipsis">
       
         CompressionHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encryptionhelper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EncryptionHelper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encryption-key-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encryption Key Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-operations-and-temporary-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Operations And Temporary Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base64url-encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base64Url Encoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-scalar-encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Property Scalar Encoding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opaque-continuation-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opaque Continuation Tokens
       
     </span>
   </a>
@@ -3978,6 +4424,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#storage-neutral-utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage-Neutral Utilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3998,6 +4455,72 @@
           
           
             <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../common-extensions/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Common Infrastructure
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
@@ -4081,8 +4604,16 @@
 </ul>
 </li>
 <li><a href="#data-and-content-helpers">Data And Content Helpers</a><ul>
+<li><a href="#bytesize">ByteSize</a></li>
+<li><a href="#shortener">Shortener</a></li>
 <li><a href="#content-types">Content Types</a></li>
 <li><a href="#compressionhelper">CompressionHelper</a></li>
+<li><a href="#encryptionhelper">EncryptionHelper</a></li>
+<li><a href="#encryption-key-providers">Encryption Key Providers</a></li>
+<li><a href="#stream-operations-and-temporary-files">Stream Operations And Temporary Files</a></li>
+<li><a href="#base64url-encoding">Base64Url Encoding</a></li>
+<li><a href="#property-scalar-encoding">Property Scalar Encoding</a></li>
+<li><a href="#opaque-continuation-tokens">Opaque Continuation Tokens</a></li>
 <li><a href="#hashhelper">HashHelper</a></li>
 <li><a href="#clonehelper-and-clonehelpernew">CloneHelper And CloneHelperNew</a></li>
 </ul>
@@ -4091,6 +4622,7 @@
 <li><a href="#factory-helpers">Factory Helpers</a></li>
 <li><a href="#validation-helpers">Validation Helpers</a></li>
 <li><a href="#other-helpers">Other Helpers</a></li>
+<li><a href="#storage-neutral-utilities">Storage-Neutral Utilities</a></li>
 <li><a href="#related-documentation">Related Documentation</a></li>
 </ul>
 </li>
@@ -4107,7 +4639,7 @@
 <li>date/time range utilities with half-open range algebra</li>
 <li>human-readable duration and relative-time text formatting</li>
 <li>dynamic predicate and reflection helpers</li>
-<li>content-type, compression, hashing, and cloning utilities</li>
+<li>content-type, Base64Url, compression, hashing, stream, and cloning utilities</li>
 <li>id and key generation helpers</li>
 <li>low-level activity and tracing helpers</li>
 <li>startup-task primitives and behaviors</li>
@@ -5348,6 +5880,125 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">allStatuses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enumeration</span><span class="p">.</span><span class="n">GetAll</span><span class="o">&lt;</span><span class="n">OrderStatus</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <h2 id="data-and-content-helpers">Data And Content Helpers<a class="headerlink" href="#data-and-content-helpers" title="Permanent link">&para;</a></h2>
+<h3 id="bytesize">ByteSize<a class="headerlink" href="#bytesize" title="Permanent link">&para;</a></h3>
+<p><code>ByteSize</code> centralizes binary byte-size calculations so options and defaults do not repeat raw <code>1024</code> multiplication expressions.</p>
+<p>Use it for storage limits, cache-size thresholds, stream buffer thresholds, and memory display conversions:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">maxValueSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">maxCachedBlobSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">chunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">previewLimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Kilobytes</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span>
+</code></pre></div>
+<p>Available unit helpers return raw byte counts:</p>
+<ul>
+<li><code>ByteSize.Bytes(value)</code></li>
+<li><code>ByteSize.Kilobytes(value)</code></li>
+<li><code>ByteSize.Megabytes(value)</code></li>
+<li><code>ByteSize.Gigabytes(value)</code></li>
+<li><code>ByteSize.Terabytes(value)</code></li>
+</ul>
+<p>Use <code>ByteSize.ToMegabytes(bytes)</code> when rendering memory or file-size values as megabytes:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">workingSetMb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">ToMegabytes</span><span class="p">(</span><span class="n">process</span><span class="p">.</span><span class="n">WorkingSet64</span><span class="p">);</span>
+</code></pre></div>
+<p>Rules:</p>
+<ul>
+<li>Units are binary: 1 KB is 1024 bytes.</li>
+<li>Negative size values throw <code>ArgumentOutOfRangeException</code>.</li>
+<li>Calculations use checked arithmetic and throw <code>OverflowException</code> when the result exceeds <code>long</code>.</li>
+<li>Size options should still store raw byte counts, usually as <code>long</code> or <code>long?</code>.</li>
+</ul>
+<h3 id="shortener">Shortener<a class="headerlink" href="#shortener" title="Permanent link">&para;</a></h3>
+<p><code>Shortener</code> produces compact, readable display values for paths and other separator-delimited identifiers. It preserves the terminal segment whenever the configured character budget allows, which makes it suitable for dashboard paths, filenames, namespaces, type names, and storage keys.</p>
+<p>The default adaptive strategy progressively abbreviates every parent segment using the configured prefix length, then one-character initials, before using left truncation as the final fallback. This keeps the most useful end of a value visible without relying only on CSS clipping.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">displayPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Shortener</span><span class="p">.</span><span class="n">Apply</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;archives/2026/july/customer-report.pdf&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">PathShorteningOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MaximumLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Separator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Placeholder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">SegmentPrefixLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">typeName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Shortener</span><span class="p">.</span><span class="n">Apply</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;Company.Product.Storage.DocumentHandler&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">36</span><span class="p">,</span>
+<span class="w">    </span><span class="n">separator</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Examples:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Configuration</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>archives/2026/report.pdf</code></td>
+<td><code>MaximumLength = 12</code>, <code>Strategy = Shortener.LeftTruncate</code></td>
+<td><code>...eport.pdf</code></td>
+</tr>
+<tr>
+<td><code>archives/2026/report.pdf</code></td>
+<td><code>MaximumLength = 12</code>, <code>Strategy = Shortener.RightTruncate</code></td>
+<td><code>archives/...</code></td>
+</tr>
+<tr>
+<td><code>archives/2026/july/report.pdf</code></td>
+<td><code>MaximumLength = 18</code>, <code>Strategy = Shortener.SegmentInitials</code></td>
+<td><code>a/2/j/report.pdf</code></td>
+</tr>
+<tr>
+<td><code>Company.Product.Feature.Handler</code></td>
+<td><code>MaximumLength = 16</code>, <code>Separator = "."</code>, <code>SegmentPrefixLength = 2</code>, <code>Strategy = Shortener.SegmentPrefixes</code></td>
+<td><code>Co.Pr.Fe.Handler</code></td>
+</tr>
+<tr>
+<td><code>FirstProduct/Items/PriceDiscount/aaa.json</code></td>
+<td><code>MaximumLength = 20</code>, <code>Strategy = Shortener.CamelCaseInitials</code></td>
+<td><code>FP/I/PD/aaa.json</code></td>
+</tr>
+<tr>
+<td><code>archives/2026/july/report.pdf</code></td>
+<td><code>MaximumLength = 20</code>, <code>SegmentPrefixLength = 3</code>, adaptive default</td>
+<td><code>ar/20/ju/report.pdf</code></td>
+</tr>
+</tbody>
+</table>
+<p>When an abbreviated result still exceeds the budget, use <code>OverflowTruncation</code> to choose the final fallback direction:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Configuration</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FirstProduct/Items/PriceDiscount/aaa.json</code></td>
+<td><code>MaximumLength = 11</code>, <code>Strategy = Shortener.CamelCaseInitials</code>, <code>OverflowTruncation = Left</code></td>
+<td><code>...aaa.json</code></td>
+</tr>
+<tr>
+<td><code>FirstProduct/Items/PriceDiscount/aaa.json</code></td>
+<td><code>MaximumLength = 11</code>, <code>Strategy = Shortener.CamelCaseInitials</code>, <code>OverflowTruncation = Right</code></td>
+<td><code>FP/I/PD/...</code></td>
+</tr>
+</tbody>
+</table>
+<p>Available strategies are exposed by <code>Shortener</code>:</p>
+<ul>
+<li><code>LeftTruncate</code> preserves the end of a value, for example <code>.../report.pdf</code>.</li>
+<li><code>RightTruncate</code> preserves the beginning of a value, for example <code>archives/...</code>.</li>
+<li><code>SegmentInitials</code> reduces each parent segment to one character while preserving the terminal segment.</li>
+<li><code>SegmentPrefixes</code> keeps <code>SegmentPrefixLength</code> characters from each parent segment.</li>
+<li><code>CamelCaseInitials</code> uses the initials of PascalCase or camelCase words, for example <code>FirstProduct/Items/PriceDiscount/aaa.json</code> becomes <code>FP/I/PD/aaa.json</code>.</li>
+<li><code>Adaptive</code> tries the longest readable segment prefixes first, then initials, and finally left truncation.</li>
+</ul>
+<p>Set <code>Placeholder</code> to an empty string when the shortened representation must not include a marker. <code>Separator</code> defaults to <code>/</code> but can be set to <code>.</code>, <code>:</code>, <code>|</code>, or any other non-empty delimiter.</p>
+<p>Segment-based strategies always fit the configured budget. When parent-segment abbreviation is still too long, <code>OverflowTruncation</code> selects the fallback: <code>Left</code> (the default) preserves the final filename or identifier, while <code>Right</code> preserves the beginning of the abbreviated path.</p>
 <h3 id="content-types">Content Types<a class="headerlink" href="#content-types" title="Permanent link">&para;</a></h3>
 <p>The content-type helpers define a <code>ContentType</code> model plus extension methods for:</p>
 <ul>
@@ -5369,11 +6020,130 @@
 <li>byte arrays</li>
 <li>streams</li>
 </ul>
-<p>It uses GZip and supports async workflows, making it useful for payload compression, export/import scenarios, and storage pipelines.</p>
-<p>Example:</p>
+<p>It uses GZip and supports async workflows, making it useful for payload compression, export/import scenarios, and storage pipelines. Prefer the stream factory methods for large payloads or provider integrations, because they avoid requiring the full content as a byte array.</p>
+<p>String and byte-array helpers are convenient for small payloads that are already in memory:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">compressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">CompressionHelper</span><span class="p">.</span><span class="n">CompressAsync</span><span class="p">(</span><span class="s">&quot;hello world&quot;</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">original</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">CompressionHelper</span><span class="p">.</span><span class="n">DecompressAsync</span><span class="p">(</span><span class="n">compressed</span><span class="p">);</span>
 </code></pre></div>
+<p>Stream-first compression:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">compressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;report.csv.gz&quot;</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="nf">using</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">compressor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CompressionHelper</span><span class="p">.</span><span class="n">CreateGZipCompressionStream</span><span class="p">(</span>
+<span class="w">    </span><span class="n">compressed</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CompressionLevel</span><span class="p">.</span><span class="n">Optimal</span><span class="p">,</span>
+<span class="w">    </span><span class="n">leaveOpen</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">compressor</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Stream-first decompression:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">compressed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">&quot;report.csv.gz&quot;</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">decompressor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CompressionHelper</span><span class="p">.</span><span class="n">CreateGZipDecompressionStream</span><span class="p">(</span>
+<span class="w">    </span><span class="n">compressed</span><span class="p">,</span>
+<span class="w">    </span><span class="n">leaveOpen</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">decompressor</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p><code>CompressionHelper</code> also provides single-entry ZIP stream helpers for workflows that need ZIP container compatibility.</p>
+<h3 id="encryptionhelper">EncryptionHelper<a class="headerlink" href="#encryptionhelper" title="Permanent link">&para;</a></h3>
+<p><code>EncryptionHelper</code> encrypts and decrypts:</p>
+<ul>
+<li>strings</li>
+<li>byte arrays</li>
+<li>streams</li>
+</ul>
+<p>It uses AES-CBC/PKCS7 and centralizes key-size validation, initialization-vector generation, and stream creation for features that need symmetric encryption.</p>
+<p>Use the string and byte-array helpers for small payloads that are already in memory. These helpers generate a new initialization vector per encryption operation. The byte-array payload format is <code>IV || ciphertext</code>; the string payload is Base64 for that same binary envelope.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">GenerateAesKey</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">encryptedText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">EncryptAsync</span><span class="p">(</span><span class="s">&quot;secret&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">DecryptAsync</span><span class="p">(</span><span class="n">encryptedText</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">encryptedBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">EncryptAsync</span><span class="p">(</span><span class="n">bytes</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">decryptedBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">DecryptAsync</span><span class="p">(</span><span class="n">encryptedBytes</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Prefer the stream factory methods for large payloads or provider integrations:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">GenerateAesKey</span><span class="p">();</span><span class="w"> </span><span class="c1">// AES-256 by default</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">GenerateAesCbcInitializationVector</span><span class="p">();</span>
+
+<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">encrypted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="s">&quot;report.bin&quot;</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="nf">using</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">encryptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">CreateAesCbcEncryptionStream</span><span class="p">(</span>
+<span class="w">    </span><span class="n">encrypted</span><span class="p">,</span>
+<span class="w">    </span><span class="n">key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">iv</span><span class="p">,</span>
+<span class="w">    </span><span class="n">leaveOpen</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">encryptor</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="w">    </span><span class="n">encryptor</span><span class="p">.</span><span class="n">FlushFinalBlock</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Decrypt with the same key and initialization vector:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">encrypted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">.</span><span class="n">OpenRead</span><span class="p">(</span><span class="s">&quot;report.bin&quot;</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">decryptor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">CreateAesCbcDecryptionStream</span><span class="p">(</span>
+<span class="w">    </span><span class="n">encrypted</span><span class="p">,</span>
+<span class="w">    </span><span class="n">key</span><span class="p">,</span>
+<span class="w">    </span><span class="n">iv</span><span class="p">,</span>
+<span class="w">    </span><span class="n">leaveOpen</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">decryptor</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Rules:</p>
+<ul>
+<li>AES keys must be 16, 24, or 32 bytes.</li>
+<li>AES-CBC initialization vectors must be 16 bytes.</li>
+<li>Generate a new initialization vector for every encrypted payload.</li>
+<li>Store keys in application configuration or a secret store, not in source files.</li>
+</ul>
+<h3 id="encryption-key-providers">Encryption Key Providers<a class="headerlink" href="#encryption-key-providers" title="Permanent link">&para;</a></h3>
+<p><code>IEncryptionKeyProvider</code> separates active write-key selection from historical read-key lookup. <code>EncryptionKeyMaterial</code> copies supplied key bytes, and <code>DictionaryEncryptionKeyProvider</code> provides an immutable in-memory implementation suitable for configuration-backed key sets and tests.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DictionaryEncryptionKeyProvider</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;2026-07&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="p">[]</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="na">[&quot;2026-07&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">currentKey</span><span class="p">,</span>
+<span class="w">        </span><span class="na">[&quot;2026-01&quot;]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousKey</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">keys</span><span class="p">.</span><span class="n">GetActiveKeyAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">historical</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">keys</span><span class="p">.</span><span class="n">GetKeyAsync</span><span class="p">(</span><span class="s">&quot;2026-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Keep old key ids available until no persisted encrypted value references them.</p>
+<h3 id="stream-operations-and-temporary-files">Stream Operations And Temporary Files<a class="headerlink" href="#stream-operations-and-temporary-files" title="Permanent link">&para;</a></h3>
+<p><code>StreamHelper</code> is the shared location for stream operations. Its <code>CopyAsync</code> method performs pooled asynchronous copies while optionally enforcing a maximum byte count and calculating an incremental hash. It leaves caller streams open and throws <code>StreamSizeLimitExceededException</code> before writing bytes beyond the configured limit.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">StreamHelper</span><span class="p">.</span><span class="n">CopyAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">source</span><span class="p">,</span>
+<span class="w">    </span><span class="n">destination</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">StreamCopyOptions</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MaximumBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+<span class="w">        </span><span class="n">HashAlgorithm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashAlgorithmName</span><span class="p">.</span><span class="n">SHA256</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{copy.Length} bytes, hash {copy.Hash}&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p><code>TemporaryFileHelper.Create(...)</code> returns a <code>TemporaryFileLease</code> with an asynchronous sequential stream and a unique path. Synchronous or asynchronous disposal closes the stream and unconditionally attempts to delete the file.</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">temporary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemporaryFileHelper</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bdk-export-&quot;</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">temporary</span><span class="p">.</span><span class="n">Stream</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="base64url-encoding">Base64Url Encoding<a class="headerlink" href="#base64url-encoding" title="Permanent link">&para;</a></h3>
+<p><code>Base64UrlHelper</code> converts binary values to canonical unpadded Base64Url text and back. <code>Encode</code> replaces the standard Base64 <code>+</code> and <code>/</code> characters with URL-safe characters and omits padding. <code>Decode</code> accepts only that canonical unpadded representation, rejecting malformed input, standard Base64 padding, and alternate encodings of the same bytes.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="s">&quot;payload&quot;</span><span class="n">u8</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span>
+</code></pre></div>
+<p>Use this helper for URL, key, token, and metadata formats that explicitly require Base64Url. Continue using standard <code>Convert.ToBase64String</code> and <code>Convert.FromBase64String</code> when a protocol requires regular padded Base64.</p>
+<h3 id="property-scalar-encoding">Property Scalar Encoding<a class="headerlink" href="#property-scalar-encoding" title="Permanent link">&para;</a></h3>
+<p><code>PropertyBagScalarCodec</code> preserves scalar property types across string-only persistence systems. Encoded values use a versioned <code>bdk_v1_</code> Base64Url envelope. Strings remain strings even when they look like numbers or booleans; legacy unprefixed values are read as strings.</p>
+<p>Supported values include null, strings, characters, Boolean and numeric primitives, <code>Guid</code>, date/time values, <code>TimeSpan</code>, and byte arrays. Complex values are rejected.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PropertyBagScalarCodec</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">DateTimeOffset</span><span class="p">)</span><span class="n">PropertyBagScalarCodec</span><span class="p">.</span><span class="n">Decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="opaque-continuation-tokens">Opaque Continuation Tokens<a class="headerlink" href="#opaque-continuation-tokens" title="Permanent link">&para;</a></h3>
+<p><code>OpaqueContinuationTokenCodec</code> serializes purpose-bound, versioned tokens. Without an <code>IContinuationTokenProtector</code>, tokens are unsigned. With <code>HmacContinuationTokenProtector</code>, tokens use HMAC-SHA256 and reject unsigned, modified, incorrectly signed, or wrong-purpose payloads.</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">protector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HmacContinuationTokenProtector</span><span class="p">(</span><span class="n">secret</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpaqueContinuationTokenCodec</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;blob-storage&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">protector</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">restored</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpaqueContinuationTokenCodec</span><span class="p">.</span><span class="n">Deserialize</span><span class="o">&lt;</span><span class="n">MyPayload</span><span class="o">&gt;</span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;blob-storage&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">protector</span><span class="p">);</span>
+</code></pre></div>
+<p>Use a distinct stable purpose for each feature and keep the HMAC secret consistent across application instances that exchange continuation tokens.</p>
 <h3 id="hashhelper">HashHelper<a class="headerlink" href="#hashhelper" title="Permanent link">&para;</a></h3>
 <p><code>HashHelper</code> computes hashes for:</p>
 <ul>
@@ -5446,6 +6216,42 @@
 <span class="w">    </span><span class="n">delays</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMilliseconds</span><span class="p">(</span><span class="mi">250</span><span class="p">)]);</span>
 
 <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">stopwatch</span><span class="p">.</span><span class="n">GetElapsedMilliseconds</span><span class="p">());</span>
+</code></pre></div>
+<h2 id="storage-neutral-utilities">Storage-Neutral Utilities<a class="headerlink" href="#storage-neutral-utilities" title="Permanent link">&para;</a></h2>
+<p>Storage features share the following helpers instead of implementing local byte, stream, expiration, hashing, initialization, or key-display logic:</p>
+<ul>
+<li><code>ByteSize.Bytes/Kilobytes/Megabytes/Gigabytes</code> for checked byte calculations.</li>
+<li><code>StreamHelper.CopyAsync</code> for pooled bounded asynchronous copying with optional incremental hashing.</li>
+<li><code>TemporaryFileHelper</code> and <code>TemporaryFileLease</code> for unique sequential temporary files with unconditional disposal cleanup.</li>
+<li><code>Base64UrlHelper</code> for URL-safe binary envelopes.</li>
+<li><code>ExpirationHelper</code> for UTC preserve/set/clear/relative expiration resolution and due checks.</li>
+<li><code>ContentHashHelper</code> for canonical <code>sha256:&lt;lowercase-hex&gt;</code> hashes.</li>
+<li><code>AsyncInitializationGate</code> for retryable, concurrent, idempotent resource initialization.</li>
+<li><code>PeriodicBackgroundService</code> for monitored startup-gated work that runs one iteration at a time with <code>TimeProvider</code>-based delays and bounded shutdown.</li>
+<li><code>RawKeyDisplayStrategy</code> and <code>Sha256KeyDisplayStrategy</code> for operational key logging.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentHashHelper</span><span class="p">.</span><span class="n">ComputeSha256</span><span class="p">(</span><span class="n">payload</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">expiresAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExpirationHelper</span><span class="p">.</span><span class="n">Resolve</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ExpirationChange</span><span class="p">.</span><span class="n">After</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">current</span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">    </span><span class="n">TimeProvider</span><span class="p">.</span><span class="n">System</span><span class="p">);</span>
+</code></pre></div>
+<p>Recurring hosted work derives from <code>PeriodicBackgroundService</code> and implements one iteration. The base class waits for <code>ApplicationStarted</code>, applies <code>StartupDelay</code>, serializes iterations, exposes unexpected failures through <code>BackgroundService.ExecuteTask</code>, and applies <code>StopTimeout</code> during shutdown.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">CleanupService</span><span class="p">(</span><span class="n">IHostApplicationLifetime</span><span class="w"> </span><span class="n">lifetime</span><span class="p">,</span><span class="w"> </span><span class="n">TimeProvider</span><span class="w"> </span><span class="n">timeProvider</span><span class="p">)</span>
+<span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">PeriodicBackgroundService</span><span class="p">(</span>
+<span class="w">        </span><span class="k">new</span><span class="p">()</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">StartupDelay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+<span class="w">            </span><span class="n">Interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">            </span><span class="n">StopTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="n">lifetime</span><span class="p">,</span>
+<span class="w">        </span><span class="n">timeProvider</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteIterationAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">CleanupAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></div>
 <h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
@@ -5532,10 +6338,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       

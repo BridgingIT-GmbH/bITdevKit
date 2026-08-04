@@ -1,11 +1,15 @@
 (function () {
-  if (typeof keyboard$ === "undefined") {
-    return;
-  }
+  const mkdocsShortcutKeys = new Set(["f", "s", "/"]);
 
-  keyboard$.subscribe(function (key) {
-    if (key.mode === "global") {
-      key.claim();
+  document.addEventListener("keydown", function (event) {
+    const context7Active = document.activeElement?.id === "context7-widget";
+    const mkdocsShortcut =
+      !event.metaKey &&
+      !event.ctrlKey &&
+      mkdocsShortcutKeys.has(event.key);
+
+    if (context7Active || mkdocsShortcut) {
+      event.stopPropagation();
     }
   });
 })();

@@ -27,7 +27,8 @@ public partial class JobSchedulerService(
     JobSchedulerHostedOptions options = null,
     IEnumerable<IJobSchedulerExceptionHandler> exceptionHandlers = null,
     IHostEnvironment hostEnvironment = null,
-    ILoggerFactory loggerFactory = null) : IJobSchedulerService
+    ILoggerFactory loggerFactory = null,
+    IMetricsService metricsService = null) : IJobSchedulerService
 {
     private readonly string schedulerInstanceId = (options ?? new JobSchedulerHostedOptions()).ResolveSchedulerInstanceId(hostEnvironment);
     private readonly ConcurrentDictionary<Guid, ActiveExecutionState> activeExecutions = [];
@@ -35,6 +36,7 @@ public partial class JobSchedulerService(
     private readonly IJobSchedulerExceptionHandler[] exceptionHandlers = exceptionHandlers?.ToArray() ?? [];
     private readonly JobSchedulerHostedOptions options = options ?? new JobSchedulerHostedOptions();
     private readonly ILogger<JobSchedulerService> logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<JobSchedulerService>();
+    private readonly JobSchedulerMetrics metrics = new(metricsService);
 
     internal string SchedulerInstanceId => this.schedulerInstanceId;
 
@@ -1126,7 +1128,7 @@ public partial class JobSchedulerService(
                     }
                 }
 
-                JobSchedulerInstrumentation.RecordMaterializedOccurrences(this.schedulerInstanceId, definition.JobName, trigger.TriggerName, trigger.TriggerType, evaluation.Value.Occurrences.Count);
+                this.metrics.RecordMaterializedOccurrences(this.schedulerInstanceId, definition.JobName, trigger.TriggerName, trigger.TriggerType, evaluation.Value.Occurrences.Count);
                 if (evaluation.Value.Occurrences.Count > 0)
                 {
                     TypedLogger.LogMaterializedScheduledOccurrences(
@@ -3304,7 +3306,7 @@ public partial class JobSchedulerService(
         activity?.SetTag("jobs.operation.success", lease is not null);
         if (lease is not null)
         {
-            JobSchedulerInstrumentation.RecordLeaseAcquired(this.schedulerInstanceId, occurrenceId, lease.SchedulerInstanceId);
+            this.metrics.RecordLeaseAcquired(this.schedulerInstanceId, occurrenceId, lease.SchedulerInstanceId);
         }
 
         return lease;
@@ -3366,7 +3368,7 @@ public partial class JobSchedulerService(
                     }
 
                     activity?.SetTag("jobs.operation.success", true);
-                    JobSchedulerInstrumentation.RecordLeaseRenewed(this.schedulerInstanceId, occurrenceId, renewed.SchedulerInstanceId);
+                    this.metrics.RecordLeaseRenewed(this.schedulerInstanceId, occurrenceId, renewed.SchedulerInstanceId);
                     active.Lease = renewed;
                 }
             }
@@ -3434,7 +3436,7 @@ public partial class JobSchedulerService(
         return MergeMessages([], messages, errors?.Select(x => x.Message)).LastOrDefault();
     }
 
-    private static Result TraceManagementResult(Activity activity, string operation, Result result, string jobName = null, string triggerName = null, Guid? occurrenceId = null)
+    private Result TraceManagementResult(Activity activity, string operation, Result result, string jobName = null, string triggerName = null, Guid? occurrenceId = null)
     {
         activity?.SetTag("jobs.operation.success", result.IsSuccess);
         if (!result.IsSuccess)
@@ -3442,11 +3444,11 @@ public partial class JobSchedulerService(
             activity?.SetStatus(ActivityStatusCode.Error, BuildMessage(result.Errors, result.Messages));
         }
 
-        JobSchedulerInstrumentation.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName, occurrenceId);
+        this.metrics.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName, occurrenceId);
         return result;
     }
 
-    private static Result<T> TraceManagementResult<T>(Activity activity, string operation, Result<T> result, string jobName = null, string triggerName = null, Guid? occurrenceId = null)
+    private Result<T> TraceManagementResult<T>(Activity activity, string operation, Result<T> result, string jobName = null, string triggerName = null, Guid? occurrenceId = null)
     {
         activity?.SetTag("jobs.operation.success", result.IsSuccess);
         if (!result.IsSuccess)
@@ -3454,7 +3456,7 @@ public partial class JobSchedulerService(
             activity?.SetStatus(ActivityStatusCode.Error, BuildMessage(result.Errors, result.Messages));
         }
 
-        JobSchedulerInstrumentation.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName, occurrenceId);
+        this.metrics.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName, occurrenceId);
         return result;
     }
 

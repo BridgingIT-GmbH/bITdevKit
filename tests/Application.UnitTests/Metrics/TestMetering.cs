@@ -60,6 +60,11 @@ internal sealed class MetricsRecorder : IDisposable
             this.counters.GetOrAdd(instrument.Name, _ => []).Add(measurement);
         });
 
+        this.listener.SetMeasurementEventCallback<long>((instrument, measurement, tags, state) =>
+        {
+            this.counters.GetOrAdd(instrument.Name, _ => []).Add(measurement);
+        });
+
         this.listener.SetMeasurementEventCallback<double>((instrument, measurement, tags, state) =>
         {
             this.histograms.GetOrAdd(instrument.Name, _ => []).Add(measurement);

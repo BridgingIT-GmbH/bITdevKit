@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using System.Diagnostics.Metrics;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
@@ -17,7 +16,7 @@ using BridgingIT.DevKit.Common;
 ///     .WithBehavior&lt;MetricsMessagePublisherBehavior&gt;();
 /// </code>
 /// </example>
-public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
+public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMetricsService metricsService = null)
     : MessagePublisherBehaviorBase(loggerFactory)
 {
     /// <summary>
@@ -37,7 +36,7 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
             return;
         }
 
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             await next().AnyContext();
             return;
@@ -49,10 +48,10 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
         var currentPublishSeries = Metrics.CurrentSeries(publishSeries);
         var currentTypedPublishSeries = Metrics.CurrentSeries(typedPublishSeries);
 
-        Metrics.Increment(meterFactory, publishSeries);
-        Metrics.Increment(meterFactory, typedPublishSeries);
-        Metrics.ChangeCurrent(meterFactory, currentPublishSeries, 1);
-        Metrics.ChangeCurrent(meterFactory, currentTypedPublishSeries, 1);
+        metricsService.AddCounter(publishSeries);
+        metricsService.AddCounter(typedPublishSeries);
+        metricsService.AddUpDownCounter(currentPublishSeries, 1);
+        metricsService.AddUpDownCounter(currentTypedPublishSeries, 1);
 
         try
         {
@@ -60,15 +59,15 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
         }
         catch
         {
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(publishSeries));
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedPublishSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(publishSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(typedPublishSeries));
 
             throw;
         }
         finally
         {
-            Metrics.ChangeCurrent(meterFactory, currentPublishSeries, -1);
-            Metrics.ChangeCurrent(meterFactory, currentTypedPublishSeries, -1);
+            metricsService.AddUpDownCounter(currentPublishSeries, -1);
+            metricsService.AddUpDownCounter(currentTypedPublishSeries, -1);
         }
     }
 }

@@ -9,7 +9,7 @@ public class MetricsQueueingBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsQueueEnqueuerBehavior(meterFactory);
+        var sut = new MetricsQueueEnqueuerBehavior(new MetricsService(meterFactory));
 
         await sut.Enqueue(new TestQueueMessage("hello"), CancellationToken.None, () => Task.CompletedTask);
 
@@ -26,7 +26,7 @@ public class MetricsQueueingBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsQueueHandlerBehavior(meterFactory);
+        var sut = new MetricsQueueHandlerBehavior(new MetricsService(meterFactory));
 
         await Should.ThrowAsync<InvalidOperationException>(() => sut.Handle(
             new TestQueueMessage("hello"),

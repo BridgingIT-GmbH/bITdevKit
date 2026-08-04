@@ -10,7 +10,7 @@ public class MetricsJobSchedulingBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsJobSchedulingBehavior(meterFactory);
+        var sut = new MetricsJobSchedulingBehavior(new MetricsService(meterFactory));
         var context = Substitute.For<IJobExecutionContext>();
         context.CancellationToken.Returns(CancellationToken.None);
         context.JobDetail.Returns(JobBuilder.Create<TestQuartzJob>().WithIdentity("job-1").Build());
@@ -30,7 +30,7 @@ public class MetricsJobSchedulingBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsJobSchedulingBehavior(meterFactory);
+        var sut = new MetricsJobSchedulingBehavior(new MetricsService(meterFactory));
         var context = Substitute.For<IJobExecutionContext>();
         context.CancellationToken.Returns(CancellationToken.None);
         context.JobDetail.Returns(JobBuilder.Create<TestQuartzJob>().WithIdentity("job-1").Build());

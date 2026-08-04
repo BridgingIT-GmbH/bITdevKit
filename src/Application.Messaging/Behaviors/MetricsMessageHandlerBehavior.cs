@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using System.Diagnostics.Metrics;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
@@ -17,7 +16,7 @@ using BridgingIT.DevKit.Common;
 ///     .WithBehavior&lt;MetricsMessageHandlerBehavior&gt;();
 /// </code>
 /// </example>
-public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
+public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMetricsService metricsService = null)
     : MessageHandlerBehaviorBase(loggerFactory)
 {
     /// <summary>
@@ -39,7 +38,7 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterF
             return;
         }
 
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             await next().AnyContext();
             return;
@@ -51,10 +50,10 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterF
         var currentHandleSeries = Metrics.CurrentSeries(handleSeries);
         var currentTypedHandleSeries = Metrics.CurrentSeries(typedHandleSeries);
 
-        Metrics.Increment(meterFactory, handleSeries);
-        Metrics.Increment(meterFactory, typedHandleSeries);
-        Metrics.ChangeCurrent(meterFactory, currentHandleSeries, 1);
-        Metrics.ChangeCurrent(meterFactory, currentTypedHandleSeries, 1);
+        metricsService.AddCounter(handleSeries);
+        metricsService.AddCounter(typedHandleSeries);
+        metricsService.AddUpDownCounter(currentHandleSeries, 1);
+        metricsService.AddUpDownCounter(currentTypedHandleSeries, 1);
 
         try
         {
@@ -62,15 +61,15 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterF
         }
         catch
         {
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(handleSeries));
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedHandleSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(handleSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(typedHandleSeries));
 
             throw;
         }
         finally
         {
-            Metrics.ChangeCurrent(meterFactory, currentHandleSeries, -1);
-            Metrics.ChangeCurrent(meterFactory, currentTypedHandleSeries, -1);
+            metricsService.AddUpDownCounter(currentHandleSeries, -1);
+            metricsService.AddUpDownCounter(currentTypedHandleSeries, -1);
         }
     }
 }

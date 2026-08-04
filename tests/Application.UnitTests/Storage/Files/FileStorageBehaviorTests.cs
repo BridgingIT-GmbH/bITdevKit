@@ -30,7 +30,7 @@ public sealed class FileStorageBehaviorTests
                 Exists = _ => Result.Failure()
                     .WithError(new FileSystemError("secret failure message", "secret/path/missing.txt"))
             },
-            meterFactory);
+            new MetricsService(meterFactory));
 
         // Act
         await metrics.ReadFileAsync("secret/path/file.txt");
@@ -56,7 +56,7 @@ public sealed class FileStorageBehaviorTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddMetrics();
+        services.AddMetrics(options => options.Enabled());
         services.AddFileStorage(factory => factory
             .RegisterProvider("files", storage => storage
                 .UseInMemory("files")

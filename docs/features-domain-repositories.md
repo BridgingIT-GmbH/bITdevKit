@@ -318,10 +318,10 @@ services.AddEntityFrameworkBulkInserter<TodoItem, CoreDbContext>(
 
 | Decorator | Entity requirement | Main dependency |
 | --- | --- | --- |
-| Cancellation, tracing, logging, metrics | None | Cancellation token, `ActivitySource`, `ILoggerFactory`, or `IMeterFactory` |
+| Cancellation, tracing, logging, metrics | None | Cancellation token, `ActivitySource`, `ILoggerFactory`, or optional `IMetricsService` |
 | Audit state | `IAuditable` | Optional `ICurrentUserAccessor` |
 | Concurrency | `IConcurrency` | None |
-| Created domain event and event metrics | `IAggregateRoot` | Optional `IMeterFactory` for metrics |
+| Created domain event and event metrics | `IAggregateRoot` | Optional `IMetricsService` for metrics |
 | Outbox domain events | `IAggregateRoot` | `TContext : IOutboxDomainEventContext`, optional queue/options |
 | Direct domain-event publisher | `IAggregateRoot` | `IDomainEventPublisher` |
 

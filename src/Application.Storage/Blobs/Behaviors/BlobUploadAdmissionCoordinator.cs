@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Collections.Concurrent;
-using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 using System.Threading.RateLimiting;
 
 /// <summary>
@@ -76,15 +76,14 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
         new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource shutdown = new();
     private readonly TimeProvider timeProvider;
-    private readonly UpDownCounter<long> activeUploads;
-    private readonly UpDownCounter<long> queuedUploads;
+    private readonly IMetricsService metricsService;
     private int disposed;
 
     /// <summary>
     /// Initializes a new upload-admission coordinator.
     /// </summary>
     /// <param name="timeProvider">The optional clock used for queue timeouts.</param>
-    /// <param name="meterFactory">The optional meter factory used for state metrics.</param>
+    /// <param name="metricsService">The optional shared metrics service used for state metrics.</param>
     /// <example>
     /// <code>
     /// using var coordinator = new BlobUploadAdmissionCoordinator(TimeProvider.System);
@@ -92,12 +91,10 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
     /// </example>
     public BlobUploadAdmissionCoordinator(
         TimeProvider timeProvider = null,
-        IMeterFactory meterFactory = null)
+        IMetricsService metricsService = null)
     {
         this.timeProvider = timeProvider ?? TimeProvider.System;
-        var meter = meterFactory?.Create(Metrics.MeterName);
-        this.activeUploads = meter?.CreateUpDownCounter<long>("blobstorage_uploads_active");
-        this.queuedUploads = meter?.CreateUpDownCounter<long>("blobstorage_uploads_queued");
+        this.metricsService = metricsService;
     }
 
     /// <inheritdoc />
@@ -123,8 +120,7 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
             name => new StoreState(
                 name,
                 options,
-                this.activeUploads,
-                this.queuedUploads));
+                this.metricsService));
         state.EnsureCompatible(options);
     }
 
@@ -254,23 +250,20 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
 
     private sealed class StoreState : IDisposable
     {
-        private readonly UpDownCounter<long> activeUploads;
-        private readonly UpDownCounter<long> queuedUploads;
+        private readonly IMetricsService metricsService;
         private int active;
         private int queued;
 
         public StoreState(
             string storeName,
             UploadConcurrencyBlobStoreClientBehaviorOptions options,
-            UpDownCounter<long> activeUploads,
-            UpDownCounter<long> queuedUploads)
+            IMetricsService metricsService)
         {
             this.StoreName = storeName;
             this.MaxConcurrentUploads = options.MaxConcurrentUploads;
             this.MaxQueuedUploads = options.MaxQueuedUploads;
             this.QueueWaitTimeout = options.QueueWaitTimeout;
-            this.activeUploads = activeUploads;
-            this.queuedUploads = queuedUploads;
+            this.metricsService = metricsService;
             this.Limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
             {
                 PermitLimit = options.MaxConcurrentUploads,
@@ -303,25 +296,25 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
         public void IncrementActive()
         {
             Interlocked.Increment(ref this.active);
-            RecordMetric(this.activeUploads, 1, this.StoreName);
+            this.RecordMetric("blobstorage_uploads_active", 1);
         }
 
         public void DecrementActive()
         {
             Interlocked.Decrement(ref this.active);
-            RecordMetric(this.activeUploads, -1, this.StoreName);
+            this.RecordMetric("blobstorage_uploads_active", -1);
         }
 
         public void IncrementQueued()
         {
             Interlocked.Increment(ref this.queued);
-            RecordMetric(this.queuedUploads, 1, this.StoreName);
+            this.RecordMetric("blobstorage_uploads_queued", 1);
         }
 
         public void DecrementQueued()
         {
             Interlocked.Decrement(ref this.queued);
-            RecordMetric(this.queuedUploads, -1, this.StoreName);
+            this.RecordMetric("blobstorage_uploads_queued", -1);
         }
 
         public BlobUploadAdmissionSnapshot CreateSnapshot() =>
@@ -334,21 +327,10 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
 
         public void Dispose() => this.Limiter.Dispose();
 
-        private static void RecordMetric(
-            UpDownCounter<long> counter,
-            long value,
-            string storeName)
+        private void RecordMetric(string name, long value)
         {
-            try
-            {
-                counter?.Add(value, new KeyValuePair<string, object>("store", storeName));
-            }
-            catch (Exception exception) when (exception is not OutOfMemoryException and
-                not StackOverflowException and
-                not AccessViolationException)
-            {
-                // Admission state and permit ownership must not depend on metric publication.
-            }
+            MetricTag[] tags = [new("store", this.StoreName)];
+            this.metricsService?.AddUpDownCounter(name, value, tags);
         }
     }
 }

@@ -10,7 +10,7 @@ public class MetricsOrchestrationBehaviorTests(ITestOutputHelper output) : Orche
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsOrchestrationBehavior(meterFactory);
+        var sut = new MetricsOrchestrationBehavior(new MetricsService(meterFactory));
         var context = new OrchestrationActivityExecutionContext(
             Guid.NewGuid(),
             "OrderApproval",
@@ -38,7 +38,7 @@ public class MetricsOrchestrationBehaviorTests(ITestOutputHelper output) : Orche
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsOrchestrationBehavior(meterFactory);
+        var sut = new MetricsOrchestrationBehavior(new MetricsService(meterFactory));
         var context = new OrchestrationActivityExecutionContext(
             Guid.NewGuid(),
             "OrderApproval",

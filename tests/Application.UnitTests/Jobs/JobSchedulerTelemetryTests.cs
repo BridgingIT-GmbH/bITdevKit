@@ -22,7 +22,8 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         using var harness = this.CreateHarness(jobs =>
             jobs.WithJob<TelemetryJob>("telemetry-job", job => job
                 .Description("telemetry")
-                .AddTrigger("manual", trigger => trigger.Manual())));
+                .AddTrigger("manual", trigger => trigger.Manual())),
+            configureServices: services => services.AddMetrics(options => options.Enabled()));
         using var activities = new ActivityCollector(TelemetrySourceName);
         using var measurements = new MeterCollector(TelemetryMeterName);
 
@@ -45,7 +46,8 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         using var harness = this.CreateHarness(jobs =>
             jobs.WithJob<TelemetryJob>("scheduled-job", job => job
                 .Description("scheduled")
-                .AddTrigger("once", trigger => trigger.At(new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero)))));
+                .AddTrigger("once", trigger => trigger.At(new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero)))),
+            configureServices: services => services.AddMetrics(options => options.Enabled()));
 
         harness.Advance(TimeSpan.FromMinutes(1));
 
@@ -63,7 +65,9 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
     [Fact]
     public async Task AcceptEventEmitsAcceptanceTelemetry()
     {
-        using var harness = this.CreateHarness(_ => { });
+        using var harness = this.CreateHarness(
+            _ => { },
+            configureServices: services => services.AddMetrics(options => options.Enabled()));
         var ingress = harness.Services.GetRequiredService<IJobEventIngress>();
         using var activities = new ActivityCollector(TelemetrySourceName);
         using var measurements = new MeterCollector(TelemetryMeterName);
@@ -88,7 +92,8 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         using var harness = this.CreateHarness(jobs =>
             jobs.WithJob<TelemetryJob>("managed-job", job => job
                 .Description("managed")
-                .AddTrigger("manual", trigger => trigger.Manual())));
+                .AddTrigger("manual", trigger => trigger.Manual())),
+            configureServices: services => services.AddMetrics(options => options.Enabled()));
 
         (await harness.Scheduler.DisableJobAsync("managed-job")).IsSuccess.ShouldBeTrue();
 

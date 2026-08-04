@@ -9,7 +9,7 @@ public class MetricsRequestBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance, new MetricsService(meterFactory));
 
         var result = await sut.HandleAsync(
             new TestRequest(),
@@ -38,7 +38,7 @@ public class MetricsRequestBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance, new MetricsService(meterFactory));
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var task = sut.HandleAsync(
@@ -73,7 +73,7 @@ public class MetricsRequestBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance, new MetricsService(meterFactory));
 
         var result = await sut.HandleAsync(
             new TestRequest(),
@@ -94,7 +94,7 @@ public class MetricsRequestBehaviorTests
     }
 
     [Fact]
-    public async Task HandleAsync_WhenMeterFactoryIsMissing_RemainsPassThrough()
+    public async Task HandleAsync_WhenMetricsServiceIsMissing_RemainsPassThrough()
     {
         var sut = new MetricsRequestBehavior<TestRequest, IResult<string>>(NullLoggerFactory.Instance);
         var invoked = false;

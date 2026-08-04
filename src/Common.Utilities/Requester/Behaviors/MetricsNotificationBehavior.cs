@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -19,7 +18,7 @@ using Microsoft.Extensions.Logging;
 ///     .WithBehavior(typeof(MetricsNotificationBehavior&lt;,&gt;));
 /// </code>
 /// </example>
-public class MetricsNotificationBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
+public class MetricsNotificationBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory, IMetricsService metricsService = null)
     : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
@@ -35,7 +34,7 @@ public class MetricsNotificationBehavior<TRequest, TResponse>(ILoggerFactory log
         Func<Task<TResponse>> next,
         CancellationToken cancellationToken)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await next().AnyContext();
         }
@@ -47,10 +46,10 @@ public class MetricsNotificationBehavior<TRequest, TResponse>(ILoggerFactory log
         var currentTypedPublishSeries = Metrics.CurrentSeries(typedPublishSeries);
         var startedTimestamp = Metrics.StartTimestamp();
 
-        Metrics.Increment(meterFactory, publishSeries);
-        Metrics.Increment(meterFactory, typedPublishSeries);
-        Metrics.ChangeCurrent(meterFactory, currentPublishSeries, 1);
-        Metrics.ChangeCurrent(meterFactory, currentTypedPublishSeries, 1);
+        metricsService.AddCounter(publishSeries);
+        metricsService.AddCounter(typedPublishSeries);
+        metricsService.AddUpDownCounter(currentPublishSeries, 1);
+        metricsService.AddUpDownCounter(currentTypedPublishSeries, 1);
 
         try
         {
@@ -58,24 +57,24 @@ public class MetricsNotificationBehavior<TRequest, TResponse>(ILoggerFactory log
 
             if (result.IsFailure)
             {
-                Metrics.Increment(meterFactory, Metrics.FailureSeries(publishSeries));
-                Metrics.Increment(meterFactory, Metrics.FailureSeries(typedPublishSeries));
+                metricsService.AddCounter(Metrics.FailureSeries(publishSeries));
+                metricsService.AddCounter(Metrics.FailureSeries(typedPublishSeries));
             }
 
             return result;
         }
         catch
         {
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(publishSeries));
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedPublishSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(publishSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(typedPublishSeries));
             throw;
         }
         finally
         {
-            Metrics.ChangeCurrent(meterFactory, currentPublishSeries, -1);
-            Metrics.ChangeCurrent(meterFactory, currentTypedPublishSeries, -1);
-            Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(publishSeries), startedTimestamp);
-            Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(typedPublishSeries), startedTimestamp);
+            metricsService.AddUpDownCounter(currentPublishSeries, -1);
+            metricsService.AddUpDownCounter(currentTypedPublishSeries, -1);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(publishSeries), startedTimestamp);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(typedPublishSeries), startedTimestamp);
         }
     }
 }

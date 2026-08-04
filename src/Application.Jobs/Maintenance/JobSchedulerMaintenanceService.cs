@@ -14,8 +14,11 @@ public sealed class JobSchedulerMaintenanceService(
     TimeProvider timeProvider,
     JobRegistrationStore registrations,
     IJobStoreProvider storeProvider,
-    JobSchedulerService scheduler) : IJobSchedulerMaintenanceService
+    JobSchedulerService scheduler,
+    IMetricsService metricsService = null) : IJobSchedulerMaintenanceService
 {
+    private readonly JobSchedulerMetrics metrics = new(metricsService);
+
     public async Task<JobMaintenanceReport> ArchiveOccurrencesAsync(JobArchiveOccurrencesJobData options, CancellationToken cancellationToken = default)
     {
         using var activity = JobSchedulerInstrumentation.StartManagementActivity("archive-occurrences", options?.JobName, options?.TriggerName);
@@ -90,7 +93,7 @@ public sealed class JobSchedulerMaintenanceService(
             ]);
         activity?.SetTag("jobs.maintenance.matched", matched.Length);
         activity?.SetTag("jobs.maintenance.processed", processed);
-        JobSchedulerInstrumentation.RecordManagementOperation("archive-occurrences", true, options.JobName, options.TriggerName);
+        this.metrics.RecordManagementOperation("archive-occurrences", true, options.JobName, options.TriggerName);
         return report;
     }
 
@@ -183,7 +186,7 @@ public sealed class JobSchedulerMaintenanceService(
             ]);
             activity?.SetTag("jobs.maintenance.matched", matched.Length);
             activity?.SetTag("jobs.maintenance.processed", selected.Length);
-            JobSchedulerInstrumentation.RecordManagementOperation("purge-occurrences", true, request.JobName, request.TriggerName);
+            this.metrics.RecordManagementOperation("purge-occurrences", true, request.JobName, request.TriggerName);
             return report;
     }
 
@@ -218,7 +221,7 @@ public sealed class JobSchedulerMaintenanceService(
             [$"cutoff={cutoffUtc:O}", $"archivedOccurrences={archivedOccurrenceIds.Count}", options.DryRun ? $"would purge {selected.Length} history entries" : $"purged {processed} history entries"]);
         activity?.SetTag("jobs.maintenance.matched", matched.Length);
         activity?.SetTag("jobs.maintenance.processed", processed);
-        JobSchedulerInstrumentation.RecordManagementOperation("purge-history", true);
+        this.metrics.RecordManagementOperation("purge-history", true);
         return report;
     }
 
@@ -275,7 +278,7 @@ public sealed class JobSchedulerMaintenanceService(
             [options.DryRun ? $"would process {expiredLeases.Length} expired leases" : $"processed {processed} expired leases"]);
         activity?.SetTag("jobs.maintenance.matched", expiredLeases.Length);
         activity?.SetTag("jobs.maintenance.processed", processed);
-        JobSchedulerInstrumentation.RecordManagementOperation("release-expired-leases", true);
+        this.metrics.RecordManagementOperation("release-expired-leases", true);
         return report;
     }
 
@@ -332,7 +335,7 @@ public sealed class JobSchedulerMaintenanceService(
             [$"cutoff={cutoffUtc:O}", options.DryRun ? $"would recover {candidates.Length} stuck occurrences" : $"recovered {processed} stuck occurrences"]);
         activity?.SetTag("jobs.maintenance.matched", candidates.Length);
         activity?.SetTag("jobs.maintenance.processed", processed);
-        JobSchedulerInstrumentation.RecordManagementOperation("recover-stuck-occurrences", true);
+        this.metrics.RecordManagementOperation("recover-stuck-occurrences", true);
         return report;
     }
 
@@ -391,7 +394,7 @@ public sealed class JobSchedulerMaintenanceService(
             [options.DryRun ? $"would remove {affectedIds.Length} orphaned runtime-state rows" : $"removed {processed} orphaned runtime-state rows"]);
         activity?.SetTag("jobs.maintenance.matched", matched);
         activity?.SetTag("jobs.maintenance.processed", processed);
-        JobSchedulerInstrumentation.RecordManagementOperation("detect-orphaned-runtime-state", true);
+        this.metrics.RecordManagementOperation("detect-orphaned-runtime-state", true);
         return report;
     }
 

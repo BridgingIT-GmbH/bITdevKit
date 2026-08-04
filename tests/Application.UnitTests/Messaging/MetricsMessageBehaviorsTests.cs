@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 public class MetricsMessageBehaviorsTests
 {
     [Fact]
-    public async Task Publish_WhenMeterFactoryIsMissing_RemainsPassThrough()
+    public async Task Publish_WhenMetricsServiceIsMissing_RemainsPassThrough()
     {
         var sut = new MetricsMessagePublisherBehavior(NullLoggerFactory.Instance);
         var invoked = false;
@@ -25,7 +25,7 @@ public class MetricsMessageBehaviorsTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsMessageHandlerBehavior(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsMessageHandlerBehavior(NullLoggerFactory.Instance, new MetricsService(meterFactory));
 
         await Should.ThrowAsync<InvalidOperationException>(() => sut.Handle(
             new TestMessage(),
@@ -46,7 +46,7 @@ public class MetricsMessageBehaviorsTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsMessageHandlerBehavior(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsMessageHandlerBehavior(NullLoggerFactory.Instance, new MetricsService(meterFactory));
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var task = sut.Handle(

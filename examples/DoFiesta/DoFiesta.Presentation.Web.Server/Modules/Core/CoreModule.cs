@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
-using System.Diagnostics.Metrics;
 using Application.Modules.Core;
 using Application.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Application;
@@ -93,8 +92,8 @@ public class CoreModule : WebModuleBase
 
         // queueing
         services.AddQueueing(configuration)
-            .WithBehavior(sp => (IQueueEnqueuerBehavior)new MetricsQueueEnqueuerBehavior(sp.GetService<IMeterFactory>()))
-            .WithBehavior(sp => (IQueueHandlerBehavior)new MetricsQueueHandlerBehavior(sp.GetService<IMeterFactory>()))
+            .WithBehavior(sp => (IQueueEnqueuerBehavior)new MetricsQueueEnqueuerBehavior(sp.GetService<IMetricsService>()))
+            .WithBehavior(sp => (IQueueHandlerBehavior)new MetricsQueueHandlerBehavior(sp.GetService<IMetricsService>()))
             .WithSubscription<TodoItemEchoQueueMessage, TodoItemEchoQueueMessageHandler>();
 
         // dbcontext

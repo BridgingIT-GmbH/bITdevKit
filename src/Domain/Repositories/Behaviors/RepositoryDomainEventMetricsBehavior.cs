@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
 
 /// <summary>
@@ -25,13 +24,15 @@ using System.Linq.Expressions;
 public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAggregateRoot
 {
-    private readonly IMeterFactory meterFactory;
+    private readonly IMetricsService metricsService;
 
-    public RepositoryDomainEventMetricsBehavior(IMeterFactory meterFactory, IGenericRepository<TEntity> inner)
+    public RepositoryDomainEventMetricsBehavior(
+        IGenericRepository<TEntity> inner,
+        IMetricsService metricsService = null)
     {
         EnsureArg.IsNotNull(inner, nameof(inner));
 
-        this.meterFactory = meterFactory;
+        this.metricsService = metricsService;
         this.Inner = inner;
     }
 
@@ -250,15 +251,15 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
 
     private void AddMetrics(DomainEvents domainEvents)
     {
-        if (this.meterFactory is null || domainEvents?.GetAll().SafeAny() == false)
+        if (this.metricsService is null || domainEvents?.GetAll().SafeAny() == false)
         {
             return;
         }
 
         foreach (var domainEvent in domainEvents.GetAll())
         {
-            Metrics.Increment(this.meterFactory, Metrics.Series("domainevents_create"));
-            Metrics.Increment(this.meterFactory, Metrics.Series("domainevents_create", Metrics.NormalizeTypeName(domainEvent.GetType())));
+            this.metricsService.AddCounter(Metrics.Series("domainevents_create"));
+            this.metricsService.AddCounter(Metrics.Series("domainevents_create", Metrics.NormalizeTypeName(domainEvent.GetType())));
         }
     }
 }

@@ -1144,21 +1144,22 @@ var progress = new Progress<RetryProgress>(p =>
 
 The devkit metrics feature is a thin developer-friendly layer over .NET diagnostics metrics from `System.Diagnostics.Metrics`.
 
-It does not invent a separate metrics runtime. Instead, it builds on the standard .NET `Meter`, `Counter<T>`, `UpDownCounter<T>`, and `Histogram<T>` primitives so applications can emit custom metrics and let the hosting app decide how those metrics are collected and exported.
+It does not invent a separate metrics runtime. Instead, it builds on the standard .NET `Meter`, `Counter<T>`, `UpDownCounter<T>`, `Histogram<T>`, and `ObservableGauge<T>` primitives so applications can emit custom metrics and let the hosting app decide how those metrics are collected and exported.
 
 The shared devkit meter name is `bdk`.
 
 ### What It Provides
 
-- `Metrics` for low-level metric naming and recording helpers
-- `IMetricsService` and `MetricsService` for application code that wants a simpler API
+- `Metrics` for normalized series naming and high-resolution timestamps
+- `IMetricsService` and `MetricsService` as the single abstraction for creating and recording devkit-owned instruments
+- `MetricTag` for passing stable, low-cardinality measurement tags without exposing concrete .NET instruments
 - `AddMetrics(...)` for DI registration
 - optional system metrics endpoints via `AddMetrics(options => options.AddEndpoints())`
-- built-in metrics behaviors for features such as requester, notifier, messaging, queueing, job scheduling, orchestrations, and repositories
+- optional built-in metrics behaviors for requester, notifier, messaging, queueing, jobs, orchestrations, repositories, and storage
 
 ### Registering Metrics
 
-Register the feature once in the host:
+Register the feature once in the host. Use the configuration callback explicitly so this devkit registration is unambiguous alongside the .NET metrics APIs:
 
 ```csharp
 services.AddMetrics(options => options
@@ -1166,7 +1167,11 @@ services.AddMetrics(options => options
     .AddEndpoints());
 ```
 
-That registers `IMetricsService` and the supporting snapshot services used by the web metrics endpoints.
+That registers `IMetricsService` as a singleton and, when requested, the supporting snapshot services used by the web metrics endpoints.
+
+Metrics are optional. Omitting `AddMetrics(...)`, or configuring `.Enabled(false)`, leaves `IMetricsService` unregistered. Devkit behaviors and providers resolve it optionally and continue their normal work without emitting metrics. Adding a metrics behavior does not implicitly enable the metrics service.
+
+Applications that inject `IMetricsService` directly into their own required services should therefore register metrics. Feature composition code that treats metrics as optional can resolve `IMetricsService` with `GetService<IMetricsService>()`.
 
 ### Emitting Custom Metrics
 
@@ -1209,6 +1214,62 @@ Metric names are normalized automatically and follow the shared naming pattern:
 
 Prefer low-cardinality parts such as operation names, message types, or status values. Avoid ids, titles, emails, or other unbounded values in metric parts.
 
+### Tagged And High-Fidelity Metrics
+
+Use the direct instrument methods when the metric has a stable name with dimensions expressed as tags:
+
+```csharp
+public sealed class InventoryImportService(IMetricsService metrics)
+{
+    public async Task ImportAsync(
+        string warehouse,
+        IReadOnlyList<InventoryItem> items,
+        CancellationToken cancellationToken)
+    {
+        MetricTag[] tags =
+        [
+            new("operation", "import"),
+            new("warehouse", warehouse)
+        ];
+
+        var startedTimestamp = metrics.StartTimestamp();
+        metrics.AddCounter("inventory_imports", tags: tags);
+        metrics.AddUpDownCounter("inventory_imports_current", 1, tags);
+        metrics.RecordHistogram("inventory_import_items", items.Count, "{item}", tags);
+
+        try
+        {
+            await ImportCoreAsync(items, cancellationToken);
+            metrics.AddCounter(
+                "inventory_import_outcomes",
+                tags:
+                [
+                    new("operation", "import"),
+                    new("warehouse", warehouse),
+                    new("outcome", "success")
+                ]);
+        }
+        finally
+        {
+            metrics.AddUpDownCounter("inventory_imports_current", -1, tags);
+            metrics.RecordHistogramDuration("inventory_import_duration", startedTimestamp, tags);
+        }
+    }
+}
+```
+
+The direct API supports:
+
+- `AddCounter(...)` with an arbitrary `long` increment
+- `AddUpDownCounter(...)` with positive or negative `long` deltas
+- `RecordHistogram(...)` with `long` or `double` values and an optional unit
+- `RecordHistogramDuration(...)` for elapsed milliseconds
+- `SetGauge(...)` for the latest observable `long` value
+
+`MetricsService` owns and reuses the concrete instruments safely across concurrent callers. Reusing an instrument name with a conflicting kind or unit is ignored instead of disrupting application work. Recording, listener, or meter-factory failures are also isolated from the instrumented operation. Disposing an owned `MetricsService` is idempotent and later recording calls become no-ops.
+
+Keep tag values bounded. Values such as operation, provider, store, outcome, or a small known warehouse set are appropriate. Customer ids, blob names, message ids, exception messages, and other unbounded values are not.
+
 ### Built-In Feature Metrics
 
 Several devkit features already have ready-made behaviors that emit metrics without additional custom instrumentation in your handlers or services.
@@ -1225,11 +1286,15 @@ Examples include:
 - `MetricsJobSchedulingBehavior`
 - `MetricsOrchestrationBehavior`
 - `RepositoryMetricsBehavior`
+- blob, file, document, and permalink storage metrics
+- job scheduler runtime metrics
 - composition interception via `.WithMetrics()`
 
-That means developers can often add metrics to higher-level features just by registering the corresponding behavior:
+Developers can often add metrics to higher-level features by enabling the shared service and registering the corresponding behavior:
 
 ```csharp
+services.AddMetrics(options => options.Enabled());
+
 services.AddMessaging(builder.Configuration)
     .WithBehavior<MetricsMessagePublisherBehavior>()
     .WithBehavior<MetricsMessageHandlerBehavior>();

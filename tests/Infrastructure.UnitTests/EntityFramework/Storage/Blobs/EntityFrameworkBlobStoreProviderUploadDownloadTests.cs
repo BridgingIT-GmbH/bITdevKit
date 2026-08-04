@@ -311,7 +311,7 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
                 ChunkFlushCount = 2,
                 MaxPendingChunkBytes = 1024
             },
-            meterFactory: meterFactory,
+            metricsService: new MetricsService(meterFactory),
             storeName: "reports");
 
         // Act

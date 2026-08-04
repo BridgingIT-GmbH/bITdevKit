@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
 using Application.Storage;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Buffers;
-using System.Diagnostics.Metrics;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -38,10 +38,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
     private readonly IServiceScopeFactory scopeFactory;
     private readonly BlobStoreOptions options;
     private readonly IContinuationTokenProtector continuationTokenProtector;
-    private readonly Counter<long> chunksWritten;
-    private readonly Counter<long> chunkFlushes;
-    private readonly Histogram<long> chunksPerFlush;
-    private readonly Histogram<long> bytesPerFlush;
+    private readonly IMetricsService metricsService;
     private readonly ILogger logger;
     private readonly string storeName;
     private readonly string leaseOwner = $"{Environment.MachineName}:{Guid.NewGuid():N}";
@@ -53,7 +50,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
     /// <param name="scopeFactory">The root scope factory used to create provider-owned operation contexts.</param>
     /// <param name="options">The blob-store options.</param>
     /// <param name="continuationTokenProtector">The optional continuation-token protector.</param>
-    /// <param name="meterFactory">The optional meter factory for chunk-flush metrics.</param>
+    /// <param name="metricsService">The optional shared metrics service for chunk-flush metrics.</param>
     /// <param name="loggerFactory">The optional logger factory for chunk-flush diagnostics.</param>
     /// <param name="storeName">The low-cardinality named-store identifier.</param>
     /// <example>
@@ -65,25 +62,17 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         IServiceScopeFactory scopeFactory,
         BlobStoreOptions options = null,
         IContinuationTokenProtector continuationTokenProtector = null,
-        IMeterFactory meterFactory = null,
+        IMetricsService metricsService = null,
         ILoggerFactory loggerFactory = null,
         string storeName = null)
     {
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         this.options = options ?? new BlobStoreOptions();
         this.continuationTokenProtector = continuationTokenProtector;
+        this.metricsService = metricsService;
         this.logger = (loggerFactory ?? NullLoggerFactory.Instance)
             .CreateLogger<EntityFrameworkBlobStoreProvider<TContext>>();
         this.storeName = string.IsNullOrWhiteSpace(storeName) ? "default" : storeName;
-        var meter = meterFactory?.Create(Metrics.MeterName);
-        this.chunksWritten = meter?.CreateCounter<long>("blobstorage_ef_chunks_written");
-        this.chunkFlushes = meter?.CreateCounter<long>("blobstorage_ef_chunk_flushes");
-        this.chunksPerFlush = meter?.CreateHistogram<long>(
-            "blobstorage_ef_chunks_per_flush",
-            unit: "{chunk}");
-        this.bytesPerFlush = meter?.CreateHistogram<long>(
-            "blobstorage_ef_bytes_per_flush",
-            unit: "By");
     }
 
     /// <inheritdoc />
@@ -985,29 +974,38 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
 
     private void RecordChunkFlush(int chunkCount, long byteCount)
     {
-        var tags = new KeyValuePair<string, object>[]
-        {
-            new("provider", ProviderName),
-            new("store", this.storeName)
-        };
-
         try
         {
-            this.chunksWritten?.Add(chunkCount, tags);
-            this.chunkFlushes?.Add(1, tags);
-            this.chunksPerFlush?.Record(chunkCount, tags);
-            this.bytesPerFlush?.Record(byteCount, tags);
+            MetricTag[] tags =
+            {
+                new("provider", ProviderName),
+                new("store", this.storeName)
+            };
+
+            this.metricsService?.AddCounter("blobstorage_ef_chunks_written", chunkCount, tags);
+            this.metricsService?.AddCounter("blobstorage_ef_chunk_flushes", tags: tags);
+            this.metricsService?.RecordHistogram(
+                "blobstorage_ef_chunks_per_flush",
+                chunkCount,
+                "{chunk}",
+                tags);
+            this.metricsService?.RecordHistogram(
+                "blobstorage_ef_bytes_per_flush",
+                byteCount,
+                "By",
+                tags);
             TypedLogger.LogChunkFlush(
                 this.logger,
                 this.storeName,
                 chunkCount,
                 byteCount);
         }
-        catch (Exception exception) when (exception is not OutOfMemoryException and
+        catch (Exception exception) when (
+            exception is not OutOfMemoryException and
             not StackOverflowException and
             not AccessViolationException)
         {
-            // Flush telemetry is best effort and must not change a successful persistence outcome.
+            // Observability must never change persistence behavior.
         }
     }
 

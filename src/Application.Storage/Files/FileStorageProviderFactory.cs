@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Collections.Concurrent;
-using System.Diagnostics.Metrics;
 using System.Linq;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -253,7 +253,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
         /// </summary>
         public FileStorageBuilder WithMetrics()
         {
-            this.behaviors.Add((p, sp) => new MetricsFileStorageBehavior(p, sp.GetService<IMeterFactory>()));
+            this.behaviors.Add((p, sp) => new MetricsFileStorageBehavior(p, sp.GetService<IMetricsService>()));
             return this;
         }
 

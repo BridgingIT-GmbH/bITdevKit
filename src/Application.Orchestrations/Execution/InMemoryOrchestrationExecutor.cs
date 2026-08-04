@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.Orchestrations;
 
 using System.Collections.Concurrent;
-using System.Diagnostics.Metrics;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +35,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private readonly IOrchestrationClock clock;
     private readonly OrchestrationExecutionSettings executionSettings;
     private readonly ILogger<InMemoryOrchestrationExecutor> logger;
-    private readonly IMeterFactory meterFactory;
+    private readonly IMetricsService metricsService;
     private readonly ConcurrentDictionary<Guid, byte> scheduledTimerWatchers = new ConcurrentDictionary<Guid, byte>();
     private readonly AsyncLocal<ActivityCheckpointSession> currentCheckpointSession = new();
 
@@ -163,7 +162,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         this.clock = serviceProvider.GetRequiredService<IOrchestrationClock>();
         this.executionSettings = serviceProvider.GetService<OrchestrationExecutionSettings>() ?? new OrchestrationExecutionSettings();
         this.logger = (serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance).CreateLogger<InMemoryOrchestrationExecutor>();
-        this.meterFactory = serviceProvider.GetService<IMeterFactory>();
+        this.metricsService = serviceProvider.GetService<IMetricsService>();
     }
 
     /// <inheritdoc />
@@ -2045,8 +2044,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private void RecordOrchestrationStarted(string orchestrationName)
     {
         var series = Metrics.Series("orchestrations_start");
-        Metrics.Increment(this.meterFactory, series);
-        Metrics.Increment(this.meterFactory, Metrics.Series("orchestrations_start", orchestrationName));
+        this.metricsService?.AddCounter(series);
+        this.metricsService?.AddCounter(Metrics.Series("orchestrations_start", orchestrationName));
     }
 
     private void RecordOrchestrationFinished<TData>(OrchestrationContext<TData> context)
@@ -2054,13 +2053,13 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     {
         var series = Metrics.Series("orchestrations_finish");
         var typedSeries = Metrics.Series("orchestrations_finish", context.OrchestrationName, context.Status.ToString());
-        Metrics.Increment(this.meterFactory, series);
-        Metrics.Increment(this.meterFactory, typedSeries);
+        this.metricsService?.AddCounter(series);
+        this.metricsService?.AddCounter(typedSeries);
 
         if (context.Status == OrchestrationStatus.Failed)
         {
-            Metrics.Increment(this.meterFactory, Metrics.FailureSeries(series));
-            Metrics.Increment(this.meterFactory, Metrics.FailureSeries(typedSeries));
+            this.metricsService?.AddCounter(Metrics.FailureSeries(series));
+            this.metricsService?.AddCounter(Metrics.FailureSeries(typedSeries));
         }
     }
 

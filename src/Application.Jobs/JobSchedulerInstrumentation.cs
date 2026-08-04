@@ -6,14 +6,10 @@
 namespace BridgingIT.DevKit.Application.Jobs;
 
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using BridgingIT.DevKit.Common;
 
 internal static class JobSchedulerInstrumentation
 {
     public const string ActivitySourceName = "BridgingIT.DevKit.Application.Jobs";
-    public const string MeterName = Metrics.MeterName;
-
     private const string SchedulerInstanceIdTag = "jobs.scheduler.instance_id";
     private const string JobNameTag = "jobs.job.name";
     private const string TriggerNameTag = "jobs.trigger.name";
@@ -23,30 +19,9 @@ internal static class JobSchedulerInstrumentation
     private const string CorrelationIdTag = "jobs.correlation.id";
     private const string LeaseOwnerTag = "jobs.lease.owner";
     private const string OperationTag = "jobs.operation";
-    private const string SuccessTag = "jobs.operation.success";
-    private const string StatusTag = "jobs.status";
     private const string EventSourceTag = "jobs.event.source";
 
     private static readonly ActivitySource ActivitySource = new(ActivitySourceName);
-    private static readonly Meter Meter = new(MeterName);
-    private static readonly Counter<long> SweepCycles = Meter.CreateCounter<long>("jobs_sweep_cycles");
-    private static readonly Counter<long> MaterializedOccurrences = Meter.CreateCounter<long>("jobs_occurrences_materialized");
-    private static readonly Counter<long> EventAccepted = Meter.CreateCounter<long>("jobs_events_accepted");
-    private static readonly Counter<long> ManagementOperations = Meter.CreateCounter<long>("jobs_management_operations");
-    private static readonly Counter<long> LeasesAcquired = Meter.CreateCounter<long>("jobs_leases_acquired");
-    private static readonly Counter<long> LeasesRenewed = Meter.CreateCounter<long>("jobs_leases_renewed");
-    private static readonly Counter<long> LeasesRecovered = Meter.CreateCounter<long>("jobs_leases_recovered");
-    private static readonly Counter<long> ExecutionsStarted = Meter.CreateCounter<long>("jobs_executions_started");
-    private static readonly Counter<long> ExecutionsCompleted = Meter.CreateCounter<long>("jobs_executions_completed");
-    private static readonly Counter<long> ExecutionsFailed = Meter.CreateCounter<long>("jobs_executions_failed");
-    private static readonly Counter<long> ExecutionsRetried = Meter.CreateCounter<long>("jobs_executions_retried");
-    private static readonly Counter<long> ExecutionsTimedOut = Meter.CreateCounter<long>("jobs_executions_timedout");
-    private static readonly Counter<long> ExecutionsCancelled = Meter.CreateCounter<long>("jobs_executions_cancelled");
-    private static readonly Counter<long> ExecutionsInterrupted = Meter.CreateCounter<long>("jobs_executions_interrupted");
-    private static readonly UpDownCounter<long> ActiveExecutions = Meter.CreateUpDownCounter<long>("jobs_executions_active");
-    private static readonly Histogram<double> ExecutionDurationMs = Meter.CreateHistogram<double>("jobs_execution_duration", unit: "ms");
-    private static readonly Histogram<double> OccurrenceAgeMs = Meter.CreateHistogram<double>("jobs_occurrence_age", unit: "ms");
-    private static readonly Histogram<double> WorkerUtilization = Meter.CreateHistogram<double>("jobs_worker_utilization");
 
     public static Activity StartSweepActivity(string schedulerInstanceId)
     {
@@ -123,94 +98,6 @@ internal static class JobSchedulerInstrumentation
         return activity;
     }
 
-    public static void RecordSweepCycle(string schedulerInstanceId, int recoveredCount, int materializedCount, int dueCount, int activeExecutionCount, int maxConcurrency)
-    {
-        var tags = CreateTags(schedulerInstanceId: schedulerInstanceId);
-        SweepCycles.Add(1, tags);
-        if (recoveredCount > 0)
-        {
-            LeasesRecovered.Add(recoveredCount, tags);
-        }
-
-        WorkerUtilization.Record(maxConcurrency <= 0 ? 0d : (double)activeExecutionCount / maxConcurrency, tags);
-    }
-
-    public static void RecordMaterializedOccurrences(string schedulerInstanceId, string jobName, string triggerName, JobTriggerType triggerType, int count)
-    {
-        if (count <= 0)
-        {
-            return;
-        }
-
-        MaterializedOccurrences.Add(count, CreateTags(schedulerInstanceId, jobName, triggerName, triggerType));
-    }
-
-    public static void RecordEventAccepted(string source, string correlationId, bool duplicate)
-    {
-        var tags = CreateTags(correlationId: correlationId);
-        tags.Add(EventSourceTag, source);
-        tags.Add(StatusTag, duplicate ? "duplicate" : "accepted");
-        EventAccepted.Add(1, tags);
-    }
-
-    public static void RecordLeaseAcquired(string schedulerInstanceId, Guid occurrenceId, string leaseOwner)
-    {
-        LeasesAcquired.Add(1, CreateTags(schedulerInstanceId: schedulerInstanceId, occurrenceId: occurrenceId, leaseOwner: leaseOwner));
-    }
-
-    public static void RecordLeaseRenewed(string schedulerInstanceId, Guid occurrenceId, string leaseOwner)
-    {
-        LeasesRenewed.Add(1, CreateTags(schedulerInstanceId: schedulerInstanceId, occurrenceId: occurrenceId, leaseOwner: leaseOwner));
-    }
-
-    public static void RecordExecutionStarted(string schedulerInstanceId, JobOccurrence occurrence, JobTriggerDefinition trigger, Guid executionId, int activeExecutionCount, int maxConcurrency, string correlationId, DateTimeOffset nowUtc)
-    {
-        var tags = CreateTags(schedulerInstanceId, occurrence.JobName, occurrence.TriggerName, trigger?.TriggerType, occurrence.OccurrenceId, executionId, correlationId);
-        ExecutionsStarted.Add(1, tags);
-        ActiveExecutions.Add(1, tags);
-        OccurrenceAgeMs.Record(Math.Max(0d, (nowUtc - occurrence.DueUtc).TotalMilliseconds), tags);
-        WorkerUtilization.Record(maxConcurrency <= 0 ? 0d : (double)activeExecutionCount / maxConcurrency, tags);
-    }
-
-    public static void RecordExecutionCompleted(string schedulerInstanceId, JobOccurrence occurrence, JobTriggerDefinition trigger, Guid executionId, JobExecutionStatus status, TimeSpan duration, string correlationId)
-    {
-        var tags = CreateTags(schedulerInstanceId, occurrence.JobName, occurrence.TriggerName, trigger?.TriggerType, occurrence.OccurrenceId, executionId, correlationId);
-        ActiveExecutions.Add(-1, tags);
-        tags.Add(StatusTag, status.ToString());
-
-        switch (status)
-        {
-            case JobExecutionStatus.Completed:
-                ExecutionsCompleted.Add(1, tags);
-                break;
-            case JobExecutionStatus.Retried:
-                ExecutionsRetried.Add(1, tags);
-                break;
-            case JobExecutionStatus.TimedOut:
-                ExecutionsTimedOut.Add(1, tags);
-                break;
-            case JobExecutionStatus.Cancelled:
-                ExecutionsCancelled.Add(1, tags);
-                break;
-            case JobExecutionStatus.Interrupted:
-                ExecutionsInterrupted.Add(1, tags);
-                break;
-            default:
-                ExecutionsFailed.Add(1, tags);
-                break;
-        }
-
-        ExecutionDurationMs.Record(Math.Max(0d, duration.TotalMilliseconds), tags);
-    }
-
-    public static void RecordManagementOperation(string operation, bool success, string jobName = null, string triggerName = null, Guid? occurrenceId = null)
-    {
-        var tags = CreateTags(jobName: jobName, triggerName: triggerName, occurrenceId: occurrenceId);
-        tags.Add(OperationTag, operation);
-        tags.Add(SuccessTag, success);
-        ManagementOperations.Add(1, tags);
-    }
-
     private static void SetCommonOccurrenceTags(Activity activity, string schedulerInstanceId, JobOccurrence occurrence, JobTriggerDefinition trigger, Guid executionId, string correlationId)
     {
         activity?.SetTag(SchedulerInstanceIdTag, schedulerInstanceId);
@@ -225,58 +112,4 @@ internal static class JobSchedulerInstrumentation
         }
     }
 
-    private static TagList CreateTags(
-        string schedulerInstanceId = null,
-        string jobName = null,
-        string triggerName = null,
-        JobTriggerType? triggerType = null,
-        Guid? occurrenceId = null,
-        Guid? executionId = null,
-        string correlationId = null,
-        string leaseOwner = null)
-    {
-        TagList tags = [];
-
-        if (!string.IsNullOrWhiteSpace(schedulerInstanceId))
-        {
-            tags.Add(SchedulerInstanceIdTag, schedulerInstanceId);
-        }
-
-        if (!string.IsNullOrWhiteSpace(jobName))
-        {
-            tags.Add(JobNameTag, jobName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(triggerName))
-        {
-            tags.Add(TriggerNameTag, triggerName);
-        }
-
-        if (triggerType.HasValue)
-        {
-            tags.Add(TriggerTypeTag, triggerType.Value.ToString());
-        }
-
-        if (occurrenceId.HasValue)
-        {
-            tags.Add(OccurrenceIdTag, occurrenceId.Value.ToString("D"));
-        }
-
-        if (executionId.HasValue)
-        {
-            tags.Add(ExecutionIdTag, executionId.Value.ToString("D"));
-        }
-
-        if (!string.IsNullOrWhiteSpace(correlationId))
-        {
-            tags.Add(CorrelationIdTag, correlationId);
-        }
-
-        if (!string.IsNullOrWhiteSpace(leaseOwner))
-        {
-            tags.Add(LeaseOwnerTag, leaseOwner);
-        }
-
-        return tags;
-    }
 }

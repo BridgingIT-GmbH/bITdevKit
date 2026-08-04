@@ -6,7 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
-using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Provides fluent registration helpers for document-store client behaviors.
@@ -40,7 +40,7 @@ public static partial class ServiceCollectionExtensions
 
         return context.WithBehavior<T, MetricsDocumentStoreClientBehavior<T>>(
             (inner, serviceProvider) => new MetricsDocumentStoreClientBehavior<T>(
-                serviceProvider.GetService<IMeterFactory>(),
-                inner));
+                inner,
+                serviceProvider.GetService<IMetricsService>()));
     }
 }

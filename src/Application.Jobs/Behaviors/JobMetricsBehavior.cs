@@ -10,8 +10,12 @@ using BridgingIT.DevKit.Common;
 /// <summary>
 /// Emits execution telemetry around the job behavior pipeline.
 /// </summary>
-public sealed class JobMetricsBehavior(TimeProvider timeProvider) : IJobBehavior
+public sealed class JobMetricsBehavior(
+    TimeProvider timeProvider,
+    IMetricsService metricsService = null) : IJobBehavior
 {
+    private readonly JobSchedulerMetrics metrics = new(metricsService);
+
     /// <inheritdoc />
     public async Task<IResult<JobExecutionResult>> HandleAsync(
         JobBehaviorContext context,
@@ -27,7 +31,7 @@ public sealed class JobMetricsBehavior(TimeProvider timeProvider) : IJobBehavior
             context.ExecutionContext.ExecutionId,
             context.ExecutionContext.CorrelationId);
 
-        JobSchedulerInstrumentation.RecordExecutionStarted(
+        this.metrics.RecordExecutionStarted(
             context.SchedulerInstanceId,
             occurrence,
             context.Trigger,
@@ -42,7 +46,7 @@ public sealed class JobMetricsBehavior(TimeProvider timeProvider) : IJobBehavior
             var result = await next().ConfigureAwait(false);
             if (result.IsSuccess && result.Value is not null)
             {
-                JobSchedulerInstrumentation.RecordExecutionCompleted(
+                this.metrics.RecordExecutionCompleted(
                     context.SchedulerInstanceId,
                     occurrence with { Status = ToOccurrenceStatus(result.Value.Status) },
                     context.Trigger,
@@ -56,7 +60,7 @@ public sealed class JobMetricsBehavior(TimeProvider timeProvider) : IJobBehavior
         }
         catch (Exception)
         {
-            JobSchedulerInstrumentation.RecordExecutionCompleted(
+            this.metrics.RecordExecutionCompleted(
                 context.SchedulerInstanceId,
                 occurrence with { Status = JobOccurrenceStatus.Failed },
                 context.Trigger,

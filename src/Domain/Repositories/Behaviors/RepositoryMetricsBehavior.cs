@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 
@@ -19,7 +18,9 @@ using BridgingIT.DevKit.Common;
 ///     .WithBehavior&lt;RepositoryMetricsBehavior&lt;Order&gt;&gt;();
 /// </code>
 /// </example>
-public class RepositoryMetricsBehavior<TEntity>(IMeterFactory meterFactory, IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
+public class RepositoryMetricsBehavior<TEntity>(
+    IGenericRepository<TEntity> inner,
+    IMetricsService metricsService = null) : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
     private readonly string entityName = Metrics.NormalizeTypeName(typeof(TEntity));
@@ -183,7 +184,7 @@ public class RepositoryMetricsBehavior<TEntity>(IMeterFactory meterFactory, IGen
 
     private async Task<TResult> TrackAsync<TResult>(string family, string operation, CancellationToken cancellationToken, Func<Task<TResult>> action)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await action().AnyContext();
         }
@@ -194,10 +195,10 @@ public class RepositoryMetricsBehavior<TEntity>(IMeterFactory meterFactory, IGen
         var currentTypedSeries = Metrics.CurrentSeries(typedSeries);
         var startedTimestamp = Metrics.StartTimestamp();
 
-        Metrics.Increment(meterFactory, series);
-        Metrics.Increment(meterFactory, typedSeries);
-        Metrics.ChangeCurrent(meterFactory, currentSeries, 1);
-        Metrics.ChangeCurrent(meterFactory, currentTypedSeries, 1);
+        metricsService.AddCounter(series);
+        metricsService.AddCounter(typedSeries);
+        metricsService.AddUpDownCounter(currentSeries, 1);
+        metricsService.AddUpDownCounter(currentTypedSeries, 1);
 
         try
         {
@@ -205,16 +206,16 @@ public class RepositoryMetricsBehavior<TEntity>(IMeterFactory meterFactory, IGen
         }
         catch
         {
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(series));
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(series));
+            metricsService.AddCounter(Metrics.FailureSeries(typedSeries));
             throw;
         }
         finally
         {
-            Metrics.ChangeCurrent(meterFactory, currentSeries, -1);
-            Metrics.ChangeCurrent(meterFactory, currentTypedSeries, -1);
-            Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(series), startedTimestamp);
-            Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(typedSeries), startedTimestamp);
+            metricsService.AddUpDownCounter(currentSeries, -1);
+            metricsService.AddUpDownCounter(currentTypedSeries, -1);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(series), startedTimestamp);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(typedSeries), startedTimestamp);
         }
     }
 }

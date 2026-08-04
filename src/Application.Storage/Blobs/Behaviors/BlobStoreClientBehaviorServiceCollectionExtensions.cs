@@ -7,7 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
-using System.Diagnostics.Metrics;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>
@@ -58,8 +57,8 @@ public static partial class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(context);
 
         return context.WithBehavior((inner, serviceProvider, name) => new MetricsBlobStoreClientBehavior(
-            serviceProvider.GetService<IMeterFactory>(),
             inner,
+            serviceProvider.GetService<IMetricsService>(),
             name));
     }
 

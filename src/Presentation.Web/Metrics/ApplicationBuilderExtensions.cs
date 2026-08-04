@@ -48,7 +48,7 @@ public static class MetricsApplicationBuilderExtensions
         if (app.ApplicationServices.GetService<AspNetMetricsTracker>() is null)
         {
             throw new InvalidOperationException(
-                "ASP.NET metrics services are not registered. Call services.AddMetrics() or services.AddMetricsEndpoints(...) before app.UseRequestMetrics().");
+                "ASP.NET metrics services are not registered. Call services.AddMetrics(options => options.Enabled()) or services.AddMetricsEndpoints(...) before app.UseRequestMetrics().");
         }
 
         var endpointOptions = app.ApplicationServices.GetService<MetricsEndpointsOptions>() ?? new MetricsEndpointsOptions();

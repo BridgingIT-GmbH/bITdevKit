@@ -167,7 +167,8 @@ public class BlobUploadAdmissionCoordinatorTests
         listener.SetMeasurementEventCallback<long>((_, _, _, _) =>
             throw new InvalidOperationException("simulated metric listener failure"));
         listener.Start();
-        using var sut = new BlobUploadAdmissionCoordinator(meterFactory: meterFactory);
+        using var sut = new BlobUploadAdmissionCoordinator(
+            metricsService: new MetricsService(meterFactory));
 
         await using var active = await sut.AcquireAsync("reports", Options, default);
         var queued = sut.AcquireAsync("reports", Options, default).AsTask();

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Queueing;
 
-using System.Diagnostics.Metrics;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
@@ -17,7 +16,7 @@ using BridgingIT.DevKit.Common;
 ///     .WithBehavior&lt;MetricsQueueEnqueuerBehavior&gt;();
 /// </code>
 /// </example>
-public class MetricsQueueEnqueuerBehavior(IMeterFactory meterFactory = null) : IQueueEnqueuerBehavior
+public class MetricsQueueEnqueuerBehavior(IMetricsService metricsService = null) : IQueueEnqueuerBehavior
 {
     /// <summary>
     /// Wraps queue enqueue execution and records the corresponding metrics.
@@ -27,7 +26,7 @@ public class MetricsQueueEnqueuerBehavior(IMeterFactory meterFactory = null) : I
     /// <param name="next">The next enqueue delegate.</param>
     public async Task Enqueue(IQueueMessage message, CancellationToken cancellationToken, QueueEnqueuerDelegate next)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             await next().AnyContext();
             return;
@@ -40,10 +39,10 @@ public class MetricsQueueEnqueuerBehavior(IMeterFactory meterFactory = null) : I
         var currentTypedEnqueueSeries = Metrics.CurrentSeries(typedEnqueueSeries);
         var startedTimestamp = Metrics.StartTimestamp();
 
-        Metrics.Increment(meterFactory, enqueueSeries);
-        Metrics.Increment(meterFactory, typedEnqueueSeries);
-        Metrics.ChangeCurrent(meterFactory, currentEnqueueSeries, 1);
-        Metrics.ChangeCurrent(meterFactory, currentTypedEnqueueSeries, 1);
+        metricsService.AddCounter(enqueueSeries);
+        metricsService.AddCounter(typedEnqueueSeries);
+        metricsService.AddUpDownCounter(currentEnqueueSeries, 1);
+        metricsService.AddUpDownCounter(currentTypedEnqueueSeries, 1);
 
         try
         {
@@ -51,16 +50,16 @@ public class MetricsQueueEnqueuerBehavior(IMeterFactory meterFactory = null) : I
         }
         catch
         {
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(enqueueSeries));
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedEnqueueSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(enqueueSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(typedEnqueueSeries));
             throw;
         }
         finally
         {
-            Metrics.ChangeCurrent(meterFactory, currentEnqueueSeries, -1);
-            Metrics.ChangeCurrent(meterFactory, currentTypedEnqueueSeries, -1);
-            Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(enqueueSeries), startedTimestamp);
-            Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(typedEnqueueSeries), startedTimestamp);
+            metricsService.AddUpDownCounter(currentEnqueueSeries, -1);
+            metricsService.AddUpDownCounter(currentTypedEnqueueSeries, -1);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(enqueueSeries), startedTimestamp);
+            metricsService.RecordHistogramDuration(Metrics.DurationSeries(typedEnqueueSeries), startedTimestamp);
         }
     }
 }

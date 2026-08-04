@@ -4,14 +4,14 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Emits low-cardinality Storage Permalink metrics.
 /// </summary>
 /// <example>
 /// <code>
-/// var metrics = new StoragePermalinkMetrics(meterFactory);
+/// var metrics = new StoragePermalinkMetrics(metricsService);
 /// </code>
 /// </example>
 public sealed class StoragePermalinkMetrics
@@ -19,31 +19,26 @@ public sealed class StoragePermalinkMetrics
     /// <summary>
     /// The OpenTelemetry meter name.
     /// </summary>
-    public const string MeterName = "BridgingIT.DevKit.Storage.Permalinks";
+    public const string MeterName = Metrics.MeterName;
 
-    private readonly Counter<long> operations;
-    private readonly Histogram<double> operationDuration;
-    private readonly Counter<long> downloads;
-    private readonly Histogram<double> downloadDuration;
-    private readonly Counter<long> syncEvents;
-    private readonly Histogram<double> syncDuration;
-    private readonly Counter<long> syncRetries;
+    private const string OperationsName = "bdk.storage.permalinks.operations";
+    private const string OperationDurationName = "bdk.storage.permalinks.operation.duration";
+    private const string DownloadsName = "bdk.storage.permalinks.downloads";
+    private const string DownloadDurationName = "bdk.storage.permalinks.download.duration";
+    private const string SyncEventsName = "bdk.storage.permalinks.sync.events";
+    private const string SyncDurationName = "bdk.storage.permalinks.sync.duration";
+    private const string SyncRetriesName = "bdk.storage.permalinks.sync.retries";
+    private const string QueueDepthName = "bdk.storage.permalinks.sync.queue.depth";
+    private readonly IMetricsService metricsService;
     private long queueDepth;
 
     /// <summary>
     /// Initializes permalink metrics.
     /// </summary>
-    public StoragePermalinkMetrics(IMeterFactory meterFactory = null)
+    public StoragePermalinkMetrics(IMetricsService metricsService = null)
     {
-        var meter = meterFactory?.Create(MeterName) ?? new Meter(MeterName);
-        this.operations = meter.CreateCounter<long>("bdk.storage.permalinks.operations");
-        this.operationDuration = meter.CreateHistogram<double>("bdk.storage.permalinks.operation.duration", "ms");
-        this.downloads = meter.CreateCounter<long>("bdk.storage.permalinks.downloads");
-        this.downloadDuration = meter.CreateHistogram<double>("bdk.storage.permalinks.download.duration", "ms");
-        this.syncEvents = meter.CreateCounter<long>("bdk.storage.permalinks.sync.events");
-        this.syncDuration = meter.CreateHistogram<double>("bdk.storage.permalinks.sync.duration", "ms");
-        this.syncRetries = meter.CreateCounter<long>("bdk.storage.permalinks.sync.retries");
-        meter.CreateObservableGauge("bdk.storage.permalinks.sync.queue.depth", () => Interlocked.Read(ref this.queueDepth));
+        this.metricsService = metricsService;
+        this.metricsService?.SetGauge(QueueDepthName, 0);
     }
 
     /// <summary>
@@ -55,7 +50,7 @@ public sealed class StoragePermalinkMetrics
     /// Records one completed registry or maintenance operation.
     /// </summary>
     public void RecordOperation(string operation, long started, IResult result, StorageResourceKind? kind = null, string provider = null) =>
-        this.Record(this.operations, this.operationDuration, operation, started, Outcome(result), kind, provider);
+        this.Record(OperationsName, OperationDurationName, operation, started, Outcome(result), kind, provider);
 
     /// <summary>
     /// Records one permalink download request.
@@ -63,8 +58,12 @@ public sealed class StoragePermalinkMetrics
     public void RecordDownload(long started, string outcome, StorageResourceKind? kind = null)
     {
         var tags = Tags("download", outcome, kind, null);
-        this.downloads.Add(1, tags);
-        this.downloadDuration.Record(Stopwatch.GetElapsedTime(started).TotalMilliseconds, tags);
+        this.metricsService?.AddCounter(DownloadsName, tags: tags);
+        this.metricsService?.RecordHistogram(
+            DownloadDurationName,
+            Stopwatch.GetElapsedTime(started).TotalMilliseconds,
+            "ms",
+            tags);
     }
 
     /// <summary>
@@ -73,10 +72,14 @@ public sealed class StoragePermalinkMetrics
     public void RecordSync(StorageResourceChangedNotification notification, string outcome, long? started = null, string provider = null)
     {
         var tags = Tags(notification.ChangeKind.ToString().ToLowerInvariant(), outcome, notification.Location.Kind, provider);
-        this.syncEvents.Add(1, tags);
+        this.metricsService?.AddCounter(SyncEventsName, tags: tags);
         if (started.HasValue)
         {
-            this.syncDuration.Record(Stopwatch.GetElapsedTime(started.Value).TotalMilliseconds, tags);
+            this.metricsService?.RecordHistogram(
+                SyncDurationName,
+                Stopwatch.GetElapsedTime(started.Value).TotalMilliseconds,
+                "ms",
+                tags);
         }
     }
 
@@ -84,31 +87,69 @@ public sealed class StoragePermalinkMetrics
     /// Records a synchronization retry.
     /// </summary>
     public void RecordRetry(StorageResourceChangedNotification notification, string provider = null) =>
-        this.syncRetries.Add(1, Tags(notification.ChangeKind.ToString().ToLowerInvariant(), "retry", notification.Location.Kind, provider));
+        this.metricsService?.AddCounter(
+            SyncRetriesName,
+            tags: Tags(notification.ChangeKind.ToString().ToLowerInvariant(), "retry", notification.Location.Kind, provider));
 
     /// <summary>
     /// Increments the queued-event gauge.
     /// </summary>
-    public void IncrementQueueDepth() => Interlocked.Increment(ref this.queueDepth);
+    public void IncrementQueueDepth()
+    {
+        var value = Interlocked.Increment(ref this.queueDepth);
+        this.metricsService?.SetGauge(QueueDepthName, value);
+    }
 
     /// <summary>
     /// Decrements the queued-event gauge.
     /// </summary>
-    public void DecrementQueueDepth() => Interlocked.Decrement(ref this.queueDepth);
-
-    private void Record(Counter<long> counter, Histogram<double> histogram, string operation, long started, string outcome, StorageResourceKind? kind, string provider)
+    public void DecrementQueueDepth()
     {
-        var tags = Tags(operation, outcome, kind, provider);
-        counter.Add(1, tags);
-        histogram.Record(Stopwatch.GetElapsedTime(started).TotalMilliseconds, tags);
+        var value = Interlocked.Decrement(ref this.queueDepth);
+        this.metricsService?.SetGauge(QueueDepthName, value);
     }
 
-    private static TagList Tags(string operation, string outcome, StorageResourceKind? kind, string provider)
+    private void Record(
+        string counterName,
+        string histogramName,
+        string operation,
+        long started,
+        string outcome,
+        StorageResourceKind? kind,
+        string provider)
     {
-        var tags = new TagList { { "operation", operation }, { "outcome", outcome } };
-        if (kind.HasValue) tags.Add("storage.kind", kind.Value.ToString().ToLowerInvariant());
-        if (!string.IsNullOrWhiteSpace(provider)) tags.Add("registry.provider", provider.ToLowerInvariant());
-        return tags;
+        var tags = Tags(operation, outcome, kind, provider);
+        this.metricsService?.AddCounter(counterName, tags: tags);
+        this.metricsService?.RecordHistogram(
+            histogramName,
+            Stopwatch.GetElapsedTime(started).TotalMilliseconds,
+            "ms",
+            tags);
+    }
+
+    private static MetricTag[] Tags(
+        string operation,
+        string outcome,
+        StorageResourceKind? kind,
+        string provider)
+    {
+        var tags = new List<MetricTag>
+        {
+            new("operation", operation),
+            new("outcome", outcome),
+        };
+
+        if (kind.HasValue)
+        {
+            tags.Add(new("storage.kind", kind.Value.ToString().ToLowerInvariant()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(provider))
+        {
+            tags.Add(new("registry.provider", provider.ToLowerInvariant()));
+        }
+
+        return [.. tags];
     }
 
     private static string Outcome(IResult result) => result switch

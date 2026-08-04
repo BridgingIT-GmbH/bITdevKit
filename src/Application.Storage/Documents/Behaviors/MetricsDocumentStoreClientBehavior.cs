@@ -4,22 +4,21 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 
 /// <summary>Emits low-cardinality operation counts and durations.</summary>
 /// <typeparam name="T">The document type.</typeparam>
-/// <example><code>var behavior = new MetricsDocumentStoreClientBehavior&lt;Person&gt;(meterFactory, inner);</code></example>
+/// <example><code>var behavior = new MetricsDocumentStoreClientBehavior&lt;Person&gt;(inner, metricsService);</code></example>
 public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientBehaviorBase<T> where T : class, new()
 {
-    private readonly Counter<long> operations;
-    private readonly Histogram<double> duration;
+    private readonly IMetricsService metricsService;
 
     /// <summary>Initializes the metrics behavior.</summary>
-    public MetricsDocumentStoreClientBehavior(IMeterFactory meterFactory, IDocumentStoreClient<T> inner) : base(inner)
+    public MetricsDocumentStoreClientBehavior(
+        IDocumentStoreClient<T> inner,
+        IMetricsService metricsService = null) : base(inner)
     {
-        var meter = meterFactory?.Create("BridgingIT.DevKit.DocumentStorage") ?? new Meter("BridgingIT.DevKit.DocumentStorage");
-        this.operations = meter.CreateCounter<long>("document.operations");
-        this.duration = meter.CreateHistogram<double>("document.operation.duration", "ms");
+        this.metricsService = metricsService;
     }
 
     /// <inheritdoc />
@@ -33,13 +32,22 @@ public sealed class MetricsDocumentStoreClientBehavior<T> : DocumentStoreClientB
 
     private async Task<TResult> Measure<TResult>(string operation, Func<Task<TResult>> action)
     {
+        if (this.metricsService is null)
+        {
+            return await action().ConfigureAwait(false);
+        }
+
         var started = Stopwatch.GetTimestamp();
-        try { return await action(); }
+        try { return await action().ConfigureAwait(false); }
         finally
         {
-            var tags = new TagList { { "operation", operation }, { "document.type", typeof(T).Name } };
-            this.operations.Add(1, tags);
-            this.duration.Record(Stopwatch.GetElapsedTime(started).TotalMilliseconds, tags);
+            MetricTag[] tags = [new("operation", operation), new("document.type", typeof(T).Name)];
+            this.metricsService.AddCounter("document.operations", tags: tags);
+            this.metricsService.RecordHistogram(
+                "document.operation.duration",
+                Stopwatch.GetElapsedTime(started).TotalMilliseconds,
+                "ms",
+                tags);
         }
     }
 }

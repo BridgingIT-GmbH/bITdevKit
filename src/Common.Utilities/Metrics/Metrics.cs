@@ -6,19 +6,18 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Text;
 
 /// <summary>
-/// Provides shared naming and recording helpers for runtime metrics.
+/// Provides shared naming and timing helpers for runtime metrics.
 /// </summary>
 /// <example>
 /// <code>
 /// var series = DevKitMetrics.Series("requester_send", DevKitMetrics.NormalizeTypeName(typeof(CreateOrderCommand)));
 /// var started = DevKitMetrics.StartTimestamp();
-/// DevKitMetrics.Increment(meterFactory, series);
-/// DevKitMetrics.ChangeCurrent(meterFactory, DevKitMetrics.CurrentSeries(series), 1);
-/// DevKitMetrics.RecordDuration(meterFactory, DevKitMetrics.DurationSeries(series), started);
+/// metricsService.AddCounter(series);
+/// metricsService.AddUpDownCounter(Metrics.CurrentSeries(series), 1);
+/// metricsService.RecordHistogramDuration(Metrics.DurationSeries(series), started);
 /// </code>
 /// </example>
 public static class Metrics
@@ -139,54 +138,6 @@ public static class Metrics
         ArgumentException.ThrowIfNullOrWhiteSpace(series);
 
         return $"{series}_current";
-    }
-
-    /// <summary>
-    /// Increments the specified cumulative counter series by one.
-    /// </summary>
-    /// <param name="meterFactory">The meter factory used to create the counter.</param>
-    /// <param name="series">The counter series name.</param>
-    public static void Increment(IMeterFactory meterFactory, string series)
-    {
-        if (meterFactory is null || string.IsNullOrWhiteSpace(series))
-        {
-            return;
-        }
-
-        meterFactory.Create(MeterName).CreateCounter<int>(series).Add(1);
-    }
-
-    /// <summary>
-    /// Adjusts the specified current live-view series using an up/down counter.
-    /// </summary>
-    /// <param name="meterFactory">The meter factory used to create the up/down counter.</param>
-    /// <param name="series">The current series name.</param>
-    /// <param name="value">The delta to apply. Positive values increment and negative values decrement.</param>
-    public static void ChangeCurrent(IMeterFactory meterFactory, string series, int value)
-    {
-        if (meterFactory is null || string.IsNullOrWhiteSpace(series) || value == 0)
-        {
-            return;
-        }
-
-        meterFactory.Create(MeterName).CreateUpDownCounter<int>(series).Add(value);
-    }
-
-    /// <summary>
-    /// Records the elapsed duration since the supplied start timestamp in milliseconds.
-    /// </summary>
-    /// <param name="meterFactory">The meter factory used to create the histogram.</param>
-    /// <param name="series">The histogram series name.</param>
-    /// <param name="startedTimestamp">The timestamp captured earlier via <see cref="StartTimestamp"/>.</param>
-    public static void RecordDuration(IMeterFactory meterFactory, string series, long startedTimestamp)
-    {
-        if (meterFactory is null || string.IsNullOrWhiteSpace(series))
-        {
-            return;
-        }
-
-        var elapsedMilliseconds = Stopwatch.GetElapsedTime(startedTimestamp).TotalMilliseconds;
-        meterFactory.Create(MeterName).CreateHistogram<double>(series, unit: "ms").Record(elapsedMilliseconds);
     }
 
     private static string FormatTypeName(Type type)

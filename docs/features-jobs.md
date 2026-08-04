@@ -509,7 +509,7 @@ public sealed class ExportCustomerJob(ICustomerExporter exporter) : JobBase<Expo
 
 Behavior notes:
 
-- `JobMetricsBehavior` is registered by default so execution spans and execution-level metrics continue to flow without extra setup
+- `JobMetricsBehavior` is registered by default. Execution activities continue to flow without extra setup; execution-level metrics are emitted when the optional shared service is registered with `AddMetrics(options => options.Enabled())`
 - global behaviors run before job-specific fluent behaviors and attribute-declared behaviors
 - attribute-declared behaviors run before fluent job-specific behaviors on the same job
 - behaviors should wrap `next()` and let the scheduler keep ownership of leases, retries, timeout handling, and durable state transitions

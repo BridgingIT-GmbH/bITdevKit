@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
@@ -82,7 +83,7 @@ public static partial class ServiceCollectionExtensions
                 sp.GetRequiredService<IServiceScopeFactory>(),
                 options,
                 sp.GetService<IContinuationTokenProtector>(),
-                sp.GetService<System.Diagnostics.Metrics.IMeterFactory>(),
+                sp.GetService<IMetricsService>(),
                 sp.GetService<ILoggerFactory>(),
                 name),
             configure,

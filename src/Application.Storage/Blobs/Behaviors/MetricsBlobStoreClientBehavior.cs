@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Emits low-cardinality blob-store operation metrics.
@@ -21,28 +21,26 @@ using System.Diagnostics.Metrics;
 /// <remarks>
 /// Initializes a new instance of the <see cref="MetricsBlobStoreClientBehavior" /> class.
 /// </remarks>
-/// <param name="meterFactory">The optional meter factory.</param>
 /// <param name="inner">The decorated blob-store client.</param>
+/// <param name="metricsService">The optional shared metrics service.</param>
 /// <param name="storeName">The configured blob-store client name.</param>
 /// <example>
 /// <code>
-/// var behavior = new MetricsBlobStoreClientBehavior(meterFactory, inner, "reports");
+/// var behavior = new MetricsBlobStoreClientBehavior(inner, metricsService, "reports");
 /// </code>
 /// </example>
 public sealed class MetricsBlobStoreClientBehavior(
-    IMeterFactory meterFactory,
     IBlobStoreClient inner,
+    IMetricsService metricsService = null,
     string storeName = null) : BlobStoreClientBehaviorBase(inner, storeName)
 {
-    private readonly IMeterFactory meterFactory = meterFactory;
-
     protected override async Task<Result<T>> ExecuteAsync<T>(
         string operation,
         BlobStoreOperationContext context,
         Func<CancellationToken, Task<Result<T>>> next,
         CancellationToken cancellationToken)
     {
-        if (this.meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await next(cancellationToken).ConfigureAwait(false);
         }
@@ -78,7 +76,7 @@ public sealed class MetricsBlobStoreClientBehavior(
         Func<CancellationToken, Task<Result>> next,
         CancellationToken cancellationToken)
     {
-        if (this.meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await next(cancellationToken).ConfigureAwait(false);
         }
@@ -182,39 +180,15 @@ public sealed class MetricsBlobStoreClientBehavior(
 
     private void AddCounter(string name, long value, string operation)
     {
-        try
-        {
-            this.meterFactory
-                .Create(Metrics.MeterName)
-                .CreateCounter<long>(name)
-                .Add(value, this.Tags(operation));
-        }
-        catch (Exception exception) when (exception is not OutOfMemoryException and
-            not StackOverflowException and
-            not AccessViolationException)
-        {
-            // Client metrics are best effort and must not alter the storage operation.
-        }
+        metricsService.AddCounter(name, value, this.Tags(operation));
     }
 
     private void AddHistogram(string name, double value, string operation)
     {
-        try
-        {
-            this.meterFactory
-                .Create(Metrics.MeterName)
-                .CreateHistogram<double>(name, unit: "ms")
-                .Record(value, this.Tags(operation));
-        }
-        catch (Exception exception) when (exception is not OutOfMemoryException and
-            not StackOverflowException and
-            not AccessViolationException)
-        {
-            // Client metrics are best effort and must not alter the storage operation.
-        }
+        metricsService.RecordHistogram(name, value, "ms", this.Tags(operation));
     }
 
-    private KeyValuePair<string, object>[] Tags(string operation) =>
+    private MetricTag[] Tags(string operation) =>
     [
         new("operation", operation),
         new("store", this.StoreName)

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using System.Diagnostics.Metrics;
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
@@ -22,7 +21,7 @@ using BridgingIT.DevKit.Domain.Repositories;
 ///     .AddMetricsBehavior();
 /// </code>
 /// </example>
-public class ActiveEntityMetricsBehavior<TEntity>(IMeterFactory meterFactory = null) : ActiveEntityBehaviorBase<TEntity>
+public class ActiveEntityMetricsBehavior<TEntity>(IMetricsService metricsService = null) : ActiveEntityBehaviorBase<TEntity>
     where TEntity : class, IEntity
 {
     private readonly AsyncLocal<Stack<OperationState>> operations = new();
@@ -180,15 +179,15 @@ public class ActiveEntityMetricsBehavior<TEntity>(IMeterFactory meterFactory = n
 
     private Task<Result> BeginAsync(string family, string operation, CancellationToken cancellationToken)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return Task.FromResult(Result.Success());
         }
 
         var series = Metrics.Series(family);
         var typedSeries = Metrics.Series(family, this.entityName, operation);
-        Metrics.Increment(meterFactory, series);
-        Metrics.Increment(meterFactory, typedSeries);
+        metricsService.AddCounter(series);
+        metricsService.AddCounter(typedSeries);
         this.Operations.Push(new OperationState(family, operation, series, typedSeries, Metrics.StartTimestamp()));
 
         return Task.FromResult(Result.Success());
@@ -196,7 +195,7 @@ public class ActiveEntityMetricsBehavior<TEntity>(IMeterFactory meterFactory = n
 
     private Task<Result> EndAsync(string family, string operation, bool success, CancellationToken cancellationToken)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return Task.FromResult(Result.Success());
         }
@@ -209,12 +208,12 @@ public class ActiveEntityMetricsBehavior<TEntity>(IMeterFactory meterFactory = n
 
         if (!success)
         {
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(state.Series));
-            Metrics.Increment(meterFactory, Metrics.FailureSeries(state.TypedSeries));
+            metricsService.AddCounter(Metrics.FailureSeries(state.Series));
+            metricsService.AddCounter(Metrics.FailureSeries(state.TypedSeries));
         }
 
-        Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(state.Series), state.StartedTimestamp);
-        Metrics.RecordDuration(meterFactory, Metrics.DurationSeries(state.TypedSeries), state.StartedTimestamp);
+        metricsService.RecordHistogramDuration(Metrics.DurationSeries(state.Series), state.StartedTimestamp);
+        metricsService.RecordHistogramDuration(Metrics.DurationSeries(state.TypedSeries), state.StartedTimestamp);
 
         return Task.FromResult(Result.Success());
     }

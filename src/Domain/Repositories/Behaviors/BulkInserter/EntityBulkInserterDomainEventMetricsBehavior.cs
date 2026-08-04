@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using System.Diagnostics.Metrics;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 
@@ -20,8 +19,8 @@ using BridgingIT.DevKit.Domain.Model;
 /// </code>
 /// </example>
 public class EntityBulkInserterDomainEventMetricsBehavior<TEntity>(
-    IMeterFactory meterFactory,
-    IEntityBulkInserter<TEntity> inner) : IEntityBulkInserter<TEntity>
+    IEntityBulkInserter<TEntity> inner,
+    IMetricsService metricsService = null) : IEntityBulkInserter<TEntity>
     where TEntity : class, IEntity, IAggregateRoot
 {
     /// <inheritdoc />
@@ -29,12 +28,12 @@ public class EntityBulkInserterDomainEventMetricsBehavior<TEntity>(
     {
         var items = EntityBulkInserterBehaviorUtilities.Materialize(entities);
 
-        if (meterFactory is not null)
+        if (metricsService is not null)
         {
             foreach (var domainEvent in items.SelectMany(entity => entity.DomainEvents.GetAll()))
             {
-                Metrics.Increment(meterFactory, Metrics.Series("domainevents_create"));
-                Metrics.Increment(meterFactory, Metrics.Series("domainevents_create", Metrics.NormalizeTypeName(domainEvent.GetType())));
+                metricsService.AddCounter(Metrics.Series("domainevents_create"));
+                metricsService.AddCounter(Metrics.Series("domainevents_create", Metrics.NormalizeTypeName(domainEvent.GetType())));
             }
         }
 

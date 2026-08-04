@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Jobs;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,6 +20,7 @@ public partial class JobSchedulerBackgroundService : BackgroundService
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly JobSchedulerHostedOptions options;
     private readonly IJobSchedulerExceptionHandler[] exceptionHandlers;
+    private readonly JobSchedulerMetrics metrics;
     private readonly ILogger<JobSchedulerBackgroundService> logger;
     private readonly SemaphoreSlim concurrencyGate;
     private IDisposable startupRegistration;
@@ -35,7 +37,8 @@ public partial class JobSchedulerBackgroundService : BackgroundService
         IHostApplicationLifetime applicationLifetime,
         JobSchedulerHostedOptions options = null,
         IEnumerable<IJobSchedulerExceptionHandler> exceptionHandlers = null,
-        ILoggerFactory loggerFactory = null)
+        ILoggerFactory loggerFactory = null,
+        IMetricsService metricsService = null)
     {
         this.timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
@@ -43,6 +46,7 @@ public partial class JobSchedulerBackgroundService : BackgroundService
         this.exceptionHandlers = exceptionHandlers?.ToArray() ?? [];
         this.options = options ?? new JobSchedulerHostedOptions();
         this.logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<JobSchedulerBackgroundService>();
+        this.metrics = new JobSchedulerMetrics(metricsService);
         this.concurrencyGate = new SemaphoreSlim(Math.Max(1, this.options.MaxConcurrency), Math.Max(1, this.options.MaxConcurrency));
     }
 
@@ -76,14 +80,14 @@ public partial class JobSchedulerBackgroundService : BackgroundService
         activity?.SetTag("jobs.sweep.ready_count", dueOccurrences.Count);
         if (dueOccurrences.Count == 0)
         {
-            JobSchedulerInstrumentation.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, 0, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
+            this.metrics.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, 0, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
             return;
         }
 
         var availableSlots = Math.Max(0, this.options.MaxConcurrency - this.scheduler.ActiveExecutionCount);
         if (availableSlots == 0)
         {
-            JobSchedulerInstrumentation.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
+            this.metrics.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
             TypedLogger.LogSweepDeferredNoWorkerSlots(
                 this.logger,
                 Constants.LogKey,
@@ -94,7 +98,7 @@ public partial class JobSchedulerBackgroundService : BackgroundService
             return;
         }
 
-        JobSchedulerInstrumentation.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
+        this.metrics.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
 
         var selected = dueOccurrences.Take(Math.Min(this.options.BatchSize, availableSlots)).ToArray();
         TypedLogger.LogSweepDispatchingReadyOccurrences(

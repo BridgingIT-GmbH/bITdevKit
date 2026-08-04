@@ -10,8 +10,13 @@ using BridgingIT.DevKit.Common;
 /// <summary>
 /// Provides the default event acceptance implementation for provider-neutral event triggers.
 /// </summary>
-public sealed class JobEventIngress(TimeProvider timeProvider, IJobStoreProvider storeProvider) : IJobEventIngress
+public sealed class JobEventIngress(
+    TimeProvider timeProvider,
+    IJobStoreProvider storeProvider,
+    IMetricsService metricsService = null) : IJobEventIngress
 {
+    private readonly JobSchedulerMetrics metrics = new(metricsService);
+
     /// <inheritdoc />
     public Task<IResult<JobAcceptedEvent>> AcceptAsync(
         string source,
@@ -78,7 +83,7 @@ public sealed class JobEventIngress(TimeProvider timeProvider, IJobStoreProvider
         var created = await storeProvider.AcceptedEvents.TryAcceptAsync(acceptedEvent, cancellationToken).ConfigureAwait(false);
         activity?.SetTag("jobs.event.idempotency_key", acceptedEvent.IdempotencyKey);
         activity?.SetTag("jobs.operation.success", created);
-        JobSchedulerInstrumentation.RecordEventAccepted(acceptedEvent.Source, acceptedEvent.CorrelationId, duplicate: !created);
+        this.metrics.RecordEventAccepted(acceptedEvent.Source, acceptedEvent.CorrelationId, duplicate: !created);
         return created
             ? Result<JobAcceptedEvent>.Success(acceptedEvent)
             : Result<JobAcceptedEvent>.Success(acceptedEvent).WithMessage($"The accepted event '{acceptedEvent.IdempotencyKey}' was already recorded.");

@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Collections;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
@@ -25,15 +24,15 @@ using BridgingIT.DevKit.Common;
 /// Initializes a new instance of the <see cref="MetricsFileStorageBehavior" /> class.
 /// </remarks>
 /// <param name="innerProvider">The decorated file-storage provider.</param>
-/// <param name="meterFactory">The optional meter factory used to emit measurements.</param>
+/// <param name="metricsService">The optional shared metrics service used to emit measurements.</param>
 /// <example>
 /// <code>
-/// var behavior = new MetricsFileStorageBehavior(provider, meterFactory);
+/// var behavior = new MetricsFileStorageBehavior(provider, metricsService);
 /// </code>
 /// </example>
 public sealed class MetricsFileStorageBehavior(
     IFileStorageProvider innerProvider,
-    IMeterFactory meterFactory = null) : IFileStorageBehavior
+    IMetricsService metricsService = null) : IFileStorageBehavior
 {
     private readonly string location = Metrics.NormalizePart(innerProvider?.LocationName);
     private readonly string provider = Metrics.NormalizeTypeName(innerProvider?.GetType() ?? typeof(IFileStorageProvider));
@@ -166,7 +165,7 @@ public sealed class MetricsFileStorageBehavior(
         Func<Result<T>, long> bytes = null,
         Func<Result<T>, long> itemCount = null)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await next().ConfigureAwait(false);
         }
@@ -186,7 +185,7 @@ public sealed class MetricsFileStorageBehavior(
         CancellationToken cancellationToken,
         long bytes)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await next().ConfigureAwait(false);
         }
@@ -207,7 +206,7 @@ public sealed class MetricsFileStorageBehavior(
         long bytes = 0,
         long itemCount = 0)
     {
-        if (meterFactory is null || cancellationToken.IsCancellationRequested)
+        if (metricsService is null || cancellationToken.IsCancellationRequested)
         {
             return await next().ConfigureAwait(false);
         }
@@ -243,21 +242,15 @@ public sealed class MetricsFileStorageBehavior(
 
     private void AddCounter(string name, long value, string operation)
     {
-        meterFactory
-            .Create(Metrics.MeterName)
-            .CreateCounter<long>(name)
-            .Add(value, this.Tags(operation));
+        metricsService.AddCounter(name, value, this.Tags(operation));
     }
 
     private void AddHistogram(string name, double value, string operation)
     {
-        meterFactory
-            .Create(Metrics.MeterName)
-            .CreateHistogram<double>(name, unit: "ms")
-            .Record(value, this.Tags(operation));
+        metricsService.RecordHistogram(name, value, "ms", this.Tags(operation));
     }
 
-    private KeyValuePair<string, object>[] Tags(string operation) =>
+    private MetricTag[] Tags(string operation) =>
     [
         new("operation", operation),
         new("location", this.location),

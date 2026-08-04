@@ -9,7 +9,7 @@ public class MetricsNotificationBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsNotificationBehavior<TestNotification, IResult>(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsNotificationBehavior<TestNotification, IResult>(NullLoggerFactory.Instance, new MetricsService(meterFactory));
 
         var result = await sut.HandleAsync(
             new TestNotification(),
@@ -32,7 +32,7 @@ public class MetricsNotificationBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
-        var sut = new MetricsNotificationHandlerBehavior<TestNotification, IResult>(NullLoggerFactory.Instance, meterFactory);
+        var sut = new MetricsNotificationHandlerBehavior<TestNotification, IResult>(NullLoggerFactory.Instance, new MetricsService(meterFactory));
 
         var result = await sut.HandleAsync(
             new TestNotification(),

@@ -44,6 +44,7 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
+services.AddMetrics(options => options.Enabled());
 services.AddSingleton(new BlobServiceClient(connectionString));
 
 services.AddBlobStorage(options => options
@@ -110,6 +111,8 @@ services.AddBlobStorage()
         options.MaxPendingChunkBytes = ByteSize.Megabytes(16);
     });
 ```
+
+`WithMetricsBehavior()` and the provider-level EF flush instruments resolve the optional shared `IMetricsService`. Register it once with `AddMetrics(options => options.Enabled())` to emit metrics through the `bdk` meter. When it is not registered, blob operations, upload admission, and EF flushing continue unchanged without emitting measurements.
 
 The defaults above are also the built-in defaults. `MaxQueuedUploads = 0` disables waiting: an upload either starts immediately or returns `BlobStoreUploadOverloadedError`. A queued caller whose wait expires receives `BlobStoreUploadAdmissionTimeoutError`; caller cancellation continues to throw `OperationCanceledException`. Neither admission path reads, buffers, rewinds, or disposes the caller stream.
 

@@ -17,7 +17,7 @@ public class RepositoryMetricsBehaviorTests
         var release = new TaskCompletionSource<PersonStub>(TaskCreationOptions.RunContinuationsAsynchronously);
         inner.FindOneAsync(Arg.Any<object>(), Arg.Any<IFindOptions<PersonStub>>(), Arg.Any<CancellationToken>())
             .Returns(_ => release.Task);
-        var sut = new RepositoryMetricsBehavior<PersonStub>(meterFactory, inner);
+        var sut = new RepositoryMetricsBehavior<PersonStub>(inner, new MetricsService(meterFactory));
 
         var task = sut.FindOneAsync(Guid.NewGuid(), cancellationToken: CancellationToken.None);
         await Task.Yield();
@@ -44,7 +44,7 @@ public class RepositoryMetricsBehaviorTests
         var inner = Substitute.For<IGenericRepository<PersonStub>>();
         inner.InsertAsync(Arg.Any<PersonStub>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException<PersonStub>(new InvalidOperationException("boom")));
-        var sut = new RepositoryMetricsBehavior<PersonStub>(meterFactory, inner);
+        var sut = new RepositoryMetricsBehavior<PersonStub>(inner, new MetricsService(meterFactory));
 
         await Should.ThrowAsync<InvalidOperationException>(() => sut.InsertAsync(new PersonStub(), CancellationToken.None));
 
@@ -109,6 +109,11 @@ public class RepositoryMetricsBehaviorTests
             };
 
             this.listener.SetMeasurementEventCallback<int>((instrument, measurement, tags, state) =>
+            {
+                this.counters.GetOrAdd(instrument.Name, _ => []).Add(measurement);
+            });
+
+            this.listener.SetMeasurementEventCallback<long>((instrument, measurement, tags, state) =>
             {
                 this.counters.GetOrAdd(instrument.Name, _ => []).Add(measurement);
             });

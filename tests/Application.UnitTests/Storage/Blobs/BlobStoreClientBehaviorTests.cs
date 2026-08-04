@@ -107,7 +107,6 @@ public sealed class BlobStoreClientBehaviorTests
         using var meterFactory = new TestMeterFactory();
         using var recorder = new RecordingMetrics();
         var metrics = new MetricsBlobStoreClientBehavior(
-            meterFactory,
             new ScriptedBlobStoreClient
             {
                 Upload = _ => Result<BlobInfo>.Success(new BlobInfo
@@ -125,6 +124,7 @@ public sealed class BlobStoreClientBehaviorTests
                 }),
                 Exists = _ => Result<bool>.Failure(new BlobStoreSizeLimitExceededError(12, 10))
             },
+            new MetricsService(meterFactory),
             "reports");
 
         // Act
@@ -175,7 +175,7 @@ public sealed class BlobStoreClientBehaviorTests
             retryInner,
             new RetryBlobStoreClientBehaviorOptions { Attempts = 2, Backoff = TimeSpan.Zero },
             "reports");
-        var metricsWithRetry = new MetricsBlobStoreClientBehavior(meterFactory, retry, "reports");
+        var metricsWithRetry = new MetricsBlobStoreClientBehavior(retry, new MetricsService(meterFactory), "reports");
         var timeout = new TimeoutBlobStoreClientBehavior(
             new ScriptedBlobStoreClient
             {
@@ -187,7 +187,7 @@ public sealed class BlobStoreClientBehaviorTests
             },
             new TimeoutBlobStoreClientBehaviorOptions { Timeout = TimeSpan.FromMilliseconds(20) },
             "reports");
-        var metricsWithTimeout = new MetricsBlobStoreClientBehavior(meterFactory, timeout, "reports");
+        var metricsWithTimeout = new MetricsBlobStoreClientBehavior(timeout, new MetricsService(meterFactory), "reports");
 
         // Act
         await metricsWithRetry.ExistsAsync(new BlobKey("reports", "probe"));
@@ -218,7 +218,6 @@ public sealed class BlobStoreClientBehaviorTests
         listener.Start();
         var innerInvoked = false;
         var sut = new MetricsBlobStoreClientBehavior(
-            meterFactory,
             new ScriptedBlobStoreClient
             {
                 Exists = _ =>
@@ -227,6 +226,7 @@ public sealed class BlobStoreClientBehaviorTests
                     return Result<bool>.Success(true);
                 }
             },
+            new MetricsService(meterFactory),
             "reports");
 
         // Act
@@ -244,7 +244,7 @@ public sealed class BlobStoreClientBehaviorTests
         using var meterFactory = new TestMeterFactory();
         using var recorder = new RecordingMetrics();
         using var coordinator = new BlobUploadAdmissionCoordinator(
-            meterFactory: meterFactory);
+            metricsService: new MetricsService(meterFactory));
         var admission = new UploadConcurrencyBlobStoreClientBehavior(
             new ScriptedBlobStoreClient
             {
@@ -254,8 +254,8 @@ public sealed class BlobStoreClientBehaviorTests
             new UploadConcurrencyBlobStoreClientBehaviorOptions(),
             storeName: "reports");
         var sut = new MetricsBlobStoreClientBehavior(
-            meterFactory,
             admission,
+            new MetricsService(meterFactory),
             "reports");
 
         // Act
@@ -307,7 +307,7 @@ public sealed class BlobStoreClientBehaviorTests
             admission,
             new TimeoutBlobStoreClientBehaviorOptions { Timeout = TimeSpan.FromMinutes(1) },
             timeProvider: timeProvider);
-        var sut = new MetricsBlobStoreClientBehavior(meterFactory, timeout, "reports");
+        var sut = new MetricsBlobStoreClientBehavior(timeout, new MetricsService(meterFactory), "reports");
         using var content = new MemoryStream([1]);
 
         // Act
@@ -350,7 +350,7 @@ public sealed class BlobStoreClientBehaviorTests
             coordinator,
             admissionOptions,
             storeName: "reports");
-        var sut = new MetricsBlobStoreClientBehavior(meterFactory, admission, "reports");
+        var sut = new MetricsBlobStoreClientBehavior(admission, new MetricsService(meterFactory), "reports");
         using var cancellation = new CancellationTokenSource();
         using var content = new MemoryStream([1]);
 
@@ -416,7 +416,7 @@ public sealed class BlobStoreClientBehaviorTests
             },
             "reports",
             timeProvider);
-        var sut = new MetricsBlobStoreClientBehavior(meterFactory, retry, "reports");
+        var sut = new MetricsBlobStoreClientBehavior(retry, new MetricsService(meterFactory), "reports");
         using var content = new MemoryStream([1, 2, 3]);
 
         // Act

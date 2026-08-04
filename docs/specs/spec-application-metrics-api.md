@@ -87,9 +87,9 @@ The devkit metrics API shall complement, not replace:
 
 The application shall not persist metric history for charts in the metrics API or the DoFiesta operations page. Historical charts are built client-side by polling live snapshots and appending points over time.
 
-### 3.2 No tag-rich metrics model in the initial design
+### 3.2 Controlled low-cardinality tags
 
-The initial design shall not depend on metric tags for filtering, grouping, or querying. Metric families remain name-encoded for consistency with the existing implementation.
+Feature telemetry may use stable, low-cardinality tags such as operation, provider, store, outcome, and status. Paths, payload values, identifiers with unbounded cardinality, and sensitive values must not be emitted. Existing name-encoded metric families remain supported.
 
 ### 3.3 No cluster-wide aggregation
 
@@ -214,29 +214,48 @@ This specification covers metric emission for:
 - job scheduling execution
 - orchestration activity execution
 
-### 7.2 Shared naming helper
+### 7.2 Shared metrics abstraction
 
-The implementation shall introduce a small internal helper responsible for:
+Runtime behaviors and feature components shall depend on the optionally registered `IMetricsService`. Direct `IMeterFactory`, `Meter`, and concrete instrument ownership is confined to `MetricsService`.
+
+`IMetricsService` is responsible for:
+
+- best-effort exception isolation
+- instrument creation and reuse
+- counters, up/down counters, gauges, and histograms
+- low-cardinality tags
+- duration recording
+
+The shared `Metrics` helper remains responsible for:
 
 - metric family construction
 - lower-case normalization
 - stable type-name formatting
 - orchestration activity name formatting
 
-Recommended responsibilities:
+Applications enable emission once:
+
+```csharp
+services.AddMetrics(options => options.Enabled());
+```
+
+When `IMetricsService` is not registered, optional metric behaviors and runtime hooks remain operational no-ops.
+
+Naming responsibilities include:
 
 - normalize `CustomerCreatedNotification` -> `customercreatednotification`
 - normalize closed generic names into stable readable tokens
 - prevent ad hoc string concatenation across behaviors
 
-This helper is an internal implementation detail and is not intended as public API.
-
 ### 7.3 Metric kinds
 
 The metrics feature uses:
 
-- `Counter<int>` for cumulative totals
-- `Histogram<double>` for durations
+- `Counter<long>` for cumulative totals
+- `UpDownCounter<long>` for current values
+- `ObservableGauge<long>` for absolute live values
+- `Histogram<long>` for integral samples such as bytes and chunks
+- `Histogram<double>` for durations and ratios
 
 Duration values shall use milliseconds as the unit.
 

@@ -80,7 +80,7 @@ public class EntityBulkInserterBehaviorTests
     public async Task DomainEvent_CreatesEventsBeforeEventMetricsAndFiltersNulls()
     {
         var terminal = new CapturingBulkInserter();
-        var metrics = new EntityBulkInserterDomainEventMetricsBehavior<AggregateEntity>(null, terminal);
+        var metrics = new EntityBulkInserterDomainEventMetricsBehavior<AggregateEntity>(terminal);
         var sut = new EntityBulkInserterDomainEventBehavior<AggregateEntity>(metrics);
         var entity = new AggregateEntity();
 
@@ -146,10 +146,10 @@ public class EntityBulkInserterBehaviorTests
     {
         using var meterFactory = new TestMeterFactory();
         using var listener = new MeterListener();
-        var current = 0;
+        var current = 0L;
         var durations = 0;
         listener.InstrumentPublished = (instrument, meterListener) => meterListener.EnableMeasurementEvents(instrument);
-        listener.SetMeasurementEventCallback<int>((instrument, measurement, _, _) =>
+        listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
         {
             if (instrument.Name == "bulk_inserter_insert_current")
             {
@@ -164,7 +164,9 @@ public class EntityBulkInserterBehaviorTests
             }
         });
         listener.Start();
-        var sut = new EntityBulkInserterMetricsBehavior<AggregateEntity>(meterFactory, new CapturingBulkInserter());
+        var sut = new EntityBulkInserterMetricsBehavior<AggregateEntity>(
+            new CapturingBulkInserter(),
+            new MetricsService(meterFactory));
 
         await sut.InsertAsync([new AggregateEntity()]);
 

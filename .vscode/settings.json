@@ -1,5 +1,6 @@
 {
   "workbench.colorCustomizations": {
   },
-  "dotnet.defaultSolution": "bITdevKit.slnx"
+"dotnet.defaultSolution": "bITdevKit.slnx",
+"github-enterprise.uri": "https://bridgingitgruppe.ghe.com/"
 }

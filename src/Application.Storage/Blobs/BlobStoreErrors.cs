@@ -373,6 +373,99 @@ public sealed class BlobStoreSizeLimitExceededError(long actualSize, long maxSiz
 public sealed class BlobStoreIntegrityError(string message) : ResultErrorBase(message);
 
 /// <summary>
+/// Represents an upload rejected because the bounded waiting queue is full.
+/// </summary>
+/// <example>
+/// <code>
+/// var error = new BlobStoreUploadOverloadedError("reports", 4, 16);
+/// </code>
+/// </example>
+/// <remarks>
+/// Initializes a new instance of the <see cref="BlobStoreUploadOverloadedError" /> class.
+/// </remarks>
+/// <param name="storeName">The normalized blob-store name.</param>
+/// <param name="maxConcurrentUploads">The configured active upload limit.</param>
+/// <param name="maxQueuedUploads">The configured waiting upload limit.</param>
+public sealed class BlobStoreUploadOverloadedError(
+    string storeName,
+    int maxConcurrentUploads,
+    int maxQueuedUploads)
+    : ResultErrorBase(
+        $"Blob store '{storeName}' cannot admit another upload because its bounded queue is full " +
+        $"(active limit: {maxConcurrentUploads}, queue limit: {maxQueuedUploads}).")
+{
+    /// <summary>
+    /// Gets the normalized blob-store name.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var storeName = error.StoreName;
+    /// </code>
+    /// </example>
+    public string StoreName { get; } = storeName;
+
+    /// <summary>
+    /// Gets the configured active upload limit.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var activeLimit = error.MaxConcurrentUploads;
+    /// </code>
+    /// </example>
+    public int MaxConcurrentUploads { get; } = maxConcurrentUploads;
+
+    /// <summary>
+    /// Gets the configured waiting upload limit.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var queueLimit = error.MaxQueuedUploads;
+    /// </code>
+    /// </example>
+    public int MaxQueuedUploads { get; } = maxQueuedUploads;
+}
+
+/// <summary>
+/// Represents an upload whose bounded admission wait expired.
+/// </summary>
+/// <example>
+/// <code>
+/// var error = new BlobStoreUploadAdmissionTimeoutError("reports", TimeSpan.FromSeconds(30));
+/// </code>
+/// </example>
+/// <remarks>
+/// Initializes a new instance of the <see cref="BlobStoreUploadAdmissionTimeoutError" /> class.
+/// </remarks>
+/// <param name="storeName">The normalized blob-store name.</param>
+/// <param name="queueWaitTimeout">The configured admission wait timeout.</param>
+public sealed class BlobStoreUploadAdmissionTimeoutError(
+    string storeName,
+    TimeSpan queueWaitTimeout)
+    : ResultErrorBase(
+        $"Blob store '{storeName}' could not admit the upload within {queueWaitTimeout}.")
+{
+    /// <summary>
+    /// Gets the normalized blob-store name.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var storeName = error.StoreName;
+    /// </code>
+    /// </example>
+    public string StoreName { get; } = storeName;
+
+    /// <summary>
+    /// Gets the configured admission wait timeout.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var timeout = error.QueueWaitTimeout;
+    /// </code>
+    /// </example>
+    public TimeSpan QueueWaitTimeout { get; } = queueWaitTimeout;
+}
+
+/// <summary>
 /// Represents a blob operation timeout.
 /// </summary>
 /// <example>

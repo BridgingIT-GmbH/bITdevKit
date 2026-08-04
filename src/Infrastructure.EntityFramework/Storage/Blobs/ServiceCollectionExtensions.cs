@@ -81,7 +81,10 @@ public static partial class ServiceCollectionExtensions
             (sp, options) => new EntityFrameworkBlobStoreProvider<TContext>(
                 sp.GetRequiredService<IServiceScopeFactory>(),
                 options,
-                sp.GetService<IContinuationTokenProtector>()),
+                sp.GetService<IContinuationTokenProtector>(),
+                sp.GetService<System.Diagnostics.Metrics.IMeterFactory>(),
+                sp.GetService<ILoggerFactory>(),
+                name),
             configure,
             EntityFrameworkBlobStoreProvider<TContext>.ProviderName,
             EntityFrameworkBlobStoreProvider<TContext>.CreateCapabilities(),

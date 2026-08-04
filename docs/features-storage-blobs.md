@@ -87,6 +87,44 @@ services.AddBlobStorage(options => options
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
 
+## High-Volume Uploads
+
+Use the optional upload-concurrency behavior when bursts must not open an unbounded number of provider operations, contexts, transactions, or database connections. Admission is shared by every DI scope in one process and isolated by case-insensitive named store.
+
+```csharp
+services.AddBlobStorage()
+    .WithLoggingBehavior()
+    .WithMetricsBehavior()
+    .WithTimeoutBehavior(options => options.Timeout = TimeSpan.FromMinutes(2))
+    .WithRetryBehavior(options => options.Attempts = 3)
+    .WithUploadConcurrencyBehavior(options =>
+    {
+        options.MaxConcurrentUploads = 4;
+        options.MaxQueuedUploads = 16;
+        options.QueueWaitTimeout = TimeSpan.FromSeconds(30);
+    })
+    .WithEntityFrameworkClient<AppDbContext>("reports", options =>
+    {
+        options.ChunkSize = (int)ByteSize.Megabytes(4);
+        options.ChunkFlushCount = 4;
+        options.MaxPendingChunkBytes = ByteSize.Megabytes(16);
+    });
+```
+
+The defaults above are also the built-in defaults. `MaxQueuedUploads = 0` disables waiting: an upload either starts immediately or returns `BlobStoreUploadOverloadedError`. A queued caller whose wait expires receives `BlobStoreUploadAdmissionTimeoutError`; caller cancellation continues to throw `OperationCanceledException`. Neither admission path reads, buffers, rewinds, or disposes the caller stream.
+
+The first registered behavior is outermost. The shown order means operation metrics and the overall timeout include queue time. Retry is outside admission, so each failed attempt releases its permit before backoff and reacquires a permit for the next attempt.
+
+Admission is deliberately process-local. With `N` application nodes, aggregate possible active uploads are approximately `N × MaxConcurrentUploads`; size database connection pools and server capacity accordingly.
+
+The EF provider groups chunks inside the existing per-blob transaction. It flushes when either `ChunkFlushCount` or `MaxPendingChunkBytes` is reached, then detaches the flushed chunk entities. A final partial group is always flushed. Count four is default-on; use `ChunkFlushCount = 1` only when explicitly requiring one save per chunk. Approximate pending content memory per active upload is bounded by:
+
+```text
+MaxPendingChunkBytes + ChunkSize + EF/object overhead
+```
+
+Tune active uploads and pending bytes together. For example, four active uploads with the defaults may hold roughly `4 × (16 MB + 4 MB)` of chunk buffers before EF/object overhead. Every intermediate relational flush remains uncommitted until expected-hash validation, final metadata persistence, and the single transaction commit complete.
+
 When Blob Storage is registered in a DevKit web host with local MCP enabled, `AddBlobStorage` contributes the Blob Storage MCP handler automatically. Local AI agents can inspect blob client registrations and probe status through `bdk mcp` without an additional blob-specific MCP registration call.
 
 The MCP handler is diagnostics-only. It exposes registration, provider capability, and non-mutating health probe data; it does not expose blob content, raw provider clients, provider SDK types, or mutating blob operations. If MCP is disabled by the DevKit local tooling policy, the handler is not registered.
@@ -914,11 +952,14 @@ if (snapshotResult.IsSuccess)
         var name = client.Name;
         var provider = client.ProviderName;
         var healthy = client.IsHealthy;
+        var admissionEnabled = client.UploadAdmissionEnabled;
+        var activeUploads = client.ActiveUploads;
+        var queuedUploads = client.QueuedUploads;
     }
 }
 ```
 
-The snapshot includes client names, provider names, capabilities, and readable health details. It does not expose provider instances or provider-specific SDK types.
+The snapshot includes client names, provider names, capabilities, readable health details, and—when upload admission is enabled—configured active/queue limits plus current active and queued counts. It does not expose queued blob keys, provider instances, or provider-specific SDK types.
 
 ## MCP Diagnostics
 
@@ -982,4 +1023,6 @@ Expected failures are Result failures, not exceptions. Common typed errors inclu
 - `BlobStoreTransferError`
 - `BlobStoreSizeLimitExceededError`
 - `BlobStoreIntegrityError`
+- `BlobStoreUploadOverloadedError`
+- `BlobStoreUploadAdmissionTimeoutError`
 - `BlobStoreTimeoutError`

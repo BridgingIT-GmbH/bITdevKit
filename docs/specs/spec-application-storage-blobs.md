@@ -745,6 +745,10 @@ public sealed class BlobStoreOptions
 
     public int ChunkSize { get; set; } = (int)ByteSize.Megabytes(4);
 
+    public int ChunkFlushCount { get; set; } = 4;
+
+    public long MaxPendingChunkBytes { get; set; } = ByteSize.Megabytes(16);
+
     public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromMinutes(1);
 
     public string? LeaseOwner { get; set; }
@@ -761,6 +765,8 @@ public sealed class BlobStoreOptions
 | `AllowFullScans`                  |    `false` | Disallows full container scans by default.      |
 | `RequireExplicitFullScanApproval` |     `true` | Requires `AllowFullScan = true` per query.      |
 | `ChunkSize`                       |     `4 MB` | EF Core blob chunk size.                        |
+| `ChunkFlushCount`                 |        `4` | Maximum EF chunks per intermediate save.        |
+| `MaxPendingChunkBytes`            |    `16 MB` | Pending EF chunk bytes before an intermediate save. |
 | `LeaseDuration`                   | `1 minute` | EF Core internal lease duration.                |
 | `LeaseOwner`                      |     `null` | Optional logical owner used for EF Core leases. |
 
@@ -1106,6 +1112,26 @@ public sealed class BlobStoreIntegrityError : ResultErrorBase
 ```
 
 ```csharp
+public sealed class BlobStoreUploadOverloadedError : ResultErrorBase
+{
+    public string StoreName { get; }
+
+    public int MaxConcurrentUploads { get; }
+
+    public int MaxQueuedUploads { get; }
+}
+```
+
+```csharp
+public sealed class BlobStoreUploadAdmissionTimeoutError : ResultErrorBase
+{
+    public string StoreName { get; }
+
+    public TimeSpan QueueWaitTimeout { get; }
+}
+```
+
+```csharp
 public sealed class BlobStoreTimeoutError : ResultErrorBase
 {
     public BlobStoreTimeoutError(string operation, TimeSpan timeout)
@@ -1259,6 +1285,7 @@ Built-in behavior scope:
 * `MetricsBlobStoreClientBehavior`
 * `RetryBlobStoreClientBehavior`
 * `TimeoutBlobStoreClientBehavior`
+* `UploadConcurrencyBlobStoreClientBehavior` (optional bounded upload admission)
 
 Optional behavior outside the required scope:
 
@@ -1297,6 +1324,9 @@ Rules:
 * Metrics behavior must avoid high-cardinality labels such as full blob names and raw continuation tokens.
 * Retry behavior must retry transient provider failures only.
 * Retry behavior must not retry validation, not-found, conflict, concurrency, size-limit, integrity, unsupported-query, or caller-cancellation failures.
+* Retry behavior must not retry `BlobStoreUploadOverloadedError` or `BlobStoreUploadAdmissionTimeoutError`.
+* Upload admission limits active and queued uploads per normalized named store in one process, uses oldest-first waiting, and never reads or disposes the caller stream.
+* Duplicate upload-admission behavior registration in one builder flow must fail.
 * Retry behavior may retry uploads only when the content stream is seekable and can be rewound to its original position, or when the provider operation is known to be safely replayable.
 * Retry behavior must not leave duplicate or partial content after a retry.
 * Timeout behavior must use a linked cancellation token and must distinguish timeout from caller cancellation where Result conventions allow it.
@@ -1464,6 +1494,8 @@ Recommended flow:
 * Count bytes while reading and enforce `MaxBlobSize` when configured.
 * Calculate SHA-256 while reading the stream.
 * Insert chunks with sequential indexes.
+* Flush pending chunks when `ChunkFlushCount` or `MaxPendingChunkBytes` is reached.
+* Detach every flushed chunk after a successful save and flush a final partial group.
 * Verify `ExpectedContentHash` when supplied.
 * Update length, content hash, ETag, timestamps, properties.
 * Commit transaction.
@@ -1894,6 +1926,10 @@ Required metrics:
 * retry attempt count
 * timeout count
 * size-limit failure count
+* successful upload admission count and queue-wait duration
+* upload admission queue-full, timeout, and caller-cancellation counts
+* current active and queued upload transitions by named store
+* EF chunks written, flush count, chunks per flush, and bytes per flush
 
 Recommended metric names:
 
@@ -2002,6 +2038,8 @@ Required tests:
 * `RetryBlobStoreClientBehavior` retries transient failures and does not retry validation, size-limit, integrity, conflict, concurrency, or caller-cancellation failures.
 * `RetryBlobStoreClientBehavior` rewinds seekable upload streams before retrying.
 * `TimeoutBlobStoreClientBehavior` maps operation timeout to `BlobStoreTimeoutError` without masking caller cancellation.
+* Optional upload admission is singleton-shared across scopes, isolated by named store, bounded, FIFO, and rejects duplicate behavior registration.
+* Admission overload and timeout failures do not reach the provider and are not retried.
 * Aggregate health check is registered as `BlobStorage`.
 * Aggregate health check checks every configured client.
 * Aggregate health-check failure data identifies failed client names as readable strings.
@@ -2150,6 +2188,8 @@ The implementation is complete when:
 * `TimeoutBlobStoreClientBehavior` is available and maps operation timeouts to Result failures.
 * A single aggregate health check named `BlobStorage` checks all configured clients.
 * EF Core provider stores content in chunks.
+* EF Core provider flushes bounded groups with default count four and a 16 MB pending-byte threshold.
+* Every relational chunk group remains inside one per-blob transaction until final validation and commit.
 * EF Core provider requires `IBlobStoreContext` with `StorageBlobs` and `StorageBlobChunks`.
 * EF Core provider uses internal leases for upload, delete, and property update.
 * Azure Blob provider uses native blob semantics and native continuation tokens.

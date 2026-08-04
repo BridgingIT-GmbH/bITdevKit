@@ -17,6 +17,7 @@
     <PackageReference Include="Polly.Contrib.Simmy" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="SharpCompress" />
+    <PackageReference Include="System.Threading.RateLimiting" />
   </ItemGroup>
 
   <ItemGroup>

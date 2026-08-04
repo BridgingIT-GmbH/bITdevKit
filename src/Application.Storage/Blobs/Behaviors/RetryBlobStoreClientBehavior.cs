@@ -21,6 +21,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// <param name="inner">The decorated blob-store client.</param>
 /// <param name="options">The retry options.</param>
 /// <param name="storeName">The configured blob-store client name.</param>
+/// <param name="timeProvider">The optional clock used for retry delays.</param>
 /// <example>
 /// <code>
 /// var behavior = new RetryBlobStoreClientBehavior(inner, options, "reports");
@@ -29,9 +30,10 @@ namespace BridgingIT.DevKit.Application.Storage;
 public sealed class RetryBlobStoreClientBehavior(
     IBlobStoreClient inner,
     RetryBlobStoreClientBehaviorOptions options = null,
-    string storeName = null) : BlobStoreClientBehaviorBase(inner, storeName)
+    string storeName = null,
+    TimeProvider timeProvider = null) : BlobStoreClientBehaviorBase(inner, storeName)
 {
-
+    private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
 
     /// <summary>
     /// Gets the retry options used by this behavior.
@@ -139,7 +141,7 @@ public sealed class RetryBlobStoreClientBehavior(
         var delay = this.GetDelay(attempt);
         if (delay > TimeSpan.Zero)
         {
-            await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(delay, this.timeProvider, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -163,6 +165,8 @@ public sealed class RetryBlobStoreClientBehavior(
             result.HasError<BlobStoreLeaseError>() ||
             result.HasError<BlobStoreSizeLimitExceededError>() ||
             result.HasError<BlobStoreIntegrityError>() ||
+            result.HasError<BlobStoreUploadOverloadedError>() ||
+            result.HasError<BlobStoreUploadAdmissionTimeoutError>() ||
             result.HasError<BlobStoreQueryTooBroadError>() ||
             result.HasError<BlobStorePageSizeExceededError>() ||
             result.HasError<BlobStoreQueryNotSupportedError>() ||

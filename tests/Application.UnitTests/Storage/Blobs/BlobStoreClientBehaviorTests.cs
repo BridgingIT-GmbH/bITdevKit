@@ -199,6 +199,249 @@ public sealed class BlobStoreClientBehaviorTests
     }
 
     [Fact]
+    public async Task MetricsBehavior_WhenMetricListenerThrows_DoesNotAlterStorageOperation()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var listener = new MeterListener();
+        listener.InstrumentPublished = (instrument, meterListener) =>
+        {
+            if (instrument.Name.StartsWith("blobstorage_", StringComparison.Ordinal))
+            {
+                meterListener.EnableMeasurementEvents(instrument);
+            }
+        };
+        listener.SetMeasurementEventCallback<long>((_, _, _, _) =>
+            throw new InvalidOperationException("simulated metric listener failure"));
+        listener.SetMeasurementEventCallback<double>((_, _, _, _) =>
+            throw new InvalidOperationException("simulated metric listener failure"));
+        listener.Start();
+        var innerInvoked = false;
+        var sut = new MetricsBlobStoreClientBehavior(
+            meterFactory,
+            new ScriptedBlobStoreClient
+            {
+                Exists = _ =>
+                {
+                    innerInvoked = true;
+                    return Result<bool>.Success(true);
+                }
+            },
+            "reports");
+
+        // Act
+        var result = await sut.ExistsAsync(new BlobKey("reports", "probe"));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        innerInvoked.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithUploadAdmission_EmitsAdmissionMetrics()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        using var coordinator = new BlobUploadAdmissionCoordinator(
+            meterFactory: meterFactory);
+        var admission = new UploadConcurrencyBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Upload = _ => Result<BlobInfo>.Success(new BlobInfo())
+            },
+            coordinator,
+            new UploadConcurrencyBlobStoreClientBehaviorOptions(),
+            storeName: "reports");
+        var sut = new MetricsBlobStoreClientBehavior(
+            meterFactory,
+            admission,
+            "reports");
+
+        // Act
+        var result = await sut.UploadAsync(new BlobUpload
+        {
+            Key = new BlobKey("reports", "file.bin"),
+            Content = new MemoryStream([1])
+        });
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        recorder.CounterSum("blobstorage_upload_admissions").ShouldBe(1);
+        recorder.HistogramCount("blobstorage_upload_admission_wait").ShouldBe(1);
+        recorder.AllTagValues.ShouldNotContain("file.bin");
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithOverallTimeoutWhileQueued_EmitsTimeoutWithoutCallerCancellation()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var timeProvider = new FakeTimeProvider();
+        using var coordinator = new BlobUploadAdmissionCoordinator(timeProvider);
+        var admissionOptions = new UploadConcurrencyBlobStoreClientBehaviorOptions
+        {
+            MaxConcurrentUploads = 1,
+            MaxQueuedUploads = 1,
+            QueueWaitTimeout = TimeSpan.FromMinutes(5)
+        };
+        await using var active = await coordinator.AcquireAsync(
+            "reports",
+            admissionOptions,
+            default);
+        var innerAttempts = 0;
+        var admission = new UploadConcurrencyBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Upload = _ =>
+                {
+                    innerAttempts++;
+                    return Result<BlobInfo>.Success(new BlobInfo());
+                }
+            },
+            coordinator,
+            admissionOptions,
+            storeName: "reports");
+        var timeout = new TimeoutBlobStoreClientBehavior(
+            admission,
+            new TimeoutBlobStoreClientBehaviorOptions { Timeout = TimeSpan.FromMinutes(1) },
+            timeProvider: timeProvider);
+        var sut = new MetricsBlobStoreClientBehavior(meterFactory, timeout, "reports");
+        using var content = new MemoryStream([1]);
+
+        // Act
+        var operation = sut.UploadAsync(new BlobUpload
+        {
+            Key = new BlobKey("reports", "queued.bin"),
+            Content = content
+        });
+        coordinator.GetSnapshots().Single().QueuedUploads.ShouldBe(1);
+        timeProvider.Advance(TimeSpan.FromMinutes(1));
+        var result = await operation;
+
+        // Assert
+        result.HasError<BlobStoreTimeoutError>().ShouldBeTrue();
+        innerAttempts.ShouldBe(0);
+        recorder.CounterSum("blobstorage_timeouts").ShouldBe(1);
+        recorder.CounterSum("blobstorage_upload_admission_cancellations").ShouldBe(0);
+        coordinator.GetSnapshots().Single().QueuedUploads.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithQueuedCallerCancellation_EmitsCallerCancellationWithoutTimeout()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        using var coordinator = new BlobUploadAdmissionCoordinator();
+        var admissionOptions = new UploadConcurrencyBlobStoreClientBehaviorOptions
+        {
+            MaxConcurrentUploads = 1,
+            MaxQueuedUploads = 1,
+            QueueWaitTimeout = TimeSpan.FromMinutes(5)
+        };
+        await using var active = await coordinator.AcquireAsync(
+            "reports",
+            admissionOptions,
+            default);
+        var admission = new UploadConcurrencyBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient(),
+            coordinator,
+            admissionOptions,
+            storeName: "reports");
+        var sut = new MetricsBlobStoreClientBehavior(meterFactory, admission, "reports");
+        using var cancellation = new CancellationTokenSource();
+        using var content = new MemoryStream([1]);
+
+        // Act
+        var operation = sut.UploadAsync(
+            new BlobUpload
+            {
+                Key = new BlobKey("reports", "cancelled.bin"),
+                Content = content
+            },
+            cancellation.Token);
+        coordinator.GetSnapshots().Single().QueuedUploads.ShouldBe(1);
+        await cancellation.CancelAsync();
+
+        // Assert
+        await operation.ShouldThrowAsync<OperationCanceledException>();
+        recorder.CounterSum("blobstorage_upload_admission_cancellations").ShouldBe(1);
+        recorder.CounterSum("blobstorage_timeouts").ShouldBe(0);
+        coordinator.GetSnapshots().Single().QueuedUploads.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task MetricsBehavior_WithRetryOutsideAdmission_ReleasesDuringBackoffAndRecordsEachAdmission()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        using var coordinator = new BlobUploadAdmissionCoordinator();
+        var admissionOptions = new UploadConcurrencyBlobStoreClientBehaviorOptions
+        {
+            MaxConcurrentUploads = 1,
+            MaxQueuedUploads = 0
+        };
+        var attempts = 0;
+        var activeDuringAttempts = new List<int>();
+        var admission = new UploadConcurrencyBlobStoreClientBehavior(
+            new ScriptedBlobStoreClient
+            {
+                Upload = upload =>
+                {
+                    attempts++;
+                    activeDuringAttempts.Add(
+                        coordinator.GetSnapshots().Single().ActiveUploads);
+                    return attempts == 1
+                        ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"))
+                        : Result<BlobInfo>.Success(new BlobInfo
+                        {
+                            Key = upload.Key,
+                            Length = upload.Content.Length
+                        });
+                }
+            },
+            coordinator,
+            admissionOptions,
+            storeName: "reports");
+        var timeProvider = new ManualTimeProvider();
+        var retry = new RetryBlobStoreClientBehavior(
+            admission,
+            new RetryBlobStoreClientBehaviorOptions
+            {
+                Attempts = 2,
+                Backoff = TimeSpan.FromMinutes(1)
+            },
+            "reports",
+            timeProvider);
+        var sut = new MetricsBlobStoreClientBehavior(meterFactory, retry, "reports");
+        using var content = new MemoryStream([1, 2, 3]);
+
+        // Act
+        var operation = sut.UploadAsync(new BlobUpload
+        {
+            Key = new BlobKey("reports", "retry.bin"),
+            Content = content
+        });
+        await timeProvider.TimerCreated.Task;
+        var activeDuringBackoff = coordinator.GetSnapshots().Single().ActiveUploads;
+        timeProvider.FireTimers();
+        var result = await operation;
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        attempts.ShouldBe(2);
+        activeDuringAttempts.ShouldBe([1, 1]);
+        activeDuringBackoff.ShouldBe(0);
+        coordinator.GetSnapshots().Single().ActiveUploads.ShouldBe(0);
+        recorder.CounterSum("blobstorage_retries").ShouldBe(1);
+        recorder.CounterSum("blobstorage_upload_admissions").ShouldBe(2);
+        recorder.HistogramCount("blobstorage_upload_admission_wait").ShouldBe(2);
+    }
+
+    [Fact]
     public async Task RetryBehavior_WithTransientProviderFailure_RetriesUntilSuccess()
     {
         // Arrange
@@ -460,6 +703,8 @@ public sealed class BlobStoreClientBehaviorTests
         yield return [new BlobStoreLeaseError("lease")];
         yield return [new BlobStoreSizeLimitExceededError(2, 1)];
         yield return [new BlobStoreIntegrityError("integrity")];
+        yield return [new BlobStoreUploadOverloadedError("reports", 4, 16)];
+        yield return [new BlobStoreUploadAdmissionTimeoutError("reports", TimeSpan.FromSeconds(30))];
         yield return [new BlobStoreQueryNotSupportedError("unsupported")];
         yield return [new BlobStoreQueryTooBroadError("too broad")];
         yield return [new OperationCancelledError()];
@@ -619,6 +864,61 @@ public sealed class BlobStoreClientBehaviorTests
         public static readonly NullScope Instance = new();
 
         public void Dispose() { }
+    }
+
+    private sealed class ManualTimeProvider : TimeProvider
+    {
+        private readonly ConcurrentBag<ManualTimer> timers = [];
+
+        public TaskCompletionSource TimerCreated { get; } =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public override ITimer CreateTimer(
+            TimerCallback callback,
+            object state,
+            TimeSpan dueTime,
+            TimeSpan period)
+        {
+            var timer = new ManualTimer(callback, state);
+            this.timers.Add(timer);
+            this.TimerCreated.TrySetResult();
+
+            return timer;
+        }
+
+        public void FireTimers()
+        {
+            foreach (var timer in this.timers)
+            {
+                timer.Fire();
+            }
+        }
+
+        private sealed class ManualTimer(
+            TimerCallback callback,
+            object state) : ITimer
+        {
+            private int disposed;
+
+            public bool Change(TimeSpan dueTime, TimeSpan period) =>
+                Volatile.Read(ref this.disposed) == 0;
+
+            public void Dispose() => Interlocked.Exchange(ref this.disposed, 1);
+
+            public ValueTask DisposeAsync()
+            {
+                this.Dispose();
+                return ValueTask.CompletedTask;
+            }
+
+            public void Fire()
+            {
+                if (Volatile.Read(ref this.disposed) == 0)
+                {
+                    callback(state);
+                }
+            }
+        }
     }
 
     private sealed class RecordingMetrics : IDisposable

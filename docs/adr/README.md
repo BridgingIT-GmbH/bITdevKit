@@ -49,6 +49,7 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0027](0027-provider-strategy-for-entity-bulk-insert.md) | Use Provider Strategies for Entity Bulk Insert | Accepted (partially superseded by ADR-0029) |
 | [ADR-0028](0028-domain-entity-bulk-insert-behavior-pipeline.md) | Expose Entity Bulk Insert as a Domain Capability with Explicit Behavior Compatibility | Superseded by ADR-0029 |
 | [ADR-0029](0029-independent-entity-bulk-inserter-decorator-behaviors.md) | Register Entity Bulk Inserters Independently with Explicit Decorators | Accepted |
+| [ADR-0030](0030-bounded-blob-upload-admission-and-ef-chunk-flushing.md) | Bound Blob Upload Admission and Group EF Chunk Flushes | Accepted |
 
 ## When to Write an ADR
 

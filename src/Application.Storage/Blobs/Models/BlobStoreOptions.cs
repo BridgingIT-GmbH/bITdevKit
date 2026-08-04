@@ -80,6 +80,26 @@ public sealed class BlobStoreOptions
     public int ChunkSize { get; set; } = (int)ByteSize.Megabytes(4);
 
     /// <summary>
+    /// Gets or sets the maximum number of EF Core blob chunks persisted per intermediate flush.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// options.ChunkFlushCount = 4;
+    /// </code>
+    /// </example>
+    public int ChunkFlushCount { get; set; } = 4;
+
+    /// <summary>
+    /// Gets or sets the maximum pending EF Core blob chunk content in bytes before an intermediate flush.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// options.MaxPendingChunkBytes = ByteSize.Megabytes(16);
+    /// </code>
+    /// </example>
+    public long MaxPendingChunkBytes { get; set; } = ByteSize.Megabytes(16);
+
+    /// <summary>
     /// Gets or sets the internal lease duration used by providers that require leases.
     /// </summary>
     /// <example>
@@ -133,6 +153,16 @@ public sealed class BlobStoreOptions
         if (this.ChunkSize <= 0)
         {
             return Result.Failure(new BlobStoreValidationError("ChunkSize must be greater than zero."));
+        }
+
+        if (this.ChunkFlushCount <= 0)
+        {
+            return Result.Failure(new BlobStoreValidationError("ChunkFlushCount must be greater than zero."));
+        }
+
+        if (this.MaxPendingChunkBytes <= 0)
+        {
+            return Result.Failure(new BlobStoreValidationError("MaxPendingChunkBytes must be greater than zero."));
         }
 
         if (this.LeaseDuration <= TimeSpan.Zero)

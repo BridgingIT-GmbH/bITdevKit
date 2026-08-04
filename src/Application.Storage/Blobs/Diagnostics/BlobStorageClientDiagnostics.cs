@@ -74,4 +74,54 @@ public sealed class BlobStorageClientDiagnostics
     /// </code>
     /// </example>
     public string HealthDetails { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether bounded upload admission is enabled.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var enabled = diagnostics.UploadAdmissionEnabled;
+    /// </code>
+    /// </example>
+    public bool UploadAdmissionEnabled { get; init; }
+
+    /// <summary>
+    /// Gets the configured maximum active upload count.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var limit = diagnostics.MaxConcurrentUploads;
+    /// </code>
+    /// </example>
+    public int MaxConcurrentUploads { get; init; }
+
+    /// <summary>
+    /// Gets the configured maximum queued upload count.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var limit = diagnostics.MaxQueuedUploads;
+    /// </code>
+    /// </example>
+    public int MaxQueuedUploads { get; init; }
+
+    /// <summary>
+    /// Gets the current active upload count.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var active = diagnostics.ActiveUploads;
+    /// </code>
+    /// </example>
+    public int ActiveUploads { get; init; }
+
+    /// <summary>
+    /// Gets the current queued upload count.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var queued = diagnostics.QueuedUploads;
+    /// </code>
+    /// </example>
+    public int QueuedUploads { get; init; }
 }

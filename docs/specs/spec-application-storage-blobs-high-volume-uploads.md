@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Blob Storage High-Volume Upload Control
@@ -207,16 +207,19 @@ public sealed class UploadConcurrencyBlobStoreClientBehavior
 ```
 
 ```csharp
-internal interface IBlobUploadAdmissionCoordinator
+public interface IBlobUploadAdmissionCoordinator
 {
     ValueTask<BlobUploadAdmissionLease> AcquireAsync(
         string storeName,
+        UploadConcurrencyBlobStoreClientBehaviorOptions options,
         CancellationToken cancellationToken = default);
+
+    IReadOnlyCollection<BlobUploadAdmissionSnapshot> GetSnapshots();
 }
 ```
 
 ```csharp
-internal sealed class BlobUploadAdmissionCoordinator
+public sealed class BlobUploadAdmissionCoordinator
     : IBlobUploadAdmissionCoordinator, IDisposable
 {
     // Owns one bounded concurrency limiter per normalized store name.
@@ -224,11 +227,13 @@ internal sealed class BlobUploadAdmissionCoordinator
 ```
 
 ```csharp
-internal sealed class BlobUploadAdmissionLease : IAsyncDisposable
+public sealed class BlobUploadAdmissionLease : IAsyncDisposable
 {
     public bool IsAcquired { get; }
 
-    public BlobUploadAdmissionFailure Failure { get; }
+    public IResultError Error { get; }
+
+    public TimeSpan WaitDuration { get; }
 }
 ```
 

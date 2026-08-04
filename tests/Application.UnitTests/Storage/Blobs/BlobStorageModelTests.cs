@@ -233,8 +233,42 @@ public class BlobStorageModelTests
         sut.AllowFullScans.ShouldBeFalse();
         sut.RequireExplicitFullScanApproval.ShouldBeTrue();
         sut.ChunkSize.ShouldBe((int)ByteSize.Megabytes(4));
+        sut.ChunkFlushCount.ShouldBe(4);
+        sut.MaxPendingChunkBytes.ShouldBe(ByteSize.Megabytes(16));
         sut.LeaseDuration.ShouldBe(TimeSpan.FromMinutes(1));
         sut.LeaseOwner.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void BlobStoreOptions_WithInvalidChunkFlushCount_FailsValidation(int value)
+    {
+        // Arrange
+        var sut = new BlobStoreOptions { ChunkFlushCount = value };
+
+        // Act
+        var result = sut.Validate();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<BlobStoreValidationError>().ShouldBeTrue();
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void BlobStoreOptions_WithInvalidMaxPendingChunkBytes_FailsValidation(long value)
+    {
+        // Arrange
+        var sut = new BlobStoreOptions { MaxPendingChunkBytes = value };
+
+        // Act
+        var result = sut.Validate();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<BlobStoreValidationError>().ShouldBeTrue();
     }
 
     [Fact]

@@ -51,10 +51,25 @@ public sealed class MetricsBlobStoreClientBehavior(
         using var telemetry = BlobStoreClientBehaviorTelemetry.Begin();
         this.AddCounter("blobstorage_operations", 1, operation);
 
-        var result = await next(cancellationToken).ConfigureAwait(false);
-        this.Record(operation, started, result, GetBytes(result), GetListItemCount(result), telemetry);
+        try
+        {
+            var result = await next(cancellationToken).ConfigureAwait(false);
+            this.Record(operation, started, result, GetBytes(result), GetListItemCount(result), telemetry);
 
-        return result;
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            if (telemetry.AdmissionCancellations > 0)
+            {
+                this.AddCounter(
+                    "blobstorage_upload_admission_cancellations",
+                    telemetry.AdmissionCancellations,
+                    operation);
+            }
+
+            throw;
+        }
     }
 
     protected override async Task<Result> ExecuteAsync(
@@ -117,6 +132,44 @@ public sealed class MetricsBlobStoreClientBehavior(
         {
             this.AddCounter("blobstorage_size_limit_failures", 1, operation);
         }
+
+        if (telemetry.Admissions > 0)
+        {
+            this.AddCounter("blobstorage_upload_admissions", telemetry.Admissions, operation);
+            foreach (var waitMilliseconds in telemetry.AdmissionWaitMilliseconds)
+            {
+                this.AddHistogram(
+                    "blobstorage_upload_admission_wait",
+                    waitMilliseconds,
+                    operation);
+            }
+        }
+
+        if (telemetry.AdmissionRejections > 0)
+        {
+            this.AddCounter(
+                "blobstorage_upload_admission_rejections",
+                telemetry.AdmissionRejections,
+                operation);
+        }
+
+        if (telemetry.AdmissionTimeouts > 0)
+        {
+            this.AddCounter(
+                "blobstorage_upload_admission_timeouts",
+                telemetry.AdmissionTimeouts,
+                operation);
+        }
+
+        if (telemetry.AdmissionCancellations > 0 &&
+            telemetry.Timeouts == 0 &&
+            !result.HasError<BlobStoreTimeoutError>())
+        {
+            this.AddCounter(
+                "blobstorage_upload_admission_cancellations",
+                telemetry.AdmissionCancellations,
+                operation);
+        }
     }
 
     private static long GetBytes<T>(Result<T> result) =>
@@ -129,18 +182,36 @@ public sealed class MetricsBlobStoreClientBehavior(
 
     private void AddCounter(string name, long value, string operation)
     {
-        this.meterFactory
-            .Create(Metrics.MeterName)
-            .CreateCounter<long>(name)
-            .Add(value, this.Tags(operation));
+        try
+        {
+            this.meterFactory
+                .Create(Metrics.MeterName)
+                .CreateCounter<long>(name)
+                .Add(value, this.Tags(operation));
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException and
+            not StackOverflowException and
+            not AccessViolationException)
+        {
+            // Client metrics are best effort and must not alter the storage operation.
+        }
     }
 
     private void AddHistogram(string name, double value, string operation)
     {
-        this.meterFactory
-            .Create(Metrics.MeterName)
-            .CreateHistogram<double>(name, unit: "ms")
-            .Record(value, this.Tags(operation));
+        try
+        {
+            this.meterFactory
+                .Create(Metrics.MeterName)
+                .CreateHistogram<double>(name, unit: "ms")
+                .Record(value, this.Tags(operation));
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException and
+            not StackOverflowException and
+            not AccessViolationException)
+        {
+            // Client metrics are best effort and must not alter the storage operation.
+        }
     }
 
     private KeyValuePair<string, object>[] Tags(string operation) =>

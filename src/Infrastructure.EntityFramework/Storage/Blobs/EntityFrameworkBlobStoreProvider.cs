@@ -9,6 +9,7 @@ using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Buffers;
+using System.Diagnostics.Metrics;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -26,7 +27,7 @@ using System.Text.Json;
 ///     .WithEntityFrameworkClient&lt;AppDbContext&gt;("reports");
 /// </code>
 /// </example>
-public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
+public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
     where TContext : DbContext, IBlobStoreContext
 {
     /// <summary>
@@ -37,6 +38,12 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
     private readonly IServiceScopeFactory scopeFactory;
     private readonly BlobStoreOptions options;
     private readonly IContinuationTokenProtector continuationTokenProtector;
+    private readonly Counter<long> chunksWritten;
+    private readonly Counter<long> chunkFlushes;
+    private readonly Histogram<long> chunksPerFlush;
+    private readonly Histogram<long> bytesPerFlush;
+    private readonly ILogger logger;
+    private readonly string storeName;
     private readonly string leaseOwner = $"{Environment.MachineName}:{Guid.NewGuid():N}";
 
     /// <summary>
@@ -46,6 +53,9 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
     /// <param name="scopeFactory">The root scope factory used to create provider-owned operation contexts.</param>
     /// <param name="options">The blob-store options.</param>
     /// <param name="continuationTokenProtector">The optional continuation-token protector.</param>
+    /// <param name="meterFactory">The optional meter factory for chunk-flush metrics.</param>
+    /// <param name="loggerFactory">The optional logger factory for chunk-flush diagnostics.</param>
+    /// <param name="storeName">The low-cardinality named-store identifier.</param>
     /// <example>
     /// <code>
     /// var provider = new EntityFrameworkBlobStoreProvider&lt;AppDbContext&gt;(scopeFactory);
@@ -54,11 +64,26 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
     public EntityFrameworkBlobStoreProvider(
         IServiceScopeFactory scopeFactory,
         BlobStoreOptions options = null,
-        IContinuationTokenProtector continuationTokenProtector = null)
+        IContinuationTokenProtector continuationTokenProtector = null,
+        IMeterFactory meterFactory = null,
+        ILoggerFactory loggerFactory = null,
+        string storeName = null)
     {
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         this.options = options ?? new BlobStoreOptions();
         this.continuationTokenProtector = continuationTokenProtector;
+        this.logger = (loggerFactory ?? NullLoggerFactory.Instance)
+            .CreateLogger<EntityFrameworkBlobStoreProvider<TContext>>();
+        this.storeName = string.IsNullOrWhiteSpace(storeName) ? "default" : storeName;
+        var meter = meterFactory?.Create(Metrics.MeterName);
+        this.chunksWritten = meter?.CreateCounter<long>("blobstorage_ef_chunks_written");
+        this.chunkFlushes = meter?.CreateCounter<long>("blobstorage_ef_chunk_flushes");
+        this.chunksPerFlush = meter?.CreateHistogram<long>(
+            "blobstorage_ef_chunks_per_flush",
+            unit: "{chunk}");
+        this.bytesPerFlush = meter?.CreateHistogram<long>(
+            "blobstorage_ef_bytes_per_flush",
+            unit: "By");
     }
 
     /// <inheritdoc />
@@ -135,7 +160,9 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
             transaction = await this.BeginTransactionIfSupportedAsync(dbContext, cancellationToken).ConfigureAwait(false);
 
             var key = CreateKeyIdentity(upload.Key);
-            snapshot = await this.CreateSnapshotAsync(dbContext, key, cancellationToken).ConfigureAwait(false);
+            snapshot = transaction is null
+                ? await this.CreateSnapshotAsync(dbContext, key, cancellationToken).ConfigureAwait(false)
+                : null;
             var blob = await this.QueryExactBlob(dbContext, key).SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
             if (blob is not null && upload.OverwriteMode == BlobOverwriteMode.FailIfExists)
@@ -871,6 +898,10 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
         var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         var total = 0L;
         var index = 0;
+        var pendingChunkBytes = 0L;
+        var pendingChunks = new List<StorageBlobChunk>(
+            Math.Min(this.options.ChunkFlushCount, 128));
+        var flushCount = 0;
 
         try
         {
@@ -895,15 +926,88 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
                 };
 
                 dbContext.StorageBlobChunks.Add(chunk);
-                await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                dbContext.Entry(chunk).State = EntityState.Detached;
+                pendingChunks.Add(chunk);
+                pendingChunkBytes += read;
+
+                if (pendingChunks.Count >= this.options.ChunkFlushCount ||
+                    pendingChunkBytes >= this.options.MaxPendingChunkBytes)
+                {
+                    await this.FlushChunksAsync(
+                        dbContext,
+                        pendingChunks,
+                        pendingChunkBytes,
+                        cancellationToken).ConfigureAwait(false);
+                    pendingChunkBytes = 0;
+                    flushCount++;
+                }
             }
 
-            return new ContentWriteResult($"{BlobContentHash.Prefix}{Convert.ToHexStringLower(hash.GetHashAndReset())}", total);
+            if (pendingChunks.Count > 0)
+            {
+                await this.FlushChunksAsync(
+                    dbContext,
+                    pendingChunks,
+                    pendingChunkBytes,
+                    cancellationToken).ConfigureAwait(false);
+                flushCount++;
+            }
+
+            return new ContentWriteResult(
+                $"{BlobContentHash.Prefix}{Convert.ToHexStringLower(hash.GetHashAndReset())}",
+                total,
+                index,
+                flushCount);
         }
         finally
         {
             ArrayPool<byte>.Shared.Return(buffer);
+        }
+    }
+
+    private async Task FlushChunksAsync(
+        TContext dbContext,
+        List<StorageBlobChunk> pendingChunks,
+        long pendingChunkBytes,
+        CancellationToken cancellationToken)
+    {
+        await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
+        var chunkCount = pendingChunks.Count;
+
+        foreach (var chunk in pendingChunks)
+        {
+            dbContext.Entry(chunk).State = EntityState.Detached;
+        }
+
+        pendingChunks.Clear();
+        this.RecordChunkFlush(chunkCount, pendingChunkBytes);
+    }
+
+    private void RecordChunkFlush(int chunkCount, long byteCount)
+    {
+        var tags = new KeyValuePair<string, object>[]
+        {
+            new("provider", ProviderName),
+            new("store", this.storeName)
+        };
+
+        try
+        {
+            this.chunksWritten?.Add(chunkCount, tags);
+            this.chunkFlushes?.Add(1, tags);
+            this.chunksPerFlush?.Record(chunkCount, tags);
+            this.bytesPerFlush?.Record(byteCount, tags);
+            TypedLogger.LogChunkFlush(
+                this.logger,
+                this.storeName,
+                chunkCount,
+                byteCount);
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException and
+            not StackOverflowException and
+            not AccessViolationException)
+        {
+            // Flush telemetry is best effort and must not change a successful persistence outcome.
         }
     }
 
@@ -1092,11 +1196,28 @@ public sealed class EntityFrameworkBlobStoreProvider<TContext> : IBlobStoreProvi
 
     private sealed record BlobSnapshot(KeyIdentity Key, StorageBlob Blob, IReadOnlyList<StorageBlobChunk> Chunks);
 
-    private readonly record struct ContentWriteResult(string Hash, long Length);
+    private readonly record struct ContentWriteResult(
+        string Hash,
+        long Length,
+        int ChunkCount,
+        int FlushCount);
 
     private sealed class BlobStoreResultException(IResultError error) : Exception(error.Message)
     {
         public IResultError Error { get; } = error;
+    }
+
+    private static partial class TypedLogger
+    {
+        [LoggerMessage(
+            0,
+            LogLevel.Debug,
+            "blob EF chunk group flushed (store={StoreName}, provider=Entity Framework, chunks={ChunkCount}, bytes={ByteCount})")]
+        public static partial void LogChunkFlush(
+            ILogger logger,
+            string storeName,
+            int chunkCount,
+            long byteCount);
     }
 
     private sealed class BlobChunkReadStream : Stream

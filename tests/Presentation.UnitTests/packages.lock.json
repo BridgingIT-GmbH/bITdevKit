@@ -822,7 +822,8 @@
           "Polly": "[8.7.0, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpCompress": "[0.49.1, )"
+          "SharpCompress": "[0.49.1, )",
+          "System.Threading.RateLimiting": "[10.0.9, )"
         }
       },
       "BridgingIT.DevKit.Application.Utilities": {
@@ -1626,6 +1627,12 @@
         "requested": "[1.7.2, )",
         "resolved": "1.7.2",
         "contentHash": "11SGBy8DCywOVElSs2J+Cd4WFHruFrBnaaQ86q2HWHBGcCAQDLnbA0ivpFvMeXGPqcEPE+Q3HZtXaXN4F8JLQg=="
+      },
+      "System.Threading.RateLimiting": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.9, )",
+        "resolved": "10.0.9",
+        "contentHash": "VgZO8VEK/bX89MGJS3SQ0IhGfM8tMnCBIoXuKqTQ/jB7L3phQY2mKUdg6/W1LtIZkkE6EC0EjEowGbk5VFgH8Q=="
       },
       "xunit.abstractions": {
         "type": "CentralTransitive",

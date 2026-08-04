@@ -128,6 +128,7 @@
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.2" />
     <!--<PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />-->
     <!--<PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />-->
+    <PackageVersion Include="System.Threading.RateLimiting" Version="10.0.9" />
   </ItemGroup>
   <ItemGroup Label="test dependencies">
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />

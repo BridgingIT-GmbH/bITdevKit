@@ -8,6 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using System.Diagnostics.Metrics;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>
 /// Provides fluent registration helpers for blob-store client behaviors.
@@ -61,6 +62,62 @@ public static partial class ServiceCollectionExtensions
             inner,
             name));
     }
+
+    /// <summary>
+    /// Registers bounded, process-local upload concurrency admission for every named blob store.
+    /// </summary>
+    /// <param name="context">The blob-storage builder context.</param>
+    /// <param name="configure">The optional admission settings callback.</param>
+    /// <returns>The current builder context.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddBlobStorage()
+    ///     .WithUploadConcurrencyBehavior(options =>
+    ///     {
+    ///         options.MaxConcurrentUploads = 4;
+    ///         options.MaxQueuedUploads = 16;
+    ///     })
+    ///     .WithInMemoryClient("reports");
+    /// </code>
+    /// </example>
+    public static BlobStorageBuilderContext WithUploadConcurrencyBehavior(
+        this BlobStorageBuilderContext context,
+        Action<UploadConcurrencyBlobStoreClientBehaviorOptions> configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        var options = new UploadConcurrencyBlobStoreClientBehaviorOptions();
+        configure?.Invoke(options);
+        var validation = options.Validate();
+        if (validation.IsFailure)
+        {
+            throw new InvalidOperationException(
+                validation.Errors.FirstOrDefault()?.Message ??
+                "Blob upload concurrency options are invalid.");
+        }
+
+        if (context.Services.Any(descriptor =>
+            descriptor.ServiceType == typeof(UploadConcurrencyBehaviorRegistration)))
+        {
+            throw new InvalidOperationException(
+                "Blob-store upload concurrency behavior is already registered.");
+        }
+
+        context.Services.AddSingleton<UploadConcurrencyBehaviorRegistration>();
+        context.Services.TryAddSingleton<BlobUploadAdmissionCoordinator>();
+        context.Services.TryAddSingleton<IBlobUploadAdmissionCoordinator>(serviceProvider =>
+            serviceProvider.GetRequiredService<BlobUploadAdmissionCoordinator>());
+
+        return context.WithBehavior(
+            (inner, serviceProvider, name) => new UploadConcurrencyBlobStoreClientBehavior(
+                inner,
+                serviceProvider.GetRequiredService<IBlobUploadAdmissionCoordinator>(),
+                options,
+                serviceProvider.GetService<ILoggerFactory>(),
+                name));
+    }
+
+    private sealed class UploadConcurrencyBehaviorRegistration;
 
     /// <summary>
     /// Registers the exact-key download cache blob-store client behavior.
@@ -235,7 +292,11 @@ public static partial class ServiceCollectionExtensions
         var options = new RetryBlobStoreClientBehaviorOptions();
         configure?.Invoke(options);
 
-        return context.WithBehavior((inner, _, name) => new RetryBlobStoreClientBehavior(inner, options, name));
+        return context.WithBehavior((inner, serviceProvider, name) => new RetryBlobStoreClientBehavior(
+            inner,
+            options,
+            name,
+            serviceProvider.GetService<TimeProvider>()));
     }
 
     /// <summary>

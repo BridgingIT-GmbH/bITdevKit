@@ -46,6 +46,68 @@ public class BlobStorageRuntimeShellTests
     }
 
     [Fact]
+    public void WithUploadConcurrencyBehavior_RegistersOneSharedCoordinator()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddBlobStorage()
+            .WithUploadConcurrencyBehavior()
+            .WithInMemoryClient("reports");
+        using var serviceProvider = services.BuildServiceProvider();
+        using var firstScope = serviceProvider.CreateScope();
+        using var secondScope = serviceProvider.CreateScope();
+
+        // Act
+        var first = firstScope.ServiceProvider
+            .GetRequiredService<IBlobUploadAdmissionCoordinator>();
+        var second = secondScope.ServiceProvider
+            .GetRequiredService<IBlobUploadAdmissionCoordinator>();
+
+        // Assert
+        second.ShouldBeSameAs(first);
+    }
+
+    [Fact]
+    public void AddBlobStorage_WithoutUploadConcurrencyBehavior_DoesNotRegisterCoordinator()
+    {
+        var services = new ServiceCollection();
+        services.AddBlobStorage().WithInMemoryClient("reports");
+        using var serviceProvider = services.BuildServiceProvider();
+
+        serviceProvider.GetService<IBlobUploadAdmissionCoordinator>().ShouldBeNull();
+    }
+
+    [Fact]
+    public void WithUploadConcurrencyBehavior_WhenRegisteredTwice_Throws()
+    {
+        var services = new ServiceCollection();
+        var builder = services.AddBlobStorage().WithUploadConcurrencyBehavior();
+
+        Should.Throw<InvalidOperationException>(() =>
+            builder.WithUploadConcurrencyBehavior());
+    }
+
+    [Theory]
+    [InlineData(0, 16, 30)]
+    [InlineData(4, -1, 30)]
+    [InlineData(4, 16, 0)]
+    public void WithUploadConcurrencyBehavior_WithInvalidOptions_Throws(
+        int maxConcurrent,
+        int maxQueued,
+        int timeoutSeconds)
+    {
+        var services = new ServiceCollection();
+
+        Should.Throw<InvalidOperationException>(() =>
+            services.AddBlobStorage().WithUploadConcurrencyBehavior(options =>
+            {
+                options.MaxConcurrentUploads = maxConcurrent;
+                options.MaxQueuedUploads = maxQueued;
+                options.QueueWaitTimeout = TimeSpan.FromSeconds(timeoutSeconds);
+            }));
+    }
+
+    [Fact]
     public void AddBlobStorage_WhenConfigured_RegistersRetentionBackgroundService()
     {
         // Arrange
@@ -79,6 +141,35 @@ public class BlobStorageRuntimeShellTests
         result.Value.HealthyClientCount.ShouldBe(0);
         result.Value.UnhealthyClientCount.ShouldBe(0);
         result.Value.Clients.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task DiagnosticsSnapshot_WithUploadAdmission_ReportsLimitsAndCounts()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddBlobStorage()
+            .WithUploadConcurrencyBehavior(options =>
+            {
+                options.MaxConcurrentUploads = 3;
+                options.MaxQueuedUploads = 7;
+            })
+            .WithInMemoryClient("reports");
+        using var serviceProvider = services.BuildServiceProvider();
+
+        // Act
+        var result = await serviceProvider
+            .GetRequiredService<IBlobStorageDiagnosticsService>()
+            .GetSnapshotAsync();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        var client = result.Value.Clients.Single();
+        client.UploadAdmissionEnabled.ShouldBeTrue();
+        client.MaxConcurrentUploads.ShouldBe(3);
+        client.MaxQueuedUploads.ShouldBe(7);
+        client.ActiveUploads.ShouldBe(0);
+        client.QueuedUploads.ShouldBe(0);
     }
 
     [Fact]

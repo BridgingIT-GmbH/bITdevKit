@@ -6,15 +6,86 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Storage;
 
 using System.Text;
+using System.Collections.Concurrent;
+using System.Diagnostics.Metrics;
 using Application.Storage;
 using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 [UnitTest("Infrastructure")]
 public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
 {
+    [Theory]
+    [InlineData(4, 10, 2)]
+    [InlineData(1, 8, 4)]
+    public async Task UploadAsync_FlushesChunksByConfiguredCount(
+        int chunkFlushCount,
+        int contentLength,
+        int expectedChunkFlushCount)
+    {
+        // Arrange
+        await using var context = CreateContext();
+        var sut = CreateProvider(context, new BlobStoreOptions
+        {
+            ChunkSize = 2,
+            ChunkFlushCount = chunkFlushCount,
+            MaxPendingChunkBytes = 1024
+        });
+
+        // Act
+        var result = await sut.UploadAsync(CreateUpload(new string('x', contentLength)));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        context.ChunkFlushSaveCount.ShouldBe(expectedChunkFlushCount);
+        context.MaxAddedChunksDuringSave.ShouldBeLessThanOrEqualTo(chunkFlushCount);
+    }
+
+    [Fact]
+    public async Task UploadAsync_FlushesWhenPendingByteLimitIsReached()
+    {
+        // Arrange
+        await using var context = CreateContext();
+        var sut = CreateProvider(context, new BlobStoreOptions
+        {
+            ChunkSize = 3,
+            ChunkFlushCount = 100,
+            MaxPendingChunkBytes = 5
+        });
+
+        // Act
+        var result = await sut.UploadAsync(CreateUpload("abcdefghij"));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        context.ChunkFlushSaveCount.ShouldBe(2);
+        context.MaxAddedChunksDuringSave.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task UploadAsync_FlushesFinalPartialChunkGroup()
+    {
+        // Arrange
+        await using var context = CreateContext();
+        var sut = CreateProvider(context, new BlobStoreOptions
+        {
+            ChunkSize = 2,
+            ChunkFlushCount = 2,
+            MaxPendingChunkBytes = 1024
+        });
+
+        // Act
+        var result = await sut.UploadAsync(CreateUpload("abcdefghij"));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        context.ChunkFlushSaveCount.ShouldBe(3);
+        context.ChangeTracker.Entries<StorageBlobChunk>().ShouldBeEmpty();
+    }
+
     [Fact]
     public async Task UploadAsync_WithValidContent_StoresContentInChunks()
     {
@@ -198,6 +269,86 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
         result.HasError<BlobStoreProviderError>().ShouldBeTrue();
         (await context.StorageBlobs.CountAsync()).ShouldBe(1);
         (await ReadStoredContentAsync(context)).ShouldBe("stable");
+    }
+
+    [Fact]
+    public async Task UploadAsync_WhenLaterChunkGroupSaveFails_RestoresExistingBlob()
+    {
+        // Arrange
+        await using var context = CreateContext();
+        var sut = CreateProvider(context, new BlobStoreOptions
+        {
+            ChunkSize = 2,
+            ChunkFlushCount = 2,
+            MaxPendingChunkBytes = 1024
+        });
+        (await sut.UploadAsync(CreateUpload("stable"))).IsSuccess.ShouldBeTrue();
+        context.ResetSaveObservation();
+        context.FailOnChunkFlushNumber = 2;
+
+        // Act
+        var result = await sut.UploadAsync(CreateUpload("replacement-content"));
+
+        // Assert
+        result.HasError<BlobStoreProviderError>().ShouldBeTrue();
+        context.ChunkFlushSaveCount.ShouldBeGreaterThanOrEqualTo(2);
+        (await context.StorageBlobs.CountAsync()).ShouldBe(1);
+        (await ReadStoredContentAsync(context)).ShouldBe("stable");
+    }
+
+    [Fact]
+    public async Task UploadAsync_WithChunkGroups_EmitsLowCardinalityEfMetrics()
+    {
+        // Arrange
+        await using var context = CreateContext();
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new RecordingMetrics();
+        var sut = new EntityFrameworkBlobStoreProvider<TestBlobDbContext>(
+            new SingleContextScopeFactory<TestBlobDbContext>(context),
+            new BlobStoreOptions
+            {
+                ChunkSize = 2,
+                ChunkFlushCount = 2,
+                MaxPendingChunkBytes = 1024
+            },
+            meterFactory: meterFactory,
+            storeName: "reports");
+
+        // Act
+        var result = await sut.UploadAsync(CreateUpload("abcdefghij"));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        recorder.Sum("blobstorage_ef_chunks_written").ShouldBe(5);
+        recorder.Sum("blobstorage_ef_chunk_flushes").ShouldBe(3);
+        recorder.Count("blobstorage_ef_chunks_per_flush").ShouldBe(3);
+        recorder.Count("blobstorage_ef_bytes_per_flush").ShouldBe(3);
+        recorder.TagValues.ShouldNotContain("file.bin");
+    }
+
+    [Fact]
+    public async Task UploadAsync_WhenChunkFlushLoggerThrows_PersistsUploadAndDetachesChunks()
+    {
+        // Arrange
+        await using var context = CreateContext();
+        var sut = new EntityFrameworkBlobStoreProvider<TestBlobDbContext>(
+            new SingleContextScopeFactory<TestBlobDbContext>(context),
+            new BlobStoreOptions
+            {
+                ChunkSize = 2,
+                ChunkFlushCount = 2,
+                MaxPendingChunkBytes = 1024
+            },
+            loggerFactory: new ThrowingLoggerFactory(),
+            storeName: "reports");
+
+        // Act
+        var result = await sut.UploadAsync(CreateUpload("abcdefghij"));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+        context.ChangeTracker.Entries<StorageBlobChunk>().ShouldBeEmpty();
+        (await ReadStoredContentAsync(context)).ShouldBe("abcdefghij");
     }
 
     [Fact]
@@ -457,6 +608,14 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
     {
         public bool ObservedLeaseDuringSave { get; private set; }
 
+        public int SaveChangesCount { get; private set; }
+
+        public int ChunkFlushSaveCount { get; private set; }
+
+        public int MaxAddedChunksDuringSave { get; private set; }
+
+        public int? FailOnChunkFlushNumber { get; set; }
+
         public int StorageBlobChunksAccessCount { get; private set; }
 
         public DbSet<StorageBlob> StorageBlobs { get; set; }
@@ -478,8 +637,29 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
             this.StorageBlobChunksAccessCount = 0;
         }
 
+        public void ResetSaveObservation()
+        {
+            this.SaveChangesCount = 0;
+            this.ChunkFlushSaveCount = 0;
+            this.MaxAddedChunksDuringSave = 0;
+        }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            this.SaveChangesCount++;
+            var addedChunkCount = this.ChangeTracker.Entries<StorageBlobChunk>()
+                .Count(entry => entry.State == EntityState.Added);
+            if (addedChunkCount > 0)
+            {
+                this.ChunkFlushSaveCount++;
+                if (this.ChunkFlushSaveCount == this.FailOnChunkFlushNumber)
+                {
+                    throw new DbUpdateException("simulated chunk group save failure");
+                }
+            }
+
+            this.MaxAddedChunksDuringSave = Math.Max(this.MaxAddedChunksDuringSave, addedChunkCount);
+
             if (this.ChangeTracker.Entries<StorageBlob>().Any(e =>
                 e.Entity.LeaseId is not null &&
                 e.Entity.LeaseAcquiredBy is not null &&
@@ -625,5 +805,99 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
             this.WasDisposed = true;
             base.Dispose(disposing);
         }
+    }
+
+    private sealed class TestMeterFactory : IMeterFactory
+    {
+        private readonly ConcurrentDictionary<string, Meter> meters = new(StringComparer.Ordinal);
+
+        public Meter Create(MeterOptions options) =>
+            this.meters.GetOrAdd(options.Name, _ => new Meter(options));
+
+        public void Dispose()
+        {
+            foreach (var meter in this.meters.Values)
+            {
+                meter.Dispose();
+            }
+        }
+    }
+
+    private sealed class ThrowingLoggerFactory : ILoggerFactory
+    {
+        public void AddProvider(ILoggerProvider provider)
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName) => new ThrowingLogger();
+
+        public void Dispose()
+        {
+        }
+    }
+
+    private sealed class ThrowingLogger : ILogger
+    {
+        public IDisposable BeginScope<TState>(TState state)
+            where TState : notnull =>
+            NoopDisposable.Instance;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception exception,
+            Func<TState, Exception, string> formatter) =>
+            throw new InvalidOperationException("simulated telemetry failure");
+    }
+
+    private sealed class NoopDisposable : IDisposable
+    {
+        public static NoopDisposable Instance { get; } = new();
+
+        public void Dispose()
+        {
+        }
+    }
+
+    private sealed class RecordingMetrics : IDisposable
+    {
+        private readonly MeterListener listener = new();
+        private readonly ConcurrentDictionary<string, ConcurrentBag<long>> measurements =
+            new(StringComparer.Ordinal);
+        private readonly ConcurrentBag<string> tagValues = [];
+
+        public RecordingMetrics()
+        {
+            this.listener.InstrumentPublished = (instrument, listener) =>
+            {
+                if (string.Equals(instrument.Meter.Name, Metrics.MeterName, StringComparison.Ordinal) &&
+                    instrument.Name.StartsWith("blobstorage_ef_", StringComparison.Ordinal))
+                {
+                    listener.EnableMeasurementEvents(instrument);
+                }
+            };
+            this.listener.SetMeasurementEventCallback<long>((instrument, value, tags, _) =>
+            {
+                this.measurements.GetOrAdd(instrument.Name, _ => []).Add(value);
+                foreach (var tag in tags)
+                {
+                    this.tagValues.Add(tag.Value?.ToString() ?? string.Empty);
+                }
+            });
+            this.listener.Start();
+        }
+
+        public IReadOnlyCollection<string> TagValues => this.tagValues.ToArray();
+
+        public long Sum(string name) =>
+            this.measurements.TryGetValue(name, out var values) ? values.Sum() : 0;
+
+        public int Count(string name) =>
+            this.measurements.TryGetValue(name, out var values) ? values.Count : 0;
+
+        public void Dispose() => this.listener.Dispose();
     }
 }

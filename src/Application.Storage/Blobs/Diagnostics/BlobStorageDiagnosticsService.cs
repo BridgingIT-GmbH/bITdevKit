@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// </summary>
 /// <param name="scopeFactory">The scope factory used to resolve named clients safely.</param>
 /// <param name="registrations">The registered blob clients.</param>
+/// <param name="admissionCoordinator">The optional shared upload-admission coordinator.</param>
 /// <example>
 /// <code>
 /// var snapshot = await service.GetSnapshotAsync();
@@ -19,7 +20,8 @@ using Microsoft.Extensions.DependencyInjection;
 /// </example>
 public sealed class BlobStorageDiagnosticsService(
     IServiceScopeFactory scopeFactory,
-    IEnumerable<BlobStoreClientRegistration> registrations) : IBlobStorageDiagnosticsService
+    IEnumerable<BlobStoreClientRegistration> registrations,
+    IBlobUploadAdmissionCoordinator admissionCoordinator = null) : IBlobStorageDiagnosticsService
 {
     private static readonly BlobKey ProbeKey = new("__bdk", "healthcheck/probe");
     private readonly IReadOnlyList<BlobStoreClientRegistration> registrations = registrations?.ToArray() ?? [];
@@ -44,7 +46,11 @@ public sealed class BlobStorageDiagnosticsService(
 
         foreach (var registration in this.registrations)
         {
-            clients.Add(await ProbeAsync(factory, registration, cancellationToken).ConfigureAwait(false));
+            clients.Add(await ProbeAsync(
+                factory,
+                registration,
+                admissionCoordinator,
+                cancellationToken).ConfigureAwait(false));
         }
 
         return Result<BlobStorageDiagnosticsSnapshot>.Success(new BlobStorageDiagnosticsSnapshot
@@ -59,6 +65,7 @@ public sealed class BlobStorageDiagnosticsService(
     private static async Task<BlobStorageClientDiagnostics> ProbeAsync(
         IBlobStoreClientFactory factory,
         BlobStoreClientRegistration registration,
+        IBlobUploadAdmissionCoordinator admissionCoordinator,
         CancellationToken cancellationToken)
     {
         try
@@ -67,10 +74,20 @@ public sealed class BlobStorageDiagnosticsService(
             var result = await client.ExistsAsync(ProbeKey, cancellationToken).ConfigureAwait(false);
             if (result.IsSuccess || result.HasError<BlobStoreNotFoundError>())
             {
-                return Create(registration, true, "Healthy", "Probe completed.");
+                return Create(
+                    registration,
+                    admissionCoordinator,
+                    true,
+                    "Healthy",
+                    "Probe completed.");
             }
 
-            return Create(registration, false, "Unhealthy", CreateDetails(result));
+            return Create(
+                registration,
+                admissionCoordinator,
+                false,
+                "Unhealthy",
+                CreateDetails(result));
         }
         catch (OperationCanceledException)
         {
@@ -78,24 +95,43 @@ public sealed class BlobStorageDiagnosticsService(
         }
         catch (Exception ex)
         {
-            return Create(registration, false, "Unhealthy", ex.GetBaseException().Message);
+            return Create(
+                registration,
+                admissionCoordinator,
+                false,
+                "Unhealthy",
+                ex.GetBaseException().Message);
         }
     }
 
     private static BlobStorageClientDiagnostics Create(
         BlobStoreClientRegistration registration,
+        IBlobUploadAdmissionCoordinator admissionCoordinator,
         bool isHealthy,
         string status,
-        string details) =>
-        new()
+        string details)
+    {
+        var admission = admissionCoordinator?.GetSnapshots().FirstOrDefault(snapshot =>
+            string.Equals(
+                snapshot.StoreName,
+                registration.Name.Trim(),
+                StringComparison.OrdinalIgnoreCase));
+
+        return new()
         {
             Name = registration.Name,
             ProviderName = registration.ProviderName,
             Capabilities = registration.Capabilities,
             IsHealthy = isHealthy,
             HealthStatus = status,
-            HealthDetails = details
+            HealthDetails = details,
+            UploadAdmissionEnabled = admission is not null,
+            MaxConcurrentUploads = admission?.MaxConcurrentUploads ?? 0,
+            MaxQueuedUploads = admission?.MaxQueuedUploads ?? 0,
+            ActiveUploads = admission?.ActiveUploads ?? 0,
+            QueuedUploads = admission?.QueuedUploads ?? 0
         };
+    }
 
     private static string CreateDetails(IResult result)
     {

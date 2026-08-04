@@ -22,6 +22,10 @@ Broadcasting deliberately uses a different model from Messaging and Queueing:
 
 The feature uses a shared node registry for discovery, but it does not store messages for nodes to poll. Every registered node can initiate a broadcast to all nodes already registered in the targeted scopes. For each invocation, the initiating node reads the current registrations and pushes the notification directly to each selected node over the configured transport. There is no master, leader, elected coordinator, or permanently designated broadcaster node.
 
+Broadcasting is registered through a fluent builder that is re-entrant and additive for one application host. Higher-level features may call `AddBroadcasting` to contribute their handlers and required scopes, and application code may call it again to select the shared registry provider, configure the shared transport, or add other handlers. Repeated calls compose one host-wide broadcast runtime, node registration, registry provider, receiver, and publishing service; they do not create isolated registries.
+
+The composed runtime has one shared enabled state. Calling `AddBroadcasting` opts the feature in by default, while the fluent builder may disable it from environment-aware configuration, for example with `Enabled(builder.Environment.IsDevelopment())`. A disabled runtime retains its composed configuration in dependency injection but performs no node registration, receiver mapping, background dispatch, registry maintenance, or transport work.
+
 The standard multi-node design uses:
 
 - an Entity Framework-backed node registry
@@ -40,7 +44,7 @@ The feature spans existing DevKit projects while preserving `Common.Utilities.Br
 - `Common.Utilities.Broadcasting` owns the broadcast contracts, envelopes, scopes, publishing service, handler contract, delivery results, local dispatch semantics, node identity abstractions, the registry-store abstraction, and the in-memory registry-store provider.
 - `Infrastructure.EntityFramework/Broadcasting` provides the shared Entity Framework registry-store provider inside the existing Infrastructure.EntityFramework project.
 - `Presentation.Web/Broadcasting` provides the internal HTTP receiver endpoint and ASP.NET Core hosting integration inside the existing Presentation.Web project.
-- higher-level features such as Metrics or the Performance Snapshot Dashboard depend on the core broadcast abstraction rather than directly on Entity Framework or HTTP types.
+- higher-level features such as Metrics or the Performance Snapshot Dashboard may embed the core registration builder to contribute handlers and scopes, but depend on the core broadcast abstraction rather than directly on Entity Framework or HTTP types.
 
 Provider packages shall not change the application-facing broadcast semantics. The core feature shall not depend on the DevKit Messaging, Queueing, Jobs, or Orchestration packages.
 
@@ -67,6 +71,7 @@ The goals of the Broadcast feature are:
 - avoid a dependency on the DevKit Messaging or Queueing features
 - keep delivery best-effort, immediate, and bounded
 - support local single-process development with negligible setup
+- allow the host to enable or disable the complete composed runtime through fluent, environment-aware configuration
 - support multi-node deployments through a provider-based registry store, with Entity Framework as the standard shared provider, and direct HTTP push
 - return a per-node response outcome to the caller, showing which registered nodes responded to the direct delivery attempt
 - support short-lived message expiry and duplicate protection
@@ -118,10 +123,14 @@ The Broadcast feature does not provide:
 | Broadcast envelope | Transport-neutral metadata and payload sent to a node. |
 | Delivery result | Per-node outcome of the immediate delivery request, indicating whether the node responded and accepted or rejected the broadcast. It does not represent handler completion. |
 | Live-node delivery | Delivery only to nodes registered and reachable when the broadcast is issued. |
+| Host-wide broadcast runtime | The single composed broadcast runtime created for one application host, including its shared registry provider, node registration, receiver, publisher, options, scopes, and handlers. |
 
 ## Core Design Principles
 
 - The node registry stores registrations, not broadcast messages.
+- Repeated `AddBroadcasting` calls compose one host-wide broadcast runtime and one shared registry provider.
+- Higher-level features may contribute handlers and required scopes without owning a separate registry or receiver.
+- One host-wide enabled state gates all runtime side effects while preserving additive registration from higher-level features.
 - Broadcast delivery is push-based.
 - Any registered node may initiate a broadcast.
 - There is no master, leader, or elected coordinator node.
@@ -176,6 +185,7 @@ Examples include:
 Rules:
 
 - every multi-node registration shall belong to one or more scopes
+- the host registration shall use the distinct union of scopes contributed by every `AddBroadcasting` call
 - a node may subscribe to several scopes simultaneously
 - a broadcast may target one or more explicit scopes
 - a publishing node may target only scopes included in its own active registration
@@ -235,6 +245,8 @@ A registration contains at least:
 ### Registration behavior
 
 - registration is idempotent for the same node identity and subscribed scope set
+- one application process shall maintain one node registration in the shared registry regardless of how many application modules call `AddBroadcasting`
+- repeated `AddBroadcasting` calls shall update the one host registration with the distinct union of configured scopes rather than creating one registry row per call or per consuming feature
 - restarting, rebinding, or changing scope subscriptions may update the registration
 - a registration shall not contain passwords, tokens, client secrets, or other transport credentials
 - stale registrations may remain after an ungraceful process failure
@@ -548,7 +560,32 @@ The Entity Framework provider is the standard shared provider for multi-node dep
 - optional lease renewal and expiry
 - operational cleanup and manual removal
 
-The consuming application owns and registers the Entity Framework `DbContext`. The context shall opt into Broadcasting through a small context contract and expose the required node-registration set. The application also owns the migration that creates the broadcast-registry table.
+The consuming application owns and registers the Entity Framework `DbContext`. The context shall opt into Broadcasting by implementing `IBroadcastingContext` and exposing `DbSet<BroadcastNodeRegistrationEntity> BroadcastNodeRegistrations` and `DbSet<BroadcastNodeScopeEntity> BroadcastNodeScopes`. The application also owns the migration that creates the broadcast-registry tables.
+
+```csharp
+public sealed class AppDbContext : DbContext, IBroadcastingContext
+{
+    public DbSet<BroadcastNodeRegistrationEntity> BroadcastNodeRegistrations { get; set; }
+
+    public DbSet<BroadcastNodeScopeEntity> BroadcastNodeScopes { get; set; }
+}
+```
+
+The context contract and entities shall follow the established patterns used by other `Infrastructure.EntityFramework` features such as Messaging and Jobs:
+
+- `IBroadcastingContext` is a small feature-capability interface implemented by the application `DbContext`
+- the public entities live under `Infrastructure.EntityFramework/Broadcasting/Entities`
+- `BroadcastNodeRegistrationEntity` maps to `__Broadcasting_NodeRegistrations`
+- `BroadcastNodeScopeEntity` maps to `__Broadcasting_NodeScopes`
+- mappings use Entity Framework data annotations and conventions, including `[Table]`, `[Index]`, `[Key]` or `[PrimaryKey]`, `[Required]`, `[MaxLength]`, and `[ConcurrencyCheck]` where applicable
+- the entities carry sufficient mapping metadata to avoid requiring a Broadcasting-specific `OnModelCreating` call
+- `BroadcastNodeRegistrationEntity` contains the node identity, advertised address, process and registration timestamps, protocol version, active state, reachability diagnostics, optional lease timestamps, and a `Guid` concurrency version
+- `BroadcastNodeRegistrationEntity` provides an `AdvanceConcurrencyVersion()` method consistent with other concurrently updated DevKit EF entities
+- `BroadcastNodeScopeEntity` normalizes the node-to-scope relationship rather than storing the scope collection as JSON
+- the registration table enforces one logical registration per node identity, and the scope table enforces one association per node registration and normalized scope
+- scope lookup is indexed from scope to active node registrations
+
+One node may be associated with several scope rows, but node-level address, reachability, failure-count, active-state, and lease data shall be stored once on the node registration row. The EF model shall not partition or duplicate registry state by the application module or `AddBroadcasting` call that contributed a handler or scope.
 
 The provider shall use operation-owned scopes or otherwise follow normal Entity Framework lifetime rules. It shall not retain a scoped application `DbContext` inside a singleton broadcaster or transport service.
 
@@ -556,10 +593,15 @@ The EF provider stores node registrations only. It does not store broadcast payl
 
 ### Store registration
 
-Feature registration shall make the selected registry-store provider explicit. The developer experience shall support:
+All fluent registration calls in one host shall resolve to one effective registry-store provider. The first `AddBroadcasting` call establishes the shared runtime and may use the in-memory provider as the single-process fallback. A later explicit Entity Framework or custom provider selection replaces only that fallback for the entire shared runtime.
+
+The developer experience shall support:
 
 - selecting the in-memory store for local or single-process usage
 - selecting the Entity Framework store with an application-owned `DbContext`
+- reopening the shared builder through repeated `AddBroadcasting` calls
+- treating repeated selection of the same effective provider as idempotent
+- failing clearly when different explicit registry providers are selected for the same host
 - registering the required receiver endpoint and HTTP transport independently from the store
 - replacing the store provider without changing callers or handlers
 
@@ -599,9 +641,21 @@ Broadcasting exposes a node-level control endpoint and therefore must be treated
 Requirements:
 
 - the receiver endpoint shall support a dedicated transport-authentication abstraction
-- no transport authentication is enabled by default, shared-secret is provided as an example, and the application must explicitly enable authentication for production use.
-- authentication extensions shall be able to add shared-secret, bearer-token, certificate, or platform-specific authentication without changing broadcast contracts
+- no transport authentication is enabled by default, and the application must explicitly enable authentication whenever the receiver is exposed beyond a trusted development boundary
+- the DevKit shall provide shared-secret authentication as a supported built-in HTTP authentication mode rather than only as a sample implementation
+- the fluent HTTP configuration shall accept the shared secret obtained from application configuration; every node communicating within a scope shall use the same configured value
+- shared-secret configuration shall accept every string value without trimming, including empty and whitespace-only values; a missing configuration value shall be treated as an empty string
+- the built-in HTTP sender shall place a header-safe Base64 representation of the exact configured UTF-8 secret bytes in the `X-Bdk-Broadcast-Key` request header, and the inbound receiver shall read, decode, and validate that header; the encoding provides transport fidelity rather than encryption
+- when the configured secret is empty, a missing or empty `X-Bdk-Broadcast-Key` header shall represent the same empty value and authenticate successfully
+- when the configured secret is non-empty, a missing, malformed, multiply-valued, or non-matching header shall be rejected before envelope payload deserialization, local queue admission, or handler dispatch
+- shared-secret comparison shall use a fixed-time comparison of the configured and received secret bytes
+- the configured shared secret shall exist only in the application's configuration/options memory and its transient encoded outbound request header; it shall not be persisted in the registry, envelope, diagnostics, results, logs, or metrics
+- authentication extensions shall still be able to add bearer-token, certificate, or platform-specific authentication without changing broadcast contracts
 - authentication failures shall be rejected before local dispatch
+- the broadcast endpoint's dedicated transport authentication shall not register, replace, select, challenge, or otherwise modify the application's ASP.NET Core authentication schemes or authorization policies
+- the mapped broadcast endpoint shall explicitly bypass the application's default or fallback authorization policy, including OAuth or bearer policies, and shall enforce its configured transport authentication independently
+- a host that uses bearer authentication for its application endpoints shall be able to use shared-secret authentication alone for the broadcast endpoint; the broadcast request shall not require an `Authorization` header
+- mapping Broadcasting shall not make any non-broadcast application endpoint anonymous or change its authentication or authorization behavior
 - registry entries shall not contain credentials
 - transport credentials shall be resolved from configuration or an authentication integration
 - advertised addresses shall be validated before use
@@ -629,12 +683,12 @@ The feature shall expose configuration for:
 - unreachable-registration failure threshold
 - optional registration lease and renewal interval
 - node-local handler queue capacity
-- duplicate-record capacity and retention
-- transport authentication extension
+- HTTP authentication mode, including a built-in shared-secret value supplied from application configuration
 
 Recommended defaults:
 
 - disabled until explicitly registered
+- enabled after `AddBroadcasting` unless the shared builder sets `Enabled(false)`
 - node identity based on hostname plus process id
 - receiver route under `/_bdk/api/broadcasting`
 - JSON payload serialization using the DevKit serializer abstraction
@@ -652,28 +706,67 @@ Recommended defaults:
 - when leasing is enabled, one-minute renewal and three-minute lease duration
 - expired leased registrations are marked inactive and retained for inspection
 - no transport authentication by default
+- when built-in shared-secret authentication is selected, a missing configuration value is accepted as the empty development secret; production deployments should configure a non-empty value
 - in-memory registry for single-process use
 - Entity Framework registry for multi-node use
 
+When the shared enabled state is `false`:
+
+- the host does not register or renew a node in the registry
+- the HTTP receiver endpoint is not mapped
+- local dispatcher readers and registration-maintenance loops are not started
+- publishing returns a failed `Result<BroadcastResult>` with a specific Broadcasting-disabled error and performs no registry, serialization, local dispatch, or transport work
+- provider, address, and scope settings that are required only for execution are not required to start the disabled host
+- operational diagnostics may report that Broadcasting is disabled but shall not expose the configured shared secret
+
 ## Registration And Developer Experience
 
-The feature shall provide fluent registration consistent with other DevKit features.
+The feature shall provide fluent, re-entrant registration consistent with other DevKit features.
+
+`AddBroadcasting` shall return a `BroadcastingBuilderContext`. Every call for the same `IServiceCollection` shall reopen the same host-wide registration state. Builder extensions implemented by `Common.Utilities`, `Infrastructure.EntityFramework`, and `Presentation.Web` shall contribute to that shared state.
+
+Conceptually, independent application modules and the host may compose the feature as follows:
+
+```csharp
+services.AddBroadcasting()
+    .AddHandler<StartSessionBroadcast, StartSessionBroadcastHandler>();
+
+services.AddBroadcasting()
+    .AddHandler<InvalidateCacheBroadcast, InvalidateCacheBroadcastHandler>();
+
+services.AddBroadcasting(options => options
+        .Enabled(builder.Environment.IsDevelopment())
+        .Scopes("DoFiesta.Web.Development"))
+    .WithEntityFrameworkRegistry<AppDbContext>()
+    .WithHttpTransport(options => options
+        .SharedSecret(builder.Configuration["Broadcasting:SharedSecret"]));
+```
+
+These calls shall produce one `IBroadcastService`, one effective registry-store provider, one node registration lifecycle, one receiver, and one handler catalog for the host.
 
 The developer experience shall support:
 
 - registering the Common.Utilities Broadcast feature
+- registering the feature repeatedly from independent application modules
+- merging and deduplicating scopes contributed by repeated registration calls
+- enabling or disabling the one composed runtime from environment-aware host configuration
 - selecting an in-memory or Entity Framework registry-store provider
 - supplying an application-owned DbContext when the Entity Framework provider is selected
 - configuring one or more scopes
 - configuring or resolving the node address
 - registering exactly one typed handler per broadcast type
 - enabling the internal receiver endpoint
-- optionally registering a transport authentication extension
+- configuring the built-in HTTP shared-secret authentication mode from application configuration
+- optionally registering another transport authentication extension
 - publishing a typed broadcast through dependency injection
 
 The application-facing API shall not expose transport URLs, HttpClient usage, EF entities, or registry queries.
 
-Multiple application modules may register handlers, but duplicate effective handlers for the same broadcast type shall fail clearly. A handler should take care of the fan-out of any internal work that must be performed by several local components.
+Multiple application modules may register handlers. Re-registering the same handler implementation for the same broadcast CLR type shall be idempotent so that an embedded feature can be registered safely more than once. Registering different handler implementations for the same broadcast CLR type shall fail clearly. A handler should take care of the fan-out of any internal work that must be performed by several local components.
+
+Repeated selection of the same registry provider or HTTP transport shall be idempotent and may continue configuring the shared component. Selecting different explicit registry provider types or incompatible transport implementations for one host shall fail clearly during registration or startup. Embedded higher-level features should contribute handlers and required scopes; the application host retains control of shared deployment-specific provider, address, authentication, and transport configuration.
+
+The latest explicit `Enabled(...)` value applied during service registration controls the one shared runtime. This allows an embedded feature to register Broadcasting safely while the application host makes the final environment-specific enablement decision.
 
 ## Operational Visibility
 
@@ -791,15 +884,39 @@ No node polls the registry or performance store for the start command.
 ### Register and unregister nodes
 
 - Given a node starts successfully, when its receiver address is resolved, then it registers its scopes, identity, address, and protocol metadata.
+- Given several application modules call `AddBroadcasting`, when the host starts, then the process creates or updates one shared node registration containing the distinct union of configured scopes.
 - Given a node shuts down gracefully, then it attempts to remove its registration.
 - Given a node crashes without unregistering, then later failed deliveries expose the stale registration without preventing delivery to healthy nodes.
+
+### Compose repeated fluent registrations
+
+- Given independent application modules call `AddBroadcasting`, when dependency injection is built, then the calls compose one host-wide `IBroadcastService`, registry provider, receiver, node lifecycle, and handler catalog.
+- Given repeated registration calls contribute different scopes, when the node registers, then the shared registry contains one node registration associated with the distinct union of those scopes.
+- Given the same broadcast CLR type and handler implementation are registered more than once, when registration completes, then the effective handler is registered once.
+- Given different handler implementations are registered for the same broadcast CLR type, when registration is validated, then registration fails clearly.
+- Given the in-memory fallback exists and the host later selects the Entity Framework provider, when registration completes, then the Entity Framework provider becomes the one effective provider for the shared runtime.
+- Given the same explicit provider or transport is selected repeatedly, when registration completes, then selection is idempotent and no duplicate runtime infrastructure is created.
+- Given different explicit registry provider types or incompatible transport implementations are selected, when registration is validated, then registration fails clearly.
+
+### Enable and disable the composed runtime
+
+- Given `AddBroadcasting` is called without an explicit enabled value, when the host starts, then the one composed Broadcasting runtime is enabled.
+- Given the host configures `Enabled(builder.Environment.IsDevelopment())` in a development environment, when the host starts, then Broadcasting is enabled.
+- Given the host configures `Enabled(builder.Environment.IsDevelopment())` outside development, when the host starts, then no node is registered, no receiver endpoint is mapped, and no dispatcher or lease-maintenance work starts.
+- Given Broadcasting is disabled, when a caller publishes a broadcast, then it receives the specific Broadcasting-disabled Result error and no registry, serialization, dispatch, or transport dependency is invoked.
+- Given an embedded feature registers handlers or scopes before the host calls `Enabled(false)`, when dependency injection is built, then those contributions remain composed but the complete host-wide runtime remains inactive.
+- Given configuration required only by an enabled provider or authentication mode is absent while Broadcasting is disabled, when the host starts, then the disabled feature does not fail startup for that absent runtime-only value.
 
 ### Use provider-based registry storage
 
 - Given the in-memory registry-store provider is configured, when one process registers and broadcasts locally, then no Entity Framework or shared database dependency is required.
 - Given the Entity Framework registry-store provider is configured, when several nodes use the same application database, then every node can resolve the same current registration snapshot.
 - Given the Entity Framework provider is selected, when the consuming application context does not expose the required Broadcasting context contract, then registration or startup fails clearly.
-- Given the Entity Framework provider is selected, when migrations are created, then the consuming application owns the migration for the broadcast node-registration table.
+- Given the Entity Framework provider is selected, when the consuming application context implements `IBroadcastingContext`, then it exposes the node-registration and node-scope sets required by the provider.
+- Given the Entity Framework provider is selected, when migrations are created, then the consuming application owns the migration for `__Broadcasting_NodeRegistrations` and `__Broadcasting_NodeScopes`.
+- Given the Broadcasting entities are included through `IBroadcastingContext`, when the EF model is created, then their table, key, index, length, required, and concurrency mappings are supplied through entity attributes and conventions without a Broadcasting-specific `OnModelCreating` call.
+- Given one node subscribes to several scopes, when its registration is persisted, then node-level reachability and lease state is stored once and the scopes are stored as distinct relational associations.
+- Given a singleton broadcast service uses the Entity Framework provider, when it performs a registry operation, then it resolves an operation-owned scope and does not retain the application `DbContext`.
 - Given a custom registry-store provider is added, when it implements the registry-store contract, then publishing and receiving semantics remain unchanged.
 
 ### Enforce direct addressability
@@ -829,7 +946,16 @@ No node polls the registry or performance store for the start command.
 ### Protect the receiver
 
 - Given no transport authentication extension is configured, when a valid internal request reaches the receiver, then it is processed without authentication.
-- Given an authentication extension is configured, when a request fails authentication, then it is rejected before local dispatch.
+- Given built-in shared-secret authentication is configured from application configuration, when the sender delivers a broadcast, then it includes the Base64 representation of the exact configured UTF-8 value in `X-Bdk-Broadcast-Key`.
+- Given built-in shared-secret authentication is configured, when an inbound request contains the matching secret, then authentication succeeds and normal receiver validation continues.
+- Given built-in shared-secret authentication is configured with a null or empty value, when the inbound header is missing or empty, then it matches the configured empty secret and normal receiver validation continues.
+- Given built-in shared-secret authentication is configured with a whitespace-only value, when the sender and receiver communicate, then the exact whitespace UTF-8 bytes survive the header-safe encoding and authenticate successfully without being trimmed.
+- Given built-in shared-secret authentication is configured with a non-empty value, when the inbound header is missing, malformed, multiply valued, or decodes to a different value, then the request is rejected before payload deserialization, queue admission, or local dispatch.
+- Given a shared secret is configured, when registry state, diagnostics, Results, logs, and metrics are inspected, then the secret is not present.
+- Given another authentication extension is configured, when a request fails authentication, then it is rejected before local dispatch.
+- Given the application has a default or fallback OAuth/bearer authorization policy, when a broadcast request supplies only the matching shared-secret header, then the broadcast endpoint bypasses that application policy and processes the request through its dedicated transport authentication.
+- Given the application has a protected non-broadcast endpoint, when Broadcasting is registered, then that endpoint retains its existing OAuth/bearer authentication and authorization requirements.
+- Given a broadcast request supplies a valid application bearer token but an incorrect non-empty shared secret, then the broadcast endpoint rejects the request through its dedicated transport authentication.
 - Given a registered node has no handler for the broadcast CLR type, when it receives the broadcast, then it returns `Unsupported` without invoking local work.
 - Given an oversized payload is sent, then the receiver rejects it safely.
 
@@ -850,9 +976,18 @@ No node polls the registry or performance store for the start command.
 - The feature is named `Common.Utilities.Broadcasting` and is anchored in `Common.Utilities`.
 - The feature is implemented inside existing projects only: `Common.Utilities/Broadcasting`, `Infrastructure.EntityFramework/Broadcasting`, and `Presentation.Web/Broadcasting`; no new project is introduced.
 - The feature does not depend on DevKit Messaging or Queueing.
+- Registration uses a fluent `BroadcastingBuilderContext`.
+- `AddBroadcasting` is re-entrant and additive; repeated calls from independent modules compose one host-wide runtime.
+- All registrations in one host share one registry provider, node registration lifecycle, receiver, publishing service, options set, and handler catalog.
+- Scopes contributed by repeated registration calls are merged and deduplicated into the one host node registration.
+- Re-registering the same handler implementation for the same broadcast CLR type is idempotent; a different handler for that type is a configuration error.
+- Repeated selection of the same provider or transport is idempotent; conflicting explicit providers or incompatible transports are configuration errors.
 - Multi-node discovery uses a provider-based shared registry store.
 - The standard registry-store providers are in-memory and Entity Framework.
 - The Entity Framework provider uses an application-owned DbContext and migration.
+- The Entity Framework provider uses `IBroadcastingContext`, `BroadcastNodeRegistrationEntity`, and `BroadcastNodeScopeEntity` following the existing Messaging and Jobs EF context/entity conventions.
+- Broadcasting EF entities use attribute-and-convention mapping, DevKit-prefixed table names, normalized scope associations, and optimistic concurrency without requiring a Broadcasting-specific model-builder call.
+- One EF node-registration row stores node-level address, reachability, active-state, failure-count, and lease data; multiple scope rows associate that node with its configured scopes.
 - The registry stores node registrations, not broadcast messages.
 - Nodes do not poll for broadcast messages.
 - Broadcasting is intended as a direct-push alternative when polling is unsuitable.
@@ -871,7 +1006,12 @@ No node polls the registry or performance store for the start command.
 - `Accepted` means the node responded and accepted the broadcast for local execution; it does not mean handler completion.
 - The core feature does not collect handled/completed broadcast records or later handler outcomes.
 - Local handler execution uses a bounded asynchronous dispatcher.
-- No transport authentication is enabled initially, but a dedicated authentication abstraction is part of the design.
+- Calling `AddBroadcasting` enables the one composed runtime by default; the shared fluent configuration may disable all Broadcasting runtime behavior, including environment-aware use such as `Enabled(builder.Environment.IsDevelopment())`.
+- Disabled Broadcasting retains additive registration state but does not register a node, map its receiver, start dispatch or maintenance work, query the registry, serialize a publication, or use a transport.
+- No transport authentication is enabled initially, but the DevKit provides built-in HTTP shared-secret authentication through fluent configuration in addition to the dedicated authentication extension abstraction.
+- Built-in shared-secret authentication accepts the exact configured value, including null/empty and whitespace, transports its UTF-8 bytes in header-safe Base64 form through `X-Bdk-Broadcast-Key`, and validates inbound bytes with fixed-time comparison before payload deserialization or dispatch.
+- The broadcast endpoint opts out of application default/fallback authorization and applies only its dedicated transport authentication; Broadcasting does not alter the host's authentication schemes, authorization policies, or protection of other endpoints.
+- Shared secrets are never persisted in Broadcasting storage or exposed through envelopes, diagnostics, Results, logs, or metrics.
 - Unreachable registrations are marked inactive after a configurable consecutive-failure threshold, defaulting to three, and remain available for inspection.
 - Optional low-frequency registration leasing is supported and disabled by default; expired leased registrations are marked inactive rather than deleted.
 - Broadcast delivery is best-effort and limited to currently registered and reachable nodes.
@@ -891,4 +1031,4 @@ No node polls the registry or performance store for the start command.
 
 ## Finalization Status
 
-No product-level design questions remain open. Backend entity names, exact public type names, route-model details, and implementation-specific registration signatures may be finalized during implementation as long as they preserve the requirements and resolved decisions in this specification.
+No product-level design questions remain open. The Entity Framework context contract and entity names stated above are fixed for consistency with existing repository features. Other exact public type names, route-model details, and implementation-specific fluent method signatures may be finalized during implementation as long as they preserve the requirements and resolved decisions in this specification.

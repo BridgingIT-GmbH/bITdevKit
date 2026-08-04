@@ -599,7 +599,7 @@ Broadcasting exposes a node-level control endpoint and therefore must be treated
 Requirements:
 
 - the receiver endpoint shall support a dedicated transport-authentication abstraction
-- no transport authentication is enabled by default
+- no transport authentication is enabled by default, shared-secret is provided as an example, and the application must explicitly enable authentication for production use.
 - authentication extensions shall be able to add shared-secret, bearer-token, certificate, or platform-specific authentication without changing broadcast contracts
 - authentication failures shall be rejected before local dispatch
 - registry entries shall not contain credentials
@@ -673,7 +673,7 @@ The developer experience shall support:
 
 The application-facing API shall not expose transport URLs, HttpClient usage, EF entities, or registry queries.
 
-Multiple application modules may register handlers, but duplicate effective handlers for the same broadcast type shall fail clearly.
+Multiple application modules may register handlers, but duplicate effective handlers for the same broadcast type shall fail clearly. A handler should take care of the fan-out of any internal work that must be performed by several local components.
 
 ## Operational Visibility
 
@@ -722,9 +722,9 @@ Such integration shall remain optional and shall not couple Broadcasting to Key/
 
 The Performance Snapshot Dashboard shall use Broadcasting for:
 
-- starting a deployment-wide collection session
-- stopping a collection session
-- collecting an immediate snapshot
+- starting a deployment-wide multi-node collection session
+- stopping a collection session on all available nodes
+- collecting an immediate snapshot on all available nodes
 - triggering `GC.Collect()` on all available nodes
 
 The performance feature remains responsible for:

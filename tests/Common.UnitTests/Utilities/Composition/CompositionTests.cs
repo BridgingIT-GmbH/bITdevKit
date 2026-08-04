@@ -5,6 +5,7 @@
 
 
 using System.Collections.Concurrent;
+using BridgingIT.DevKit.Common.UnitTests.Utilities;
 using BridgingIT.DevKit.Common.Utilities.Composition;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -312,6 +313,78 @@ public class CompositionTests
         provider.GetRequiredService<IResultService>().Fail().IsFailure.ShouldBeTrue();
 
         loggerFactory.Messages.ShouldContain(m => m.Contains("success=False", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task Intercept_WithMetrics_EmitsOperationCurrentAndDuration()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new MetricsRecorder();
+        var services = new ServiceCollection();
+        services.AddSingleton<IMetricsService>(new MetricsService(meterFactory));
+        services.AddComposition()
+            .For<IInterceptedService>()
+            .Use<InterceptedService>()
+            .Intercept(interception => interception.WithMetrics())
+            .RegisterTransient();
+        using var provider = services.BuildServiceProvider();
+
+        // Act
+        await provider.GetRequiredService<IInterceptedService>().RunAsync(new InvocationLog());
+
+        // Assert
+        recorder.CounterSum("composition_interception_operations").ShouldBe(1);
+        recorder.CounterSum("composition_interception_operations_current").ShouldBe(0);
+        recorder.HistogramCount("composition_interception_operation_duration").ShouldBe(1);
+        recorder.LastTags("composition_interception_operations")["composition.service"]
+            .ShouldBe(nameof(IInterceptedService));
+        recorder.LastTags("composition_interception_operations")["composition.method"]
+            .ShouldBe(nameof(IInterceptedService.RunAsync));
+    }
+
+    [Fact]
+    public void Intercept_WithMetricsAndFailedResult_EmitsFailure()
+    {
+        // Arrange
+        using var meterFactory = new TestMeterFactory();
+        using var recorder = new MetricsRecorder();
+        var services = new ServiceCollection();
+        services.AddSingleton<IMetricsService>(new MetricsService(meterFactory));
+        services.AddComposition()
+            .For<IResultService>()
+            .Use<ResultService>()
+            .Intercept(interception => interception.WithMetrics())
+            .RegisterTransient();
+        using var provider = services.BuildServiceProvider();
+
+        // Act
+        var result = provider.GetRequiredService<IResultService>().Fail();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        recorder.CounterSum("composition_interception_operation_failures").ShouldBe(1);
+        recorder.CounterSum("composition_interception_operations_current").ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task Intercept_WithMetricsAndNoMetricsService_ExecutesNormally()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddComposition()
+            .For<IInterceptedService>()
+            .Use<InterceptedService>()
+            .Intercept(interception => interception.WithMetrics())
+            .RegisterTransient();
+        using var provider = services.BuildServiceProvider();
+        var log = new InvocationLog();
+
+        // Act
+        await provider.GetRequiredService<IInterceptedService>().RunAsync(log);
+
+        // Assert
+        log.Entries.ShouldContain("implementation");
     }
 
     [Fact]

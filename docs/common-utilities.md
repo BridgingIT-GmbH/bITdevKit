@@ -614,6 +614,8 @@ using var provider = services.BuildServiceProvider();
 var client = provider.GetRequiredService<IInventoryClient>();
 ```
 
+`.WithMetrics()` resolves the optional shared `IMetricsService`. When metrics are enabled, it records total and current invocations, failed results or exceptions, and invocation duration with bounded service and method tags. When metrics are not registered, interception continues without telemetry. `.WithLogging()` remains a separate behavior and is not required for metric emission.
+
 Typical explicit interceptor shape:
 
 ```csharp
@@ -1337,6 +1339,8 @@ Metrics exposes JSON snapshot endpoints such as:
 - `/_bdk/api/metrics/aspnet`
 
 These endpoints are useful for dashboards, debugging, demos, and internal operational inspection. They are backed by in-process snapshot services that listen to the `bdk` meter and project the measurements into JSON models.
+
+The `bdk` snapshot groups requester, messaging, queueing, jobs, orchestration, repository, composition, and storage instruments by feature. Observable gauges are collected when each snapshot is requested and represent their latest value rather than a cumulative total.
 
 They are not an OTLP endpoint, and they are not a Prometheus scrape endpoint. Those concerns belong to the host application's OpenTelemetry configuration.
 

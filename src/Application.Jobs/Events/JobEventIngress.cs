@@ -83,7 +83,7 @@ public sealed class JobEventIngress(
         var created = await storeProvider.AcceptedEvents.TryAcceptAsync(acceptedEvent, cancellationToken).ConfigureAwait(false);
         activity?.SetTag("jobs.event.idempotency_key", acceptedEvent.IdempotencyKey);
         activity?.SetTag("jobs.operation.success", created);
-        this.metrics.RecordEventAccepted(acceptedEvent.Source, acceptedEvent.CorrelationId, duplicate: !created);
+        this.metrics.RecordEventAccepted(acceptedEvent.Source, duplicate: !created);
         return created
             ? Result<JobAcceptedEvent>.Success(acceptedEvent)
             : Result<JobAcceptedEvent>.Success(acceptedEvent).WithMessage($"The accepted event '{acceptedEvent.IdempotencyKey}' was already recorded.");

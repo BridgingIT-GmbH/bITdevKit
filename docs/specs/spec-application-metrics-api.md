@@ -751,8 +751,18 @@ The endpoint groups emitted metrics by feature prefix:
 - `requester_` -> `requester`
 - `notifier_` -> `notifier`
 - `queueing_` -> `queueing`
+- `repositories_` -> `repositories`
+- `activeentity_` -> `activeentity`
 - `jobscheduling_` -> `jobscheduling`
+- `jobs_` -> `jobs`
 - `orchestrations_` -> `orchestrations`
+- `composition_` -> `composition`
+- `blobstorage_` -> `blobstorage`
+- `filestorage_` -> `filestorage`
+- `document.` -> `documentstorage`
+- `bdk.storage.permalinks.` -> `storagepermalinks`
+
+The listener shall actively collect observable instruments when a snapshot is requested. Observable gauges represent the latest observed value and must not be accumulated across successive snapshot reads.
 
 #### 8.4.1 `bdk` response shape
 

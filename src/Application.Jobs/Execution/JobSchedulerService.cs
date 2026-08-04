@@ -1128,7 +1128,7 @@ public partial class JobSchedulerService(
                     }
                 }
 
-                this.metrics.RecordMaterializedOccurrences(this.schedulerInstanceId, definition.JobName, trigger.TriggerName, trigger.TriggerType, evaluation.Value.Occurrences.Count);
+                this.metrics.RecordMaterializedOccurrences(definition.JobName, trigger.TriggerName, trigger.TriggerType, evaluation.Value.Occurrences.Count);
                 if (evaluation.Value.Occurrences.Count > 0)
                 {
                     TypedLogger.LogMaterializedScheduledOccurrences(
@@ -3306,7 +3306,7 @@ public partial class JobSchedulerService(
         activity?.SetTag("jobs.operation.success", lease is not null);
         if (lease is not null)
         {
-            this.metrics.RecordLeaseAcquired(this.schedulerInstanceId, occurrenceId, lease.SchedulerInstanceId);
+            this.metrics.RecordLeaseAcquired();
         }
 
         return lease;
@@ -3368,7 +3368,7 @@ public partial class JobSchedulerService(
                     }
 
                     activity?.SetTag("jobs.operation.success", true);
-                    this.metrics.RecordLeaseRenewed(this.schedulerInstanceId, occurrenceId, renewed.SchedulerInstanceId);
+                    this.metrics.RecordLeaseRenewed();
                     active.Lease = renewed;
                 }
             }
@@ -3444,7 +3444,7 @@ public partial class JobSchedulerService(
             activity?.SetStatus(ActivityStatusCode.Error, BuildMessage(result.Errors, result.Messages));
         }
 
-        this.metrics.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName, occurrenceId);
+        this.metrics.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName);
         return result;
     }
 
@@ -3456,7 +3456,7 @@ public partial class JobSchedulerService(
             activity?.SetStatus(ActivityStatusCode.Error, BuildMessage(result.Errors, result.Messages));
         }
 
-        this.metrics.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName, occurrenceId);
+        this.metrics.RecordManagementOperation(operation, result.IsSuccess, jobName, triggerName);
         return result;
     }
 

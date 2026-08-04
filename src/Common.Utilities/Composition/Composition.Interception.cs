@@ -123,7 +123,7 @@ public static class InterceptionBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         return GetInternalBuilder(builder).AddBehaviorFactory(sp =>
-            new MetricsInterceptionBehavior<TService>(sp.GetService<ILoggerFactory>()));
+            new MetricsInterceptionBehavior<TService>(sp.GetService<IMetricsService>()));
     }
 
     /// <summary>
@@ -631,35 +631,49 @@ internal sealed class RetryInterceptionBehavior<TService>(int attempts, bool ret
     }
 }
 
-internal sealed class MetricsInterceptionBehavior<TService>(ILoggerFactory loggerFactory) : IInterceptionBehavior<TService>
+internal sealed class MetricsInterceptionBehavior<TService>(IMetricsService metricsService = null) : IInterceptionBehavior<TService>
     where TService : class
 {
-    private readonly ILogger logger = loggerFactory?.CreateLogger($"{typeof(TService).FullName}.Interception.Metrics");
-
     public async ValueTask<object> InvokeAsync(
         InterceptionInvocationContext<TService> context,
         CancellationToken cancellationToken)
     {
-        var stopwatch = ValueStopwatch.StartNew();
+        if (metricsService is null)
+        {
+            return await context.Next().ConfigureAwait(false);
+        }
+
+        MetricTag[] tags =
+        [
+            new("composition.service", typeof(TService).Name),
+            new("composition.method", context.Method.Name),
+        ];
+        var startedTimestamp = metricsService.StartTimestamp();
+        metricsService.AddCounter("composition_interception_operations", tags: tags);
+        metricsService.AddUpDownCounter("composition_interception_operations_current", 1, tags);
 
         try
         {
             var result = await context.Next().ConfigureAwait(false);
-            this.logger?.LogInformation(
-                "[COMPOSITION] duration {Service}.{Method} -> {DurationMs}ms",
-                typeof(TService).Name,
-                context.Method.Name,
-                stopwatch.GetElapsedMilliseconds());
+            if (InterceptionResultHelper.IsResultFailure(result))
+            {
+                metricsService.AddCounter("composition_interception_operation_failures", tags: tags);
+            }
+
             return result;
         }
         catch
         {
-            this.logger?.LogWarning(
-                "[COMPOSITION] duration failed {Service}.{Method} -> {DurationMs}ms",
-                typeof(TService).Name,
-                context.Method.Name,
-                stopwatch.GetElapsedMilliseconds());
+            metricsService.AddCounter("composition_interception_operation_failures", tags: tags);
             throw;
+        }
+        finally
+        {
+            metricsService.AddUpDownCounter("composition_interception_operations_current", -1, tags);
+            metricsService.RecordHistogramDuration(
+                "composition_interception_operation_duration",
+                startedTimestamp,
+                tags);
         }
     }
 }

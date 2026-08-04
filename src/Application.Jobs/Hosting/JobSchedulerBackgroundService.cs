@@ -80,14 +80,14 @@ public partial class JobSchedulerBackgroundService : BackgroundService
         activity?.SetTag("jobs.sweep.ready_count", dueOccurrences.Count);
         if (dueOccurrences.Count == 0)
         {
-            this.metrics.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, 0, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
+            this.metrics.RecordSweepCycle(recovered, materialized.IsSuccess ? materialized.Value.Count : 0, 0, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
             return;
         }
 
         var availableSlots = Math.Max(0, this.options.MaxConcurrency - this.scheduler.ActiveExecutionCount);
         if (availableSlots == 0)
         {
-            this.metrics.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
+            this.metrics.RecordSweepCycle(recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
             TypedLogger.LogSweepDeferredNoWorkerSlots(
                 this.logger,
                 Constants.LogKey,
@@ -98,7 +98,7 @@ public partial class JobSchedulerBackgroundService : BackgroundService
             return;
         }
 
-        this.metrics.RecordSweepCycle(this.scheduler.SchedulerInstanceId, recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
+        this.metrics.RecordSweepCycle(recovered, materialized.IsSuccess ? materialized.Value.Count : 0, dueOccurrences.Count, this.scheduler.ActiveExecutionCount, this.options.MaxConcurrency);
 
         var selected = dueOccurrences.Take(Math.Min(this.options.BatchSize, availableSlots)).ToArray();
         TypedLogger.LogSweepDispatchingReadyOccurrences(

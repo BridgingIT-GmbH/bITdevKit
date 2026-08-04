@@ -1014,7 +1014,7 @@ That split keeps the physical model aligned with runtime responsibilities: runti
 
 ## Observability And Telemetry
 
-Jobs emits runtime telemetry through `ActivitySource` and `Meter` using the shared source name `BridgingIT.DevKit.Application.Jobs`.
+Jobs emits tracing through `ActivitySource` using the source name `BridgingIT.DevKit.Application.Jobs`. It emits optional runtime metrics through `IMetricsService` and the shared `bdk` meter when metrics are registered.
 
 Execution-level telemetry is emitted through the default `JobMetricsBehavior`, which wraps the job execution pipeline. Sweep, materialization, lease, accepted-event, management, and maintenance telemetry remain runtime-owned because they are not job-body concerns.
 
@@ -1039,14 +1039,14 @@ Metrics cover:
 - worker-pool utilization snapshots during sweeps and execution starts
 - management and maintenance operation counts
 
-Common telemetry tags include job name, trigger name, trigger type, occurrence id, execution id, scheduler instance id, correlation id, and lease owner when that information exists.
+Metric tags are intentionally bounded to job name, trigger name, trigger type, status, operation, event source, and other finite classifications. Occurrence ids, execution ids, correlation ids, scheduler instance ids, and lease owners are excluded from metrics to avoid unbounded time-series cardinality. Those identifiers remain available on activities, in logs, and in durable scheduler records.
 
 ```mermaid
 sequenceDiagram
     participant Sweep as Scheduler sweep
     participant Store as Store provider
     participant Job as Job execution
-    participant Telemetry as ActivitySource + Meter
+    participant Telemetry as ActivitySource + IMetricsService
 
     Sweep->>Telemetry: jobs.sweep
     Sweep->>Store: materialize due triggers
@@ -1059,7 +1059,7 @@ sequenceDiagram
     Job->>Telemetry: jobs.retry.schedule or terminal execution metrics
 ```
 
-If you pass `JobDispatchOptions.CorrelationId` or an accepted-event correlation id, that identifier flows into `IJobExecutionContext`, durable history, and telemetry tags for the resulting execution path.
+If you pass `JobDispatchOptions.CorrelationId` or an accepted-event correlation id, that identifier flows into `IJobExecutionContext`, durable history, activities, and logs for the resulting execution path. It is deliberately not emitted as a metric tag.
 
 ## Operational Services
 

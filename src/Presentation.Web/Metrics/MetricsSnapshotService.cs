@@ -61,7 +61,14 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "jobs_occurrences_materialized",
         "jobs_events_accepted",
         "orchestrations_activity_execute",
-        "orchestrations_finish"
+        "orchestrations_finish",
+        "composition_interception_operations",
+        "blobstorage_operations",
+        "filestorage_operations",
+        "document.operations",
+        "bdk.storage.permalinks.operations",
+        "bdk.storage.permalinks.downloads",
+        "bdk.storage.permalinks.sync.events"
     ];
 
     private static readonly HashSet<string> BaseFailureSeries =
@@ -87,7 +94,10 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "jobs_executions_cancelled",
         "jobs_executions_interrupted",
         "orchestrations_activity_execute_failure",
-        "orchestrations_finish_failure"
+        "orchestrations_finish_failure",
+        "composition_interception_operation_failures",
+        "blobstorage_operation_failures",
+        "filestorage_operation_failures"
     ];
 
     private static readonly HashSet<string> BaseCurrentSeries =
@@ -105,11 +115,16 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "repositories_delete_current",
         "jobscheduling_execute_current",
         "jobs_executions_active",
-        "orchestrations_activity_execute_current"
+        "orchestrations_activity_execute_current",
+        "composition_interception_operations_current",
+        "blobstorage_uploads_active",
+        "blobstorage_uploads_queued",
+        "bdk.storage.permalinks.sync.queue.depth"
     ];
 
     private readonly MeterListener listener = new();
     private readonly ConcurrentDictionary<string, double> counters = new(StringComparer.Ordinal);
+    private readonly ConcurrentDictionary<string, double> gauges = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, HistogramAccumulator> histograms = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, MetricInstrumentKind> instruments = new(StringComparer.Ordinal);
     private readonly DateTimeOffset processStartedAtUtc = new(Process.GetCurrentProcess().StartTime.ToUniversalTime());
@@ -143,6 +158,8 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
     /// <inheritdoc />
     public MetricsSnapshotModel GetSnapshot()
     {
+        this.CollectObservableInstruments();
+
         var capturedAtUtc = DateTimeOffset.UtcNow;
         var snapshot = new MetricsSnapshotModel
         {
@@ -169,6 +186,18 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             {
                 feature.Counters[pair.Key] = pair.Value;
             }
+        }
+
+        foreach (var pair in this.gauges.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+        {
+            var featureName = GetFeatureName(pair.Key);
+            if (featureName is null)
+            {
+                continue;
+            }
+
+            var feature = GetOrAddFeature(snapshot.Features, featureName);
+            feature.Current[pair.Key] = pair.Value;
         }
 
         foreach (var pair in this.histograms.OrderBy(pair => pair.Key, StringComparer.Ordinal))
@@ -338,6 +367,31 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             return "orchestrations";
         }
 
+        if (series.StartsWith("composition_", StringComparison.Ordinal))
+        {
+            return "composition";
+        }
+
+        if (series.StartsWith("blobstorage_", StringComparison.Ordinal))
+        {
+            return "blobstorage";
+        }
+
+        if (series.StartsWith("filestorage_", StringComparison.Ordinal))
+        {
+            return "filestorage";
+        }
+
+        if (series.StartsWith("document.", StringComparison.Ordinal))
+        {
+            return "documentstorage";
+        }
+
+        if (series.StartsWith("bdk.storage.permalinks.", StringComparison.Ordinal))
+        {
+            return "storagepermalinks";
+        }
+
         return null;
     }
 
@@ -354,6 +408,11 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             return MetricInstrumentKind.Histogram;
         }
 
+        if (definition == typeof(ObservableGauge<>))
+        {
+            return MetricInstrumentKind.ObservableGauge;
+        }
+
         return definition == typeof(UpDownCounter<>)
             ? MetricInstrumentKind.UpDownCounter
             : MetricInstrumentKind.Counter;
@@ -365,7 +424,9 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
 
     private static bool IsFailureSeries(string series) =>
         series.EndsWith("_failure", StringComparison.Ordinal) ||
+        series.EndsWith("_failures", StringComparison.Ordinal) ||
         series.EndsWith(".failed", StringComparison.Ordinal) ||
+        series.EndsWith(".failures", StringComparison.Ordinal) ||
         series.EndsWith(".retried", StringComparison.Ordinal) ||
         series.EndsWith(".timedout", StringComparison.Ordinal) ||
         series.EndsWith(".cancelled", StringComparison.Ordinal) ||
@@ -400,6 +461,12 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         }
 
         var numericValue = Convert.ToDouble(measurement);
+        if (kind == MetricInstrumentKind.ObservableGauge)
+        {
+            this.gauges[instrument.Name] = numericValue;
+            return;
+        }
+
         if (kind == MetricInstrumentKind.Histogram)
         {
             this.histograms.GetOrAdd(instrument.Name, _ => new HistogramAccumulator()).Add(numericValue);
@@ -409,11 +476,27 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         this.counters.AddOrUpdate(instrument.Name, numericValue, (_, current) => current + numericValue);
     }
 
+    private void CollectObservableInstruments()
+    {
+        try
+        {
+            this.listener.RecordObservableInstruments();
+        }
+        catch (Exception exception) when (
+            exception is not OutOfMemoryException and
+            not StackOverflowException and
+            not AccessViolationException)
+        {
+            // Snapshot collection is best-effort and must remain available when an observer fails.
+        }
+    }
+
     private enum MetricInstrumentKind
     {
         Counter,
         UpDownCounter,
-        Histogram
+        Histogram,
+        ObservableGauge
     }
 
     private sealed class HistogramAccumulator

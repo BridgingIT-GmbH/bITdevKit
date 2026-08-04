@@ -32,13 +32,10 @@ public sealed class JobMetricsBehavior(
             context.ExecutionContext.CorrelationId);
 
         this.metrics.RecordExecutionStarted(
-            context.SchedulerInstanceId,
             occurrence,
             context.Trigger,
-            context.ExecutionContext.ExecutionId,
             context.ActiveExecutionCount,
             context.MaxConcurrency,
-            context.ExecutionContext.CorrelationId,
             timeProvider.GetUtcNow());
 
         try
@@ -47,13 +44,10 @@ public sealed class JobMetricsBehavior(
             if (result.IsSuccess && result.Value is not null)
             {
                 this.metrics.RecordExecutionCompleted(
-                    context.SchedulerInstanceId,
                     occurrence with { Status = ToOccurrenceStatus(result.Value.Status) },
                     context.Trigger,
-                    context.ExecutionContext.ExecutionId,
                     result.Value.Status,
-                    (result.Value.CompletedUtc ?? timeProvider.GetUtcNow()) - result.Value.StartedUtc,
-                    context.ExecutionContext.CorrelationId);
+                    (result.Value.CompletedUtc ?? timeProvider.GetUtcNow()) - result.Value.StartedUtc);
             }
 
             return result;
@@ -61,13 +55,10 @@ public sealed class JobMetricsBehavior(
         catch (Exception)
         {
             this.metrics.RecordExecutionCompleted(
-                context.SchedulerInstanceId,
                 occurrence with { Status = JobOccurrenceStatus.Failed },
                 context.Trigger,
-                context.ExecutionContext.ExecutionId,
                 JobExecutionStatus.Failed,
-                timeProvider.GetUtcNow() - context.ExecutionContext.StartedUtc,
-                context.ExecutionContext.CorrelationId);
+                timeProvider.GetUtcNow() - context.ExecutionContext.StartedUtc);
             throw;
         }
     }

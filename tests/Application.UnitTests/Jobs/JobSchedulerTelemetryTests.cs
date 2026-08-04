@@ -38,6 +38,12 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         measurements.Items.ShouldContain(x => x.Name == "jobs_executions_completed");
         measurements.Items.ShouldContain(x => x.Name == "jobs_execution_duration");
         measurements.Items.ShouldContain(x => x.Name == "jobs_occurrence_age");
+        var metricTagNames = measurements.Items.SelectMany(x => x.Tags.Keys).ToHashSet(StringComparer.Ordinal);
+        metricTagNames.ShouldNotContain("jobs.scheduler.instance_id");
+        metricTagNames.ShouldNotContain("jobs.occurrence.id");
+        metricTagNames.ShouldNotContain("jobs.execution.id");
+        metricTagNames.ShouldNotContain("jobs.correlation.id");
+        metricTagNames.ShouldNotContain("jobs.lease.owner");
     }
 
     [Fact]
@@ -83,7 +89,10 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
             x.OperationName == "jobs.event.accept"
             && Equals(x.GetTagItem("jobs.event.source"), "crm.customers")
             && Equals(x.GetTagItem("jobs.correlation.id"), "evt-corr"));
-        measurements.Items.ShouldContain(x => x.Name == "jobs_events_accepted");
+        measurements.Items.ShouldContain(x =>
+            x.Name == "jobs_events_accepted"
+            && Equals(x.Tags.GetValueOrDefault("jobs.event.source"), "crm.customers")
+            && !x.Tags.ContainsKey("jobs.correlation.id"));
     }
 
     [Fact]

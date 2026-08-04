@@ -18,42 +18,33 @@ using BridgingIT.DevKit.Common;
 /// </example>
 internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
 {
-    private const string SchedulerInstanceIdTag = "jobs.scheduler.instance_id";
     private const string JobNameTag = "jobs.job.name";
     private const string TriggerNameTag = "jobs.trigger.name";
     private const string TriggerTypeTag = "jobs.trigger.type";
-    private const string OccurrenceIdTag = "jobs.occurrence.id";
-    private const string ExecutionIdTag = "jobs.execution.id";
-    private const string CorrelationIdTag = "jobs.correlation.id";
-    private const string LeaseOwnerTag = "jobs.lease.owner";
     private const string OperationTag = "jobs.operation";
     private const string SuccessTag = "jobs.operation.success";
     private const string StatusTag = "jobs.status";
     private const string EventSourceTag = "jobs.event.source";
 
     public void RecordSweepCycle(
-        string schedulerInstanceId,
         int recoveredCount,
         int materializedCount,
         int dueCount,
         int activeExecutionCount,
         int maxConcurrency)
     {
-        var tags = CreateTags(schedulerInstanceId: schedulerInstanceId);
-        metricsService?.AddCounter("jobs_sweep_cycles", tags: tags);
+        metricsService?.AddCounter("jobs_sweep_cycles");
         if (recoveredCount > 0)
         {
-            metricsService?.AddCounter("jobs_leases_recovered", recoveredCount, tags);
+            metricsService?.AddCounter("jobs_leases_recovered", recoveredCount);
         }
 
         metricsService?.RecordHistogram(
             "jobs_worker_utilization",
-            maxConcurrency <= 0 ? 0D : (double)activeExecutionCount / maxConcurrency,
-            tags: tags);
+            maxConcurrency <= 0 ? 0D : (double)activeExecutionCount / maxConcurrency);
     }
 
     public void RecordMaterializedOccurrences(
-        string schedulerInstanceId,
         string jobName,
         string triggerName,
         JobTriggerType triggerType,
@@ -67,13 +58,12 @@ internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
         metricsService?.AddCounter(
             "jobs_occurrences_materialized",
             count,
-            CreateTags(schedulerInstanceId, jobName, triggerName, triggerType));
+            CreateTags(jobName, triggerName, triggerType));
     }
 
-    public void RecordEventAccepted(string source, string correlationId, bool duplicate)
+    public void RecordEventAccepted(string source, bool duplicate)
     {
         var tags = CreateTags(
-            correlationId: correlationId,
             additional:
             [
                 new(EventSourceTag, source),
@@ -82,50 +72,27 @@ internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
         metricsService?.AddCounter("jobs_events_accepted", tags: tags);
     }
 
-    public void RecordLeaseAcquired(
-        string schedulerInstanceId,
-        Guid occurrenceId,
-        string leaseOwner)
+    public void RecordLeaseAcquired()
     {
-        metricsService?.AddCounter(
-            "jobs_leases_acquired",
-            tags: CreateTags(
-                schedulerInstanceId: schedulerInstanceId,
-                occurrenceId: occurrenceId,
-                leaseOwner: leaseOwner));
+        metricsService?.AddCounter("jobs_leases_acquired");
     }
 
-    public void RecordLeaseRenewed(
-        string schedulerInstanceId,
-        Guid occurrenceId,
-        string leaseOwner)
+    public void RecordLeaseRenewed()
     {
-        metricsService?.AddCounter(
-            "jobs_leases_renewed",
-            tags: CreateTags(
-                schedulerInstanceId: schedulerInstanceId,
-                occurrenceId: occurrenceId,
-                leaseOwner: leaseOwner));
+        metricsService?.AddCounter("jobs_leases_renewed");
     }
 
     public void RecordExecutionStarted(
-        string schedulerInstanceId,
         JobOccurrence occurrence,
         JobTriggerDefinition trigger,
-        Guid executionId,
         int activeExecutionCount,
         int maxConcurrency,
-        string correlationId,
         DateTimeOffset nowUtc)
     {
         var tags = CreateTags(
-            schedulerInstanceId,
             occurrence.JobName,
             occurrence.TriggerName,
-            trigger?.TriggerType,
-            occurrence.OccurrenceId,
-            executionId,
-            correlationId);
+            trigger?.TriggerType);
         metricsService?.AddCounter("jobs_executions_started", tags: tags);
         metricsService?.AddUpDownCounter("jobs_executions_active", 1, tags);
         metricsService?.RecordHistogram(
@@ -140,32 +107,21 @@ internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
     }
 
     public void RecordExecutionCompleted(
-        string schedulerInstanceId,
         JobOccurrence occurrence,
         JobTriggerDefinition trigger,
-        Guid executionId,
         JobExecutionStatus status,
-        TimeSpan duration,
-        string correlationId)
+        TimeSpan duration)
     {
         var commonTags = CreateTags(
-            schedulerInstanceId,
             occurrence.JobName,
             occurrence.TriggerName,
-            trigger?.TriggerType,
-            occurrence.OccurrenceId,
-            executionId,
-            correlationId);
+            trigger?.TriggerType);
         metricsService?.AddUpDownCounter("jobs_executions_active", -1, commonTags);
 
         var tags = CreateTags(
-            schedulerInstanceId,
             occurrence.JobName,
             occurrence.TriggerName,
             trigger?.TriggerType,
-            occurrence.OccurrenceId,
-            executionId,
-            correlationId,
             additional: [new(StatusTag, status.ToString())]);
         metricsService?.AddCounter(StatusCounterName(status), tags: tags);
         metricsService?.RecordHistogram(
@@ -179,13 +135,11 @@ internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
         string operation,
         bool success,
         string jobName = null,
-        string triggerName = null,
-        Guid? occurrenceId = null)
+        string triggerName = null)
     {
         var tags = CreateTags(
-            jobName: jobName,
-            triggerName: triggerName,
-            occurrenceId: occurrenceId,
+            jobName,
+            triggerName,
             additional:
             [
                 new(OperationTag, operation),
@@ -205,19 +159,13 @@ internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
     };
 
     private static MetricTag[] CreateTags(
-        string schedulerInstanceId = null,
         string jobName = null,
         string triggerName = null,
         JobTriggerType? triggerType = null,
-        Guid? occurrenceId = null,
-        Guid? executionId = null,
-        string correlationId = null,
-        string leaseOwner = null,
         ReadOnlySpan<MetricTag> additional = default)
     {
-        var tags = new List<MetricTag>(8 + additional.Length);
+        var tags = new List<MetricTag>(3 + additional.Length);
 
-        Add(tags, SchedulerInstanceIdTag, schedulerInstanceId);
         Add(tags, JobNameTag, jobName);
         Add(tags, TriggerNameTag, triggerName);
         if (triggerType.HasValue)
@@ -225,18 +173,6 @@ internal sealed class JobSchedulerMetrics(IMetricsService metricsService = null)
             tags.Add(new(TriggerTypeTag, triggerType.Value.ToString()));
         }
 
-        if (occurrenceId.HasValue)
-        {
-            tags.Add(new(OccurrenceIdTag, occurrenceId.Value.ToString("D")));
-        }
-
-        if (executionId.HasValue)
-        {
-            tags.Add(new(ExecutionIdTag, executionId.Value.ToString("D")));
-        }
-
-        Add(tags, CorrelationIdTag, correlationId);
-        Add(tags, LeaseOwnerTag, leaseOwner);
         tags.AddRange(additional);
 
         return [.. tags];

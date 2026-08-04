@@ -8,7 +8,7 @@ status: draft
 
 [TOC]
 
-## 1. Overview
+## Overview
 
 The performance dashboard introduces a dedicated dashboard page for collecting and reviewing short bursts of runtime performance data while an application is running. The feature is designed for developers who want to start a workload, collect a focused set of performance snapshots, and inspect the results immediately in the browser.
 
@@ -26,7 +26,7 @@ The primary goals are:
 - support shareable session links so another developer can open a specific session directly from a URL
 - support programmatic control so application code can start and stop sessions as part of automated workflows or integration tests
 
-## 2. Problem Statement
+## Problem Statement
 
 Developers often need to answer questions such as:
 
@@ -35,21 +35,23 @@ Developers often need to answer questions such as:
 - Is CPU usage rising unexpectedly?
 - Is one node behaving differently from the others?
 
+This dashboard is intended to make those questions actionable by surfacing allocation-rate spikes, accelerating managed-memory growth, and abnormal session-to-session behavior rather than by enforcing a fixed production threshold.
+
 Existing long-term observability systems are useful for production monitoring, but they are usually too heavyweight for fast, on-demand investigations. This feature fills that gap with a short-lived performance snapshot workflow.
 
-## 3. Goals
+## Goals
 
-### 3.1 Short-lived snapshot collection
+### Short-lived snapshot collection
 
 The feature shall support collecting a short burst of performance snapshots that can be started and stopped on demand.
 
 Collection shall run in a background service so it does not block the application or the dashboard UI. The service shall be controllable through dashboard actions and shall stop automatically once the configured collection duration has elapsed.
 
-### 3.2 Developer-oriented experience
+### Developer-oriented experience
 
 The dashboard shall be optimized for quick inspection by developers during local runs, stress tests, and targeted diagnostics.
 
-### 3.3 Lightweight runtime metrics
+### Lightweight runtime metrics
 
 The feature shall collect a focused set of runtime metrics that are useful for performance triage, including:
 
@@ -58,15 +60,15 @@ The feature shall collect a focused set of runtime metrics that are useful for p
 - GC collections
 - CPU usage
 
-### 3.4 Multi-node awareness
+### Multi-node awareness
 
 When the application runs on multiple nodes, the feature shall collect snapshots from each node and present them in a way that allows the user to inspect a specific node.
 
-### 3.5 Optional and bounded usage
+### Optional and bounded usage
 
 The feature shall be opt-in and disabled by default. It shall be easy to turn off and shall be clearly scoped as a short-duration diagnostic tool, not a long-term retention system.
 
-## 4. Non-Goals
+## Non-Goals
 
 This feature is not intended to provide:
 
@@ -76,7 +78,7 @@ This feature is not intended to provide:
 - durable long-run analytics across days or weeks
 - a full APM platform
 
-## 5. Proposed Scope
+## Proposed Scope
 
 The initial version shall include:
 
@@ -89,9 +91,9 @@ The initial version shall include:
 - durable snapshot storage for sessions and snapshots across page refreshes and restarts
 - a manual GC trigger button for immediate diagnostics
 
-## 6. Functional Requirements
+## Functional Requirements
 
-### 6.1 Collection control
+### Collection control
 
 The feature shall provide a collection control surface from the dedicated performance page.
 
@@ -128,7 +130,7 @@ The dashboard shall support shareable session URLs so that a session can be open
 
 The programmatic API shall be resilient to missing infrastructure. If the metrics system, collector service, or session store is not registered or available, the API shall not throw runtime exceptions. Instead, it shall return a safe no-op result or a clear unavailable state, emit a warning log entry, and leave the application running normally.
 
-### 6.2 Snapshot frequency and duration
+### Snapshot frequency and duration
 
 The feature shall allow the developer to configure:
 
@@ -139,7 +141,7 @@ The feature shall allow the developer to configure:
 
 The default configuration shall be conservative and lightweight.
 
-### 6.3 Metrics to collect
+### Metrics to collect
 
 At minimum, the collector shall capture the following runtime metrics for each snapshot:
 
@@ -247,7 +249,8 @@ The custom metric integration shall be built on the existing common metrics abst
 
 - use the shared `IMetricsService` abstraction in `src/Common.Utilities/Metrics/MetricsService.cs`
 - continue to register the metric feature through `services.AddMetrics(...)` in `src/Common.Utilities/Metrics/MetricsServiceCollectionExtensions.cs`
-- add a session-aware decorator or wrapper around the existing `MetricsService` so that custom metrics are only collected while a performance session is active
+- register a session-aware decorator around the existing `MetricsService` implementation using DI, so that the decorated metrics service forwards values into the active dashboard session when one is collecting
+- implement the decorator using a behavior-like wrapper pattern, making it easy to add additional integrations later
 - make session collection the default behavior for custom counters, gauges, and timings
 - allow the same API to be used from job, orchestration, queueing, and storage features so domain-specific runtime values can be captured in the same session context
 
@@ -263,7 +266,23 @@ Custom metric series shall be persisted with the active session and exposed thro
 
 The dashboard shall display custom metrics in their own chart panel or allow them to be added to a “Custom Metrics” chart if any custom series exist for the session.
 
-### 6.4 Snapshot payload
+#### Example: register the metrics service
+
+A concrete implementation shall register the shared metrics feature and enable the session-aware decorator through `AddMetrics(...)`:
+
+```csharp
+builder.Services.AddMetrics(options => options
+    .Enabled(true)
+    .WithBehavior<SnapshotForwarderMetricsBehavior>()
+    .AddEndpoints(true));
+
+// The snapshot forwarder behavior wraps IMetricsService and forwards custom
+// metric values into the active dashboard session when one is collecting.
+```
+
+This ensures the same `IMetricsService` API can be used throughout the application while the behavior forwards custom metrics into active dashboard sessions.
+
+### Snapshot payload
 
 Each snapshot shall include:
 
@@ -277,7 +296,7 @@ Each snapshot shall include:
 
 The dashboard shall display a clear indication of when the data was captured and from which node it originated.
 
-### 6.5 Multi-node behavior
+### Multi-node behavior
 
 When the application is deployed across multiple nodes:
 
@@ -286,7 +305,7 @@ When the application is deployed across multiple nodes:
 - the user shall be able to filter to one node or compare multiple nodes
 - the dashboard shall support a zoom or focus view for a single node
 
-### 6.6 Refresh behavior
+### Refresh behavior
 
 The dashboard shall support a configurable refresh interval, following the same pattern as other dashboard pages.
 
@@ -300,9 +319,9 @@ Supported refresh modes should include:
 - 30 seconds
 - 60 seconds
 
-## 7. Dashboard Requirements
+## Dashboard Requirements
 
-### 7.1 Dashboard layout
+### Dashboard layout
 
 The initial dashboard view shall include:
 
@@ -328,7 +347,7 @@ The summary section shall display the following runtime indicators in card form:
 - request throughput: requests per minute and total requests
 - thread pool status: thread count, pending work item count, completed work item count
 
-### 7.2 Visualizations
+### Visualizations
 
 The dashboard shall present exactly two primary charts:
 
@@ -337,7 +356,7 @@ The dashboard shall present exactly two primary charts:
 
 The charts shall be rendered with Plotly, consistent with the existing dashboard pages, and shall be readable and optimized for short analysis windows rather than dense long-term history.
 
-### 7.5 Developer productivity features
+### Developer productivity features
 
 The dashboard shall also provide tools that help developers interpret and compare runtime diagnostics:
 
@@ -351,7 +370,7 @@ The dashboard shall also provide tools that help developers interpret and compar
 - threshold highlighting or warnings for sustained high memory pressure, allocation spikes, or long GC pauses
 - an audit trail of session creation, end time, and user-provided comments where applicable
 
-### 7.2.1 Dashboard screen details
+### Dashboard screen details
 
 The initial dashboard shall reflect the following visual structure:
 
@@ -376,7 +395,7 @@ The initial dashboard shall reflect the following visual structure:
 
 Each chart panel shall include a concise title, a legend for the plotted series, and a point retention summary so the developer can understand how many samples are currently retained in the session.
 
-### 7.3 Node-aware drill-down
+### Node-aware drill-down
 
 The dashboard shall allow the user to:
 
@@ -386,7 +405,7 @@ The dashboard shall allow the user to:
 - preserve the current node selection and other dashboard filters across page reloads using browser localStorage
 - identify the most memory-intensive or slowest node in the current session
 
-### 7.4 Session view
+### Session view
 
 The dashboard shall clearly show the active session and allow the user to:
 
@@ -400,13 +419,13 @@ The dashboard shall clearly show the active session and allow the user to:
 - trigger a manual one-off snapshot collection from the dashboard
 - trigger a manual GC collection from the dashboard
 
-## 8. Storage Model
+## Storage Model
 
-### 8.1 Default approach
+### Default approach
 
 For the initial version, the feature shall use durable storage for sessions and snapshots. This is required because the dashboard needs to preserve data across page refreshes, application restarts, and later review of completed sessions.
 
-### 8.2 Durable storage behavior
+### Durable storage behavior
 
 The feature shall support durable persistence from the initial release.
 
@@ -419,7 +438,7 @@ Recommended behavior:
 
 In-memory-only storage is not sufficient for this release.
 
-### 8.3 Retention rules
+### Retention rules
 
 The feature shall not be designed as a long-term archive.
 
@@ -429,7 +448,7 @@ Retention defaults should be short, for example:
 - a small rolling window of recent snapshots
 - optional export or download for deeper analysis
 
-## 9. Architecture
+## Architecture
 
 The proposed implementation should follow a simple architecture:
 
@@ -444,7 +463,7 @@ The proposed implementation should follow a simple architecture:
 
 The collector service should be isolated from the dashboard rendering layer so that collection can be started or stopped independently of the UI.
 
-## 10. Configuration and Defaults
+## Configuration and Defaults
 
 The feature shall be configured through application options and environment settings.
 
@@ -461,14 +480,14 @@ Suggested defaults:
 - gc trigger: available from the dashboard
 - programmatic control: enabled through an application service interface
 
-## 11. Security and Operational Notes
+## Security and Operational Notes
 
 - the feature shall be restricted to authorized users or developer environments
 - it shall not capture sensitive user data beyond runtime-performance indicators
 - it shall be clearly documented as a diagnostic feature, not a production monitoring replacement
 - it should be easy to disable in production or test environments
 
-## 12. Acceptance Criteria
+## Acceptance Criteria
 
 The feature is considered complete when:
 
@@ -487,7 +506,7 @@ The feature is considered complete when:
 - the dashboard supports exporting session data in JSON or CSV format
 - the feature can be turned off or disabled without affecting normal application behavior
 
-## 13. Open Questions
+## Open Questions
 
 The following decisions are now resolved for the initial implementation:
 

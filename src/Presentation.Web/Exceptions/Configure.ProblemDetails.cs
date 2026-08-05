@@ -46,7 +46,7 @@ public static class Configure // TODO: this should be replace by the GlobalExcep
         };
 
         //options.ShouldLogUnhandledException = (ctx, e, d) => d.Status >= 500;
-        options.AllowedHeaderNames.Add("CorrelationId");
+        options.AllowedHeaderNames.Add(CorrelationId.HeaderName);
         options.AllowedHeaderNames.Add("FlowId");
         options.AllowedHeaderNames.Add("TraceId");
 

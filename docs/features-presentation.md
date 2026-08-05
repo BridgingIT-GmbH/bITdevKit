@@ -472,6 +472,7 @@ Do not add broad feature package references to `Presentation.Web` just to expose
 ## Related Documentation
 
 - [Modules](./features-modules.md)
+- [Presentation Correlation IDs](./features-presentation-correlationid.md)
 - [DevKit CLI](./features-cli.md)
 - [DevKit MCP](./features-cli-mcp.md)
 - [Console Commands](./features-presentation-console-commands.md)

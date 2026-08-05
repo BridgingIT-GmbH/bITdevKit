@@ -12,9 +12,23 @@ using Microsoft.Extensions.Options;
 public static class ApplicationBuilderExtensions
 {
     /// <summary>
-    ///     Adds middleware for providing a correlation id to each HTTP request.
+    ///     Adds middleware that establishes correlation, flow, and trace identifiers for HTTP requests.
     /// </summary>
+    /// <remarks>
+    ///     Register after routing so flow identifiers use the matched MVC or minimal API route pattern,
+    ///     and before request logging or other middleware that consumes the identifiers. Repeated
+    ///     registration and exception-handler pipeline re-execution reuse the identifiers already
+    ///     established for the current <see cref="HttpContext"/>.
+    /// </remarks>
     /// <param name="app">The application builder.</param>
+    /// <returns>The application builder for continued pipeline configuration.</returns>
+    /// <example>
+    /// <code>
+    /// app.UseRouting();
+    /// app.UseRequestCorrelation();
+    /// app.UseRequestLogging();
+    /// </code>
+    /// </example>
     public static IApplicationBuilder UseRequestCorrelation(this IApplicationBuilder app)
     {
         EnsureArg.IsNotNull(app, nameof(app));

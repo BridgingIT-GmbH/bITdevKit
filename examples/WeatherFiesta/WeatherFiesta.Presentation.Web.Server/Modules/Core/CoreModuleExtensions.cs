@@ -19,12 +19,19 @@ using OpenAI;
 /// </summary>
 public static class CoreModuleExtensions
 {
+    /// <summary>
+    /// Registers the OpenMeteo clients, options, health check, and correlation ID propagation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="moduleConfiguration">The Core module configuration.</param>
+    /// <returns>The service collection for continued configuration.</returns>
+    /// <example><code>services.AddOpenMeteo(moduleConfiguration);</code></example>
     public static IServiceCollection AddOpenMeteo(this IServiceCollection services, CoreModuleConfiguration moduleConfiguration)
     {
         services.AddHttpClient<IOpenMeteoClient, OpenMeteoClient>(client =>
         {
             client.Timeout = TimeSpan.FromSeconds(moduleConfiguration.OpenMeteo.TimeoutSeconds);
-        });
+        }).AddCorrelationIdPropagation();
 
         services.Configure<OpenMeteoClientOptions>(options =>
         {

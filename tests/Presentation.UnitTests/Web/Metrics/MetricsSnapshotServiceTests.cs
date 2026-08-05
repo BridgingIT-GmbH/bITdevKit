@@ -10,6 +10,31 @@ using BridgingIT.DevKit.Presentation.Web;
 public class MetricsSnapshotServiceTests
 {
     [Fact]
+    public void GetSnapshot_WithBroadcastingMetrics_ClassifiesBroadcastingFamily()
+    {
+        // Arrange
+        var suffix = Guid.NewGuid().ToString("N");
+        var publishedName = $"broadcasting_publish_snapshot_{suffix}";
+        var acceptedName = $"broadcasting_receiver_snapshot_{suffix}_accepted";
+        var durationName = $"broadcasting_delivery_duration_snapshot_{suffix}_accepted";
+        using var snapshotService = new MetricsSnapshotService();
+        using var metricsService = new MetricsService();
+
+        // Act
+        metricsService.AddCounter(publishedName, 2);
+        metricsService.AddCounter(acceptedName, 3);
+        metricsService.RecordHistogram(durationName, 4, "ms");
+        var snapshot = snapshotService.GetSnapshot();
+
+        // Assert
+        var feature = snapshot.Features["broadcasting"];
+        feature.Counters[publishedName].ShouldBe(2);
+        feature.Counters[acceptedName].ShouldBe(3);
+        feature.Durations[durationName].Count.ShouldBe(1);
+        feature.Durations[durationName].Average.ShouldBe(4);
+    }
+
+    [Fact]
     public void GetSnapshot_WithStorageAndCompositionMetrics_ClassifiesAllFamilies()
     {
         // Arrange

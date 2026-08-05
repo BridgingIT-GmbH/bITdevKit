@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard;
 
 using System.Globalization;
 using BridgingIT.DevKit.Application.Queueing;
-using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

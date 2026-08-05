@@ -9,7 +9,7 @@ public struct ActivityConstants
 {
     public const string LogKey = "TRC";
 
-    public const string CorrelationIdTagKey = "correlation_id";
+    public const string CorrelationIdTagKey = CorrelationId.ActivityBaggageName;
 
     public const string FlowIdTagKey = "flow_id";
 

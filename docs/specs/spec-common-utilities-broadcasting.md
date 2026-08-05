@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Broadcast Feature (Common.Utilities.Broadcasting)
@@ -178,16 +178,17 @@ A broadcast scope identifies the application deployment whose nodes should recei
 
 Examples include:
 
-- `WeatherFiesta.Api.Local`
-- `DoFiesta.Web.Development`
+- `Orders.Api.Local`
+- `BackOffice.Web.Development`
 - `OrdersService.Test`
 
 Rules:
 
-- every multi-node registration shall belong to one or more scopes
+- scope configuration is optional; when no `AddBroadcasting` call contributes a scope, the host registration shall use the case-insensitive `default` scope
 - the host registration shall use the distinct union of scopes contributed by every `AddBroadcasting` call
+- the first explicit scope contribution shall replace only the implicit `default` fallback; an explicitly contributed `default` scope shall remain alongside later named scopes
 - a node may subscribe to several scopes simultaneously
-- a broadcast may target one or more explicit scopes
+- a broadcast may target one or more explicit scopes; an omitted, null, empty, or whitespace-only target-scope collection shall target `default`
 - a publishing node may target only scopes included in its own active registration
 - a shared-store broadcast may be initiated only by an actively registered node
 - only registrations in the targeted scopes are selected
@@ -233,7 +234,7 @@ Registration shall not depend on a high-frequency heartbeat or signal polling lo
 
 A registration contains at least:
 
-- one or more broadcast scopes
+- one or more effective broadcast scopes, including the implicit `default` scope when none is configured
 - node identity
 - advertised receiver address or address resolver configuration
 - process start timestamp
@@ -247,6 +248,10 @@ A registration contains at least:
 - registration is idempotent for the same node identity and subscribed scope set
 - one application process shall maintain one node registration in the shared registry regardless of how many application modules call `AddBroadcasting`
 - repeated `AddBroadcasting` calls shall update the one host registration with the distinct union of configured scopes rather than creating one registry row per call or per consuming feature
+- initial registration shall begin only after the host reports `ApplicationStarted` and shall support a configurable, non-blocking startup delay
+- when the Entity Framework provider is selected, initial registration shall automatically wait for the selected application `DbContext` readiness through the optional `IDatabaseReadyService`
+- absence of `IDatabaseReadyService` shall not prevent or delay registration after the configured startup delay
+- `IDatabaseReadyService` shall be defined in `Common.Abstractions` so infrastructure-neutral features can consume the readiness contract without referencing Domain or Entity Framework packages
 - restarting, rebinding, or changing scope subscriptions may update the registration
 - a registration shall not contain passwords, tokens, client secrets, or other transport credentials
 - stale registrations may remain after an ungraceful process failure
@@ -345,7 +350,8 @@ The transport shall:
 - use bounded delivery concurrency
 - enforce short connection and request timeouts
 - avoid automatic long-running retries
-- propagate the broadcast id and correlation metadata
+- propagate the broadcast id and application correlation id in the envelope and the
+  middleware-compatible `CorrelationId` HTTP header
 - return a structured node delivery response
 - never log payload content by default
 
@@ -362,11 +368,15 @@ A broadcast envelope shall contain enough metadata for safe bounded processing:
 - creation timestamp
 - expiration timestamp
 - protocol version
-- correlation or trace identifier when available
+- application correlation identifier when available
 - serialized payload
 
 Rules:
 
+- the application correlation identifier is independent from the distributed tracing `TraceId`
+- publishers shall obtain the current correlation identifier through `CorrelationId.Current`
+- receiver and handler execution shall expose the transported value through
+  `CorrelationId.Current`
 - the broadcast type identifier shall be the CLR full type name of the registered message type
 - only types with a locally registered handler may be deserialized and dispatched
 - unknown CLR type names shall return `Unsupported` without arbitrary runtime type activation
@@ -670,7 +680,9 @@ Requirements:
 The feature shall expose configuration for:
 
 - enabled state
-- one or more broadcast scopes
+- initial registration startup delay
+- optional database-readiness coordination name and timeout
+- optional broadcast scopes, with `default` used when none are configured
 - node identity
 - advertised receiver address or address resolver configuration
 - receiver route
@@ -689,6 +701,9 @@ Recommended defaults:
 
 - disabled until explicitly registered
 - enabled after `AddBroadcasting` unless the shared builder sets `Enabled(false)`
+- case-insensitive `default` registration and publication scope when scopes are omitted
+- initial registration startup delay of zero
+- Entity Framework registration waits up to two minutes for its application `DbContext` when the optional database-readiness service is registered
 - node identity based on hostname plus process id
 - receiver route under `/_bdk/api/broadcasting`
 - JSON payload serialization using the DevKit serializer abstraction
@@ -736,6 +751,7 @@ services.AddBroadcasting()
 
 services.AddBroadcasting(options => options
         .Enabled(builder.Environment.IsDevelopment())
+        .StartupDelay("00:00:15")
         .Scopes("DoFiesta.Web.Development"))
     .WithEntityFrameworkRegistry<AppDbContext>()
     .WithHttpTransport(options => options
@@ -750,14 +766,17 @@ The developer experience shall support:
 - registering the feature repeatedly from independent application modules
 - merging and deduplicating scopes contributed by repeated registration calls
 - enabling or disabling the one composed runtime from environment-aware host configuration
+- delaying initial registration without delaying application startup
+- automatically coordinating Entity Framework registration with optional application-database readiness
 - selecting an in-memory or Entity Framework registry-store provider
 - supplying an application-owned DbContext when the Entity Framework provider is selected
-- configuring one or more scopes
+- optionally configuring one or more scopes, with `default` used when omitted
 - configuring or resolving the node address
 - registering exactly one typed handler per broadcast type
 - enabling the internal receiver endpoint
 - configuring the built-in HTTP shared-secret authentication mode from application configuration
 - optionally registering another transport authentication extension
+- registering console commands for node inspection and built-in probe publication
 - publishing a typed broadcast through dependency injection
 
 The application-facing API shall not expose transport URLs, HttpClient usage, EF entities, or registry queries.
@@ -770,7 +789,7 @@ The latest explicit `Enabled(...)` value applied during service registration con
 
 ## Operational Visibility
 
-The feature should expose internal operational information suitable for a Razor dashboard or support endpoint:
+The feature shall provide a Broadcasting plugin for the existing Razor dashboard. The page shall expose:
 
 - registered nodes grouped by scope
 - node identity and advertised address
@@ -779,10 +798,26 @@ The feature should expose internal operational information suitable for a Razor 
 - latest successful delivery
 - latest failed delivery
 - consecutive delivery failures
-- manual removal of stale registrations
-- optional test or ping operation
+- registration and optional lease timestamps
+- process-local successful publication count from the shared metrics snapshot
+- process-local receiver admission count labelled `Accepted locally`
+- a test-publish action targeting one registered scope
 
-Operational surfaces shall not expose transport credentials or broadcast payload history.
+The test action shall publish a built-in no-op `BroadcastProbe` through `IBroadcastService` and display
+the resulting broadcast identifier, aggregate acceptance counts, and immediate per-node outcomes. It
+shall not accept arbitrary CLR type names or payload JSON. The probe handler shall perform no
+application work.
+
+The dashboard shall derive its process-local counters from the `broadcasting_publish_*` and
+`broadcasting_receiver_*_accepted` series exposed under the shared metrics snapshot's `broadcasting`
+feature group. `Accepted locally` means the receiver validated and admitted the broadcast to the
+bounded local handler queue; it shall not be labelled as processed or completed.
+
+The page and test action shall inherit the existing dashboard endpoint-group authorization. They shall
+not weaken receiver authentication, map an anonymous management route, expose transport credentials,
+or retain broadcast payload or execution history. Provider-neutral diagnostics and privileged manual
+removal remain available through their service contracts; stale-registration removal is not required
+on the initial dashboard page.
 
 ## Observability
 
@@ -868,6 +903,7 @@ No node polls the registry or performance store for the start command.
 
 ### Publish from any node
 
+- Given a broadcast is published without target scopes, or with only empty or whitespace target values, then it targets the case-insensitive `default` scope.
 - Given several nodes are registered in the same scope, when any one of those nodes publishes a broadcast, then it resolves the current registry snapshot and targets every registered node in that scope.
 - Given a node is not actively registered in the shared registry, when it attempts to publish, then the operation fails clearly.
 - Given a node targets a scope outside its own active registration, when it attempts to publish, then the operation fails validation.
@@ -883,7 +919,11 @@ No node polls the registry or performance store for the start command.
 
 ### Register and unregister nodes
 
+- Given no `AddBroadcasting` call contributes a scope, when the node registers, then it registers in the case-insensitive `default` scope.
 - Given a node starts successfully, when its receiver address is resolved, then it registers its scopes, identity, address, and protocol metadata.
+- Given a startup delay is configured, when the host reports `ApplicationStarted`, then host startup completes without waiting and initial node registration begins only after that delay.
+- Given the Entity Framework provider and `IDatabaseReadyService` are registered, when the database is still initializing, then initial node registration waits for the selected application `DbContext` readiness before accessing the registry.
+- Given database-readiness coordination is enabled but no `IDatabaseReadyService` is registered, when the startup delay completes, then initial node registration proceeds without a readiness wait.
 - Given several application modules call `AddBroadcasting`, when the host starts, then the process creates or updates one shared node registration containing the distinct union of configured scopes.
 - Given a node shuts down gracefully, then it attempts to remove its registration.
 - Given a node crashes without unregistering, then later failed deliveries expose the stale registration without preventing delivery to healthy nodes.
@@ -891,6 +931,8 @@ No node polls the registry or performance store for the start command.
 ### Compose repeated fluent registrations
 
 - Given independent application modules call `AddBroadcasting`, when dependency injection is built, then the calls compose one host-wide `IBroadcastService`, registry provider, receiver, node lifecycle, and handler catalog.
+- Given an earlier registration call contributed no scope and a later call contributes a named scope, when registration completes, then the named scope replaces the implicit `default` fallback.
+- Given a registration call explicitly contributes `default` and a later call contributes a named scope, when registration completes, then both explicit scopes remain registered.
 - Given repeated registration calls contribute different scopes, when the node registers, then the shared registry contains one node registration associated with the distinct union of those scopes.
 - Given the same broadcast CLR type and handler implementation are registered more than once, when registration completes, then the effective handler is registered once.
 - Given different handler implementations are registered for the same broadcast CLR type, when registration is validated, then registration fails clearly.
@@ -965,6 +1007,21 @@ No node polls the registry or performance store for the start command.
 - Given accepted broadcasts of different broadcast CLR types arrive on one node, then they may execute concurrently within configured local bounds.
 - Given several nodes receive the same broadcasts, then no cross-node execution ordering is guaranteed.
 
+### Inspect and test from the dashboard
+
+- Given Broadcasting and the DevKit dashboard are registered, when an authorized operator opens the Broadcasting page, then current registrations are shown with scope, identity, address, protocol, activity, reachability, registration, and lease details.
+- Given Broadcasting is not registered, when dashboard navigation is built, then the Broadcasting page is hidden.
+- Given Broadcasting is disabled, when dashboard navigation is built, then the Broadcasting page and badge are absent; when the page is opened directly, it reports the disabled runtime and does not offer an enabled probe action.
+- Given Broadcasting is enabled, when dashboard navigation is built, then the Broadcasting item is shown without a count badge.
+- Given the shared metrics snapshot is registered, when the Broadcasting page is rendered, then it shows successful publications made by this process as `Published` and receiver admissions on this process as `Accepted locally`.
+- Given a broadcast is accepted into a local handler queue, when its dashboard metric is shown, then the label does not imply that handler processing completed successfully.
+- Given an authorized operator activates the compact probe action in the dashboard header, then the built-in no-op `BroadcastProbe` targets the `default` scope through the normal broadcast pipeline without scope selection.
+- Given dashboard input is untrusted, when a probe is published, then the endpoint never resolves an arbitrary CLR type or accepts an arbitrary payload.
+- Given the host protects its dashboard, when the Broadcasting page or probe endpoint is requested, then the existing dashboard authorization applies unchanged.
+- Given Broadcasting console commands are registered, when an operator runs `broadcasting list`, then the console displays provider-neutral node and scope diagnostics.
+- Given Broadcasting console commands are registered, when an operator runs `broadcasting probe` without a scope option, then the built-in no-op probe targets the `default` scope through the normal broadcast pipeline.
+- Given either Broadcasting command renders tabular output, then it uses the same minimal table border as the established DevKit Console Commands.
+
 ### Support the Performance Dashboard
 
 - Given a performance session is started, when the performance feature publishes a start broadcast, then all registered and reachable nodes receive the start command without polling.
@@ -1019,6 +1076,8 @@ No node polls the registry or performance store for the start command.
 - The caller receives per-node delivery outcomes.
 - Node identity defaults to hostname or container name plus process id.
 - In-memory operation is supported for single-process development and tests.
+- The existing DevKit dashboard includes an authorized Broadcasting page for registration inspection and a compact header action for a built-in no-op delivery probe in the `default` scope.
+- The Presentation.Web contribution can register `broadcasting list` and `broadcasting probe` Console Commands.
 - Higher-level features such as Metrics and the Performance Snapshot Dashboard are intended consumers but remain separate features.
 - Node registrations do not advertise supported message types; every registered node in scope is targeted and may respond with `Unsupported`.
 - Broadcast type identity uses the CLR full type name.
@@ -1031,4 +1090,9 @@ No node polls the registry or performance store for the start command.
 
 ## Finalization Status
 
-No product-level design questions remain open. The Entity Framework context contract and entity names stated above are fixed for consistency with existing repository features. Other exact public type names, route-model details, and implementation-specific fluent method signatures may be finalized during implementation as long as they preserve the requirements and resolved decisions in this specification.
+Implemented and verified on 2026-08-05. The final implementation preserves the fixed Entity
+Framework contracts and entities, re-entrant fluent registration, environment-aware enablement,
+dedicated shared-secret receiver authentication, sender/correlation propagation, provider-neutral
+diagnostics, and authorized dashboard probe described above. Registry contracts pass against SQLite,
+SQL Server, and PostgreSQL, and the HTTP path is covered by shared-secret authentication-isolation and
+real two-node Kestrel delivery tests.

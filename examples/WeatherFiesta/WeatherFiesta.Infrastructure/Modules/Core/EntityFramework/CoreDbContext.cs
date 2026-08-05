@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
@@ -18,7 +19,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext, IDocumentStoreContext, IBlobStoreContext, IStoragePermalinkRegistryContext, IBroadcastingContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -93,6 +94,12 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<StoragePermalink> StoragePermalinks { get; set; }
 
     public DbSet<LogEntry> LogEntries { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<BroadcastNodeRegistrationEntity> BroadcastNodeRegistrations { get; set; }
+
+    /// <inheritdoc />
+    public DbSet<BroadcastNodeScopeEntity> BroadcastNodeScopes { get; set; }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)

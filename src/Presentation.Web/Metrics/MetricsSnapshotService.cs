@@ -342,6 +342,11 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             return "queueing";
         }
 
+        if (series.StartsWith("broadcasting_", StringComparison.Ordinal))
+        {
+            return "broadcasting";
+        }
+
         if (series.StartsWith("repositories_", StringComparison.Ordinal))
         {
             return "repositories";

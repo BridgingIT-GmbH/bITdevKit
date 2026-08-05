@@ -117,6 +117,7 @@ Prefer higher-level built-in tracing or logging when:
 
 ## Related Docs
 
+- [Presentation Correlation IDs](./features-presentation-correlationid.md)
 - [Presentation Endpoints](./features-presentation-endpoints.md)
 - [Messaging](./features-messaging.md)
 - [Requester and Notifier](./features-requester-notifier.md)

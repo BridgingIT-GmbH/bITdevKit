@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard;
 using System.Globalization;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

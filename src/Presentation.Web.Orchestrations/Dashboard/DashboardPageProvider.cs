@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard;
 
 using System.Globalization;
 using BridgingIT.DevKit.Application.Orchestrations;
-using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

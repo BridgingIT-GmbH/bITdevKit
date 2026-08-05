@@ -1,0 +1,76 @@
+@using BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.BuildBroadcastingContentPath(dashboardOptions);
+    var publishPath = BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.BuildBroadcastingPublishPath(dashboardOptions);
+    var broadcastingOptions = this.HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.BroadcastingOptions>();
+    var probeEnabled = this.HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.IBroadcastService>() is not null
+        && broadcastingOptions?.Enabled != false;
+}
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        @if (probeEnabled)
+        {
+            <button type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    title="Publish broadcast probe to the default scope"
+                    onclick="window.bdkBroadcastingAction('@publishPath')">
+                <i class="bi bi-broadcast"></i>
+            </button>
+        }
+        <span id="broadcasting-refresh-status" class="text-muted small">
+            Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)
+        </span>
+        <select id="broadcasting-refresh-interval"
+                class="form-select form-select-sm"
+                style="width: 9rem"
+                aria-label="Broadcasting refresh interval">
+            <option value="">Off</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button"
+                id="broadcasting-refresh-now"
+                class="btn btn-outline-secondary btn-sm"
+                title="Refresh Broadcasting registrations">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-broadcasting-content">
+    @(await RenderPartialAsync<Content>())
+</div>
+
+<script>
+    (() => {
+        const refresher = window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: '#dashboard-broadcasting-content',
+            statusSelector: '#broadcasting-refresh-status',
+            intervalSelector: '#broadcasting-refresh-interval',
+            refreshButtonSelector: '#broadcasting-refresh-now',
+            storageKey: 'bdk.dashboard.broadcasting.refreshInterval'
+        });
+
+        window.bdkBroadcastingAction = async function(url) {
+            await window.bdkDashboard.postAction(url, {
+                refresh: refresher.refresh,
+                errorMessage: 'Broadcasting probe failed:'
+            });
+        };
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Broadcasting" };
+}

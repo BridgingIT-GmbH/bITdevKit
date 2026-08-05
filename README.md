@@ -105,6 +105,7 @@ The best entry point into the current documentation set is the
 ### Presentation and Host
 
 - [Presentation Host](./docs/features-presentation.md)
+- [Presentation Correlation IDs](./docs/features-presentation-correlationid.md)
 - [Presentation Endpoints](./docs/features-presentation-endpoints.md)
 - [DevKit CLI](./docs/features-cli.md)
 - [DevKit MCP](./docs/features-cli-mcp.md)

@@ -76,6 +76,15 @@ builder.Services.AddOrchestrations(o => o
     .WithEntityFramework<CoreDbContext>()
     .AddEndpoints();
 
+builder.Services.AddBroadcasting(o => o
+        .Enabled(builder.Environment.IsDevelopment())
+        .StartupDelay("00:00:10")
+        .Scopes("default"))
+    .WithEntityFrameworkRegistry<CoreDbContext>()
+    .WithHttpTransport(o => o
+        .SharedSecret(builder.Configuration["Broadcasting:SharedSecret"]))
+    .AddConsoleCommands();
+
 builder.Services.AddStoragePermalinks()
     .UseEntityFramework<CoreDbContext>()
     .AddDownloadEndpoints();

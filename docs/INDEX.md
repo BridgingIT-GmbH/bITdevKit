@@ -48,6 +48,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 ## Presentation and Host
 
 - [Presentation Host](./features-presentation.md): Configure ASP.NET Core applications through the DevKit web application builder and package-owned starter extensions.
+- [Presentation Correlation IDs](./features-presentation-correlationid.md): Correlate use cases across inbound HTTP, async execution, logs, activities, outbound HTTP and supported transport boundaries.
 - [Presentation Endpoints](./features-presentation-endpoints.md): Define minimal API endpoints as modular classes with automatic discovery and mapping.
 - [DevKit CLI](./features-cli.md): Use the `bdk` command-line tool for host discovery, workspace-scoped host selection and host Console Command forwarding.
 - [DevKit MCP](./features-cli-mcp.md): Use `bdk mcp` from local coding agents to inspect and operate running DevKit applications.

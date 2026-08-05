@@ -8,7 +8,7 @@ services:
       - SA_PASSWORD=Abcd1234!
       - MSSQL_PID=Developer
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P 'Abcd1234!' -Q 'select 1'
+      test: /opt/mssql-tools18/bin/sqlcmd -C -S mssql -U sa -P 'Abcd1234!' -Q 'select 1'
     ports:
       - 14333:1433
     volumes:

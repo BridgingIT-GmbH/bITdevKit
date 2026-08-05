@@ -12,13 +12,14 @@ This includes:
 
 - resiliency and concurrency helpers such as `Retryer`, `Debouncer`, `Throttler`, `CircuitBreaker`, `RateLimiter`, `Bulkhead`, and `TimeoutHandler`
 - lightweight background and in-process messaging helpers such as `BackgroundWorker`, `SimpleNotifier`, and `SimpleRequester`
+- composable in-process pipelines with reusable steps, hooks, behaviors, and typed execution contexts
 - reusable diagram builders and Mermaid renderers for state, flow, activity, sequence, class, and component diagrams
 - business calendars with culture-based registration and dynamic calculated holidays
 - date/time range utilities with half-open range algebra
 - human-readable duration and relative-time text formatting
 - dynamic predicate and reflection helpers
 - content-type, Base64Url, compression, hashing, stream, and cloning utilities
-- id and key generation helpers
+- identifier, key, and friendly-name generators
 - low-level activity and tracing helpers
 - startup-task primitives and behaviors
 - validation helpers for FluentValidation
@@ -1372,6 +1373,31 @@ services.AddNotifier()
     .AddHandlers();
 ```
 
+## Pipeline Utilities
+
+The pipeline utilities compose named, in-process workflows from reusable synchronous or asynchronous
+steps. Pipelines can carry a strongly typed context and can include conditions, hooks, behaviors,
+tracing, timing, and inline steps.
+
+Registering pipelines is additive, so independent modules can contribute definitions without replacing
+registrations made by another module:
+
+```csharp
+services.AddPipelines()
+    .WithPipeline<OrderImportContext>("order-import", pipeline => pipeline
+        .AddStep<ValidateOrderImportStep>()
+        .AddStep<LoadOrdersStep>()
+        .AddBehavior<PipelineTracingBehavior>());
+
+var pipeline = pipelineFactory.Create<OrderImportContext>("order-import");
+var result = await pipeline.ExecuteAsync(
+    new OrderImportContext(),
+    cancellationToken: cancellationToken);
+```
+
+Use [Pipelines](./features-pipelines.md) for the complete definition, registration, execution, control
+flow, observability, testing, and source-generation guidance.
+
 ## Startup Task Utilities
 
 The devkit includes shared startup-task primitives and behaviors, including:
@@ -1421,6 +1447,49 @@ await source.StartActvity(
         await ImportUsersAsync(ct);
     },
     cancellationToken: cancellationToken);
+```
+
+### Outbound HTTP Correlation Propagation
+
+`CorrelationIdPropagationHandler` adds the application correlation identifier to the
+`CorrelationId` header of outbound requests. It is independent from W3C trace-context propagation,
+which remains the responsibility of `HttpClient` diagnostics and OpenTelemetry instrumentation.
+See [Presentation Correlation IDs](./features-presentation-correlationid.md) for the complete inbound,
+ambient, async, outbound, and cross-transport lifecycle.
+
+Enable propagation globally for every named, typed, and generated client created by
+`IHttpClientFactory`:
+
+```csharp
+services.AddCorrelationIdPropagation();
+services.AddHttpClient<WeatherClient>();
+services.AddHttpClient("payments");
+```
+
+Or enable it for one client:
+
+```csharp
+services.AddHttpClient<WeatherClient>()
+    .AddCorrelationIdPropagation();
+```
+
+Registration is idempotent. For each request, the handler:
+
+1. Uses a valid `CorrelationId.Current`.
+2. Otherwise preserves one valid correlation header already present on the request.
+3. Otherwise generates a new 12-character lowercase identifier.
+4. Writes exactly one correlation header and scopes that value for subsequent handlers.
+
+The middleware and handler share the same validation contract: 1–128 ASCII letters, digits, hyphens,
+underscores, periods, or colons. Invalid ambient or request values are silently replaced. The global
+registration affects only clients created by `IHttpClientFactory`; it cannot intercept a manually
+constructed `new HttpClient()`.
+
+For example, enable propagation explicitly on a typed external-service client:
+
+```csharp
+services.AddHttpClient<IWeatherClient, WeatherClient>()
+    .AddCorrelationIdPropagation();
 ```
 
 ## Reflection And Expression Helpers
@@ -1907,21 +1976,34 @@ Use a distinct stable purpose for each feature and keep the HMAC secret consiste
 
 ### HashHelper
 
-`HashHelper` computes hashes for:
+`HashHelper` computes lowercase hexadecimal hashes for:
 
 - strings
 - byte arrays
 - streams
 - arbitrary objects serialized to JSON
 
-It is handy for fingerprints, change detection, cache keys, and duplicate detection.
+`Compute(...)` uses MD5; `ComputeSha256(...)` and `ComputeSha256Async(...)` use SHA-256. Prefer SHA-256
+for new fingerprints, change detection, cache keys, and duplicate detection. MD5 remains useful only
+where a compact legacy-compatible, non-security hash is required. Neither API is suitable for password
+storage; use a dedicated password-hashing algorithm for credentials.
 
 Example:
 
 ```csharp
-var hash1 = HashHelper.Compute("hello world");
-var hash2 = HashHelper.Compute(new { Id = 42, Name = "Alice" });
+var legacyFingerprint = HashHelper.Compute("hello world");
+var fingerprint = HashHelper.ComputeSha256("hello world");
+var objectFingerprint = HashHelper.Compute(new { Id = 42, Name = "Alice" });
+var streamFingerprint = await HashHelper.ComputeSha256Async(stream, cancellationToken: cancellationToken);
 ```
+
+The synchronous stream overloads hash from the beginning and leave a seekable stream positioned at its
+end. The asynchronous SHA-256 overload hashes from the stream's current position. Object hashes depend
+on the serialized JSON representation, so they should not be treated as stable across arbitrary model
+or serializer changes.
+
+For persisted storage content, prefer `ContentHashHelper`. It produces and validates the canonical
+`sha256:<lowercase-hex>` representation and can calculate the hash while copying a stream.
 
 ### CloneHelper And CloneHelperNew
 
@@ -1943,20 +2025,48 @@ var snapshot2 = CloneHelperNew.Clone(order);
 
 ## Id And Key Helpers
 
-The devkit also includes several lightweight generation helpers:
+The generators serve different purposes:
 
-- `GuidGenerator`
-- `IdGenerator`
-- `KeyGenerator`
+- `GuidGenerator.Create(value)` creates the same deterministic GUID for the same string. A null value
+  returns `Guid.Empty`. Use it for stable technical identities derived from a known value, not for
+  secrets or collision-resistant content hashes.
+- `GuidGenerator.CreateSequential()` creates a new sequentially ordered GUID using MassTransit's
+  `NewId`. Use it when a GUID-shaped generated identifier should have insertion-friendly ordering.
+- `IdGenerator.Create()` creates an efficient 20-character uppercase identifier containing a
+  machine-derived prefix and a process-local increasing value. It is useful for correlation-style or
+  operational identifiers, but it is not a secret.
+- `KeyGenerator.Create(length)` creates a cryptographically random mixed-case alphanumeric key.
+  `CreateLowercase(length)` and `CreateUppercase(length)` constrain the alphabet for systems that need
+  normalized identifiers.
+- `NameGenerator.Create()` creates a memorable lowercase adjective-and-noun label such as
+  `poisonivy` or `largeape`. Names are intended for display, diagnostics, and friendly instance labels;
+  they are random but not guaranteed unique.
+- `Base36.Encode(...)` and `Base36.Decode(...)` convert non-negative integer values to and from compact
+  uppercase Base36 text.
 
-These are useful for creating opaque identifiers, random keys, and various short-lived generated values in code that should not hand-roll randomness or string construction repeatedly.
+Choose a generator by intent rather than by output length:
 
-Example:
+| Need | Helper |
+| --- | --- |
+| Stable GUID derived from text | `GuidGenerator.Create(value)` |
+| New sequential GUID | `GuidGenerator.CreateSequential()` |
+| Compact operational identifier | `IdGenerator.Create()` |
+| Random opaque alphanumeric key | `KeyGenerator.Create*()` |
+| Friendly human-readable label | `NameGenerator.Create()` |
 
 ```csharp
-var id = IdGenerator.Create();
+var stableUseCaseId = GuidGenerator.Create("GET /orders/{id}");
+var sequentialId = GuidGenerator.CreateSequential();
+var operationId = IdGenerator.Create();
 var apiKey = KeyGenerator.Create(32);
+var lowercaseToken = KeyGenerator.CreateLowercase(12);
+var uppercaseCode = KeyGenerator.CreateUppercase(8);
+var friendlyName = NameGenerator.Create();
 ```
+
+Generated names and operational IDs can collide and should not be used as database uniqueness
+guarantees without a constraint and collision-handling strategy. Random keys should still be stored and
+transported according to the application's secret-management requirements.
 
 ## Factory Helpers
 
@@ -1995,7 +2105,9 @@ Several smaller low-level helpers round out this utility set:
 
 - `ValueStopwatch` for lightweight elapsed-time measurement
 - `Retry` as a compact retry utility alongside the richer `Retryer`
-- smaller clone and guid validation helpers
+- GUID validation extensions for checking string representations
+- `EnvironmentExtensions` for detecting build-time OpenAPI document generation
+- `WorkspacePathUtilities` for finding and normalizing repository workspace roots
 
 These are small but useful support pieces that round out the shared utility set.
 
@@ -2009,6 +2121,40 @@ await Retry.On<TimeoutException>(
 
 Console.WriteLine(stopwatch.GetElapsedMilliseconds());
 ```
+
+Build-time registration code can avoid starting runtime-only services while OpenAPI documents are
+generated:
+
+```csharp
+if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
+{
+    services.AddHostedService<Worker>();
+}
+```
+
+Repository-aware tooling can resolve the nearest parent containing a solution file or `.git`
+directory, then use the normalized path for stable comparisons or hashing:
+
+```csharp
+var workspaceRoot = WorkspacePathUtilities.ResolveWorkspaceRoot(
+    builder.Environment.ContentRootPath);
+```
+
+### Background Service Health Checks
+
+`BackgroundServiceHealthCheck<TService>` reports whether a registered hosted service has not started,
+is running, completed, was cancelled, or faulted. The registration helper is idempotent by health-check
+name, which lets multiple feature builders safely request the same check:
+
+```csharp
+services.TryAddBackgroundServiceHealthCheck<CleanupService>(
+    "cleanup",
+    tags: ["ready"]);
+```
+
+Use this for operational visibility into long-running `BackgroundService` implementations. A completed
+service can be healthy or degraded depending on whether it represents completed startup work or a
+worker that was expected to remain active.
 
 ## Storage-Neutral Utilities
 
@@ -2052,9 +2198,204 @@ public sealed class CleanupService(IHostApplicationLifetime lifetime, TimeProvid
 }
 ```
 
+## Broadcasting
+
+Use Broadcasting for immediate, best-effort control notifications to every currently registered node
+in a deployment scope. It is intended for short-lived operational or developer actions, not durable
+application messaging. Offline nodes do not catch up, delivery can be duplicated, and handlers should
+be idempotent.
+
+Calls to `AddBroadcasting` compose one shared host runtime. Reusable features can contribute handlers
+and scopes independently, while the application makes the final environment-specific enabled-state,
+registry, transport, address, and authentication choices.
+
+Scopes are optional. If no registration call contributes a scope, the node registers in the
+case-insensitive `default` scope. Publishing with an omitted, null, empty, or whitespace-only scope
+collection also targets `default`:
+
+```csharp
+services.AddBroadcasting()
+    .AddHandler<RefreshRuntimeBroadcast, RefreshRuntimeBroadcastHandler>();
+
+var result = await broadcastService.PublishAsync(
+    new RefreshRuntimeBroadcast(),
+    cancellationToken: cancellationToken);
+```
+
+The first explicit `.Scopes(...)` contribution replaces the implicit default. To register both the
+default and named scopes, contribute `"default"` explicitly together with the named scopes.
+
+### In-memory single-process setup
+
+```csharp
+services.AddBroadcasting()
+    .AddHandler<RefreshRuntimeBroadcast, RefreshRuntimeBroadcastHandler>();
+
+services.AddBroadcasting(options => options
+    .Enabled(builder.Environment.IsDevelopment())
+    .Scopes("MyApp.Development"));
+
+var result = await broadcastService.PublishAsync(
+    new RefreshRuntimeBroadcast(),
+    ["MyApp.Development"],
+    cancellationToken: cancellationToken);
+```
+
+The default registry and transport are process-local, so this setup requires neither a database nor an
+HTTP receiver. A disabled runtime remains resolvable but performs no registry, dispatcher, endpoint, or
+transport work. Publishing then returns a failed Result containing `BroadcastingDisabledError`.
+
+### Entity Framework registry and HTTP transport
+
+Applications can use an application-owned EF Core context for node discovery. Implement
+`IBroadcastingContext` and expose both registry sets:
+
+```csharp
+public sealed class AppDbContext : DbContext, IBroadcastingContext
+{
+    public DbSet<BroadcastNodeRegistrationEntity> BroadcastNodeRegistrations { get; set; }
+
+    public DbSet<BroadcastNodeScopeEntity> BroadcastNodeScopes { get; set; }
+}
+```
+
+The entities map to `__Broadcasting_NodeRegistrations` and `__Broadcasting_NodeScopes` through
+attributes and EF conventions, so no Broadcasting-specific `OnModelCreating` call is required. The
+application owns creation and migration of these tables.
+
+Register the shared EF provider together with the HTTP transport:
+
+```csharp
+services.AddBroadcasting(options => options
+        .Enabled(builder.Environment.IsDevelopment())
+        .StartupDelay(TimeSpan.FromSeconds(15))
+        .Scopes("MyApp.Development"))
+    .WithEntityFrameworkRegistry<AppDbContext>()
+    .WithHttpTransport(options => options
+        .SharedSecret(builder.Configuration["Broadcasting:SharedSecret"]))
+    .AddConsoleCommands();
+
+app.MapEndpoints();
+```
+
+This setup is also useful for a single development node when the application should exercise the EF
+registry. Using `Enabled(builder.Environment.IsDevelopment())` keeps Broadcasting disabled outside
+the Development environment.
+
+Initial node registration begins only after the host reports `ApplicationStarted`. `StartupDelay`
+adds a non-blocking delay after that event; it does not delay host startup. Selecting the Entity
+Framework registry automatically coordinates registration with the selected `DbContext` readiness
+name. If an `IDatabaseReadyService` is registered by a database creator, migrator, or checker,
+Broadcasting waits for it for up to two minutes by default before accessing the registry. The
+readiness dependency is optional: when the service is absent, registration proceeds after the startup
+delay. Override the defaults when needed:
+
+```csharp
+services.AddBroadcasting(options => options
+    .StartupDelay("00:00:30")
+    .DatabaseReadiness("AppDbContext", TimeSpan.FromMinutes(5))
+    .Scopes("MyApp.Development"));
+```
+
+`IDatabaseReadyService` is defined in `Common.Abstractions`, allowing infrastructure-neutral features
+to coordinate with database initialization without depending on the Domain or Entity Framework
+packages.
+
+The HTTP receiver uses the built-in dedicated shared-secret authentication. Null is represented as an
+empty string; empty and whitespace-only secrets are valid and must match exactly. The UTF-8 bytes are
+Base64 encoded in the `X-Bdk-Broadcast-Key` header for transport safety. Base64 is not encryption, so
+use HTTPS and a non-empty secret outside controlled development environments.
+
+The receiver endpoint alone bypasses application fallback OAuth or bearer authorization and then
+enforces its dedicated Broadcasting authentication before reading the request body. Broadcasting does
+not modify application authentication schemes, policies, or protection on other endpoints.
+
+Address resolution checks an explicitly configured address first, then ordered custom resolvers added
+with `AddNodeAddressResolver<TResolver>(order)`, and finally a concrete Kestrel-bound address. Wildcard
+bindings and shared load-balanced addresses are invalid because each registration must address one
+specific process. Custom authentication can be selected with
+`WithHttpAuthentication<TAuthentication>()`.
+
+When Console Commands are enabled by the host, `.AddConsoleCommands()` contributes a
+`broadcasting` command group. Use `broadcasting list` to inspect the current node registrations and
+`broadcasting probe` to publish the built-in delivery probe to the `default` scope. Supply
+`broadcasting probe --scope <name>` only when a named scope must be targeted explicitly.
+
+### Runtime behavior
+
+The defaults are a 64 KB serialized payload, two-second per-node delivery timeout, 16 concurrent
+deliveries, five-second lifetime, 32 queued items per handler type, and duplicate protection retaining
+up to 1,024 identifiers for ten minutes. A successful publication Result contains the immediate
+acceptance outcome for each selected node; it does not represent later handler completion. Its
+`TargetScopes`, `StartedUtc`, and `CompletedUtc` values describe the fixed target snapshot and delivery
+window. Each envelope and handler `BroadcastContext` also contains `SenderNodeIdentity` when the
+publisher identity is available.
+
+### Correlation propagation
+
+Broadcasting transports the application correlation ID, not the distributed tracing `TraceId`. The
+request-correlation middleware establishes the current value, and publishers resolve it through the
+ambient `CorrelationId.Current` API:
+
+```csharp
+var correlationId = CorrelationId.Current;
+var result = await broadcastService.PublishAsync(
+    new RefreshRuntimeBroadcast(),
+    ["MyApp.Development"],
+    cancellationToken: cancellationToken);
+```
+
+The correlation ID is included in the envelope and sent to remote receivers with the `CorrelationId`
+HTTP header understood by `UseRequestCorrelation()`. The receiver dispatcher re-establishes that value
+while the typed handler executes, so `CorrelationId.Current` returns the transported ID on both local
+and remote nodes. The W3C activity trace continues independently and may have a different `TraceId`.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Publisher
+    participant Envelope as Broadcast envelope
+    participant HTTP as Broadcast HTTP transport
+    participant Receiver as Remote receiver
+    participant Dispatcher
+    participant Handler as Broadcast handler
+
+    Publisher->>Envelope: Capture CorrelationId.Current
+    Envelope->>HTTP: Publish to registered node
+    HTTP->>Receiver: CorrelationId header + envelope
+    Receiver->>Dispatcher: Accepted payload + BroadcastContext
+    Dispatcher->>Dispatcher: BeginScope(context.CorrelationId)
+    Dispatcher->>Handler: Invoke typed handler
+    Handler->>Handler: Read CorrelationId.Current
+    Handler-->>Dispatcher: Complete
+    Dispatcher->>Dispatcher: Restore previous scope
+```
+
+The general inbound, ambient, and outbound HTTP rules are documented in
+[Presentation Correlation IDs](./features-presentation-correlationid.md).
+
+### Diagnostics and dashboard
+
+`IBroadcastingDiagnostics` exposes provider-neutral registrations grouped by scope. Manual stale-node
+removal is denied until the application replaces `IBroadcastOperationalAuthorizer`.
+
+When the DevKit dashboard is registered, its built-in plugin adds a **Broadcasting** page. The page
+shows active and inactive node registrations, scopes, receiver addresses, protocol versions,
+reachability state, registration timestamps, and lease details. When the shared metrics snapshot is
+registered, it also shows successful publications made by the current process as **Published** and
+receiver admissions on the current process as **Accepted locally**. Acceptance means admission to the
+bounded handler queue, not handler completion. Its **Publish probe** action sends the built-in no-op
+`BroadcastProbe` through the normal delivery pipeline and reports immediate per-node outcomes. It does
+not accept arbitrary CLR type names or payload JSON, and both the page and action inherit the
+dashboard's existing authorization. The default page path is
+`/_bdk/dashboard/broadcasting`; no application-specific dashboard registration is required beyond the
+existing `AddDashboard(...)` call.
+
 ## Related Documentation
 
 - [Requester and Notifier](./features-requester-notifier.md)
+- [Pipelines](./features-pipelines.md)
+- [Presentation Correlation IDs](./features-presentation-correlationid.md)
 - [StartupTasks](./features-startuptasks.md)
 - [Common Observability Tracing](./common-observability-tracing.md)
 - [Common Extensions](./common-extensions.md)

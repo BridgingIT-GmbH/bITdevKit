@@ -88,7 +88,7 @@ public static partial class ApplicationBuilderExtensions
 
         while (!app.Lifetime.ApplicationStopping.IsCancellationRequested)
         {
-            var line = ReadTerminalLine();
+            var line = ReadTerminalLine(console);
             if (line is null) { break; }
             if (string.IsNullOrWhiteSpace(line)) { continue; }
 
@@ -101,11 +101,21 @@ public static partial class ApplicationBuilderExtensions
         }
     }
 
-    private static string ReadTerminalLine()
+    private static string ReadTerminalLine(IAnsiConsole console)
     {
-        if (Console.IsInputRedirected || Console.IsOutputRedirected)
+        var inputMode = SelectTerminalInputMode(
+            Console.IsInputRedirected,
+            Console.IsOutputRedirected,
+            OperatingSystem.IsLinux());
+
+        if (inputMode == TerminalInputMode.Redirected)
         {
             return Console.ReadLine();
+        }
+
+        if (inputMode == TerminalInputMode.Basic)
+        {
+            return ReadBasicTerminalLine(console);
         }
 
         try
@@ -124,6 +134,25 @@ public static partial class ApplicationBuilderExtensions
         {
             return Console.ReadLine();
         }
+    }
+
+    internal static TerminalInputMode SelectTerminalInputMode(
+        bool isInputRedirected,
+        bool isOutputRedirected,
+        bool isLinux) =>
+        (isInputRedirected, isOutputRedirected, isLinux) switch
+        {
+            (true, _, _) or (_, true, _) => TerminalInputMode.Redirected,
+            (_, _, true) => TerminalInputMode.Basic,
+            _ => TerminalInputMode.Enhanced
+        };
+
+    private static string ReadBasicTerminalLine(IAnsiConsole console)
+    {
+        var theme = ConsoleTheme.Current;
+        console.Markup($"[{theme.PromptStyle}]> [/]");
+
+        return Console.ReadLine();
     }
 
     private static string ReadInteractiveTerminalLine()
@@ -301,5 +330,12 @@ public static partial class ApplicationBuilderExtensions
     private static void EnsureHistoryLoaded(WebApplication app)
     {
         ConsoleCommandHistory.Initialize(app.Environment.ApplicationName);
+    }
+
+    internal enum TerminalInputMode
+    {
+        Redirected,
+        Basic,
+        Enhanced
     }
 }

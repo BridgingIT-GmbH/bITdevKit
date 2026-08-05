@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core.Dashboard;
 
 using System.Globalization;
-using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
@@ -14,6 +13,7 @@ using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using IDatabaseReadyService = BridgingIT.DevKit.Common.IDatabaseReadyService;
 
 /// <summary>
 /// Defines the WeatherFiesta Core module dashboard pages.

@@ -35,4 +35,46 @@ public class KeyGeneratorTests(ITestOutputHelper output) : TestsBase(output)
     {
         this.Benchmark(() => KeyGenerator.Create(32), 10000);
     }
+
+    [Fact]
+    public void CreateLowercase_WithRequestedSize_ReturnsRandomLowercaseAlphanumericKeys()
+    {
+        // Arrange
+        const int size = 12;
+
+        // Act
+        var first = KeyGenerator.CreateLowercase(size);
+        var second = KeyGenerator.CreateLowercase(size);
+
+        // Assert
+        first.Length.ShouldBe(size);
+        second.Length.ShouldBe(size);
+        first.All(IsLowercaseAlphanumeric).ShouldBeTrue();
+        second.All(IsLowercaseAlphanumeric).ShouldBeTrue();
+        first.ShouldNotBe(second);
+    }
+
+    [Fact]
+    public void CreateUppercase_WithRequestedSize_ReturnsRandomUppercaseAlphanumericKeys()
+    {
+        // Arrange
+        const int size = 12;
+
+        // Act
+        var first = KeyGenerator.CreateUppercase(size);
+        var second = KeyGenerator.CreateUppercase(size);
+
+        // Assert
+        first.Length.ShouldBe(size);
+        second.Length.ShouldBe(size);
+        first.All(IsUppercaseAlphanumeric).ShouldBeTrue();
+        second.All(IsUppercaseAlphanumeric).ShouldBeTrue();
+        first.ShouldNotBe(second);
+    }
+
+    private static bool IsLowercaseAlphanumeric(char value) =>
+        value is >= 'a' and <= 'z' or >= '0' and <= '9';
+
+    private static bool IsUppercaseAlphanumeric(char value) =>
+        value is >= 'A' and <= 'Z' or >= '0' and <= '9';
 }

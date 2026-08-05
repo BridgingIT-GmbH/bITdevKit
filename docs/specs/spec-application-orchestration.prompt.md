@@ -1,3 +1,7 @@
+---
+created: 2026-05-06
+---
+
 # Orchestration Feature - Agent Execution Prompts
 
 This document contains the recommended execution prompts in the correct order for implementing the orchestration feature using VS Code Copilot Agent Mode and/or Copilot CLI `/fleet`.

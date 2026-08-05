@@ -1,3 +1,7 @@
+---
+created: 2026-03-19
+---
+
 # Jobs Feature - Agent Execution Prompts
 
 This document contains bounded execution prompts for implementing the Jobs feature described in [spec-application-jobs.md](./docs/specs/spec-application-jobs.md).

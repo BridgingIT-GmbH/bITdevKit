@@ -13,7 +13,7 @@ status: draft
 
 The performance dashboard introduces a dedicated dashboard page for collecting and reviewing short bursts of runtime performance data while an application is running. The feature is designed for application developers who want to start a workload, collect a focused set of performance snapshots, and inspect the results immediately in the browser.
 
-The feature shall also provide a lightweight programmatic control surface so application code can start, stop, or manage collection sessions directly. This makes it suitable for integrated DevKit usage where a feature or test workflow can trigger collection around a specific operation without requiring manual dashboard interaction.
+The feature shall also provide lightweight programmatic and console-command control surfaces so application code or a developer at the command line can start, stop, or manage collection sessions directly. This makes it suitable for integrated DevKit usage where a feature, test workflow, or terminal session can trigger collection around a specific operation without requiring manual dashboard interaction.
 
 Deployment-wide control shall use the DevKit Broadcast feature from `Common.Utilities/Broadcasting`. The performance feature shall not poll its session store for control commands. Broadcast supplies the registered-node snapshot and direct push delivery used for session start, stop, manual snapshot, and manual GC actions.
 
@@ -28,6 +28,7 @@ The primary goals are:
 - support named sessions so developers can identify and revisit a specific run later
 - support shareable session links so another developer can open a specific session directly from a URL
 - support programmatic control so application code can start and stop sessions as part of automated workflows or integration tests
+- support console-command control so developers can perform collection operations without opening the dashboard
 
 ## Problem Statement
 
@@ -94,6 +95,7 @@ The feature shall include:
 - provider-based session and snapshot storage, including durable persistence across restarts when a durable provider is configured
 - a manual GC trigger button for immediate diagnostics
 - integration with the DevKit Broadcast feature for direct, non-polling node control
+- integration with the existing DevKit Console Commands feature for command-line collection control
 
 ## Functional Requirements
 
@@ -109,7 +111,8 @@ The user shall be able to:
 - choose the collection duration
 - restart a terminal or selected session as a new clean session while retaining the previous session unless it is explicitly deleted
 - delete a selected session and remove all collected data from the store
-- delete all unpinned sessions at once, with an explicit option to include pinned sessions for complete deletion
+- delete all unpinned sessions at once
+- clear all stored performance data so collection can restart from an empty store
 - add session tags and notes for later review
 - pin sessions that must be excluded from automatic retention
 - trigger a one-off manual snapshot collection for immediate diagnostics
@@ -125,11 +128,68 @@ The manual snapshot action shall broadcast a one-off snapshot command through th
 
 The manual GC action shall be available whether or not a collection session is active. It shall be broadcast through the DevKit Broadcast feature, and every registered node in the configured scope that accepts the command shall invoke a normal `GC.Collect()` call. When a session is active, the dashboard shall show the immediate per-node broadcast responses, while each accepting node shall record the GC action as a local session marker when it handles the command. When no session is active, the dashboard shall show which registered nodes responded to the broadcast request, shall not wait for handler completion, and shall not create a collection session. The action shall not additionally wait for pending finalizers or request separate LOH compaction. Broadcast `Accepted` means that the receiving node accepted the command for local execution; it does not mean that garbage collection or any other local handler work has completed.
 
-The collection lifecycle shall also be available programmatically so application code, background jobs, integration tests, or custom developer workflows can start and stop sessions directly. The programmatic surface shall support an optional session name and expose the same start, stop, status, restart, and deletion semantics as the dashboard.
+The collection lifecycle shall also be available programmatically so application code, background jobs, integration tests, custom developer workflows, or console commands can start and stop sessions directly. The programmatic surface shall support an optional session name and expose the same start, stop, status, restart, deletion, and full-storage-reset semantics as the dashboard.
 
 The dashboard shall support shareable session URLs. A session link identifies the target session but does not bypass normal access restrictions.
 
 The programmatic control surface shall be resilient to missing infrastructure. If the collector, session store, or required Broadcast integration is not registered or available, calls shall return a safe no-op result or a clear unavailable state, emit a warning log entry, and leave the application running normally.
+
+### Full storage reset
+
+The dashboard and application-facing control service shall provide a clear-all operation for starting again with an empty performance store. This operation is distinct from normal bulk deletion and shall remove all stored performance data from the selected provider, including:
+
+- all terminal sessions, including completed, completed-with-warnings, stopped, and failed sessions
+- pinned and unpinned sessions
+- runtime snapshots
+- node participation records and action markers
+- scoped segments
+- custom metric observations
+- session names, tags, notes, and other persisted session metadata
+
+The clear-all operation shall not change feature configuration, sampling defaults, Broadcast registration, or other application data outside the performance store.
+
+An active logical session shall prevent the operation. The developer must stop the session before clearing the store. The dashboard shall require an explicit destructive-action confirmation that states pinned sessions are included. The console command shall require an explicit `--yes` option; without it, the command shall explain the required confirmation and leave the store unchanged.
+
+The provider shall perform the reset atomically from the caller's perspective. It shall report success only after the complete reset has committed. When the store is already empty, the operation shall succeed and report that zero sessions and snapshots were removed.
+
+Cleared session identities shall remain invalid for future writes. Delayed snapshots, segments, custom metrics, or node updates belonging to a cleared session shall be rejected and shall not recreate that session or leave orphaned performance data.
+
+### Console-command control
+
+When the performance integration is registered and the host's Console Commands capability is enabled, the feature shall register a `performance` command group with `perf` as an alias. These commands shall execute inside the selected running application host through the existing DevKit Console Commands infrastructure. They shall invoke the same application-facing performance control service as the dashboard and shall not implement a separate collector, session lifecycle, storage path, or Broadcast integration. Keeping the commands registered while runtime collection is configuration-disabled allows `performance status` and attempted control operations to report that disabled state clearly.
+
+The command group shall provide the following collection-control operations:
+
+- `performance status` shows feature availability, the current session state, session identity, configured interval and duration, and participant status when a session exists
+- `performance start` starts a deployment-wide session and accepts optional `--name`, `--interval`, and `--duration` options
+- `performance stop` stops the active deployment-wide session
+- `performance snapshot` performs the same one-off manual snapshot action as the dashboard and accepts an optional `--name` for a standalone one-snapshot session
+- `performance gc` performs the same deployment-wide manual GC action as the dashboard
+- `performance clear --yes` performs the same confirmed full storage reset as the dashboard
+
+The commands may be invoked directly through an interactive Console Commands host or forwarded to a running host through `bdk host run`, for example:
+
+```text
+performance start --name "warm-up" --interval 1s --duration 30s
+performance status
+performance snapshot
+performance stop
+performance gc
+performance clear --yes
+
+bdk host run -- performance start --name "warm-up" --duration 30s
+bdk host run -- performance snapshot
+bdk host run -- performance stop
+bdk host run -- performance clear --yes
+```
+
+A command invoked on one host shall retain the deployment-wide semantics of the corresponding dashboard operation. The selected host is the initiating node; session start, stop, manual snapshot, and manual GC shall still use the configured DevKit Broadcast scope.
+
+Command options shall use the same validation and defaults as dashboard or programmatic requests. In particular, intervals below 500 ms shall be rejected, duration shall be required after defaults are applied, and a start attempt made while a session is already active shall report the existing active session rather than create another one.
+
+Command output shall be concise and suitable for terminal use. It shall identify the affected session and resulting state. For Broadcast-backed operations, it shall summarize immediate per-node outcomes using the same accepted, rejected, unsupported, expired, unreachable, and timed-out meanings used by the dashboard. It shall not report handler acceptance as completed local execution.
+
+If the performance feature is disabled, Console Commands are unavailable, or required performance infrastructure is missing, the operation shall fail safely with a clear unavailable or disabled message and shall not change application state. Console commands shall respect cancellation and shall not leave a second logical session running after an interrupted start attempt. A rejected or cancelled clear command shall leave the store unchanged.
 
 ### Session ownership and lifecycle
 
@@ -343,6 +403,7 @@ The dashboard view shall include:
 - exactly two primary charts: a Memory History chart and a GC Pressure History chart
 - a node selector
 - session selection and metadata controls
+- a clear-all control for resetting the complete performance store
 
 The current-snapshot cards shall display the following runtime indicators when available:
 
@@ -439,7 +500,7 @@ The dashboard shall clearly show the active or selected session and allow the us
 - restart a terminal or selected session as a new clean session without deleting the previous session
 - delete the session and all associated data
 - delete all unpinned sessions
-- explicitly include pinned sessions when performing a complete deletion
+- clear the complete performance store after explicit confirmation, including pinned sessions and all associated records
 - select a previously saved or completed session
 - open a session directly from a shareable URL
 - trigger a manual one-off snapshot collection
@@ -483,7 +544,7 @@ Snapshot count shall not be capped per node or session when the selected provide
 
 Sessions may be pinned by a developer. Pinned sessions shall be excluded from automatic retention so important diagnostic records can be retained.
 
-When a retention limit is reached, the oldest unpinned completed sessions shall be removed first. Active sessions shall never be removed automatically. Manual deletion shall remain available for both pinned and unpinned sessions, subject to authorization.
+When a retention limit is reached, the oldest unpinned completed sessions shall be removed first. Active sessions shall never be removed automatically. Manual deletion shall remain available for both pinned and unpinned sessions, subject to authorization. The explicitly confirmed clear-all operation may remove all terminal sessions, including pinned sessions.
 
 ## Architecture
 
@@ -492,9 +553,10 @@ The feature should follow a small, separated architecture:
 - a background collector running inside each participating application process
 - the standalone DevKit Broadcast feature for node registration, registry lookup, direct HTTP push, local self-delivery, and immediate per-node delivery responses
 - one local performance broadcast handler per supported control command
-- a session store for sessions, node participation, snapshots, segments, custom metrics, and metadata
+- a session store for sessions, node participation, snapshots, segments, custom metrics, and metadata, including an atomic full-reset operation
 - a dashboard query layer that loads one selected session and node timeline
 - an application-facing control surface for programmatic sessions and scoped segments
+- grouped console commands that delegate to the application-facing control surface
 - an integration with the existing DevKit metrics abstraction for stable custom metrics
 - a dashboard page for control, session selection, current values, snapshot comparison tables, export, and metadata editing
 
@@ -523,6 +585,7 @@ Suggested defaults:
 - start-command participation deadline: 1 second
 - gc trigger: available from the dashboard
 - programmatic control: enabled through an application service interface
+- console-command control: registered when the performance integration is present and the host Console Commands capability is enabled; control operations report unavailable when runtime collection is configuration-disabled
 
 ## Security and Operational Notes
 
@@ -530,6 +593,8 @@ Suggested defaults:
 - it shall be opt-in and disabled by default
 - applications should normally keep the feature completely disabled in production
 - when enabled, dashboard access and control operations shall follow the host application's normal authorization model
+- command-line access shall follow the host's existing Console Commands registration, exposure, and protection model
+- clearing the complete performance store shall require explicit confirmation in both the dashboard and console-command surfaces
 - the feature shall not capture request payloads, user data, or other business content
 - manual GC is a deliberate developer diagnostic action and requires no additional feature-specific safeguard beyond the feature being enabled and accessible
 - the feature shall be documented as a short-lived diagnostic tool, not a production monitoring replacement
@@ -555,11 +620,20 @@ The feature is considered complete when:
 - the dashboard supports configurable refresh intervals
 - sample intervals below 500 ms are rejected and every session requires a duration
 - sessions can be named, tagged, noted, pinned, edited, selected, shared by URL, restarted, exported, copied as JSON, and deleted
+- the dashboard can clear all stored performance data, including pinned sessions and associated records, after explicit confirmation
+- clearing is rejected while a logical session is active and leaves the store unchanged
+- a completed clear leaves an empty performance store and rejects delayed writes for cleared session identities
 - active sessions cannot be deleted directly and must be stopped first
 - restarting an active session stops it first, preserves it as stopped, and creates the replacement only after the stop is accepted
 - a manual snapshot without an active session creates a completed one-snapshot session with a timestamp-based default name
 - exactly two snapshots from the currently selected session and node can be selected for side-by-side metric comparison in a table, including absolute and percentage differences
 - application code can create scoped sessions and measured segments
+- when Console Commands are enabled, `performance` and `perf` expose status, start, stop, manual snapshot, manual GC, and clear-all operations
+- console commands invoke the same control service and preserve the same deployment-wide Broadcast behavior as dashboard operations
+- console start accepts optional name, interval, and duration values and applies the same defaults and validation as the dashboard
+- console status and Broadcast-backed command results clearly report session state and immediate per-node outcomes
+- disabled or unavailable console operations fail safely without changing collection state
+- `performance clear` changes no data without `--yes` and, when confirmed, applies the same full-reset rules as the dashboard
 - a scoped code section starts and owns a session when none is active
 - a scoped code section encountered during an active session joins it as a named segment
 - raw scopes default to completed unless explicitly marked failed or cancelled
@@ -583,6 +657,9 @@ The following decisions are resolved for the feature:
 - the specification defines the complete feature and does not use implementation phases or feature versions
 - application developers are the primary users
 - sessions may be started manually or programmatically around code sections
+- collection may also be controlled through the grouped `performance` console commands, with `perf` as an alias
+- console commands reuse the application-facing control service and the same deployment-wide Broadcast operations as the dashboard
+- the initial console-command surface provides status, start, stop, one-off snapshot, manual GC, and confirmed clear-all operations
 - only one logical session may be active for the deployment at a time
 - embedded scoped starts join the active session as named segments instead of starting another session
 - session scopes are disposable and execution helpers automatically capture outcomes
@@ -617,9 +694,11 @@ The following decisions are resolved for the feature:
 - session metadata remains editable after completion while collected observations remain immutable
 - no metadata audit trail is required
 - sessions may be pinned and pinned sessions are excluded from automatic retention
-- normal bulk deletion removes only unpinned sessions; pinned sessions are removed only when explicitly included
+- normal bulk deletion removes only unpinned sessions; pinned sessions are removed only through explicit selected-session deletion or the confirmed clear-all operation
 - an active session cannot be deleted directly; restart first stops an active session, preserves it as stopped, and then creates a new session copying name, interval, duration, and tags, but not notes, pin state, snapshots, segments, or custom metrics
-- clear-session behavior is not part of the feature; developers restart or delete instead
+- clearing one selected session in place is not supported; developers restart or delete that session instead
+- a separate confirmed clear-all operation resets the complete performance store, includes pinned sessions, and is rejected while a logical session is active
+- cleared session identities cannot accept delayed writes or be recreated implicitly
 - storage uses a provider abstraction
 - the in-memory provider is valid for tests and local development and is intentionally ephemeral
 - Entity Framework is the first-class durable provider

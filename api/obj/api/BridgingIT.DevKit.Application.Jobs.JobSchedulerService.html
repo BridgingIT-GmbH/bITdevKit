@@ -265,8 +265,8 @@ Class JobSchedulerService
 
   <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerService__ctor_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerService.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerService__ctor_System_TimeProvider_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_BridgingIT_DevKit_Application_Jobs_IJobTriggerEvaluator_BridgingIT_DevKit_Application_Jobs_IJobStoreProvider_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Application_Jobs_JobEventSourceRegistry_BridgingIT_DevKit_Application_Jobs_JobSchedulerHostedOptions_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Jobs_IJobSchedulerExceptionHandler__Microsoft_Extensions_Hosting_IHostEnvironment_Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerService.#ctor(System.TimeProvider,Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Application.Jobs.JobRegistrationStore,BridgingIT.DevKit.Application.Jobs.IJobTriggerEvaluator,BridgingIT.DevKit.Application.Jobs.IJobStoreProvider,BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Application.Jobs.JobEventSourceRegistry,BridgingIT.DevKit.Application.Jobs.JobSchedulerHostedOptions,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Jobs.IJobSchedulerExceptionHandler},Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
-  JobSchedulerService(TimeProvider, IServiceScopeFactory, JobRegistrationStore, IJobTriggerEvaluator, IJobStoreProvider, ISerializer, JobEventSourceRegistry, JobSchedulerHostedOptions, IEnumerable&lt;IJobSchedulerExceptionHandler&gt;, IHostEnvironment, ILoggerFactory)
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerService__ctor_System_TimeProvider_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Jobs_JobRegistrationStore_BridgingIT_DevKit_Application_Jobs_IJobTriggerEvaluator_BridgingIT_DevKit_Application_Jobs_IJobStoreProvider_BridgingIT_DevKit_Common_ISerializer_BridgingIT_DevKit_Application_Jobs_JobEventSourceRegistry_BridgingIT_DevKit_Application_Jobs_JobSchedulerHostedOptions_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Jobs_IJobSchedulerExceptionHandler__Microsoft_Extensions_Hosting_IHostEnvironment_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerService.#ctor(System.TimeProvider,Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Application.Jobs.JobRegistrationStore,BridgingIT.DevKit.Application.Jobs.IJobTriggerEvaluator,BridgingIT.DevKit.Application.Jobs.IJobStoreProvider,BridgingIT.DevKit.Common.ISerializer,BridgingIT.DevKit.Application.Jobs.JobEventSourceRegistry,BridgingIT.DevKit.Application.Jobs.JobSchedulerHostedOptions,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Jobs.IJobSchedulerExceptionHandler},Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Common.IMetricsService)">
+  JobSchedulerService(TimeProvider, IServiceScopeFactory, JobRegistrationStore, IJobTriggerEvaluator, IJobStoreProvider, ISerializer, JobEventSourceRegistry, JobSchedulerHostedOptions, IEnumerable&lt;IJobSchedulerExceptionHandler&gt;, IHostEnvironment, ILoggerFactory, IMetricsService)
   
   </h3>
 
@@ -275,7 +275,7 @@ Class JobSchedulerService
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public JobSchedulerService(TimeProvider timeProvider, IServiceScopeFactory scopeFactory, JobRegistrationStore registrations, IJobTriggerEvaluator triggerEvaluator, IJobStoreProvider storeProvider, ISerializer serializer, JobEventSourceRegistry eventSources, JobSchedulerHostedOptions options = null, IEnumerable&lt;IJobSchedulerExceptionHandler&gt; exceptionHandlers = null, IHostEnvironment hostEnvironment = null, ILoggerFactory loggerFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public JobSchedulerService(TimeProvider timeProvider, IServiceScopeFactory scopeFactory, JobRegistrationStore registrations, IJobTriggerEvaluator triggerEvaluator, IJobStoreProvider storeProvider, ISerializer serializer, JobEventSourceRegistry eventSources, JobSchedulerHostedOptions options = null, IEnumerable&lt;IJobSchedulerExceptionHandler&gt; exceptionHandlers = null, IHostEnvironment hostEnvironment = null, ILoggerFactory loggerFactory = null, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -301,6 +301,8 @@ Class JobSchedulerService
     <dt><code>hostEnvironment</code> <span class="xref">IHostEnvironment</span></dt>
     <dd></dd>
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd></dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 

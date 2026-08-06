@@ -281,8 +281,8 @@ through EF Core.</p>
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Storage_BlobStoreOptions_BridgingIT_DevKit_Common_IContinuationTokenProtector_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Application.Storage.BlobStoreOptions,BridgingIT.DevKit.Common.IContinuationTokenProtector)">
-  EntityFrameworkBlobStoreProvider(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Storage_BlobStoreOptions_BridgingIT_DevKit_Common_IContinuationTokenProtector_BridgingIT_DevKit_Common_IMetricsService_Microsoft_Extensions_Logging_ILoggerFactory_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Application.Storage.BlobStoreOptions,BridgingIT.DevKit.Common.IContinuationTokenProtector,BridgingIT.DevKit.Common.IMetricsService,Microsoft.Extensions.Logging.ILoggerFactory,System.String)">
+  EntityFrameworkBlobStoreProvider(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, string)
   
   </h3>
 
@@ -292,7 +292,7 @@ DI-managed usage with fresh scoped contexts per operation.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public EntityFrameworkBlobStoreProvider(IServiceScopeFactory scopeFactory, BlobStoreOptions options = null, IContinuationTokenProtector continuationTokenProtector = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public EntityFrameworkBlobStoreProvider(IServiceScopeFactory scopeFactory, BlobStoreOptions options = null, IContinuationTokenProtector continuationTokenProtector = null, IMetricsService metricsService = null, ILoggerFactory loggerFactory = null, string storeName = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -306,6 +306,15 @@ DI-managed usage with fresh scoped contexts per operation.</p>
     <dt><code>continuationTokenProtector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
     <dd><p>The optional continuation-token protector.</p>
 </dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
+    <dd><p>The optional shared metrics service for chunk-flush metrics.</p>
+</dd>
+    <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd><p>The optional logger factory for chunk-flush diagnostics.</p>
+</dd>
+    <dt><code>storeName</code> <span class="xref">string</span></dt>
+    <dd><p>The low-cardinality named-store identifier.</p>
+</dd>
   </dl>
 
 
@@ -314,7 +323,7 @@ DI-managed usage with fresh scoped contexts per operation.</p>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Storage_BlobStoreOptions_BridgingIT_DevKit_Common_IContinuationTokenProtector__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Storage_BlobStoreOptions_BridgingIT_DevKit_Common_IContinuationTokenProtector_BridgingIT_DevKit_Common_IMetricsService_Microsoft_Extensions_Logging_ILoggerFactory_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var provider = new EntityFrameworkBlobStoreProvider&lt;AppDbContext&gt;(scopeFactory);</code></pre>
 
 

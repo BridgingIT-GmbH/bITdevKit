@@ -251,7 +251,7 @@ Class StoragePermalinkMetrics
 
 
   <h2 id="BridgingIT_DevKit_Application_Storage_StoragePermalinkMetrics_examples">Examples</h2>
-  <pre><code class="lang-csharp">var metrics = new StoragePermalinkMetrics(meterFactory);</code></pre>
+  <pre><code class="lang-csharp">var metrics = new StoragePermalinkMetrics(metricsService);</code></pre>
 
 
 
@@ -262,8 +262,8 @@ Class StoragePermalinkMetrics
 
   <a id="BridgingIT_DevKit_Application_Storage_StoragePermalinkMetrics__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.StoragePermalinkMetrics.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_StoragePermalinkMetrics__ctor_System_Diagnostics_Metrics_IMeterFactory_" data-uid="BridgingIT.DevKit.Application.Storage.StoragePermalinkMetrics.#ctor(System.Diagnostics.Metrics.IMeterFactory)">
-  StoragePermalinkMetrics(IMeterFactory)
+  <h3 id="BridgingIT_DevKit_Application_Storage_StoragePermalinkMetrics__ctor_BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Storage.StoragePermalinkMetrics.#ctor(BridgingIT.DevKit.Common.IMetricsService)">
+  StoragePermalinkMetrics(IMetricsService)
   
   </h3>
 
@@ -272,12 +272,12 @@ Class StoragePermalinkMetrics
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public StoragePermalinkMetrics(IMeterFactory meterFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public StoragePermalinkMetrics(IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 
@@ -307,7 +307,7 @@ Class StoragePermalinkMetrics
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const string MeterName = &quot;BridgingIT.DevKit.Storage.Permalinks&quot;</code></pre>
+    <pre><code class="lang-csharp hljs">public const string MeterName = &quot;bdk&quot;</code></pre>
   </div>
 
 

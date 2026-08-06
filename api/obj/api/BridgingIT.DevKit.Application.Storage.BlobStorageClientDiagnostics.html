@@ -293,6 +293,41 @@ Class BlobStorageClientDiagnostics
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_ActiveUploads_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.ActiveUploads*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_ActiveUploads" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.ActiveUploads">
+  ActiveUploads
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current active upload count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ActiveUploads { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_ActiveUploads_examples">Examples</h4>
+  <pre><code class="lang-csharp">var active = diagnostics.ActiveUploads;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_Capabilities_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.Capabilities*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_Capabilities" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.Capabilities">
@@ -433,6 +468,76 @@ Class BlobStorageClientDiagnostics
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_MaxConcurrentUploads_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.MaxConcurrentUploads*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_MaxConcurrentUploads" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.MaxConcurrentUploads">
+  MaxConcurrentUploads
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the configured maximum active upload count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxConcurrentUploads { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_MaxConcurrentUploads_examples">Examples</h4>
+  <pre><code class="lang-csharp">var limit = diagnostics.MaxConcurrentUploads;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_MaxQueuedUploads_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.MaxQueuedUploads*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_MaxQueuedUploads" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.MaxQueuedUploads">
+  MaxQueuedUploads
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the configured maximum queued upload count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxQueuedUploads { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_MaxQueuedUploads_examples">Examples</h4>
+  <pre><code class="lang-csharp">var limit = diagnostics.MaxQueuedUploads;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_Name_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.Name*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_Name" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.Name">
@@ -497,6 +602,76 @@ Class BlobStorageClientDiagnostics
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_ProviderName_examples">Examples</h4>
   <pre><code class="lang-csharp">var provider = diagnostics.ProviderName;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_QueuedUploads_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.QueuedUploads*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_QueuedUploads" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.QueuedUploads">
+  QueuedUploads
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the current queued upload count.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int QueuedUploads { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_QueuedUploads_examples">Examples</h4>
+  <pre><code class="lang-csharp">var queued = diagnostics.QueuedUploads;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_UploadAdmissionEnabled_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.UploadAdmissionEnabled*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_UploadAdmissionEnabled" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageClientDiagnostics.UploadAdmissionEnabled">
+  UploadAdmissionEnabled
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets a value indicating whether bounded upload admission is enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UploadAdmissionEnabled { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageClientDiagnostics_UploadAdmissionEnabled_examples">Examples</h4>
+  <pre><code class="lang-csharp">var enabled = diagnostics.UploadAdmissionEnabled;</code></pre>
 
 
 

@@ -270,18 +270,65 @@ Class MetricsService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Default implementation of <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a> backed by the shared devkit meter.</p>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.MetricsService.html">MetricsService</a> class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MetricsService(IMeterFactory meterFactory)</code></pre>
+    <pre><code class="lang-csharp hljs">public MetricsService(IMeterFactory meterFactory = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd></dd>
+    <dd><p>The optional factory used exclusively by this service to create the shared devkit meter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_MetricsService__ctor_System_Diagnostics_Metrics_IMeterFactory__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddMetrics(options =&gt; options.Enabled());</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_MetricsService_AddCounter_" data-uid="BridgingIT.DevKit.Common.MetricsService.AddCounter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_AddCounter_System_String_System_Int64_System_ReadOnlySpan_BridgingIT_DevKit_Common_MetricTag__" data-uid="BridgingIT.DevKit.Common.MetricsService.AddCounter(System.String,System.Int64,System.ReadOnlySpan{BridgingIT.DevKit.Common.MetricTag})">
+  AddCounter(string, long, ReadOnlySpan&lt;MetricTag&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a value to a cumulative counter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddCounter(string name, long value = 1, ReadOnlySpan&lt;MetricTag&gt; tags = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The complete instrument name.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The value to add.</p>
+</dd>
+    <dt><code>tags</code> <span class="xref">ReadOnlySpan</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.MetricTag.html">MetricTag</a>&gt;</dt>
+    <dd><p>Optional measurement tags.</p>
+</dd>
   </dl>
 
 
@@ -295,8 +342,43 @@ Class MetricsService
 
 
 
-  <h2 class="section" id="methods">Methods
-</h2>
+  <a id="BridgingIT_DevKit_Common_MetricsService_AddUpDownCounter_" data-uid="BridgingIT.DevKit.Common.MetricsService.AddUpDownCounter*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_AddUpDownCounter_System_String_System_Int64_System_ReadOnlySpan_BridgingIT_DevKit_Common_MetricTag__" data-uid="BridgingIT.DevKit.Common.MetricsService.AddUpDownCounter(System.String,System.Int64,System.ReadOnlySpan{BridgingIT.DevKit.Common.MetricTag})">
+  AddUpDownCounter(string, long, ReadOnlySpan&lt;MetricTag&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a delta to an up/down counter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddUpDownCounter(string name, long value, ReadOnlySpan&lt;MetricTag&gt; tags = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The complete instrument name.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The positive or negative delta.</p>
+</dd>
+    <dt><code>tags</code> <span class="xref">ReadOnlySpan</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.MetricTag.html">MetricTag</a>&gt;</dt>
+    <dd><p>Optional measurement tags.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Common_MetricsService_ChangeCurrent_" data-uid="BridgingIT.DevKit.Common.MetricsService.ChangeCurrent*"></a>
@@ -326,6 +408,32 @@ Class MetricsService
     <dd><p>Optional dynamic suffix parts.</p>
 </dd>
   </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_MetricsService_Dispose_" data-uid="BridgingIT.DevKit.Common.MetricsService.Dispose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_Dispose" data-uid="BridgingIT.DevKit.Common.MetricsService.Dispose">
+  Dispose()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
 
 
 
@@ -449,6 +557,129 @@ Class MetricsService
 
 
 
+  <a id="BridgingIT_DevKit_Common_MetricsService_RecordHistogram_" data-uid="BridgingIT.DevKit.Common.MetricsService.RecordHistogram*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_RecordHistogram_System_String_System_Double_System_String_System_ReadOnlySpan_BridgingIT_DevKit_Common_MetricTag__" data-uid="BridgingIT.DevKit.Common.MetricsService.RecordHistogram(System.String,System.Double,System.String,System.ReadOnlySpan{BridgingIT.DevKit.Common.MetricTag})">
+  RecordHistogram(string, double, string, ReadOnlySpan&lt;MetricTag&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a double histogram sample.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RecordHistogram(string name, double value, string unit = null, ReadOnlySpan&lt;MetricTag&gt; tags = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The complete instrument name.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">double</span></dt>
+    <dd><p>The sample value.</p>
+</dd>
+    <dt><code>unit</code> <span class="xref">string</span></dt>
+    <dd><p>The optional measurement unit.</p>
+</dd>
+    <dt><code>tags</code> <span class="xref">ReadOnlySpan</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.MetricTag.html">MetricTag</a>&gt;</dt>
+    <dd><p>Optional measurement tags.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_MetricsService_RecordHistogram_" data-uid="BridgingIT.DevKit.Common.MetricsService.RecordHistogram*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_RecordHistogram_System_String_System_Int64_System_String_System_ReadOnlySpan_BridgingIT_DevKit_Common_MetricTag__" data-uid="BridgingIT.DevKit.Common.MetricsService.RecordHistogram(System.String,System.Int64,System.String,System.ReadOnlySpan{BridgingIT.DevKit.Common.MetricTag})">
+  RecordHistogram(string, long, string, ReadOnlySpan&lt;MetricTag&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a long histogram sample.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RecordHistogram(string name, long value, string unit = null, ReadOnlySpan&lt;MetricTag&gt; tags = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The complete instrument name.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The sample value.</p>
+</dd>
+    <dt><code>unit</code> <span class="xref">string</span></dt>
+    <dd><p>The optional measurement unit.</p>
+</dd>
+    <dt><code>tags</code> <span class="xref">ReadOnlySpan</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.MetricTag.html">MetricTag</a>&gt;</dt>
+    <dd><p>Optional measurement tags.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_MetricsService_RecordHistogramDuration_" data-uid="BridgingIT.DevKit.Common.MetricsService.RecordHistogramDuration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_RecordHistogramDuration_System_String_System_Int64_System_ReadOnlySpan_BridgingIT_DevKit_Common_MetricTag__" data-uid="BridgingIT.DevKit.Common.MetricsService.RecordHistogramDuration(System.String,System.Int64,System.ReadOnlySpan{BridgingIT.DevKit.Common.MetricTag})">
+  RecordHistogramDuration(string, long, ReadOnlySpan&lt;MetricTag&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records elapsed milliseconds since a captured timestamp.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RecordHistogramDuration(string name, long startedTimestamp, ReadOnlySpan&lt;MetricTag&gt; tags = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The complete histogram name.</p>
+</dd>
+    <dt><code>startedTimestamp</code> <span class="xref">long</span></dt>
+    <dd><p>The timestamp returned by <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html#BridgingIT_DevKit_Common_IMetricsService_StartTimestamp">StartTimestamp()</a>.</p>
+</dd>
+    <dt><code>tags</code> <span class="xref">ReadOnlySpan</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.MetricTag.html">MetricTag</a>&gt;</dt>
+    <dd><p>Optional measurement tags.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Common_MetricsService_Series_" data-uid="BridgingIT.DevKit.Common.MetricsService.Series*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_MetricsService_Series_System_String_System_String___" data-uid="BridgingIT.DevKit.Common.MetricsService.Series(System.String,System.String[])">
@@ -480,6 +711,42 @@ Class MetricsService
     <dd><p>The normalized metric series name.</p>
 </dd>
   </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_MetricsService_SetGauge_" data-uid="BridgingIT.DevKit.Common.MetricsService.SetGauge*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_MetricsService_SetGauge_System_String_System_Int64_" data-uid="BridgingIT.DevKit.Common.MetricsService.SetGauge(System.String,System.Int64)">
+  SetGauge(string, long)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the current value exposed by an observable gauge.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetGauge(string name, long value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <span class="xref">string</span></dt>
+    <dd><p>The complete instrument name.</p>
+</dd>
+    <dt><code>value</code> <span class="xref">long</span></dt>
+    <dd><p>The current gauge value.</p>
+</dd>
+  </dl>
+
 
 
 

@@ -268,8 +268,8 @@ Class BlobStorageDiagnosticsService
 
   <a id="BridgingIT_DevKit_Application_Storage_BlobStorageDiagnosticsService__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageDiagnosticsService.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageDiagnosticsService__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Storage_BlobStoreClientRegistration__" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageDiagnosticsService.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Storage.BlobStoreClientRegistration})">
-  BlobStorageDiagnosticsService(IServiceScopeFactory, IEnumerable&lt;BlobStoreClientRegistration&gt;)
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStorageDiagnosticsService__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Storage_BlobStoreClientRegistration__BridgingIT_DevKit_Application_Storage_IBlobUploadAdmissionCoordinator_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStorageDiagnosticsService.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Storage.BlobStoreClientRegistration},BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator)">
+  BlobStorageDiagnosticsService(IServiceScopeFactory, IEnumerable&lt;BlobStoreClientRegistration&gt;, IBlobUploadAdmissionCoordinator)
   
   </h3>
 
@@ -278,7 +278,7 @@ Class BlobStorageDiagnosticsService
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BlobStorageDiagnosticsService(IServiceScopeFactory scopeFactory, IEnumerable&lt;BlobStoreClientRegistration&gt; registrations)</code></pre>
+    <pre><code class="lang-csharp hljs">public BlobStorageDiagnosticsService(IServiceScopeFactory scopeFactory, IEnumerable&lt;BlobStoreClientRegistration&gt; registrations, IBlobUploadAdmissionCoordinator admissionCoordinator = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -289,6 +289,9 @@ Class BlobStorageDiagnosticsService
     <dt><code>registrations</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreClientRegistration.html">BlobStoreClientRegistration</a>&gt;</dt>
     <dd><p>The registered blob clients.</p>
 </dd>
+    <dt><code>admissionCoordinator</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator.html">IBlobUploadAdmissionCoordinator</a></dt>
+    <dd><p>The optional shared upload-admission coordinator.</p>
+</dd>
   </dl>
 
 
@@ -297,7 +300,7 @@ Class BlobStorageDiagnosticsService
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageDiagnosticsService__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Storage_BlobStoreClientRegistration___examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStorageDiagnosticsService__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Storage_BlobStoreClientRegistration__BridgingIT_DevKit_Application_Storage_IBlobUploadAdmissionCoordinator__examples">Examples</h4>
   <pre><code class="lang-csharp">var snapshot = await service.GetSnapshotAsync();</code></pre>
 
 

@@ -277,8 +277,8 @@ Class MetricsMessagePublisherBehavior
 
   <a id="BridgingIT_DevKit_Application_Messaging_MetricsMessagePublisherBehavior__ctor_" data-uid="BridgingIT.DevKit.Application.Messaging.MetricsMessagePublisherBehavior.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Messaging_MetricsMessagePublisherBehavior__ctor_Microsoft_Extensions_Logging_ILoggerFactory_System_Diagnostics_Metrics_IMeterFactory_" data-uid="BridgingIT.DevKit.Application.Messaging.MetricsMessagePublisherBehavior.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,System.Diagnostics.Metrics.IMeterFactory)">
-  MetricsMessagePublisherBehavior(ILoggerFactory, IMeterFactory)
+  <h3 id="BridgingIT_DevKit_Application_Messaging_MetricsMessagePublisherBehavior__ctor_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Messaging.MetricsMessagePublisherBehavior.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Common.IMetricsService)">
+  MetricsMessagePublisherBehavior(ILoggerFactory, IMetricsService)
   
   </h3>
 
@@ -287,14 +287,14 @@ Class MetricsMessagePublisherBehavior
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
     <dd></dd>
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 
@@ -304,7 +304,7 @@ Class MetricsMessagePublisherBehavior
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Messaging_MetricsMessagePublisherBehavior__ctor_Microsoft_Extensions_Logging_ILoggerFactory_System_Diagnostics_Metrics_IMeterFactory__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Messaging_MetricsMessagePublisherBehavior__ctor_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Common_IMetricsService__examples">Examples</h4>
   <pre><code class="lang-csharp">services.AddMessaging()
     .WithBehavior&lt;MetricsMessagePublisherBehavior&gt;();</code></pre>
 

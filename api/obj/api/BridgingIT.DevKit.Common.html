@@ -91,6 +91,11 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.AcceptedBroadcast.html">AcceptedBroadcast</a></dt>
+      <dd><p>Represents one validated payload accepted for node-local dispatch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.AccessDeniedError.html">AccessDeniedError</a></dt>
       <dd><p>Represents an access denied error for resource access.</p>
 </dd>
@@ -222,6 +227,176 @@ This attribute is used to categorize and filter tests during test discovery.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.BlobStorageError.html">BlobStorageError</a></dt>
       <dd><p>Represents an error specific to cloud blob storage operations, such as Azure Blob Storage.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastContext.html">BroadcastContext</a></dt>
+      <dd><p>Supplies metadata to a node-local typed handler.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastEnvelope.html">BroadcastEnvelope</a></dt>
+      <dd><p>Contains transport-neutral metadata and one serialized payload.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastHandlerRegistration.html">BroadcastHandlerRegistration</a></dt>
+      <dd><p>Describes one statically typed broadcast payload-to-handler registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastLocalDispatchHostedService.html">BroadcastLocalDispatchHostedService</a></dt>
+      <dd><p>Connects the node-local dispatcher lifecycle to ASP.NET Core hosting.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastLocalDispatcher.html">BroadcastLocalDispatcher</a></dt>
+      <dd><p>Admits validated broadcasts to one bounded, ordered handler queue per payload type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastNoTargetError.html">BroadcastNoTargetError</a></dt>
+      <dd><p>Reports that a publication required at least one target but found none.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeDeliveryResult.html">BroadcastNodeDeliveryResult</a></dt>
+      <dd><p>Describes the immediate delivery outcome for one target node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeLifecycleService.html">BroadcastNodeLifecycleService</a></dt>
+      <dd><p>Registers the local node after application startup and removes it during graceful shutdown.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistration.html">BroadcastNodeRegistration</a></dt>
+      <dd><p>Describes one active or inactive node registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest.html">BroadcastNodeRegistrationRequest</a></dt>
+      <dd><p>Provides the values used to upsert one process registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastOperationalAuthorizationError.html">BroadcastOperationalAuthorizationError</a></dt>
+      <dd><p>Reports a denied privileged Broadcasting operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastProbe.html">BroadcastProbe</a></dt>
+      <dd><p>Represents the built-in no-op payload used to verify broadcast delivery.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastProbeHandler.html">BroadcastProbeHandler</a></dt>
+      <dd><p>Handles the built-in delivery probe without performing application work.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastPublishOptions.html">BroadcastPublishOptions</a></dt>
+      <dd><p>Configures one publication without changing host defaults.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastReceiver.html">BroadcastReceiver</a></dt>
+      <dd><p>Validates inbound envelopes and admits supported payloads to local execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastRegistrationLeaseService.html">BroadcastRegistrationLeaseService</a></dt>
+      <dd><p>Renews optional node leases and marks expired registrations inactive.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastRegistryCapabilities.html">BroadcastRegistryCapabilities</a></dt>
+      <dd><p>Describes registry-provider runtime capabilities.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastRegistryUnavailableError.html">BroadcastRegistryUnavailableError</a></dt>
+      <dd><p>Reports an unavailable registry operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastResult.html">BroadcastResult</a></dt>
+      <dd><p>Contains aggregate and per-node outcomes for one publication.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastScopeDiagnostic.html">BroadcastScopeDiagnostic</a></dt>
+      <dd><p>Groups registered nodes under one configured scope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastScopeForbiddenError.html">BroadcastScopeForbiddenError</a></dt>
+      <dd><p>Reports a target scope outside the sender's active registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastSenderNotRegisteredError.html">BroadcastSenderNotRegisteredError</a></dt>
+      <dd><p>Reports that the publishing node is not active in a shared registry.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastSerializationError.html">BroadcastSerializationError</a></dt>
+      <dd><p>Reports that a typed payload could not be serialized safely.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastService.html">BroadcastService</a></dt>
+      <dd><p>Publishes typed broadcast payloads to a fixed snapshot of active local and remote nodes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastValidationError.html">BroadcastValidationError</a></dt>
+      <dd><p>Reports an invalid broadcast publication request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingBuilderContext.html">BroadcastingBuilderContext</a></dt>
+      <dd><p>Continues fluent configuration of the one host-wide Broadcasting runtime.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingDiagnosticSnapshot.html">BroadcastingDiagnosticSnapshot</a></dt>
+      <dd><p>Contains a provider-neutral operational view of Broadcasting.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingDiagnostics.html">BroadcastingDiagnostics</a></dt>
+      <dd><p>Provides a safe operational view over the effective node registry.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingDisabledError.html">BroadcastingDisabledError</a></dt>
+      <dd><p>Reports that publication was attempted while Broadcasting is disabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingMetrics.html">BroadcastingMetrics</a></dt>
+      <dd><p>Defines safe, low-cardinality Broadcasting metric series.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingOptions.html">BroadcastingOptions</a></dt>
+      <dd><p>Configures the host-wide Broadcasting runtime.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingOptionsBuilder.html">BroadcastingOptionsBuilder</a></dt>
+      <dd><p>Fluently updates one shared <a class="xref" href="BridgingIT.DevKit.Common.BroadcastingOptions.html">BroadcastingOptions</a> instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingRegistrationState.html">BroadcastingRegistrationState</a></dt>
+      <dd><p>Stores the shared, thread-safe registration state for one application host.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastingTypedLogger.html">BroadcastingTypedLogger</a></dt>
+      <dd><p>Provides source-generated, credential- and payload-safe Broadcasting logs.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -491,6 +666,16 @@ or a state conflict that prevents an operation from proceeding.</p>
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.CorrelationId.html">CorrelationId</a></dt>
+      <dd><p>Provides ambient access to the application correlation identifier for the current execution flow.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.CorrelationIdPropagationHandler.html">CorrelationIdPropagationHandler</a></dt>
+      <dd><p>Propagates the current application correlation identifier to outbound HTTP requests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.CsvSerializer.html">CsvSerializer</a></dt>
       <dd></dd>
     </dl>
@@ -572,6 +757,11 @@ It allows configuration of DI services, logging and environment settings for the
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.DefaultBroadcastNodeIdentityProvider.html">DefaultBroadcastNodeIdentityProvider</a></dt>
+      <dd><p>Resolves the configured node identity or a machine-and-process default.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.DefaultJsonSerializerOptions.html">DefaultJsonSerializerOptions</a></dt>
       <dd></dd>
     </dl>
@@ -586,6 +776,11 @@ It allows configuration of DI services, logging and environment settings for the
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.DelegatePipelineStep.html">DelegatePipelineStep</a></dt>
       <dd><p>Adapts inline delegate-backed step descriptors to the standard <a class="xref" href="BridgingIT.DevKit.Common.IPipelineStep.html">IPipelineStep</a> contract.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.DenyBroadcastOperationalAuthorizer.html">DenyBroadcastOperationalAuthorizer</a></dt>
+      <dd><p>Denies privileged Broadcasting registry mutations by default.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1341,7 +1536,8 @@ DbContext type. Allows configuration of transaction isolation level and automati
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.HttpContextExtensions.html">HttpContextExtensions</a></dt>
-      <dd></dd>
+      <dd><p>Provides request correlation accessors for ASP.NET Core HTTP contexts.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.HttpError.html">HttpError</a></dt>
@@ -1360,6 +1556,11 @@ DbContext type. Allows configuration of transaction isolation level and automati
 ,
 this class generates an efficient 20-bytes ID which is the concatenation of a <code>base36</code> encoded
 machine name and <code>base32</code> encoded <span class="xref">long</span> using the alphabet <code>0-9</code> and <code>A-V</code>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.InMemoryBroadcastRegistryStore.html">InMemoryBroadcastRegistryStore</a></dt>
+      <dd><p>Stores process-local node registrations for development and tests.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1543,6 +1744,11 @@ with a specified entry point.</p>
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport.html">LocalOnlyBroadcastTransport</a></dt>
+      <dd><p>Provides the process-local fallback transport used when no remote transport is configured.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.MapperExtensions.html">MapperExtensions</a></dt>
       <dd><p><a class="xref" href="BridgingIT.DevKit.Common.IMapper-2.html">IMapper&lt;TSource, TTarget&gt;</a> extension methods.</p>
 </dd>
@@ -1675,7 +1881,7 @@ with a specified entry point.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Metrics.html">Metrics</a></dt>
-      <dd><p>Provides shared naming and recording helpers for runtime metrics.</p>
+      <dd><p>Provides shared naming and timing helpers for runtime metrics.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1745,6 +1951,11 @@ with a specified entry point.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ModuleScopeBehavior-2.html">ModuleScopeBehavior&lt;TRequest, TResponse&gt;</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.NameGenerator.html">NameGenerator</a></dt>
+      <dd><p>Generates memorable lowercase names by combining an adjective with a noun.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NoOpNotifier.html">NoOpNotifier</a></dt>
@@ -2252,6 +2463,11 @@ Strongly-typed keys are supported optionally via <a class="xref" href="BridgingI
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RawKeyDisplayStrategy.html">RawKeyDisplayStrategy</a></dt>
       <dd><p>Displays keys unchanged for normal operational diagnostics.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.RecentBroadcastTracker.html">RecentBroadcastTracker</a></dt>
+      <dd><p>Provides bounded, expiry-aware duplicate protection for recently accepted broadcasts.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -3268,6 +3484,11 @@ Structs
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.MetricTag.html">MetricTag</a></dt>
+      <dd><p>Represents a name/value tag attached to a metric measurement.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ModuleConstants.html">ModuleConstants</a></dt>
       <dd><p>Contains constant values utilized across the module system.</p>
 </dd>
@@ -3346,6 +3567,56 @@ Interfaces
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastHandler-1.html">IBroadcastHandler&lt;TBroadcast&gt;</a></dt>
+      <dd><p>Handles one accepted typed broadcast on a node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastLocalDispatcher.html">IBroadcastLocalDispatcher</a></dt>
+      <dd><p>Admits already validated payloads to bounded node-local handler execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastNodeAddressResolver.html">IBroadcastNodeAddressResolver</a></dt>
+      <dd><p>Optionally resolves a process-specific receiver address.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastNodeIdentityProvider.html">IBroadcastNodeIdentityProvider</a></dt>
+      <dd><p>Provides the identity used for the host's one registry registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastOperationalAuthorizer.html">IBroadcastOperationalAuthorizer</a></dt>
+      <dd><p>Authorizes privileged mutation of Broadcasting operational state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastReceiver.html">IBroadcastReceiver</a></dt>
+      <dd><p>Validates and admits an inbound envelope for local execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastRegistryStore.html">IBroadcastRegistryStore</a></dt>
+      <dd><p>Stores live node-discovery registrations without storing messages.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastService.html">IBroadcastService</a></dt>
+      <dd><p>Publishes typed broadcasts to all active nodes in the requested or default scope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastTransport.html">IBroadcastTransport</a></dt>
+      <dd><p>Sends an envelope directly to one remote node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastingDiagnostics.html">IBroadcastingDiagnostics</a></dt>
+      <dd><p>Exposes safe, provider-neutral operational registry information.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IBusinessCalendar.html">IBusinessCalendar</a></dt>
       <dd><p>Defines business-day operations for a calendar.</p>
 </dd>
@@ -3381,6 +3652,11 @@ Interfaces
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ICurrentUserAccessor.html">ICurrentUserAccessor</a></dt>
       <dd><p>The ICurrentUserAccessor interface provides mechanisms to access information about the current user.
 Implementing classes will provide access to user details such as user ID, user name, email, and roles.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a></dt>
+      <dd><p>Tracks the readiness or fault state of one or more named databases.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -3820,6 +4096,11 @@ Enums
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.AmbiguousTimePolicy.html">AmbiguousTimePolicy</a></dt>
       <dd><p>Specifies how ambiguous local times during daylight-saving transitions are handled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.BroadcastDeliveryOutcome.html">BroadcastDeliveryOutcome</a></dt>
+      <dd><p>Describes the immediate receiver outcome for one node.</p>
 </dd>
     </dl>
     <dl class="jumplist">

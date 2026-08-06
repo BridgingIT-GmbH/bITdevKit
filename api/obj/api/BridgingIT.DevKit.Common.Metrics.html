@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Metrics | bITdevKit API Reference ">
       
-      <meta name="description" content="Provides shared naming and recording helpers for runtime metrics.">
+      <meta name="description" content="Provides shared naming and timing helpers for runtime metrics.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class Metrics
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides shared naming and recording helpers for runtime metrics.</p>
+  <div class="markdown summary"><p>Provides shared naming and timing helpers for runtime metrics.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -120,9 +120,9 @@ Class Metrics
   <h2 id="BridgingIT_DevKit_Common_Metrics_examples">Examples</h2>
   <pre><code class="lang-csharp">var series = DevKitMetrics.Series("requester_send", DevKitMetrics.NormalizeTypeName(typeof(CreateOrderCommand)));
 var started = DevKitMetrics.StartTimestamp();
-DevKitMetrics.Increment(meterFactory, series);
-DevKitMetrics.ChangeCurrent(meterFactory, DevKitMetrics.CurrentSeries(series), 1);
-DevKitMetrics.RecordDuration(meterFactory, DevKitMetrics.DurationSeries(series), started);</code></pre>
+metricsService.AddCounter(series);
+metricsService.AddUpDownCounter(Metrics.CurrentSeries(series), 1);
+metricsService.RecordHistogramDuration(Metrics.DurationSeries(series), started);</code></pre>
 
 
 
@@ -163,45 +163,6 @@ DevKitMetrics.RecordDuration(meterFactory, DevKitMetrics.DurationSeries(series),
 
   <h2 class="section" id="methods">Methods
 </h2>
-
-
-  <a id="BridgingIT_DevKit_Common_Metrics_ChangeCurrent_" data-uid="BridgingIT.DevKit.Common.Metrics.ChangeCurrent*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_Metrics_ChangeCurrent_System_Diagnostics_Metrics_IMeterFactory_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Common.Metrics.ChangeCurrent(System.Diagnostics.Metrics.IMeterFactory,System.String,System.Int32)">
-  ChangeCurrent(IMeterFactory, string, int)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Adjusts the specified current live-view series using an up/down counter.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void ChangeCurrent(IMeterFactory meterFactory, string series, int value)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd><p>The meter factory used to create the up/down counter.</p>
-</dd>
-    <dt><code>series</code> <span class="xref">string</span></dt>
-    <dd><p>The current series name.</p>
-</dd>
-    <dt><code>value</code> <span class="xref">int</span></dt>
-    <dd><p>The delta to apply. Positive values increment and negative values decrement.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
 
 
   <a id="BridgingIT_DevKit_Common_Metrics_CurrentSeries_" data-uid="BridgingIT.DevKit.Common.Metrics.CurrentSeries*"></a>
@@ -321,42 +282,6 @@ DevKitMetrics.RecordDuration(meterFactory, DevKitMetrics.DurationSeries(series),
 
 
 
-  <a id="BridgingIT_DevKit_Common_Metrics_Increment_" data-uid="BridgingIT.DevKit.Common.Metrics.Increment*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_Metrics_Increment_System_Diagnostics_Metrics_IMeterFactory_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.Increment(System.Diagnostics.Metrics.IMeterFactory,System.String)">
-  Increment(IMeterFactory, string)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Increments the specified cumulative counter series by one.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void Increment(IMeterFactory meterFactory, string series)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd><p>The meter factory used to create the counter.</p>
-</dd>
-    <dt><code>series</code> <span class="xref">string</span></dt>
-    <dd><p>The counter series name.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
   <a id="BridgingIT_DevKit_Common_Metrics_NormalizePart_" data-uid="BridgingIT.DevKit.Common.Metrics.NormalizePart*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_Metrics_NormalizePart_System_String_" data-uid="BridgingIT.DevKit.Common.Metrics.NormalizePart(System.String)">
@@ -424,45 +349,6 @@ DevKitMetrics.RecordDuration(meterFactory, DevKitMetrics.DurationSeries(series),
     <dd><p>A normalized token derived from the supplied type.</p>
 </dd>
   </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Common_Metrics_RecordDuration_" data-uid="BridgingIT.DevKit.Common.Metrics.RecordDuration*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_Metrics_RecordDuration_System_Diagnostics_Metrics_IMeterFactory_System_String_System_Int64_" data-uid="BridgingIT.DevKit.Common.Metrics.RecordDuration(System.Diagnostics.Metrics.IMeterFactory,System.String,System.Int64)">
-  RecordDuration(IMeterFactory, string, long)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Records the elapsed duration since the supplied start timestamp in milliseconds.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static void RecordDuration(IMeterFactory meterFactory, string series, long startedTimestamp)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd><p>The meter factory used to create the histogram.</p>
-</dd>
-    <dt><code>series</code> <span class="xref">string</span></dt>
-    <dd><p>The histogram series name.</p>
-</dd>
-    <dt><code>startedTimestamp</code> <span class="xref">long</span></dt>
-    <dd><p>The timestamp captured earlier via <a class="xref" href="BridgingIT.DevKit.Common.Metrics.html#BridgingIT_DevKit_Common_Metrics_StartTimestamp">StartTimestamp()</a>.</p>
-</dd>
-  </dl>
-
 
 
 

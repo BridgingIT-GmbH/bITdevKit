@@ -12432,6 +12432,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreUploadAdmissionTimeoutError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreUploadAdmissionTimeoutError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobStoreUploadAdmissionTimeoutError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreUploadAdmissionTimeoutError.yml\" sourcestartlinenumber=\"1\">Represents an upload whose bounded admission wait expired.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreUploadOverloadedError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreUploadOverloadedError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobStoreUploadOverloadedError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreUploadOverloadedError.yml\" sourcestartlinenumber=\"1\">Represents an upload rejected because the bounded waiting queue is full.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreValidationError.yml",
       "output": {
         ".html": {
@@ -12541,6 +12569,48 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.BlobUpload",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUpload.yml\" sourcestartlinenumber=\"1\">Describes a stream-first blob upload request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionCoordinator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionCoordinator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionCoordinator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionCoordinator.yml\" sourcestartlinenumber=\"1\">Implements shared bounded FIFO upload admission per normalized store name.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionLease.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionLease.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionLease",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionLease.yml\" sourcestartlinenumber=\"1\">Represents the outcome and lifetime of one upload-admission request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionSnapshot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionSnapshot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionSnapshot",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionSnapshot.yml\" sourcestartlinenumber=\"1\">Describes current upload-admission limits and counts for one named store.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14266,6 +14336,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator.yml\" sourcestartlinenumber=\"1\">Coordinates bounded upload admission across client instances in one process.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.IDocumentPayloadTransform.yml",
       "output": {
         ".html": {
@@ -15694,6 +15778,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehavior.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehavior.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehavior",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehavior.yml\" sourcestartlinenumber=\"1\">Applies bounded process-local admission to upload operations while passing other operations through.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehaviorOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehaviorOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehaviorOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehaviorOptions.yml\" sourcestartlinenumber=\"1\">Configures bounded, process-local admission for blob uploads.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.yml",
       "output": {
         ".html": {
@@ -16968,6 +17080,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.AcceptedBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.AcceptedBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.AcceptedBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.AcceptedBroadcast.yml\" sourcestartlinenumber=\"1\">Represents one validated payload accepted for node-local dispatch.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.AccessDeniedError.yml",
       "output": {
         ".html": {
@@ -17455,6 +17581,496 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.BlobStorageError",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BlobStorageError.yml\" sourcestartlinenumber=\"1\">Represents an error specific to cloud blob storage operations, such as Azure Blob Storage.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastContext.yml\" sourcestartlinenumber=\"1\">Supplies metadata to a node-local typed handler.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastDeliveryOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastDeliveryOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastDeliveryOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastDeliveryOutcome.yml\" sourcestartlinenumber=\"1\">Describes the immediate receiver outcome for one node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastEnvelope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastEnvelope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastEnvelope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastEnvelope.yml\" sourcestartlinenumber=\"1\">Contains transport-neutral metadata and one serialized payload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastHandlerRegistration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastHandlerRegistration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastHandlerRegistration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastHandlerRegistration.yml\" sourcestartlinenumber=\"1\">Describes one statically typed broadcast payload-to-handler registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastLocalDispatchHostedService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastLocalDispatchHostedService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastLocalDispatchHostedService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastLocalDispatchHostedService.yml\" sourcestartlinenumber=\"1\">Connects the node-local dispatcher lifecycle to ASP.NET Core hosting.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastLocalDispatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastLocalDispatcher.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastLocalDispatcher",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastLocalDispatcher.yml\" sourcestartlinenumber=\"1\">Admits validated broadcasts to one bounded, ordered handler queue per payload type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNoTargetError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNoTargetError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastNoTargetError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastNoTargetError.yml\" sourcestartlinenumber=\"1\">Reports that a publication required at least one target but found none.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeDeliveryResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeDeliveryResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastNodeDeliveryResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastNodeDeliveryResult.yml\" sourcestartlinenumber=\"1\">Describes the immediate delivery outcome for one target node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeLifecycleService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeLifecycleService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastNodeLifecycleService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastNodeLifecycleService.yml\" sourcestartlinenumber=\"1\">Registers the local node after application startup and removes it during graceful shutdown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeRegistration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeRegistration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastNodeRegistration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastNodeRegistration.yml\" sourcestartlinenumber=\"1\">Describes one active or inactive node registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastNodeRegistrationRequest.yml\" sourcestartlinenumber=\"1\">Provides the values used to upsert one process registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastOperationalAuthorizationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastOperationalAuthorizationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastOperationalAuthorizationError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastOperationalAuthorizationError.yml\" sourcestartlinenumber=\"1\">Reports a denied privileged Broadcasting operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastProbe.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastProbe.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastProbe",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastProbe.yml\" sourcestartlinenumber=\"1\">Represents the built-in no-op payload used to verify broadcast delivery.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastProbeHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastProbeHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastProbeHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastProbeHandler.yml\" sourcestartlinenumber=\"1\">Handles the built-in delivery probe without performing application work.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastPublishOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastPublishOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastPublishOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastPublishOptions.yml\" sourcestartlinenumber=\"1\">Configures one publication without changing host defaults.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastReceiver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastReceiver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastReceiver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastReceiver.yml\" sourcestartlinenumber=\"1\">Validates inbound envelopes and admits supported payloads to local execution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastRegistrationLeaseService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastRegistrationLeaseService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastRegistrationLeaseService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastRegistrationLeaseService.yml\" sourcestartlinenumber=\"1\">Renews optional node leases and marks expired registrations inactive.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastRegistryCapabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastRegistryCapabilities.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastRegistryCapabilities",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastRegistryCapabilities.yml\" sourcestartlinenumber=\"1\">Describes registry-provider runtime capabilities.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastRegistryUnavailableError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastRegistryUnavailableError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastRegistryUnavailableError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastRegistryUnavailableError.yml\" sourcestartlinenumber=\"1\">Reports an unavailable registry operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastResult.yml\" sourcestartlinenumber=\"1\">Contains aggregate and per-node outcomes for one publication.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastScopeDiagnostic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastScopeDiagnostic.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastScopeDiagnostic",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastScopeDiagnostic.yml\" sourcestartlinenumber=\"1\">Groups registered nodes under one configured scope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastScopeForbiddenError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastScopeForbiddenError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastScopeForbiddenError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastScopeForbiddenError.yml\" sourcestartlinenumber=\"1\">Reports a target scope outside the sender's active registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastSenderNotRegisteredError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastSenderNotRegisteredError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastSenderNotRegisteredError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastSenderNotRegisteredError.yml\" sourcestartlinenumber=\"1\">Reports that the publishing node is not active in a shared registry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastSerializationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastSerializationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastSerializationError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastSerializationError.yml\" sourcestartlinenumber=\"1\">Reports that a typed payload could not be serialized safely.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastService.yml\" sourcestartlinenumber=\"1\">Publishes typed broadcast payloads to a fixed snapshot of active local and remote nodes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastValidationError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastValidationError.yml\" sourcestartlinenumber=\"1\">Reports an invalid broadcast publication request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingBuilderContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingBuilderContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingBuilderContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingBuilderContext.yml\" sourcestartlinenumber=\"1\">Continues fluent configuration of the one host-wide Broadcasting runtime.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingDiagnosticSnapshot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingDiagnosticSnapshot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingDiagnosticSnapshot",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingDiagnosticSnapshot.yml\" sourcestartlinenumber=\"1\">Contains a provider-neutral operational view of Broadcasting.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingDiagnostics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingDiagnostics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingDiagnostics",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingDiagnostics.yml\" sourcestartlinenumber=\"1\">Provides a safe operational view over the effective node registry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingDisabledError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingDisabledError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingDisabledError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingDisabledError.yml\" sourcestartlinenumber=\"1\">Reports that publication was attempted while Broadcasting is disabled.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingMetrics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingMetrics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingMetrics",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingMetrics.yml\" sourcestartlinenumber=\"1\">Defines safe, low-cardinality Broadcasting metric series.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingOptions.yml\" sourcestartlinenumber=\"1\">Configures the host-wide Broadcasting runtime.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingOptionsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingOptionsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingOptionsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingOptionsBuilder.yml\" sourcestartlinenumber=\"1\">Fluently updates one shared <xref href=\"BridgingIT.DevKit.Common.BroadcastingOptions\" data-throw-if-not-resolved=\"false\"></xref> instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingRegistrationState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingRegistrationState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingRegistrationState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingRegistrationState.yml\" sourcestartlinenumber=\"1\">Stores the shared, thread-safe registration state for one application host.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingTypedLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.BroadcastingTypedLogger.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.BroadcastingTypedLogger",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.BroadcastingTypedLogger.yml\" sourcestartlinenumber=\"1\">Provides source-generated, credential- and payload-safe Broadcasting logs.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -18368,6 +18984,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.CorrelationId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.CorrelationId.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.CorrelationId",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.CorrelationId.yml\" sourcestartlinenumber=\"1\">Provides ambient access to the application correlation identifier for the current execution flow.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.CorrelationIdPropagationHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.CorrelationIdPropagationHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.CorrelationIdPropagationHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.CorrelationIdPropagationHandler.yml\" sourcestartlinenumber=\"1\">Propagates the current application correlation identifier to outbound HTTP requests.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.CsvSerializer.yml",
       "output": {
         ".html": {
@@ -18690,6 +19334,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DefaultBroadcastNodeIdentityProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DefaultBroadcastNodeIdentityProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DefaultBroadcastNodeIdentityProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DefaultBroadcastNodeIdentityProvider.yml\" sourcestartlinenumber=\"1\">Resolves the configured node identity or a machine-and-process default.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DefaultJsonSerializerOptions.yml",
       "output": {
         ".html": {
@@ -18743,6 +19401,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.DelegatePipelineStep",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DelegatePipelineStep.yml\" sourcestartlinenumber=\"1\">Adapts inline delegate-backed step descriptors to the standard <xref href=\"BridgingIT.DevKit.Common.IPipelineStep\" data-throw-if-not-resolved=\"false\"></xref> contract.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.DenyBroadcastOperationalAuthorizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.DenyBroadcastOperationalAuthorizer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.DenyBroadcastOperationalAuthorizer",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.DenyBroadcastOperationalAuthorizer.yml\" sourcestartlinenumber=\"1\">Denies privileged Broadcasting registry mutations by default.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -21150,7 +21822,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.HttpContextExtensions",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HttpContextExtensions.yml\" sourcestartlinenumber=\"1\">Provides request correlation accessors for ASP.NET Core HTTP contexts.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -21193,6 +21865,146 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IActivityNamingSchema",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastHandler-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastHandler<TBroadcast>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastHandler-1.yml\" sourcestartlinenumber=\"1\">Handles one accepted typed broadcast on a node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastLocalDispatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastLocalDispatcher.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastLocalDispatcher",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastLocalDispatcher.yml\" sourcestartlinenumber=\"1\">Admits already validated payloads to bounded node-local handler execution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastNodeAddressResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastNodeAddressResolver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastNodeAddressResolver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastNodeAddressResolver.yml\" sourcestartlinenumber=\"1\">Optionally resolves a process-specific receiver address.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastNodeIdentityProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastNodeIdentityProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastNodeIdentityProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastNodeIdentityProvider.yml\" sourcestartlinenumber=\"1\">Provides the identity used for the host's one registry registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastOperationalAuthorizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastOperationalAuthorizer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastOperationalAuthorizer",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastOperationalAuthorizer.yml\" sourcestartlinenumber=\"1\">Authorizes privileged mutation of Broadcasting operational state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastReceiver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastReceiver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastReceiver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastReceiver.yml\" sourcestartlinenumber=\"1\">Validates and admits an inbound envelope for local execution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastRegistryStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastRegistryStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastRegistryStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastRegistryStore.yml\" sourcestartlinenumber=\"1\">Stores live node-discovery registrations without storing messages.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastService.yml\" sourcestartlinenumber=\"1\">Publishes typed broadcasts to all active nodes in the requested or default scope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastTransport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastTransport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastTransport",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastTransport.yml\" sourcestartlinenumber=\"1\">Sends an envelope directly to one remote node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastingDiagnostics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IBroadcastingDiagnostics.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IBroadcastingDiagnostics",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IBroadcastingDiagnostics.yml\" sourcestartlinenumber=\"1\">Exposes safe, provider-neutral operational registry information.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -21305,6 +22117,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ICurrentUserAccessor",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ICurrentUserAccessor.yml\" sourcestartlinenumber=\"1\">The ICurrentUserAccessor interface provides mechanisms to access information about the current user.\nImplementing classes will provide access to user details such as user ID, user name, email, and roles.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IDatabaseReadyService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IDatabaseReadyService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IDatabaseReadyService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IDatabaseReadyService.yml\" sourcestartlinenumber=\"1\">Tracks the readiness or fault state of one or more named databases.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22568,6 +23394,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.InMemoryBroadcastRegistryStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.InMemoryBroadcastRegistryStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.InMemoryBroadcastRegistryStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.InMemoryBroadcastRegistryStore.yml\" sourcestartlinenumber=\"1\">Stores process-local node registrations for development and tests.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.InMemoryCacheProvider.TypedLogger.yml",
       "output": {
         ".html": {
@@ -23156,6 +23996,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.LocalOnlyBroadcastTransport.yml\" sourcestartlinenumber=\"1\">Provides the process-local fallback transport used when no remote transport is configured.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.MapperExtensions.yml",
       "output": {
         ".html": {
@@ -23534,6 +24388,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.MetricTag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.MetricTag.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.MetricTag",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.MetricTag.yml\" sourcestartlinenumber=\"1\">Represents a name/value tag attached to a metric measurement.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.Metrics.yml",
       "output": {
         ".html": {
@@ -23544,7 +24412,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Metrics",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Metrics.yml\" sourcestartlinenumber=\"1\">Provides shared naming and recording helpers for runtime metrics.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Metrics.yml\" sourcestartlinenumber=\"1\">Provides shared naming and timing helpers for runtime metrics.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -23769,6 +24637,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ModuleScopeBehavior<TRequest, TResponse>",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.NameGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.NameGenerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.NameGenerator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.NameGenerator.yml\" sourcestartlinenumber=\"1\">Generates memorable lowercase names by combining an adjective with a noun.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25407,6 +26289,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.RawKeyDisplayStrategy",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.RawKeyDisplayStrategy.yml\" sourcestartlinenumber=\"1\">Displays keys unchanged for normal operational diagnostics.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.RecentBroadcastTracker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.RecentBroadcastTracker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.RecentBroadcastTracker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.RecentBroadcastTracker.yml\" sourcestartlinenumber=\"1\">Provides bounded, expiry-aware duplicate protection for recently accepted broadcasts.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -31664,7 +32560,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Repositories.DatabaseReadyHealthCheck",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.DatabaseReadyHealthCheck.yml\" sourcestartlinenumber=\"1\">Reports health from the current <xref href=\"BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService\" data-throw-if-not-resolved=\"false\"></xref> readiness and fault state.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.DatabaseReadyHealthCheck.yml\" sourcestartlinenumber=\"1\">Reports health from the current <xref href=\"BridgingIT.DevKit.Common.IDatabaseReadyService\" data-throw-if-not-resolved=\"false\"></xref> readiness and fault state.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -31678,7 +32574,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Repositories.DatabaseReadyService",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.DatabaseReadyService.yml\" sourcestartlinenumber=\"1\">Thread-safe implementation of <xref href=\"BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService\" data-throw-if-not-resolved=\"false\"></xref> for tracking readiness and fault state\nof multiple named databases. Allows modules to mark databases as ready or faulted,\nand consumers to query or await readiness.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.DatabaseReadyService.yml\" sourcestartlinenumber=\"1\">Thread-safe implementation of <xref href=\"BridgingIT.DevKit.Common.IDatabaseReadyService\" data-throw-if-not-resolved=\"false\"></xref> for tracking readiness and fault state\nof multiple named databases. Allows modules to mark databases as ready or faulted,\nand consumers to query or await readiness.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -32099,20 +32995,6 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Repositories.HierarchyOptionBuilder",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.HierarchyOptionBuilder.yml\" sourcestartlinenumber=\"1\">A builder class for creating a list of <xref href=\"BridgingIT.DevKit.Domain.Repositories.IncludeOption%601\" data-throw-if-not-resolved=\"false\"></xref> instances from a collection of include paths.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.yml",
-      "output": {
-        ".html": {
-          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.yml\" sourcestartlinenumber=\"1\">Provides a thread-safe service for tracking the readiness state of one or more named databases.\nAllows modules to signal when a database is ready or faulted,\nand consumers to wait asynchronously for readiness or be notified of failure.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -34198,6 +35080,76 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ActiveEntityProviderConfiguratorExtensions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeRegistrationEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeRegistrationEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeRegistrationEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeRegistrationEntity.yml\" sourcestartlinenumber=\"1\">Represents one process registration in a shared Broadcasting registry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeScopeEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeScopeEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeScopeEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.BroadcastNodeScopeEntity.yml\" sourcestartlinenumber=\"1\">Associates one registered node with one normalized broadcast scope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.EntityFrameworkBroadcastRegistryStore-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.EntityFrameworkBroadcastRegistryStore-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.EntityFrameworkBroadcastRegistryStore<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.EntityFrameworkBroadcastRegistryStore-1.yml\" sourcestartlinenumber=\"1\">Stores shared Broadcasting node discovery state through an application-owned DbContext.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.IBroadcastingContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.IBroadcastingContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.IBroadcastingContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.IBroadcastingContext.yml\" sourcestartlinenumber=\"1\">Defines the Entity Framework sets required by Broadcasting.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting",
       "Summary": null
     },
     {
@@ -40250,6 +41202,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.AllowAllBroadcastHttpAuthentication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.AllowAllBroadcastHttpAuthentication.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.AllowAllBroadcastHttpAuthentication",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.AllowAllBroadcastHttpAuthentication.yml\" sourcestartlinenumber=\"1\">Allows requests when no explicit Broadcasting transport authentication is selected.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ApplicationBuilderExtensions.yml",
       "output": {
         ".html": {
@@ -40541,6 +41507,174 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.BearerSecurityRequirementDocumentTransformer",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BearerSecurityRequirementDocumentTransformer.yml\" sourcestartlinenumber=\"1\">Configures Bearer token security requirements for the OpenAPI document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverChain.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverChain.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverChain",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverChain.yml\" sourcestartlinenumber=\"1\">Resolves addresses using explicit, ordered custom, and Kestrel sources.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverRegistration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverRegistration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverRegistration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverRegistration.yml\" sourcestartlinenumber=\"1\">Describes an ordered custom node-address resolver registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.yml\" sourcestartlinenumber=\"1\">Maps the Broadcasting operational dashboard and its test-publish action.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardPageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardPageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardPageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardPageProvider.yml\" sourcestartlinenumber=\"1\">Provides the Broadcasting dashboard navigation and index-card descriptor.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Content.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Content.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Content",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Content.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Broadcasting/Dashboard/Pages/Content.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Index.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Index.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Index",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.Index.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Broadcasting/Dashboard/Pages/Index.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.Pages",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.BroadcastingEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingEndpoints.yml\" sourcestartlinenumber=\"1\">Maps the internal HTTP broadcast receiver.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingEndpointsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingEndpointsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.BroadcastingEndpointsOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingEndpointsOptions.yml\" sourcestartlinenumber=\"1\">Configures the internal Broadcasting receiver endpoint group.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions.yml\" sourcestartlinenumber=\"1\">Configures the standard Broadcasting HTTP transport and receiver.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptionsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptionsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptionsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptionsBuilder.yml\" sourcestartlinenumber=\"1\">Fluently configures one shared <xref href=\"BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions\" data-throw-if-not-resolved=\"false\"></xref> instance.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -40919,6 +42053,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.ConfigurationDevKitWebApplicationBuilderExtensions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ConfigurationDevKitWebApplicationBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Provides DevKit configuration and module starter extensions for presentation application builders.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.yml\" sourcestartlinenumber=\"1\">Resolves an explicitly configured process address before other address sources.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -42896,6 +44044,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpBroadcastTransport.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpBroadcastTransport.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.HttpBroadcastTransport",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.HttpBroadcastTransport.yml\" sourcestartlinenumber=\"1\">Sends broadcast envelopes directly to registered node receiver addresses over HTTP.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.HttpCurrentUserAccessor.yml",
       "output": {
         ".html": {
@@ -42977,6 +44139,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.IAuthorizationCodeService",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.IBroadcastHttpAuthentication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.IBroadcastHttpAuthentication.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.IBroadcastHttpAuthentication",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.IBroadcastHttpAuthentication.yml\" sourcestartlinenumber=\"1\">Applies outbound and validates inbound Broadcasting HTTP transport authentication.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -43621,6 +44797,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.Jobs",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.KestrelBroadcastNodeAddressResolver.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.KestrelBroadcastNodeAddressResolver.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.KestrelBroadcastNodeAddressResolver",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.KestrelBroadcastNodeAddressResolver.yml\" sourcestartlinenumber=\"1\">Resolves the first concrete HTTP address exposed by the running Kestrel server.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -45833,6 +47023,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.SerilogDevKitWebApplicationBuilderExtensions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.SerilogDevKitWebApplicationBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Provides DevKit logging starter extensions for presentation application builders.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.SharedSecretBroadcastHttpAuthentication.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.SharedSecretBroadcastHttpAuthentication.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.SharedSecretBroadcastHttpAuthentication",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.SharedSecretBroadcastHttpAuthentication.yml\" sourcestartlinenumber=\"1\">Provides the DevKit built-in exact shared-secret HTTP authentication.</p>\n"
     },
     {
       "type": "ManagedReference",

@@ -348,7 +348,7 @@ Class MetricsBlobStoreClientBehavior
     .WithMetricsBehavior()
     .WithInMemoryClient("reports");</code></pre>
 
-  <pre><code class="lang-csharp">var behavior = new MetricsBlobStoreClientBehavior(meterFactory, inner, "reports");</code></pre>
+  <pre><code class="lang-csharp">var behavior = new MetricsBlobStoreClientBehavior(inner, metricsService, "reports");</code></pre>
 
 
   <h2 id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior_remarks">Remarks</h2>
@@ -362,8 +362,8 @@ Class MetricsBlobStoreClientBehavior
 
   <a id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsBlobStoreClientBehavior.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_System_Diagnostics_Metrics_IMeterFactory_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsBlobStoreClientBehavior.#ctor(System.Diagnostics.Metrics.IMeterFactory,BridgingIT.DevKit.Application.Storage.IBlobStoreClient,System.String)">
-  MetricsBlobStoreClientBehavior(IMeterFactory, IBlobStoreClient, string)
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Common_IMetricsService_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsBlobStoreClientBehavior.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,BridgingIT.DevKit.Common.IMetricsService,System.String)">
+  MetricsBlobStoreClientBehavior(IBlobStoreClient, IMetricsService, string)
   
   </h3>
 
@@ -372,16 +372,16 @@ Class MetricsBlobStoreClientBehavior
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MetricsBlobStoreClientBehavior(IMeterFactory meterFactory, IBlobStoreClient inner, string storeName = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public MetricsBlobStoreClientBehavior(IBlobStoreClient inner, IMetricsService metricsService = null, string storeName = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd><p>The optional meter factory.</p>
-</dd>
     <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a></dt>
     <dd><p>The decorated blob-store client.</p>
+</dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
+    <dd><p>The optional shared metrics service.</p>
 </dd>
     <dt><code>storeName</code> <span class="xref">string</span></dt>
     <dd><p>The configured blob-store client name.</p>
@@ -394,15 +394,15 @@ Class MetricsBlobStoreClientBehavior
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_System_Diagnostics_Metrics_IMeterFactory_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Common_IMetricsService_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">services.AddBlobStorage()
     .WithMetricsBehavior()
     .WithInMemoryClient("reports");</code></pre>
 
-  <pre><code class="lang-csharp">var behavior = new MetricsBlobStoreClientBehavior(meterFactory, inner, "reports");</code></pre>
+  <pre><code class="lang-csharp">var behavior = new MetricsBlobStoreClientBehavior(inner, metricsService, "reports");</code></pre>
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_System_Diagnostics_Metrics_IMeterFactory_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String__remarks">Remarks</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_MetricsBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Common_IMetricsService_System_String__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Application.Storage.MetricsBlobStoreClientBehavior.html">MetricsBlobStoreClientBehavior</a> class.</p>
 </div>
 

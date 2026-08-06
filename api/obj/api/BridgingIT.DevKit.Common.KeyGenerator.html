@@ -117,6 +117,9 @@ Class KeyGenerator
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_KeyGenerator_examples">Examples</h2>
+  <pre><code class="lang-csharp">var key = KeyGenerator.CreateLowercase(12);</code></pre>
+
 
 
 
@@ -149,13 +152,101 @@ Class KeyGenerator
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>A randomly generated string key of the specified size.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_KeyGenerator_Create_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var key = KeyGenerator.Create(32);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_KeyGenerator_CreateLowercase_" data-uid="BridgingIT.DevKit.Common.KeyGenerator.CreateLowercase*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_KeyGenerator_CreateLowercase_System_Int32_" data-uid="BridgingIT.DevKit.Common.KeyGenerator.CreateLowercase(System.Int32)">
+  CreateLowercase(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a cryptographically random lowercase alphanumeric key of the specified size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string CreateLowercase(int size)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>size</code> <span class="xref">int</span></dt>
+    <dd><p>The length of the generated key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A random key containing only lowercase ASCII letters and digits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_KeyGenerator_CreateLowercase_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var identifier = KeyGenerator.CreateLowercase(12);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_KeyGenerator_CreateUppercase_" data-uid="BridgingIT.DevKit.Common.KeyGenerator.CreateUppercase*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_KeyGenerator_CreateUppercase_System_Int32_" data-uid="BridgingIT.DevKit.Common.KeyGenerator.CreateUppercase(System.Int32)">
+  CreateUppercase(int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Generates a cryptographically random uppercase alphanumeric key of the specified size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string CreateUppercase(int size)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>size</code> <span class="xref">int</span></dt>
+    <dd><p>The length of the generated key.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>A random key containing only uppercase ASCII letters and digits.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_KeyGenerator_CreateUppercase_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var identifier = KeyGenerator.CreateUppercase(12);</code></pre>
 
 
 

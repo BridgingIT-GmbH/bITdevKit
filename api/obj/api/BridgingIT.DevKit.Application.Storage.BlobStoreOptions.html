@@ -332,6 +332,41 @@ Class BlobStoreOptions
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_ChunkFlushCount_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreOptions.ChunkFlushCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_ChunkFlushCount" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreOptions.ChunkFlushCount">
+  ChunkFlushCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum number of EF Core blob chunks persisted per intermediate flush.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ChunkFlushCount { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_ChunkFlushCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">options.ChunkFlushCount = 4;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_ChunkSize_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreOptions.ChunkSize*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_ChunkSize" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreOptions.ChunkSize">
@@ -501,6 +536,41 @@ Class BlobStoreOptions
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_MaxBlobSize_examples">Examples</h4>
   <pre><code class="lang-csharp">options.MaxBlobSize = ByteSize.Megabytes(50);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_MaxPendingChunkBytes_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreOptions.MaxPendingChunkBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_MaxPendingChunkBytes" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreOptions.MaxPendingChunkBytes">
+  MaxPendingChunkBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum pending EF Core blob chunk content in bytes before an intermediate flush.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long MaxPendingChunkBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreOptions_MaxPendingChunkBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">options.MaxPendingChunkBytes = ByteSize.Megabytes(16);</code></pre>
 
 
 

@@ -481,6 +481,16 @@ Intended for inheritance by concrete providers, ensuring testability and consist
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreUploadAdmissionTimeoutError.html">BlobStoreUploadAdmissionTimeoutError</a></dt>
+      <dd><p>Represents an upload whose bounded admission wait expired.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreUploadOverloadedError.html">BlobStoreUploadOverloadedError</a></dt>
+      <dd><p>Represents an upload rejected because the bounded waiting queue is full.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobStoreValidationError.html">BlobStoreValidationError</a></dt>
       <dd><p>Represents a blob-store validation failure.</p>
 </dd>
@@ -518,6 +528,21 @@ Intended for inheritance by concrete providers, ensuring testability and consist
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUpload.html">BlobUpload</a></dt>
       <dd><p>Describes a stream-first blob upload request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionCoordinator.html">BlobUploadAdmissionCoordinator</a></dt>
+      <dd><p>Implements shared bounded FIFO upload admission per normalized store name.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionLease.html">BlobUploadAdmissionLease</a></dt>
+      <dd><p>Represents the outcome and lifetime of one upload-admission request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobUploadAdmissionSnapshot.html">BlobUploadAdmissionSnapshot</a></dt>
+      <dd><p>Describes current upload-admission limits and counts for one named store.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1396,6 +1421,16 @@ Uses structured logging with TypedLogger for consistent formatting, similar to R
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.TreeNode.html">TreeNode</a></dt>
       <dd></dd>
     </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehavior.html">UploadConcurrencyBlobStoreClientBehavior</a></dt>
+      <dd><p>Applies bounded process-local admission to upload operations while passing other operations through.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.UploadConcurrencyBlobStoreClientBehaviorOptions.html">UploadConcurrencyBlobStoreClientBehaviorOptions</a></dt>
+      <dd><p>Configures bounded, process-local admission for blob uploads.</p>
+</dd>
+    </dl>
     <h3 id="structs">
 Structs
 </h3>
@@ -1463,6 +1498,11 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreRetentionProvider.html">IBlobStoreRetentionProvider</a></dt>
       <dd><p>Defines provider-side expired blob sweeping without adding maintenance methods to <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClient.html">IBlobStoreClient</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobUploadAdmissionCoordinator.html">IBlobUploadAdmissionCoordinator</a></dt>
+      <dd><p>Coordinates bounded upload admission across client instances in one process.</p>
 </dd>
     </dl>
     <dl class="jumplist">

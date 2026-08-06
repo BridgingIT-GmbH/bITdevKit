@@ -203,6 +203,96 @@ BlobStoreClientBehaviorTelemetry.IncrementRetry();</code></pre>
 
 
 
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionCancellation_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementAdmissionCancellation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionCancellation" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementAdmissionCancellation">
+  IncrementAdmissionCancellation()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Increments the queued admission-cancellation observation on the current telemetry scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IncrementAdmissionCancellation()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionCancellation_examples">Examples</h4>
+  <pre><code class="lang-csharp">BlobStoreClientBehaviorTelemetry.IncrementAdmissionCancellation();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionRejection_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementAdmissionRejection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionRejection" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementAdmissionRejection">
+  IncrementAdmissionRejection()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Increments the queue-full rejection count on the current telemetry scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IncrementAdmissionRejection()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionRejection_examples">Examples</h4>
+  <pre><code class="lang-csharp">BlobStoreClientBehaviorTelemetry.IncrementAdmissionRejection();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionTimeout_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementAdmissionTimeout*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionTimeout" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementAdmissionTimeout">
+  IncrementAdmissionTimeout()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Increments the admission-timeout count on the current telemetry scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void IncrementAdmissionTimeout()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementAdmissionTimeout_examples">Examples</h4>
+  <pre><code class="lang-csharp">BlobStoreClientBehaviorTelemetry.IncrementAdmissionTimeout();</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementRetry_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementRetry*"></a>
 
   <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementRetry" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.IncrementRetry">
@@ -257,6 +347,42 @@ BlobStoreClientBehaviorTelemetry.IncrementRetry();</code></pre>
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_IncrementTimeout_examples">Examples</h4>
   <pre><code class="lang-csharp">BlobStoreClientBehaviorTelemetry.IncrementTimeout();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_RecordAdmission_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.RecordAdmission*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_RecordAdmission_System_TimeSpan_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreClientBehaviorTelemetry.RecordAdmission(System.TimeSpan)">
+  RecordAdmission(TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a successful upload admission on the current telemetry scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void RecordAdmission(TimeSpan waitDuration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>waitDuration</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The admission wait duration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreClientBehaviorTelemetry_RecordAdmission_System_TimeSpan__examples">Examples</h4>
+  <pre><code class="lang-csharp">BlobStoreClientBehaviorTelemetry.RecordAdmission(TimeSpan.FromMilliseconds(12));</code></pre>
 
 
 

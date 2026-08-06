@@ -96,12 +96,12 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.DatabaseReadyHealthCheck.html">DatabaseReadyHealthCheck</a></dt>
-      <dd><p>Reports health from the current <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.html">IDatabaseReadyService</a> readiness and fault state.</p>
+      <dd><p>Reports health from the current <a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a> readiness and fault state.</p>
 </dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.DatabaseReadyService.html">DatabaseReadyService</a></dt>
-      <dd><p>Thread-safe implementation of <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.html">IDatabaseReadyService</a> for tracking readiness and fault state
+      <dd><p>Thread-safe implementation of <a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a> for tracking readiness and fault state
 of multiple named databases. Allows modules to mark databases as ready or faulted,
 and consumers to query or await readiness.</p>
 </dd>
@@ -594,13 +594,6 @@ from a collection of <a class="xref" href="BridgingIT.DevKit.Common.FilterOrderC
     <h3 id="interfaces">
 Interfaces
 </h3>
-    <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.html">IDatabaseReadyService</a></dt>
-      <dd><p>Provides a thread-safe service for tracking the readiness state of one or more named databases.
-Allows modules to signal when a database is ready or faulted,
-and consumers to wait asynchronously for readiness or be notified of failure.</p>
-</dd>
-    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseTransaction.html">IDatabaseTransaction</a></dt>
       <dd></dd>

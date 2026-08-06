@@ -106,6 +106,11 @@ Returns a 404 Not Found response when a domain aggregate cannot be found.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.AllowAllBroadcastHttpAuthentication.html">AllowAllBroadcastHttpAuthentication</a></dt>
+      <dd><p>Allows requests when no explicit Broadcasting transport authentication is selected.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.ApplicationBuilderExtensions.html">ApplicationBuilderExtensions</a></dt>
       <dd><p>Provides extension methods for configuring application-specific middlewares.</p>
 </dd>
@@ -210,12 +215,47 @@ based on <a class="xref" href="BridgingIT.DevKit.Common.HandlerAuthorizeRolesAtt
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverChain.html">BroadcastNodeAddressResolverChain</a></dt>
+      <dd><p>Resolves addresses using explicit, ordered custom, and Kestrel sources.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastNodeAddressResolverRegistration.html">BroadcastNodeAddressResolverRegistration</a></dt>
+      <dd><p>Describes an ordered custom node-address resolver registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastingEndpoints.html">BroadcastingEndpoints</a></dt>
+      <dd><p>Maps the internal HTTP broadcast receiver.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastingEndpointsOptions.html">BroadcastingEndpointsOptions</a></dt>
+      <dd><p>Configures the internal Broadcasting receiver endpoint group.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions.html">BroadcastingHttpOptions</a></dt>
+      <dd><p>Configures the standard Broadcasting HTTP transport and receiver.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptionsBuilder.html">BroadcastingHttpOptionsBuilder</a></dt>
+      <dd><p>Fluently configures one shared <a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions.html">BroadcastingHttpOptions</a> instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.BrowseConsoleCommand.html">BrowseConsoleCommand</a></dt>
       <dd></dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.ConfigurationDevKitWebApplicationBuilderExtensions.html">ConfigurationDevKitWebApplicationBuilderExtensions</a></dt>
       <dd><p>Provides DevKit configuration and module starter extensions for presentation application builders.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.html">ConfiguredBroadcastNodeAddressResolver</a></dt>
+      <dd><p>Resolves an explicitly configured process address before other address sources.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -568,6 +608,11 @@ caught by more specific handlers.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.HttpBroadcastTransport.html">HttpBroadcastTransport</a></dt>
+      <dd><p>Sends broadcast envelopes directly to registered node receiver addresses over HTTP.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.HttpCurrentUserAccessor.html">HttpCurrentUserAccessor</a></dt>
       <dd><p>The HttpCurrentUserAccessor class provides mechanisms to access information about the current user in the context
 of an HTTP request.
@@ -599,6 +644,11 @@ Returns a 503 Service Unavailable response when an HTTP request fails.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.IdentityProviderEndpointPathsBuilder.html">IdentityProviderEndpointPathsBuilder</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.KestrelBroadcastNodeAddressResolver.html">KestrelBroadcastNodeAddressResolver</a></dt>
+      <dd><p>Resolves the first concrete HTTP address exposed by the running Kestrel server.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.KestrelPortsConsoleCommand.html">KestrelPortsConsoleCommand</a></dt>
@@ -921,6 +971,11 @@ Returns a 401 Unauthorized response when a security violation occurs.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.SharedSecretBroadcastHttpAuthentication.html">SharedSecretBroadcastHttpAuthentication</a></dt>
+      <dd><p>Provides the DevKit built-in exact shared-secret HTTP authentication.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.StatusConsoleCommand.html">StatusConsoleCommand</a></dt>
       <dd></dd>
     </dl>
@@ -999,6 +1054,11 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.IAuthorizationCodeService.html">IAuthorizationCodeService</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.IBroadcastHttpAuthentication.html">IBroadcastHttpAuthentication</a></dt>
+      <dd><p>Applies outbound and validates inbound Broadcasting HTTP transport authentication.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.IDotNetMetricsSnapshotService.html">IDotNetMetricsSnapshotService</a></dt>

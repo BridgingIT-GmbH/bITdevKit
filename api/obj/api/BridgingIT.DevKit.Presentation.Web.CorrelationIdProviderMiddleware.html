@@ -250,7 +250,18 @@ Class CorrelationIdProviderMiddleware
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware_examples">Examples</h2>
+  <pre><code class="lang-csharp">app.UseRequestCorrelation();</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Register this middleware after routing so flow identifiers can use endpoint route patterns.
+Identifiers are cached in the current <span class="xref">Microsoft.AspNetCore.Http.HttpContext</span> and remain stable when the
+pipeline is registered more than once or re-executed by exception handling middleware.
+An inbound correlation identifier is accepted from the header first and then the query string
+when it is a single value of at most 128 ASCII letters, digits, hyphens, underscores, periods,
+or colons. Invalid values are silently replaced with a generated identifier.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -259,26 +270,27 @@ Class CorrelationIdProviderMiddleware
 
   <a id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__ctor_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__Microsoft_AspNetCore_Http_RequestDelegate_Microsoft_AspNetCore_Http_Features_IHttpMetricsTagsFeature_" data-uid="BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware.#ctor(Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware},Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.AspNetCore.Http.Features.IHttpMetricsTagsFeature)">
-  CorrelationIdProviderMiddleware(ILogger&lt;CorrelationIdProviderMiddleware&gt;, RequestDelegate, IHttpMetricsTagsFeature)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__ctor_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__Microsoft_AspNetCore_Http_RequestDelegate_" data-uid="BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware.#ctor(Microsoft.Extensions.Logging.ILogger{BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware},Microsoft.AspNetCore.Http.RequestDelegate)">
+  CorrelationIdProviderMiddleware(ILogger&lt;CorrelationIdProviderMiddleware&gt;, RequestDelegate)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware.html">CorrelationIdProviderMiddleware</a> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public CorrelationIdProviderMiddleware(ILogger&lt;CorrelationIdProviderMiddleware&gt; logger, RequestDelegate next, IHttpMetricsTagsFeature httpMetricsTags = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public CorrelationIdProviderMiddleware(ILogger&lt;CorrelationIdProviderMiddleware&gt; logger, RequestDelegate next)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.CorrelationIdProviderMiddleware.html">CorrelationIdProviderMiddleware</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The structured logger.</p>
+</dd>
     <dt><code>next</code> <span class="xref">RequestDelegate</span></dt>
-    <dd></dd>
-    <dt><code>httpMetricsTags</code> <span class="xref">IHttpMetricsTagsFeature</span></dt>
-    <dd></dd>
+    <dd><p>The next middleware in the request pipeline.</p>
+</dd>
   </dl>
 
 
@@ -286,6 +298,9 @@ Class CorrelationIdProviderMiddleware
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__ctor_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware__Microsoft_AspNetCore_Http_RequestDelegate__examples">Examples</h4>
+  <pre><code class="lang-csharp">app.UseMiddleware&lt;CorrelationIdProviderMiddleware&gt;();</code></pre>
 
 
 
@@ -303,7 +318,8 @@ Class CorrelationIdProviderMiddleware
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Resolves the request correlation identifier and makes it ambient for the remaining pipeline.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -313,19 +329,24 @@ Class CorrelationIdProviderMiddleware
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>httpContext</code> <span class="xref">HttpContext</span></dt>
-    <dd></dd>
+    <dd><p>The current HTTP context.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents request pipeline execution.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_CorrelationIdProviderMiddleware_Invoke_Microsoft_AspNetCore_Http_HttpContext__examples">Examples</h4>
+  <pre><code class="lang-csharp">await middleware.Invoke(httpContext);</code></pre>
 
 
 

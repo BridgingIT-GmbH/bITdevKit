@@ -4258,7 +4258,7 @@
 <tr>
 <td>Cancellation, tracing, logging, metrics</td>
 <td>None</td>
-<td>Cancellation token, <code>ActivitySource</code>, <code>ILoggerFactory</code>, or <code>IMeterFactory</code></td>
+<td>Cancellation token, <code>ActivitySource</code>, <code>ILoggerFactory</code>, or optional <code>IMetricsService</code></td>
 </tr>
 <tr>
 <td>Audit state</td>
@@ -4273,7 +4273,7 @@
 <tr>
 <td>Created domain event and event metrics</td>
 <td><code>IAggregateRoot</code></td>
-<td>Optional <code>IMeterFactory</code> for metrics</td>
+<td>Optional <code>IMetricsService</code> for metrics</td>
 </tr>
 <tr>
 <td>Outbox domain events</td>

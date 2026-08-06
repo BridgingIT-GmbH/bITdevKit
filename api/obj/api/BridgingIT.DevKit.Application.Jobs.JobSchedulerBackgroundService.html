@@ -260,8 +260,8 @@ Class JobSchedulerBackgroundService
 
   <a id="BridgingIT_DevKit_Application_Jobs_JobSchedulerBackgroundService__ctor_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerBackgroundService.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerBackgroundService__ctor_System_TimeProvider_BridgingIT_DevKit_Application_Jobs_JobSchedulerService_Microsoft_Extensions_Hosting_IHostApplicationLifetime_BridgingIT_DevKit_Application_Jobs_JobSchedulerHostedOptions_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Jobs_IJobSchedulerExceptionHandler__Microsoft_Extensions_Logging_ILoggerFactory_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerBackgroundService.#ctor(System.TimeProvider,BridgingIT.DevKit.Application.Jobs.JobSchedulerService,Microsoft.Extensions.Hosting.IHostApplicationLifetime,BridgingIT.DevKit.Application.Jobs.JobSchedulerHostedOptions,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Jobs.IJobSchedulerExceptionHandler},Microsoft.Extensions.Logging.ILoggerFactory)">
-  JobSchedulerBackgroundService(TimeProvider, JobSchedulerService, IHostApplicationLifetime, JobSchedulerHostedOptions, IEnumerable&lt;IJobSchedulerExceptionHandler&gt;, ILoggerFactory)
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobSchedulerBackgroundService__ctor_System_TimeProvider_BridgingIT_DevKit_Application_Jobs_JobSchedulerService_Microsoft_Extensions_Hosting_IHostApplicationLifetime_BridgingIT_DevKit_Application_Jobs_JobSchedulerHostedOptions_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Application_Jobs_IJobSchedulerExceptionHandler__Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Jobs.JobSchedulerBackgroundService.#ctor(System.TimeProvider,BridgingIT.DevKit.Application.Jobs.JobSchedulerService,Microsoft.Extensions.Hosting.IHostApplicationLifetime,BridgingIT.DevKit.Application.Jobs.JobSchedulerHostedOptions,System.Collections.Generic.IEnumerable{BridgingIT.DevKit.Application.Jobs.IJobSchedulerExceptionHandler},Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Common.IMetricsService)">
+  JobSchedulerBackgroundService(TimeProvider, JobSchedulerService, IHostApplicationLifetime, JobSchedulerHostedOptions, IEnumerable&lt;IJobSchedulerExceptionHandler&gt;, ILoggerFactory, IMetricsService)
   
   </h3>
 
@@ -270,7 +270,7 @@ Class JobSchedulerBackgroundService
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public JobSchedulerBackgroundService(TimeProvider timeProvider, JobSchedulerService scheduler, IHostApplicationLifetime applicationLifetime, JobSchedulerHostedOptions options = null, IEnumerable&lt;IJobSchedulerExceptionHandler&gt; exceptionHandlers = null, ILoggerFactory loggerFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public JobSchedulerBackgroundService(TimeProvider timeProvider, JobSchedulerService scheduler, IHostApplicationLifetime applicationLifetime, JobSchedulerHostedOptions options = null, IEnumerable&lt;IJobSchedulerExceptionHandler&gt; exceptionHandlers = null, ILoggerFactory loggerFactory = null, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -286,6 +286,8 @@ Class JobSchedulerBackgroundService
     <dt><code>exceptionHandlers</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobSchedulerExceptionHandler.html">IJobSchedulerExceptionHandler</a>&gt;</dt>
     <dd></dd>
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
+    <dd></dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 

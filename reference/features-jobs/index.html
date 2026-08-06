@@ -4834,7 +4834,7 @@
 </code></pre></div>
 <p>Behavior notes:</p>
 <ul>
-<li><code>JobMetricsBehavior</code> is registered by default so execution spans and execution-level metrics continue to flow without extra setup</li>
+<li><code>JobMetricsBehavior</code> is registered by default. Execution activities continue to flow without extra setup; execution-level metrics are emitted when the optional shared service is registered with <code>AddMetrics(options =&gt; options.Enabled())</code></li>
 <li>global behaviors run before job-specific fluent behaviors and attribute-declared behaviors</li>
 <li>attribute-declared behaviors run before fluent job-specific behaviors on the same job</li>
 <li>behaviors should wrap <code>next()</code> and let the scheduler keep ownership of leases, retries, timeout handling, and durable state transitions</li>
@@ -5277,7 +5277,7 @@
 <li>Maintenance operations work on retained state only and do not mutate the source registration model.</li>
 </ul>
 <h2 id="observability-and-telemetry">Observability And Telemetry<a class="headerlink" href="#observability-and-telemetry" title="Permanent link">&para;</a></h2>
-<p>Jobs emits runtime telemetry through <code>ActivitySource</code> and <code>Meter</code> using the shared source name <code>BridgingIT.DevKit.Application.Jobs</code>.</p>
+<p>Jobs emits tracing through <code>ActivitySource</code> using the source name <code>BridgingIT.DevKit.Application.Jobs</code>. It emits optional runtime metrics through <code>IMetricsService</code> and the shared <code>bdk</code> meter when metrics are registered.</p>
 <p>Execution-level telemetry is emitted through the default <code>JobMetricsBehavior</code>, which wraps the job execution pipeline. Sweep, materialization, lease, accepted-event, management, and maintenance telemetry remain runtime-owned because they are not job-body concerns.</p>
 <p>Tracing creates spans for:</p>
 <ul>
@@ -5300,12 +5300,12 @@
 <li>worker-pool utilization snapshots during sweeps and execution starts</li>
 <li>management and maintenance operation counts</li>
 </ul>
-<p>Common telemetry tags include job name, trigger name, trigger type, occurrence id, execution id, scheduler instance id, correlation id, and lease owner when that information exists.</p>
+<p>Metric tags are intentionally bounded to job name, trigger name, trigger type, status, operation, event source, and other finite classifications. Occurrence ids, execution ids, correlation ids, scheduler instance ids, and lease owners are excluded from metrics to avoid unbounded time-series cardinality. Those identifiers remain available on activities, in logs, and in durable scheduler records.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Sweep as Scheduler sweep
     participant Store as Store provider
     participant Job as Job execution
-    participant Telemetry as ActivitySource + Meter
+    participant Telemetry as ActivitySource + IMetricsService
 
     Sweep-&gt;&gt;Telemetry: jobs.sweep
     Sweep-&gt;&gt;Store: materialize due triggers
@@ -5316,7 +5316,7 @@
     Job-&gt;&gt;Telemetry: jobs.execution + execution metrics
     Job-&gt;&gt;Store: append history / update occurrence
     Job-&gt;&gt;Telemetry: jobs.retry.schedule or terminal execution metrics</code></pre>
-<p>If you pass <code>JobDispatchOptions.CorrelationId</code> or an accepted-event correlation id, that identifier flows into <code>IJobExecutionContext</code>, durable history, and telemetry tags for the resulting execution path.</p>
+<p>If you pass <code>JobDispatchOptions.CorrelationId</code> or an accepted-event correlation id, that identifier flows into <code>IJobExecutionContext</code>, durable history, activities, and logs for the resulting execution path. It is deliberately not emitted as a metric tag.</p>
 <h2 id="operational-services">Operational Services<a class="headerlink" href="#operational-services" title="Permanent link">&para;</a></h2>
 <h3 id="runtime-control">Runtime Control<a class="headerlink" href="#runtime-control" title="Permanent link">&para;</a></h3>
 <p>Use <code>IJobSchedulerService</code> when application code or support tooling needs to mutate scheduler state.</p>

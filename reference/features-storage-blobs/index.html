@@ -2542,6 +2542,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#high-volume-uploads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-Volume Uploads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#http-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3184,6 +3195,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#high-volume-uploads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-Volume Uploads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#http-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3587,6 +3609,7 @@
 <li><a href="#overview">Overview</a></li>
 <li><a href="#key-rules">Key Rules</a></li>
 <li><a href="#registration">Registration</a></li>
+<li><a href="#high-volume-uploads">High-Volume Uploads</a></li>
 <li><a href="#http-endpoints">HTTP Endpoints</a></li>
 <li><a href="#dashboard">Dashboard</a></li>
 <li><a href="#compression-and-encryption-behaviors">Compression and Encryption Behaviors</a></li>
@@ -3653,6 +3676,7 @@
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.DependencyInjection</span><span class="p">;</span>
 
+<span class="n">services</span><span class="p">.</span><span class="n">AddMetrics</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">());</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BlobServiceClient</span><span class="p">(</span><span class="n">connectionString</span><span class="p">));</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
@@ -3693,6 +3717,34 @@
 </code></pre></div>
 <p><code>WithAzureBlobClient</code> maps <code>BlobKey.Container</code> to the native Azure container and <code>BlobKey.Name</code> to the native blob name. There is no registration-level container override.</p>
 <p><code>AddBlobStorage</code> also registers the provider-neutral <code>IBlobStorageDiagnosticsService</code> and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.</p>
+<h2 id="high-volume-uploads">High-Volume Uploads<a class="headerlink" href="#high-volume-uploads" title="Permanent link">&para;</a></h2>
+<p>Use the optional upload-concurrency behavior when bursts must not open an unbounded number of provider operations, contexts, transactions, or database connections. Admission is shared by every DI scope in one process and isolated by case-insensitive named store.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddBlobStorage</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithLoggingBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithMetricsBehavior</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithTimeoutBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithRetryBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Attempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithUploadConcurrencyBehavior</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxConcurrentUploads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxQueuedUploads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">QueueWaitTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkClient</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;reports&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ChunkSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ChunkFlushCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">MaxPendingChunkBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteSize</span><span class="p">.</span><span class="n">Megabytes</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+</code></pre></div>
+<p><code>WithMetricsBehavior()</code> and the provider-level EF flush instruments resolve the optional shared <code>IMetricsService</code>. Register it once with <code>AddMetrics(options =&gt; options.Enabled())</code> to emit metrics through the <code>bdk</code> meter. When it is not registered, blob operations, upload admission, and EF flushing continue unchanged without emitting measurements.</p>
+<p>The defaults above are also the built-in defaults. <code>MaxQueuedUploads = 0</code> disables waiting: an upload either starts immediately or returns <code>BlobStoreUploadOverloadedError</code>. A queued caller whose wait expires receives <code>BlobStoreUploadAdmissionTimeoutError</code>; caller cancellation continues to throw <code>OperationCanceledException</code>. Neither admission path reads, buffers, rewinds, or disposes the caller stream.</p>
+<p>The first registered behavior is outermost. The shown order means operation metrics and the overall timeout include queue time. Retry is outside admission, so each failed attempt releases its permit before backoff and reacquires a permit for the next attempt.</p>
+<p>Admission is deliberately process-local. With <code>N</code> application nodes, aggregate possible active uploads are approximately <code>N × MaxConcurrentUploads</code>; size database connection pools and server capacity accordingly.</p>
+<p>The EF provider groups chunks inside the existing per-blob transaction. It flushes when either <code>ChunkFlushCount</code> or <code>MaxPendingChunkBytes</code> is reached, then detaches the flushed chunk entities. A final partial group is always flushed. Count four is default-on; use <code>ChunkFlushCount = 1</code> only when explicitly requiring one save per chunk. Approximate pending content memory per active upload is bounded by:</p>
+<div class="highlight"><pre><span></span><code>MaxPendingChunkBytes + ChunkSize + EF/object overhead
+</code></pre></div>
+<p>Tune active uploads and pending bytes together. For example, four active uploads with the defaults may hold roughly <code>4 × (16 MB + 4 MB)</code> of chunk buffers before EF/object overhead. Every intermediate relational flush remains uncommitted until expected-hash validation, final metadata persistence, and the single transaction commit complete.</p>
 <p>When Blob Storage is registered in a DevKit web host with local MCP enabled, <code>AddBlobStorage</code> contributes the Blob Storage MCP handler automatically. Local AI agents can inspect blob client registrations and probe status through <code>bdk mcp</code> without an additional blob-specific MCP registration call.</p>
 <p>The MCP handler is diagnostics-only. It exposes registration, provider capability, and non-mutating health probe data; it does not expose blob content, raw provider clients, provider SDK types, or mutating blob operations. If MCP is disabled by the DevKit local tooling policy, the handler is not registered.</p>
 <h2 id="http-endpoints">HTTP Endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
@@ -4334,10 +4386,13 @@
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">ProviderName</span><span class="p">;</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">healthy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">IsHealthy</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">admissionEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">UploadAdmissionEnabled</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">activeUploads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">ActiveUploads</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">queuedUploads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">QueuedUploads</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>The snapshot includes client names, provider names, capabilities, and readable health details. It does not expose provider instances or provider-specific SDK types.</p>
+<p>The snapshot includes client names, provider names, capabilities, readable health details, and—when upload admission is enabled—configured active/queue limits plus current active and queued counts. It does not expose queued blob keys, provider instances, or provider-specific SDK types.</p>
 <h2 id="mcp-diagnostics">MCP Diagnostics<a class="headerlink" href="#mcp-diagnostics" title="Permanent link">&para;</a></h2>
 <p>Blob Storage is exposed to local AI agents through the DevKit MCP runtime automatically when <code>AddBlobStorage()</code> runs in a DevKit web host with MCP enabled. The MCP adapter uses the diagnostics service that <code>AddBlobStorage</code> registers automatically.</p>
 <table>
@@ -4406,6 +4461,8 @@
 <li><code>BlobStoreTransferError</code></li>
 <li><code>BlobStoreSizeLimitExceededError</code></li>
 <li><code>BlobStoreIntegrityError</code></li>
+<li><code>BlobStoreUploadOverloadedError</code></li>
+<li><code>BlobStoreUploadAdmissionTimeoutError</code></li>
 <li><code>BlobStoreTimeoutError</code></li>
 </ul>
 

@@ -265,8 +265,8 @@ Class JobEventIngress
 
   <a id="BridgingIT_DevKit_Application_Jobs_JobEventIngress__ctor_" data-uid="BridgingIT.DevKit.Application.Jobs.JobEventIngress.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Jobs_JobEventIngress__ctor_System_TimeProvider_BridgingIT_DevKit_Application_Jobs_IJobStoreProvider_" data-uid="BridgingIT.DevKit.Application.Jobs.JobEventIngress.#ctor(System.TimeProvider,BridgingIT.DevKit.Application.Jobs.IJobStoreProvider)">
-  JobEventIngress(TimeProvider, IJobStoreProvider)
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobEventIngress__ctor_System_TimeProvider_BridgingIT_DevKit_Application_Jobs_IJobStoreProvider_BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Jobs.JobEventIngress.#ctor(System.TimeProvider,BridgingIT.DevKit.Application.Jobs.IJobStoreProvider,BridgingIT.DevKit.Common.IMetricsService)">
+  JobEventIngress(TimeProvider, IJobStoreProvider, IMetricsService)
   
   </h3>
 
@@ -275,7 +275,7 @@ Class JobEventIngress
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public JobEventIngress(TimeProvider timeProvider, IJobStoreProvider storeProvider)</code></pre>
+    <pre><code class="lang-csharp hljs">public JobEventIngress(TimeProvider timeProvider, IJobStoreProvider storeProvider, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -283,6 +283,8 @@ Class JobEventIngress
     <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
     <dd></dd>
     <dt><code>storeProvider</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobStoreProvider.html">IJobStoreProvider</a></dt>
+    <dd></dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 

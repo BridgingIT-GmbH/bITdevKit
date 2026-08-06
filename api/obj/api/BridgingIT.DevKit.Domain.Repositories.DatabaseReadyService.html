@@ -93,7 +93,7 @@ Class DatabaseReadyService
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Thread-safe implementation of <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.html">IDatabaseReadyService</a> for tracking readiness and fault state
+  <div class="markdown summary"><p>Thread-safe implementation of <a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a> for tracking readiness and fault state
 of multiple named databases. Allows modules to mark databases as ready or faulted,
 and consumers to query or await readiness.</p>
 </div>
@@ -117,7 +117,7 @@ and consumers to query or await readiness.</p>
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
-      <div><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.html">IDatabaseReadyService</a></div>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a></div>
     </dd>
   </dl>
 
@@ -307,8 +307,7 @@ and consumers to query or await readiness.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the fault message if the database with the specified name is faulted.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Gets the fault message for the named database.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -319,14 +318,14 @@ Uses the default database entry if name is not provided or empty.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to return the first tracked fault.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd><p>The fault message, or null if none is set.</p>
+    <dd><p>The fault message, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when no fault is recorded.</p>
 </dd>
   </dl>
 
@@ -334,6 +333,9 @@ Uses the default database entry if name is not provided or empty.</p>
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_FaultMessage_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var message = service.FaultMessage("AppDbContext");</code></pre>
 
 
 
@@ -347,8 +349,7 @@ Uses the default database entry if name is not provided or empty.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Returns true if the database with the specified name is faulted.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Returns whether the named database is faulted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -359,20 +360,24 @@ Uses the default database entry if name is not provided or empty.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to inspect every tracked database.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a requested database is faulted.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_IsFaulted_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var faulted = service.IsFaulted("AppDbContext");</code></pre>
 
 
 
@@ -386,8 +391,7 @@ Uses the default database entry if name is not provided or empty.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Returns true if the database with the specified name is ready.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Returns whether the named database is ready.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -398,20 +402,24 @@ Uses the default database entry if name is not provided or empty.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to require every tracked database to be ready.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the requested readiness condition is satisfied.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_IsReady_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var ready = service.IsReady("AppDbContext");</code></pre>
 
 
 
@@ -425,9 +433,7 @@ Uses the default database entry if name is not provided or empty.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Waits until ready or faulted, then calls either onReady or onFaulted action.
-If the database is ready, onReady is called; if faulted, onFaulted is called (if provided).
-Throws on timeout.</p>
+  <div class="markdown level1 summary"><p>Invokes an action after the named database becomes ready or faulted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -438,29 +444,39 @@ Throws on timeout.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>onReady</code> <span class="xref">Action</span></dt>
-    <dd></dd>
+    <dd><p>The action invoked when the database is ready.</p>
+</dd>
     <dt><code>onFaulted</code> <span class="xref">Action</span></dt>
-    <dd></dd>
+    <dd><p>The optional action invoked when the database is faulted.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default entry.</p>
+</dd>
     <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The polling interval.</p>
+</dd>
     <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The maximum wait.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The cancellation token.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the wait and callback invocation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_OnReadyAsync_System_Action_System_Action_System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await service.OnReadyAsync(StartWorker, name: "AppDbContext");</code></pre>
 
 
 
@@ -474,9 +490,7 @@ Throws on timeout.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Waits until ready or faulted, then calls either onReady or onFaulted async delegate (returning a result).
-If the database is ready, onReady is called; if faulted, onFaulted is called (if provided), otherwise returns default.
-Throws on timeout.</p>
+  <div class="markdown level1 summary"><p>Invokes an asynchronous callback after the named database becomes ready or faulted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -487,34 +501,45 @@ Throws on timeout.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>onReady</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The callback invoked when the database is ready.</p>
+</dd>
     <dt><code>onFaulted</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional callback invoked when the database is faulted.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default entry.</p>
+</dd>
     <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The polling interval.</p>
+</dd>
     <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The maximum wait.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The cancellation token.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The result returned by the selected callback.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The callback result type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_OnReadyAsync__1_System_Func_System_Threading_Tasks_Task___0___System_Func_System_Threading_Tasks_Task___0___System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await service.OnReadyAsync(LoadAsync, name: "AppDbContext");</code></pre>
 
 
 
@@ -528,9 +553,7 @@ Throws on timeout.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Waits until ready or faulted, then calls either onReady or onFaulted delegate (returning a result).
-If the database is ready, onReady is called; if faulted, onFaulted is called (if provided), otherwise returns default.
-Throws on timeout.</p>
+  <div class="markdown level1 summary"><p>Invokes a synchronous callback after the named database becomes ready or faulted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -541,34 +564,45 @@ Throws on timeout.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>onReady</code> <span class="xref">Func</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The callback invoked when the database is ready.</p>
+</dd>
     <dt><code>onFaulted</code> <span class="xref">Func</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional callback invoked when the database is faulted.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default entry.</p>
+</dd>
     <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The polling interval.</p>
+</dd>
     <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The maximum wait.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The cancellation token.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The result returned by the selected callback.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The callback result type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_OnReadyAsync__1_System_Func___0__System_Func___0__System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await service.OnReadyAsync(Load, name: "AppDbContext");</code></pre>
 
 
 
@@ -582,8 +616,7 @@ Throws on timeout.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Marks the database with the specified name as faulted, with an optional message.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Marks the named database as faulted.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -594,10 +627,10 @@ Uses the default database entry if name is not provided or empty.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default entry.</p>
 </dd>
     <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd><p>An optional fault message.</p>
+    <dd><p>An optional diagnostic message.</p>
 </dd>
   </dl>
 
@@ -606,6 +639,9 @@ Uses the default database entry if name is not provided or empty.</p>
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_SetFaulted_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">service.SetFaulted("AppDbContext", exception.Message);</code></pre>
 
 
 
@@ -619,8 +655,7 @@ Uses the default database entry if name is not provided or empty.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Marks the database with the specified name as ready.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Marks the named database as ready.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -631,7 +666,7 @@ Uses the default database entry if name is not provided or empty.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default entry.</p>
 </dd>
   </dl>
 
@@ -640,6 +675,9 @@ Uses the default database entry if name is not provided or empty.</p>
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_SetReady_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">service.SetReady("AppDbContext");</code></pre>
 
 
 
@@ -653,9 +691,7 @@ Uses the default database entry if name is not provided or empty.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously waits for the database with the specified name to become ready,
-polling periodically until ready, faulted, or the timeout expires.
-Throws if the database is faulted or the timeout is exceeded.</p>
+  <div class="markdown level1 summary"><p>Waits asynchronously for the named database readiness condition.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -666,16 +702,16 @@ Throws if the database is faulted or the timeout is exceeded.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
+    <dd><p>The database name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to wait for every tracked database.</p>
 </dd>
     <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd><p>The polling interval (optional, defaults to 200ms).</p>
+    <dd><p>The polling interval, defaulting to 200 milliseconds.</p>
 </dd>
     <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd><p>The maximum time to wait (optional, defaults to 10s).</p>
+    <dd><p>The maximum wait, defaulting to 30 seconds.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token (optional).</p>
+    <dd><p>The cancellation token.</p>
 </dd>
   </dl>
 
@@ -690,15 +726,21 @@ Throws if the database is faulted or the timeout is exceeded.</p>
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_DatabaseReadyService_WaitForReadyAsync_System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await service.WaitForReadyAsync(
+    "AppDbContext",
+    timeout: TimeSpan.FromMinutes(2),
+    cancellationToken: cancellationToken);</code></pre>
+
 
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><span class="xref">InvalidOperationException</span></dt>
-    <dd><p>If the database enters a faulted state while waiting.</p>
+    <dd><p>Thrown when a requested database is faulted.</p>
 </dd>
     <dt><span class="xref">TimeoutException</span></dt>
-    <dd><p>If readiness is not reached within the timeout.</p>
+    <dd><p>Thrown when readiness is not reached before the timeout.</p>
 </dd>
   </dl>
 

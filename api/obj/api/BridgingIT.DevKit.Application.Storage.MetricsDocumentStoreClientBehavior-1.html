@@ -310,7 +310,7 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
 
 
   <h2 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1_examples">Examples</h2>
-  <pre><code class="lang-csharp">var behavior = new MetricsDocumentStoreClientBehavior&lt;Person&gt;(meterFactory, inner);</code></pre>
+  <pre><code class="lang-csharp">var behavior = new MetricsDocumentStoreClientBehavior&lt;Person&gt;(inner, metricsService);</code></pre>
 
 
 
@@ -321,8 +321,8 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
 
   <a id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1__ctor_System_Diagnostics_Metrics_IMeterFactory_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient__0__" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.#ctor(System.Diagnostics.Metrics.IMeterFactory,BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{`0})">
-  MetricsDocumentStoreClientBehavior(IMeterFactory, IDocumentStoreClient&lt;T&gt;)
+  <h3 id="BridgingIT_DevKit_Application_Storage_MetricsDocumentStoreClientBehavior_1__ctor_BridgingIT_DevKit_Application_Storage_IDocumentStoreClient__0__BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Storage.MetricsDocumentStoreClientBehavior`1.#ctor(BridgingIT.DevKit.Application.Storage.IDocumentStoreClient{`0},BridgingIT.DevKit.Common.IMetricsService)">
+  MetricsDocumentStoreClientBehavior(IDocumentStoreClient&lt;T&gt;, IMetricsService)
   
   </h3>
 
@@ -331,14 +331,14 @@ Class MetricsDocumentStoreClientBehavior&lt;T&gt;
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MetricsDocumentStoreClientBehavior(IMeterFactory meterFactory, IDocumentStoreClient&lt;T&gt; inner)</code></pre>
+    <pre><code class="lang-csharp hljs">public MetricsDocumentStoreClientBehavior(IDocumentStoreClient&lt;T&gt; inner, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd></dd>
     <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IDocumentStoreClient-1.html">IDocumentStoreClient</a>&lt;T&gt;</dt>
+    <dd></dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 

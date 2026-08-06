@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Interface IDatabaseReadyService | bITdevKit API Reference </title>
+      <title>Class ConfiguredBroadcastNodeAddressResolver | bITdevKit API Reference </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Interface IDatabaseReadyService | bITdevKit API Reference ">
+      <meta name="title" content="Class ConfiguredBroadcastNodeAddressResolver | bITdevKit API Reference ">
       
-      <meta name="description" content="Provides a thread-safe service for tracking the readiness state of one or more named databases. Allows modules to signal when a database is ready or faulted, and consumers to wait asynchronously for readiness or be notified of failure.">
+      <meta name="description" content="Resolves an explicitly configured process address before other address sources.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -80,33 +80,44 @@
           <nav id="breadcrumb"></nav>
         </div>
 
-        <article data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService">
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver">
 
 
 
-  <h1 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService" class="text-break">
-Interface IDatabaseReadyService  
+  <h1 id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver" class="text-break">
+Class ConfiguredBroadcastNodeAddressResolver  
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a>.<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.html">Repositories</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides a thread-safe service for tracking the readiness state of one or more named databases.
-Allows modules to signal when a database is ready or faulted,
-and consumers to wait asynchronously for readiness or be notified of failure.</p>
+  <div class="markdown summary"><p>Resolves an explicitly configured process address before other address sources.</p>
 </div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IDatabaseReadyService</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class ConfiguredBroadcastNodeAddressResolver : IBroadcastNodeAddressResolver</code></pre>
   </div>
 
 
 
 
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ConfiguredBroadcastNodeAddressResolver</span></div>
+    </dd>
+  </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.IBroadcastNodeAddressResolver.html">IBroadcastNodeAddressResolver</a></div>
+    </dd>
+  </dl>
 
 
 
@@ -245,6 +256,49 @@ and consumers to wait asynchronously for readiness or be notified of failure.</p
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver_examples">Examples</h2>
+  <pre><code class="lang-csharp">var address = await resolver.ResolveAsync(cancellationToken);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver__ctor_BridgingIT_DevKit_Presentation_Web_BroadcastingHttpOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.#ctor(BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions)">
+  ConfiguredBroadcastNodeAddressResolver(BroadcastingHttpOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Resolves an explicitly configured process address before other address sources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ConfiguredBroadcastNodeAddressResolver(BroadcastingHttpOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.BroadcastingHttpOptions.html">BroadcastingHttpOptions</a></dt>
+    <dd><p>The shared HTTP transport configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver__ctor_BridgingIT_DevKit_Presentation_Web_BroadcastingHttpOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">var address = await resolver.ResolveAsync(cancellationToken);</code></pre>
+
+
+
 
 
 
@@ -252,34 +306,33 @@ and consumers to wait asynchronously for readiness or be notified of failure.</p
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_FaultMessage_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.FaultMessage*"></a>
+  <a id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver_AppendRoute_" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.AppendRoute*"></a>
 
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_FaultMessage_System_String_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.FaultMessage(System.String)">
-  FaultMessage(string)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver_AppendRoute_System_Uri_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.AppendRoute(System.Uri,System.String)">
+  AppendRoute(Uri, string)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the fault message if the database with the specified name is faulted.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Validates a concrete HTTP address and appends the receiver route exactly once.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">string FaultMessage(string name = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static Uri AppendRoute(Uri address, string route)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
-</dd>
+    <dt><code>address</code> <span class="xref">Uri</span></dt>
+    <dd></dd>
+    <dt><code>route</code> <span class="xref">string</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">string</span></dt>
-    <dd><p>The fault message, or null if none is set.</p>
-</dd>
+    <dt><span class="xref">Uri</span></dt>
+    <dd></dd>
   </dl>
 
 
@@ -292,120 +345,30 @@ Uses the default database entry if name is not provided or empty.</p>
 
 
 
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_IsFaulted_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.IsFaulted*"></a>
+  <a id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver_ResolveAsync_" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.ResolveAsync*"></a>
 
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_IsFaulted_System_String_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.IsFaulted(System.String)">
-  IsFaulted(string)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_ConfiguredBroadcastNodeAddressResolver_ResolveAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Presentation.Web.ConfiguredBroadcastNodeAddressResolver.ResolveAsync(System.Threading.CancellationToken)">
+  ResolveAsync(CancellationToken)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Returns true if the database with the specified name is faulted.
-Uses the default database entry if name is not provided or empty.</p>
+  <div class="markdown level1 summary"><p>Returns a direct receiver address or <code>null</code> when unresolved.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool IsFaulted(string name = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;Uri&gt; ResolveAsync(CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">bool</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_IsReady_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.IsReady*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_IsReady_System_String_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.IsReady(System.String)">
-  IsReady(string)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Returns true if the database with the specified name is ready.
-Uses the default database entry if name is not provided or empty.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool IsReady(string name = null)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">bool</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_OnReadyAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.OnReadyAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_OnReadyAsync_System_Action_System_Action_System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.OnReadyAsync(System.Action,System.Action,System.String,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
-  OnReadyAsync(Action, Action, string, TimeSpan?, TimeSpan?, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Waits until ready or faulted, then calls either onReady or onFaulted action.
-If the database is ready, onReady is called; if faulted, onFaulted is called (if provided).
-Throws on timeout.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task OnReadyAsync(Action onReady, Action onFaulted = null, string name = null, TimeSpan? pollInterval = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>onReady</code> <span class="xref">Action</span></dt>
-    <dd></dd>
-    <dt><code>onFaulted</code> <span class="xref">Action</span></dt>
-    <dd></dd>
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
-    <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
-    <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span></dt>
+    <dt><span class="xref">ValueTask</span>&lt;<span class="xref">Uri</span>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -416,243 +379,6 @@ Throws on timeout.</p>
 
 
 
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_OnReadyAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.OnReadyAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_OnReadyAsync__1_System_Func_System_Threading_Tasks_Task___0___System_Func_System_Threading_Tasks_Task___0___System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.OnReadyAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.Func{System.Threading.Tasks.Task{``0}},System.String,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
-  OnReadyAsync&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, string, TimeSpan?, TimeSpan?, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Waits until ready or faulted, then calls either onReady or onFaulted async delegate (returning a result).
-If the database is ready, onReady is called; if faulted, onFaulted is called (if provided), otherwise returns default.
-Throws on timeout.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;TResult&gt; OnReadyAsync&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt; onReady, Func&lt;Task&lt;TResult&gt;&gt; onFaulted = null, string name = null, TimeSpan? pollInterval = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>onReady</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd></dd>
-    <dt><code>onFaulted</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd></dd>
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
-    <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
-    <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>TResult</code></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_OnReadyAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.OnReadyAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_OnReadyAsync__1_System_Func___0__System_Func___0__System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.OnReadyAsync``1(System.Func{``0},System.Func{``0},System.String,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
-  OnReadyAsync&lt;TResult&gt;(Func&lt;TResult&gt;, Func&lt;TResult&gt;, string, TimeSpan?, TimeSpan?, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Waits until ready or faulted, then calls either onReady or onFaulted delegate (returning a result).
-If the database is ready, onReady is called; if faulted, onFaulted is called (if provided), otherwise returns default.
-Throws on timeout.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task&lt;TResult&gt; OnReadyAsync&lt;TResult&gt;(Func&lt;TResult&gt; onReady, Func&lt;TResult&gt; onFaulted = null, string name = null, TimeSpan? pollInterval = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>onReady</code> <span class="xref">Func</span>&lt;TResult&gt;</dt>
-    <dd></dd>
-    <dt><code>onFaulted</code> <span class="xref">Func</span>&lt;TResult&gt;</dt>
-    <dd></dd>
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
-    <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
-    <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Type Parameters</h4>
-  <dl class="parameters">
-    <dt><code>TResult</code></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_SetFaulted_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.SetFaulted*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_SetFaulted_System_String_System_String_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.SetFaulted(System.String,System.String)">
-  SetFaulted(string, string)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Marks the database with the specified name as faulted, with an optional message.
-Uses the default database entry if name is not provided or empty.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetFaulted(string name = null, string message = null)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
-</dd>
-    <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd><p>An optional fault message.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_SetReady_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.SetReady*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_SetReady_System_String_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.SetReady(System.String)">
-  SetReady(string)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Marks the database with the specified name as ready.
-Uses the default database entry if name is not provided or empty.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetReady(string name = null)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_WaitForReadyAsync_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.WaitForReadyAsync*"></a>
-
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_IDatabaseReadyService_WaitForReadyAsync_System_String_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Domain.Repositories.IDatabaseReadyService.WaitForReadyAsync(System.String,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
-  WaitForReadyAsync(string, TimeSpan?, TimeSpan?, CancellationToken)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Asynchronously waits for the database with the specified name to become ready,
-polling periodically until ready, faulted, or the timeout expires.
-Throws if the database is faulted or the timeout is exceeded.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">Task WaitForReadyAsync(string name = null, TimeSpan? pollInterval = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd><p>The database name (optional, defaults to the default entry if empty).</p>
-</dd>
-    <dt><code>pollInterval</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd><p>The polling interval (optional, defaults to 200ms).</p>
-</dd>
-    <dt><code>timeout</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd><p>The maximum time to wait (optional, defaults to 10s).</p>
-</dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token (optional).</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Task</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><span class="xref">InvalidOperationException</span></dt>
-    <dd><p>If the database enters a faulted state while waiting.</p>
-</dd>
-    <dt><span class="xref">TimeoutException</span></dt>
-    <dd><p>If readiness is not reached within the timeout.</p>
-</dd>
-  </dl>
 
 
 

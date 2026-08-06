@@ -265,8 +265,8 @@ Class JobMetricsBehavior
 
   <a id="BridgingIT_DevKit_Application_Jobs_JobMetricsBehavior__ctor_" data-uid="BridgingIT.DevKit.Application.Jobs.JobMetricsBehavior.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Jobs_JobMetricsBehavior__ctor_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Jobs.JobMetricsBehavior.#ctor(System.TimeProvider)">
-  JobMetricsBehavior(TimeProvider)
+  <h3 id="BridgingIT_DevKit_Application_Jobs_JobMetricsBehavior__ctor_System_TimeProvider_BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Application.Jobs.JobMetricsBehavior.#ctor(System.TimeProvider,BridgingIT.DevKit.Common.IMetricsService)">
+  JobMetricsBehavior(TimeProvider, IMetricsService)
   
   </h3>
 
@@ -275,12 +275,14 @@ Class JobMetricsBehavior
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public JobMetricsBehavior(TimeProvider timeProvider)</code></pre>
+    <pre><code class="lang-csharp hljs">public JobMetricsBehavior(TimeProvider timeProvider, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 

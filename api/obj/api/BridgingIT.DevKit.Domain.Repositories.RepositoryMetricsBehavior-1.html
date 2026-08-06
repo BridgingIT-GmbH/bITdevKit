@@ -457,8 +457,8 @@ Class RepositoryMetricsBehavior&lt;TEntity&gt;
 
   <a id="BridgingIT_DevKit_Domain_Repositories_RepositoryMetricsBehavior_1__ctor_" data-uid="BridgingIT.DevKit.Domain.Repositories.RepositoryMetricsBehavior`1.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Domain_Repositories_RepositoryMetricsBehavior_1__ctor_System_Diagnostics_Metrics_IMeterFactory_BridgingIT_DevKit_Domain_Repositories_IGenericRepository__0__" data-uid="BridgingIT.DevKit.Domain.Repositories.RepositoryMetricsBehavior`1.#ctor(System.Diagnostics.Metrics.IMeterFactory,BridgingIT.DevKit.Domain.Repositories.IGenericRepository{`0})">
-  RepositoryMetricsBehavior(IMeterFactory, IGenericRepository&lt;TEntity&gt;)
+  <h3 id="BridgingIT_DevKit_Domain_Repositories_RepositoryMetricsBehavior_1__ctor_BridgingIT_DevKit_Domain_Repositories_IGenericRepository__0__BridgingIT_DevKit_Common_IMetricsService_" data-uid="BridgingIT.DevKit.Domain.Repositories.RepositoryMetricsBehavior`1.#ctor(BridgingIT.DevKit.Domain.Repositories.IGenericRepository{`0},BridgingIT.DevKit.Common.IMetricsService)">
+  RepositoryMetricsBehavior(IGenericRepository&lt;TEntity&gt;, IMetricsService)
   
   </h3>
 
@@ -467,14 +467,14 @@ Class RepositoryMetricsBehavior&lt;TEntity&gt;
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public RepositoryMetricsBehavior(IMeterFactory meterFactory, IGenericRepository&lt;TEntity&gt; inner)</code></pre>
+    <pre><code class="lang-csharp hljs">public RepositoryMetricsBehavior(IGenericRepository&lt;TEntity&gt; inner, IMetricsService metricsService = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>meterFactory</code> <span class="xref">IMeterFactory</span></dt>
-    <dd></dd>
     <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericRepository-1.html">IGenericRepository</a>&lt;TEntity&gt;</dt>
+    <dd></dd>
+    <dt><code>metricsService</code> <a class="xref" href="BridgingIT.DevKit.Common.IMetricsService.html">IMetricsService</a></dt>
     <dd></dd>
   </dl>
 
@@ -484,7 +484,7 @@ Class RepositoryMetricsBehavior&lt;TEntity&gt;
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_RepositoryMetricsBehavior_1__ctor_System_Diagnostics_Metrics_IMeterFactory_BridgingIT_DevKit_Domain_Repositories_IGenericRepository__0___examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_RepositoryMetricsBehavior_1__ctor_BridgingIT_DevKit_Domain_Repositories_IGenericRepository__0__BridgingIT_DevKit_Common_IMetricsService__examples">Examples</h4>
   <pre><code class="lang-csharp">services.AddRepository&lt;Order&gt;()
     .WithBehavior&lt;RepositoryMetricsBehavior&lt;Order&gt;&gt;();</code></pre>
 

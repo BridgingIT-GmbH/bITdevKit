@@ -362,8 +362,8 @@ Class RetryBlobStoreClientBehavior
 
   <a id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehavior.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehaviorOptions_System_String_" data-uid="BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehavior.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehaviorOptions,System.String)">
-  RetryBlobStoreClientBehavior(IBlobStoreClient, RetryBlobStoreClientBehaviorOptions, string)
+  <h3 id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehaviorOptions_System_String_System_TimeProvider_" data-uid="BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehavior.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehaviorOptions,System.String,System.TimeProvider)">
+  RetryBlobStoreClientBehavior(IBlobStoreClient, RetryBlobStoreClientBehaviorOptions, string, TimeProvider)
   
   </h3>
 
@@ -372,7 +372,7 @@ Class RetryBlobStoreClientBehavior
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public RetryBlobStoreClientBehavior(IBlobStoreClient inner, RetryBlobStoreClientBehaviorOptions options = null, string storeName = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public RetryBlobStoreClientBehavior(IBlobStoreClient inner, RetryBlobStoreClientBehaviorOptions options = null, string storeName = null, TimeProvider timeProvider = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -386,6 +386,9 @@ Class RetryBlobStoreClientBehavior
     <dt><code>storeName</code> <span class="xref">string</span></dt>
     <dd><p>The configured blob-store client name.</p>
 </dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd><p>The optional clock used for retry delays.</p>
+</dd>
   </dl>
 
 
@@ -394,7 +397,7 @@ Class RetryBlobStoreClientBehavior
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehaviorOptions_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehaviorOptions_System_String_System_TimeProvider__examples">Examples</h4>
   <pre><code class="lang-csharp">services.AddBlobStorage()
     .WithRetryBehavior(options =&gt; options.Attempts = 3)
     .WithInMemoryClient("reports");</code></pre>
@@ -402,7 +405,7 @@ Class RetryBlobStoreClientBehavior
   <pre><code class="lang-csharp">var behavior = new RetryBlobStoreClientBehavior(inner, options, "reports");</code></pre>
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehaviorOptions_System_String__remarks">Remarks</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Application_Storage_RetryBlobStoreClientBehaviorOptions_System_String_System_TimeProvider__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Application.Storage.RetryBlobStoreClientBehavior.html">RetryBlobStoreClientBehavior</a> class.</p>
 </div>
 

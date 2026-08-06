@@ -30,6 +30,8 @@ The primary goals are:
 - support programmatic control so application code can start and stop sessions as part of automated workflows or integration tests
 - support console-command control so developers can perform collection operations without opening the dashboard
 - provide deterministic, evidence-backed analysis of two selected snapshots or a complete node session without using AI
+- expose sampling quality so developers can judge whether the collected evidence is trustworthy
+- preserve lightweight runtime context and workload phase markers that make a local run reproducible and easier to interpret
 
 ## Problem Statement
 
@@ -102,6 +104,9 @@ The feature shall include:
 - integration with the DevKit Broadcast feature for direct, non-polling node control
 - integration with the existing DevKit Console Commands feature for command-line collection control
 - deterministic evaluation of two selected snapshots or the complete available session timeline for one selected node
+- monotonic sample timing, collection-overhead measurements, and missed-sample accounting
+- immutable runtime context captured once for each participating or contributing node in a session
+- manual phase markers from the dashboard, console, and programmatic API
 
 ## Functional Requirements
 
@@ -123,6 +128,7 @@ The user shall be able to:
 - pin sessions that must be excluded from automatic retention
 - trigger a one-off manual snapshot collection for immediate diagnostics
 - trigger an explicit GC collection for immediate diagnostics
+- add a named phase marker to the active session
 
 Feature enablement shall be controlled through application configuration and shall default to disabled. A dashboard or programmatic caller shall not be able to enable a configuration-disabled feature. When enabled, the runtime collection state shall be idle, running, or one of the defined terminal session states.
 
@@ -134,7 +140,11 @@ The manual snapshot action shall broadcast a one-off snapshot command through th
 
 The manual GC action shall be available whether or not a collection session is active. It shall be broadcast through the DevKit Broadcast feature, and every registered node in the configured scope that accepts the command shall invoke a normal `GC.Collect()` call. When a session is active, the dashboard shall show the immediate per-node broadcast responses, while each accepting node shall record the GC action as a local session marker when it handles the command. When no session is active, the dashboard shall show which registered nodes responded to the broadcast request, shall not wait for handler completion, and shall not create a collection session. The action shall not additionally wait for pending finalizers or request separate LOH compaction. Broadcast `Accepted` means that the receiving node accepted the command for local execution; it does not mean that garbage collection or any other local handler work has completed.
 
-The collection lifecycle shall also be available programmatically so application code, background jobs, integration tests, custom developer workflows, or console commands can start and stop sessions directly. The programmatic surface shall support an optional session name and expose the same start, stop, status, restart, deletion, full-storage-reset, snapshot-comparison, and node-session-evaluation semantics as the dashboard.
+A manual phase marker shall be a session-level timestamped annotation for an operator-observed workload transition such as `warm-up complete`, `load started`, or `load stopped`. Each marker shall contain an internal identifier, session identifier, non-empty trimmed name of at most 100 characters, and creation timestamp in UTC. Duplicate names shall be allowed.
+
+The session store shall atomically verify that the session is still active while adding the marker. The operation shall store the marker once without a Broadcast operation and shall reject an idle or terminal session. Phase markers shall be immutable and shall not have individual edit or delete operations; session deletion, retention, and clear-all shall remove them with the session. They shall appear on every selected-node chart for the session. They shall not restrict evaluation to an interval or alter the snapshots included in evaluation.
+
+The collection lifecycle shall also be available programmatically so application code, background jobs, integration tests, custom developer workflows, or console commands can start and stop sessions directly. The programmatic surface shall support an optional session name and expose the same start, stop, status, restart, deletion, full-storage-reset, phase-marker, snapshot-comparison, and node-session-evaluation semantics as the dashboard.
 
 The dashboard shall support shareable session URLs. A session link identifies the target session but does not bypass normal access restrictions.
 
@@ -161,6 +171,8 @@ The dashboard and application-facing control service shall provide a clear-all o
 - pinned and unpinned sessions
 - runtime snapshots
 - node participation records and action markers
+- manual phase markers
+- immutable node runtime context
 - scoped segments
 - custom metric observations
 - session names, tags, notes, and other persisted session metadata
@@ -186,6 +198,7 @@ The command group shall provide the following collection-control operations:
 - `performance stop` stops the active deployment-wide session
 - `performance snapshot` performs the same one-off manual snapshot action as the dashboard and accepts an optional `--name` for a standalone one-snapshot session
 - `performance gc` performs the same deployment-wide manual GC action as the dashboard
+- `performance mark --name <text>` adds a phase marker to the active session
 - `performance clear --yes` performs the same confirmed full storage reset as the dashboard
 - `performance analyze --session <key> --node <key>` evaluates the complete available timeline for one node in one session
 - `performance analyze --session <key> --node <key> --snapshot-a <key> --snapshot-b <key>` evaluates exactly two snapshots from the same session and node
@@ -199,17 +212,21 @@ performance status
 performance snapshot
 performance stop
 performance gc
+performance mark --name "load started"
 performance clear --yes
 performance analyze --session a1b2c3d4 --node e5f6g7h8
 performance analyze --session a1b2c3d4 --node e5f6g7h8 --snapshot-a i9j0k1l2 --snapshot-b m3n4o5p6 --json
 
 bdk host run -- performance start --name "warm-up" --duration 30s
 bdk host run -- performance snapshot
+bdk host run -- performance mark --name "load started"
 bdk host run -- performance stop
 bdk host run -- performance clear --yes
 ```
 
 A command invoked on one host shall retain the deployment-wide semantics of the corresponding dashboard operation. The selected host is the initiating node; session start, stop, manual snapshot, and manual GC shall still use the configured DevKit Broadcast scope.
+
+`performance mark` shall add one shared phase marker directly to the active logical session. It shall not broadcast a per-node command. It shall reject a missing or invalid name and shall return a clear no-active-session result without creating a session when collection is idle.
 
 Command options shall use the same validation and defaults as dashboard or programmatic requests. In particular, intervals below 500 ms shall be rejected, duration shall be required after defaults are applied, and a start attempt made while a session is already active shall report the existing active session rather than create another one.
 
@@ -246,7 +263,7 @@ After the configured end time plus the finalization grace period, any node may i
 
 A normally elapsed session shall be distinguishable from a session that was stopped early. The session shall retain its collected snapshots, participating-node information, segments, tags, notes, pin state, and completion metadata after it reaches a terminal state.
 
-Restarting a session shall create a new session identity. When the selected session is active, restart shall first stop it and create the replacement only after the stop operation has been accepted. The previous session shall remain available with a stopped state. The new session shall copy the previous session name with a restart suffix or timestamp, sampling interval, duration, and tags. It shall not copy notes, pin state, snapshots, segments, or custom metric observations. Like every deployment-wide start, the restarted session shall publish a new typed start broadcast and establish its participants again from the current registration snapshot.
+Restarting a session shall create a new session identity. When the selected session is active, restart shall first stop it and create the replacement only after the stop operation has been accepted. The previous session shall remain available with a stopped state. The new session shall copy the previous session name with a restart suffix or timestamp, sampling interval, duration, and tags. It shall not copy notes, pin state, snapshots, phase markers, segments, custom metric observations, or node runtime context. Each participating node shall capture fresh runtime context for the replacement. Like every deployment-wide start, the restarted session shall publish a new typed start broadcast and establish its participants again from the current registration snapshot.
 
 ### Broadcast integration
 
@@ -315,6 +332,12 @@ The feature shall allow the developer to configure:
 
 The sample interval shall be at least 500 ms. Values below 500 ms shall be rejected. Every session shall have a required collection duration that acts as its automatic safety maximum; sessions without an end time are not supported. The default configuration shall remain conservative and lightweight.
 
+Each node-local collector shall execute at most one snapshot capture at a time. When the next scheduled opportunity arrives while the previous capture is still running, the collector shall not overlap the captures. It shall skip that opportunity and increment its cumulative skipped-capture count. A capture that starts but cannot produce a valid snapshot shall increment a separate cumulative failed-capture count.
+
+Snapshot timing shall use a node-local monotonic clock for elapsed durations, rate denominators, sampling delay, and capture duration. UTC timestamps shall remain the display and cross-node alignment timestamps, but UTC clock adjustments shall not affect node-local rate calculations.
+
+The snapshot sequence and successful-, skipped-, and failed-capture counts shall be node-local and reset for each session. The sequence shall increment only after a snapshot is captured successfully. Skipped and failed opportunities shall not consume a snapshot sequence value. When local collection ends, the node participation record shall preserve the final successful, skipped, and failed totals so failures after the last valid snapshot remain visible.
+
 ### Metrics to collect
 
 At minimum, the collector shall capture the following runtime metrics for each snapshot:
@@ -337,9 +360,23 @@ At minimum, the collector shall capture the following runtime metrics for each s
 - cumulative process CPU duration
 - logical processor count
 - node-local snapshot sequence number
+- scheduled monotonic elapsed duration since the logical session start
+- capture-start monotonic elapsed duration since the logical session start
+- snapshot capture duration measured by the monotonic clock
+- cumulative skipped-capture count
+- cumulative failed-capture count
 - GC collection counts by generation (Gen0, Gen1, Gen2)
 - latest GC sequence or index
 - latest collected GC generation
+- latest GC post-collection managed heap size
+- latest GC post-collection LOH size, when available
+- whether the latest GC was compacting
+- whether the latest GC was concurrent
+- latest Gen2 GC sequence or index
+- latest Gen2 post-collection managed heap size
+- latest Gen2 post-collection LOH size, when available
+- whether the latest Gen2 GC was compacting
+- whether the latest Gen2 GC was concurrent
 - cumulative GC pause duration maintained by the collector
 - GC pause percent
 - pinned objects count
@@ -368,9 +405,26 @@ Request counts, request timings, route diagnostics, and other HTTP-request analy
 
 Metrics unavailable on the current runtime, operating system, or hosting environment shall be represented as unavailable rather than silently reported as zero. Sessions may therefore contain different available metric sets across nodes.
 
-All timestamps shall use UTC. The dashboard shall preserve each node's original snapshot timestamp and tolerate small clock differences between nodes.
+Wall-clock timestamps shall use UTC. The dashboard shall preserve each node's original snapshot timestamp and tolerate small clock differences between nodes. Monotonic values are meaningful only within one node process and session and shall never be compared across nodes.
 
-Derived metrics such as CPU usage, allocation rate, and percentages shall be calculated consistently from consecutive samples. The exact runtime and operating-system APIs used to obtain the values remain an implementation decision.
+Derived metrics such as CPU usage, allocation rate, and percentages shall be calculated consistently from consecutive samples using monotonic elapsed time. The exact runtime and operating-system APIs used to obtain the values remain an implementation decision.
+
+### Runtime context
+
+The collector shall persist immutable runtime context once for each node that becomes an expected participant or ad-hoc contributor in a session. The context shall include, when available:
+
+- application name
+- entry assembly informational version
+- .NET runtime description and version
+- operating-system description
+- operating-system architecture
+- process architecture
+- server or workstation GC mode
+- logical processor count
+- process start timestamp in UTC
+- whether a debugger was attached when the node context was created
+
+Unavailable context fields shall be represented as unavailable. Command-line arguments, environment-variable values, filesystem paths, and other potentially sensitive machine data shall not be captured.
 
 ### Custom metrics integration
 
@@ -401,9 +455,12 @@ Each snapshot shall include:
 - process identifier
 - collection session identifier
 - node-local snapshot sequence number
+- scheduled and capture-start monotonic elapsed durations
+- monotonic capture duration
+- cumulative skipped- and failed-capture counts
 - collected runtime metric values for memory, CPU, GC, allocations, thread pool, and sockets
 
-Custom metric observations shall not be embedded in the runtime snapshot or included in normal snapshot JSON. Session name, tags, notes, segments, pin state, and other session-level metadata shall be stored with the session rather than duplicated into every snapshot.
+Custom metric observations and immutable node runtime context shall not be embedded repeatedly in runtime snapshots. Custom metric observations shall not be included in normal snapshot JSON. Session name, tags, notes, phase markers, segments, pin state, node runtime context, and other session-level metadata shall be stored separately rather than duplicated into every snapshot.
 
 The snapshot shall persist internal session, node, and snapshot GUIDs and their readable keys according to the identifier rules. Hostname and process identifier are metadata, not the node identifier. The node identity shall remain stable for the lifetime of that application process. An application restart shall appear as a new node instance.
 
@@ -446,18 +503,19 @@ Supported refresh modes should include:
 The dashboard view shall include:
 
 - a status section showing whether collection is idle, running, completed, completed with warnings, stopped, or failed
-- controls for start, stop, duration, interval, manual snapshot collection, and manual GC collection
+- controls for start, stop, duration, interval, manual snapshot collection, manual GC collection, and adding a phase marker
 - a current-snapshot summary in a compact card grid
 - exactly two primary charts: a Memory History chart and a GC Pressure History chart
 - a node selector
 - session selection and metadata controls
 - a clear-all control for resetting the complete performance store
 - an analysis panel with an **Analyze now** action and browser-wide **Live analysis** switch
+- a compact current sampling-status summary for the selected node
 
 The current-snapshot cards shall display the following runtime indicators when available:
 
 - CPU usage and process identity
-- system platform and runtime version
+- application version, system platform, runtime version, GC mode, and debugger-attached state from the immutable node context
 - physical memory availability and usage
 - process private memory and working set
 - managed memory, heap size, and committed memory
@@ -469,8 +527,11 @@ The current-snapshot cards shall display the following runtime indicators when a
 - allocation rate and total allocated bytes
 - socket activity counts
 - thread pool status
+- latest capture duration and sampling delay, with cumulative skipped- and failed-capture counts
 
 Unavailable indicators shall be clearly shown as unavailable rather than as zero.
+
+The current sampling-status summary shall use the latest persisted snapshot and participation totals already returned by the normal dashboard query. Full sampling coverage and p95 timing KPIs shall be computed only as part of an explicit or Live analysis request, so displaying the dashboard does not bypass the Live analysis switch.
 
 ### Visualizations
 
@@ -505,6 +566,7 @@ The dashboard shall provide tools that help developers inspect diagnostic sessio
 - export of normal runtime snapshots for the selected node or the complete session as JSON
 - copy the current snapshot to the clipboard as JSON
 - bookmarkable session and node selections
+- named phase markers for annotating operator-observed workload transitions
 
 The feature shall not provide session-to-session comparison, cross-node snapshot comparison, baseline designation, configurable thresholds, production alarms, health scoring, or automatic node ranking. Snapshot comparison is limited to exactly two explicitly selected snapshots within the currently selected session and node and is presented as a table rather than as an overlaid chart. The comparison shall show earlier and later values, absolute differences, and percentage differences where they can be calculated safely.
 
@@ -523,6 +585,8 @@ The Current Snapshot panel shall clearly show the selected node identity and the
 The Memory History panel shall plot memory series on a shared timeline and show the number of retained points.
 
 The GC Pressure History panel shall plot percentage-based pressure series and allocation activity on a shared timeline. Multiple units may use separate axes where necessary, provided the chart remains readable.
+
+Manual phase markers shall be shown as labeled vertical markers on both primary charts for every selected node. Node-owned scoped segments and node action markers shall remain distinguishable from shared manual phase markers.
 
 The dashboard shall not include request-throughput, request-latency, route, or slow-request panels.
 
@@ -551,12 +615,14 @@ The dashboard shall clearly show the active or selected session and allow the us
 - open a session directly from a shareable URL
 - trigger a manual one-off snapshot collection
 - trigger a manual deployment-wide GC collection
+- add a named phase marker while the selected session is active
 - inspect named code segments and their start, end, duration, outcome, optional parent, and correlation metadata
+- inspect the immutable runtime context and sampling quality for each selected node
 - edit the session name, tags, notes, and pin state without changing collected snapshots or metric values
 - export normal runtime snapshots for either the currently selected node or the complete multi-node session as JSON
 - explicitly analyze the selected node on demand, even when automatic live analysis is off
 
-Snapshot export shall use JSON only. A selected-node export shall contain the normal runtime snapshots collected for that node. A complete-session export shall contain the normal runtime snapshots collected across all expected participants and ad-hoc contributing nodes. The node identity is part of each exported snapshot. Session metadata, segment records, custom metric observations, and other auxiliary records are not included in snapshot exports.
+Snapshot export shall use JSON only. A selected-node export shall contain the normal runtime snapshots collected for that node. A complete-session export shall contain the normal runtime snapshots collected across all expected participants and ad-hoc contributing nodes. The node identity is part of each exported snapshot. Session metadata, phase markers, segment records, custom metric observations, node runtime context, and other auxiliary records are not included in snapshot exports.
 
 Computed evaluation results shall not be offered as a dashboard export, copy, or download. This restriction does not alter the normal raw-snapshot JSON export.
 
@@ -586,7 +652,7 @@ Evaluation results shall be calculated server-side on demand through one applica
 The result shall contain only the following top-level groups:
 
 - `Scope`: mode, session key, node key, optional snapshot keys, evaluated UTC time range, snapshot count, and whether the result is provisional
-- `DataQuality`: sufficiency state, confidence, available or missing inputs, and sampling observations
+- `DataQuality`: sufficiency state, available or missing inputs, sampling coverage, skipped and failed captures, capture overhead, and sampling delay
 - `KPIs`: independently calculated values and changes
 - `Signals`: zero or more evidence-backed interpretations
 - `Limitations`: zero or more short deterministic statements describing material analysis constraints
@@ -600,6 +666,7 @@ KPI cards shall always be returned when their inputs are available, even when th
 - ending heap and LOH fragmentation and their percentage-point changes
 - allocation-rate average, peak, and first-half versus second-half change
 - GC pause burden, Gen0/Gen1/Gen2 count deltas, and collection rates
+- sampling coverage, skipped- and failed-capture counts, p95 capture duration, and p95 sampling delay
 
 In two-snapshot mode, the equivalent KPI values shall use snapshot A, snapshot B, and their delta rather than timeline halves. Thread-pool and socket values may be included as raw KPIs but shall not generate automatic signals. Custom metrics shall not generate generic diagnostic signals.
 
@@ -626,26 +693,37 @@ Confidence for node-session signals shall be assigned as follows:
 - `Medium`: at least five snapshots over at least five seconds are available and the primary rule threshold is met
 - `High`: at least ten snapshots over at least ten seconds are available, all inputs for the rule are present, the condition is sustained, and at least one independent supporting condition is present
 
-A possible-retention signal may be `High` only when a Gen2 collection occurred and the post-Gen2 managed heap remains elevated.
+A possible-retention signal may be `High` only when a Gen2 collection occurred and the collector's direct post-collection Gen2 heap evidence remains elevated.
 
-Missing or unavailable metrics shall reduce confidence or suppress rules that require them. A stopped, failed, or completed-with-warnings session shall include a limitation and shall not be prevented from evaluation.
+Missing or unavailable metrics shall reduce confidence or suppress rules that require them. A stopped, failed, or completed-with-warnings session shall include a limitation and shall not be prevented from evaluation. A debugger-attached node context shall add the limitation `Debugger attached; timing and runtime behavior may be affected.`
 
 ### Calculations
 
-Calculations shall prefer cumulative-counter deltas divided by UTC elapsed time:
+Calculations shall prefer cumulative-counter deltas divided by node-local monotonic elapsed time:
 
-- CPU percentage = `100 × CPU-duration delta ÷ UTC elapsed duration ÷ logical processor count`
-- allocation rate = `total-allocated-bytes delta ÷ UTC elapsed seconds`
-- each GC rate = `generation collection-count delta ÷ UTC elapsed seconds`
-- GC pause burden = `cumulative GC-pause-duration delta ÷ UTC elapsed duration`
+- CPU percentage = `100 × CPU-duration delta ÷ monotonic elapsed duration ÷ logical processor count`
+- allocation rate = `total-allocated-bytes delta ÷ monotonic elapsed seconds`
+- each GC rate = `generation collection-count delta ÷ monotonic elapsed seconds`
+- GC pause burden = `cumulative GC-pause-duration delta ÷ monotonic elapsed duration`
 
-Counter resets, negative deltas, non-increasing timestamps, duplicate node-local sequence numbers, and missing samples shall be treated as data-quality limitations. Invalid intervals shall be excluded rather than converted to zero.
+Counter resets, negative deltas, non-increasing monotonic elapsed values, duplicate node-local sequence numbers, and missing samples shall be treated as data-quality limitations. Invalid intervals shall be excluded rather than converted to zero. UTC clock movement shall not invalidate an otherwise valid node-local interval.
 
 Per-snapshot rate fields may be used for peaks and trends, but session averages and sustained conditions shall use cumulative deltas where possible. Averages over a timeline shall be time-weighted when intervals differ materially.
 
 For timeline rules, the first and second halves shall be divided by elapsed time at the temporal midpoint. A sustained condition means at least 60% of valid sampled intervals meet its stated threshold unless a rule explicitly defines another proportion.
 
 For a node-session timeline, growth rules compare the earliest and latest valid snapshots. For two-snapshot analysis, snapshot A is the baseline and snapshot B is the later observation; the request shall be rejected if their node-local sequence establishes the reverse order. Memory and allocation changes described as meaningful shall require both their relative threshold and absolute floor. Percentage changes with a zero or unavailable baseline shall remain unavailable.
+
+Sampling quality shall be calculated as follows:
+
+- sampling coverage = successful captures divided by successful, skipped, and failed capture attempts in the evaluated scope
+- capture overhead = snapshot capture duration divided by the configured sampling interval
+- sampling delay = the non-negative difference between capture-start and scheduled monotonic elapsed durations
+- p95 values use the nearest-rank percentile over available snapshots
+
+Complete node-session analysis shall use the node participation record's final totals when collection is terminal and its latest available cumulative totals while collection is active. Two-snapshot analysis shall use snapshot sequence and cumulative-counter deltas between A and B.
+
+The evaluator shall add a data-quality limitation when any capture failed, sampling coverage is below 90%, p95 capture overhead is at least 25%, or p95 sampling delay is at least 50% of the configured interval. A signal shall not receive `High` confidence while any of these sampling-quality limitations is present or a debugger was attached. These thresholds are fixed evaluator defaults and are not performance-health signals.
 
 ### Fixed interpretation rules
 
@@ -664,7 +742,7 @@ CPU rules:
 Memory rules:
 
 - **managed heap growth:** managed heap increases by at least 20% and at least 32 MiB
-- **possible retention:** managed heap meets the growth rule, at least one Gen2 collection occurred, and the latest post-Gen2 managed heap still exceeds the starting heap by at least 20% and at least 32 MiB
+- **possible retention:** managed heap meets the growth rule, at least one Gen2 collection occurred, and the collector's latest Gen2 post-collection managed heap still exceeds the starting heap by at least 20% and at least 32 MiB
 - **unexplained process-memory growth:** private memory increases by at least 20% and at least 64 MiB, while the positive managed-heap delta explains less than half of the private-memory delta
 - **LOH growth:** LOH size increases by at least 20% and at least 32 MiB
 - **LOH fragmentation:** ending LOH fragmentation is at least 20% and increased by at least 10 percentage points
@@ -727,7 +805,7 @@ The feature shall provide:
 
 The in-memory provider is intentionally ephemeral. Its sessions remain available only while the application process is running and are lost on restart. It is suitable for local diagnostics where durability is not required.
 
-A durable provider shall preserve sessions, snapshots, segments, custom metrics, notes, tags, pin state, and node participation data across page refreshes, application restarts, and later review. Computed evaluation results shall not be stored by any provider.
+A durable provider shall preserve sessions, snapshots, phase markers, segments, custom metrics, immutable node runtime context, notes, tags, pin state, and node participation data across page refreshes, application restarts, and later review. Computed evaluation results shall not be stored by any provider.
 
 Multi-node sessions require a shared provider accessible to all participating nodes. The in-memory provider shall not be presented as supporting deployment-wide multi-node collection across independent application processes.
 
@@ -751,11 +829,11 @@ The feature should follow a small, separated architecture:
 - a background collector running inside each participating application process
 - the standalone DevKit Broadcast feature for node registration, registry lookup, direct HTTP push, local self-delivery, and immediate per-node delivery responses
 - one local performance broadcast handler per supported control command
-- a session store for sessions, node participation, snapshots, segments, custom metrics, and metadata, including an atomic full-reset operation
+- a session store for sessions, node participation, snapshots, phase markers, segments, custom metrics, immutable node runtime context, and metadata, including an atomic full-reset operation
 - atomic session-lifecycle coordination implemented by each store provider
 - a startup reconciler and idempotent session finalizer
 - a dashboard query layer that loads one selected session and node timeline
-- an application-facing control surface for programmatic sessions and scoped segments
+- an application-facing control surface for programmatic sessions, phase markers, and scoped segments
 - a pure application evaluation service shared by the dashboard, console commands, and programmatic API
 - grouped console commands that delegate to the application-facing control surface
 - an integration with the existing DevKit metrics abstraction for stable custom metrics
@@ -817,13 +895,19 @@ The feature is considered complete when:
 - a node accepting a valid replacement start atomically stops its older local collector before starting the new collector
 - registered nodes that reject, are unsupported, expire, time out, or are unreachable are reported as immediate delivery outcomes but do not become participants
 - any node can idempotently finalize a session after its end and grace period, and startup reconciliation finalizes abandoned sessions
-- snapshots contain UTC timestamps, node-local sequence numbers, readable keys, and hostname/process metadata
+- snapshots contain UTC timestamps, node-local monotonic timing, capture duration, cumulative skipped and failed capture counts, node-local sequence numbers, readable keys, and hostname/process metadata
+- a node-local collector never overlaps captures; a busy scheduled opportunity is skipped and recorded
+- CPU, allocation, and GC rate calculations use monotonic elapsed time and are not affected by UTC clock adjustment
+- snapshots contain direct latest-GC and latest-Gen2 post-collection heap evidence, including compacting and concurrent state when available
+- each expected participant or ad-hoc contributor stores immutable application, runtime, operating-system, architecture, GC, processor, process-start, and debugger context once per session
 - session, node, and snapshot public APIs, routes, console arguments, JSON, logs, and errors use immutable eight-character lowercase keys generated by `KeyGenerator.CreateLowercase(8)`
 - the dashboard can select an expected participant or ad-hoc contributing node and show its current snapshot and history
 - the dashboard shows memory, allocations, GC, CPU, thread pool, and socket metrics when available
 - unavailable metrics are displayed as unavailable rather than zero
 - the dashboard presents a dense Current Snapshot card grid and exactly two primary runtime charts
 - named segments appear as timeline markers or highlighted ranges
+- a developer can add an immutable named phase marker to an active session from the dashboard, console, or programmatic API, and it appears on every selected-node chart
+- phase-marker creation rejects an invalid name or inactive session without creating a session or broadcasting
 - the dashboard supports configurable refresh intervals
 - sample intervals below 500 ms are rejected and every session requires a duration
 - sessions can be named, tagged, noted, pinned, edited, selected, shared by URL, restarted, exported, copied as JSON, and deleted
@@ -838,7 +922,7 @@ The feature is considered complete when:
 - session start and standalone manual snapshot are rejected before broadcast when multiple nodes are targeted and the provider does not support multi-node storage
 - exactly two snapshots from the currently selected session and node can be selected for side-by-side metric comparison in a table, including absolute and percentage differences
 - application code can create scoped sessions and measured segments
-- when Console Commands are enabled, `performance` and `perf` expose status, start, stop, manual snapshot, manual GC, clear-all, and analysis operations
+- when Console Commands are enabled, `performance` and `perf` expose status, start, stop, manual snapshot, manual GC, phase-marker, clear-all, and analysis operations
 - console commands invoke the same control service and preserve the same deployment-wide Broadcast behavior as dashboard operations
 - console start accepts optional name, interval, and duration values and applies the same defaults and validation as the dashboard
 - console durations accept `ms`, `s`, `m`, `h`, and standard `TimeSpan` formats through a feature-local parser
@@ -866,6 +950,8 @@ The feature is considered complete when:
 - active-session evaluation is provisional; full-session interpretation begins only with at least five snapshots over five seconds
 - the fixed CPU, memory, allocation, and GC rules produce only `Notable` or `Investigate` signals with `Low`, `Medium`, or `High` confidence, raw evidence, and one short suggested action
 - KPI values remain available when inputs exist even when no signal is emitted; thread-pool, socket, and custom metrics do not produce generic interpretation signals
+- DataQuality and KPI output show sampling coverage, skipped and failed captures, p95 capture duration, and p95 sampling delay
+- failed captures, coverage below 90%, p95 capture overhead of at least 25%, excessive sampling delay, and an attached debugger prevent `High` confidence as specified
 - the dashboard's browser-wide Live analysis switch defaults off, makes no automatic calls while off, and when on evaluates only after a new snapshot without overlapping calls or exceeding refresh cadence
 - dashboard evaluation results cannot be persisted, copied, or exported; normal raw snapshot JSON export remains available
 - request analytics, aggregate-node views, session comparison, cross-node snapshot comparison, arbitrary-interval analysis, baselines, production alarms, configurable thresholds, and node rankings are absent from the feature
@@ -879,7 +965,7 @@ The following decisions are resolved for the feature:
 - sessions may be started manually or programmatically around code sections
 - collection may also be controlled through the grouped `performance` console commands, with `perf` as an alias
 - console commands reuse the application-facing control service and the same deployment-wide Broadcast operations as the dashboard
-- the console-command surface provides status, start, stop, one-off snapshot, manual GC, confirmed clear-all, and deterministic analysis operations
+- the console-command surface provides status, start, stop, one-off snapshot, manual GC, phase-marker, confirmed clear-all, and deterministic analysis operations
 - friendly console durations accept `ms`, `s`, `m`, `h`, and standard `TimeSpan` values through a performance-feature-local parser
 - the existing `diag perf` and `diag gc` commands remain local, immediate, and non-persisted
 - only one logical session may be active for the deployment at a time
@@ -887,6 +973,7 @@ The following decisions are resolved for the feature:
 - session scopes are disposable and execution helpers automatically capture outcomes
 - collection duration is a safety maximum; a segment may outlive collection and records that condition
 - segments are node-owned, may overlap, and may optionally reference a parent from the same session and node without strict nesting
+- manual phase markers are immutable session-level annotations, require an active session, appear across selected-node charts, and do not create arbitrary evaluation intervals
 - deployment-wide control uses the standalone DevKit Broadcast feature from `Common.Utilities/Broadcasting`
 - broadcasts are direct push operations and the performance feature performs no polling for commands
 - any actively registered node may initiate a session; there is no master node
@@ -906,6 +993,7 @@ The following decisions are resolved for the feature:
 - public routes, console arguments, programmatic APIs, JSON, logs, errors, and displayed identities use readable keys; internal persistence, handlers, relationships, and Broadcast use GUIDs
 - readable keys are treated as practically unique and require no collision protocol, scoping, versioning, configurability, or alternate generator
 - a node key is stable for the process lifetime; hostname and process identifier are metadata, and a restart creates a new node key
+- each expected participant or ad-hoc contributor captures immutable non-sensitive application, runtime, operating-system, architecture, GC, processor, process-start, and debugger context once per session
 - the dashboard presents one selected node at a time and provides no aggregate-node view or automatic ranking
 - manual snapshots use DevKit Broadcast and target all current registrations in the configured scope; during an active session, accepting nonparticipants add ad-hoc snapshots but do not join the expected participant set or affect warnings
 - when no session is active, manual snapshot creates and completes a dedicated one-snapshot session named `Manual snapshot — <ISO 8601 timestamp>`
@@ -924,7 +1012,7 @@ The following decisions are resolved for the feature:
 - no metadata audit trail is required
 - sessions may be pinned and pinned sessions are excluded from automatic retention
 - normal bulk deletion removes only unpinned sessions; pinned sessions are removed only through explicit selected-session deletion or the confirmed clear-all operation
-- an active session cannot be deleted directly; restart first stops an active session, preserves it as stopped, and then creates a new session copying name, interval, duration, and tags, but not notes, pin state, snapshots, segments, or custom metrics
+- an active session cannot be deleted directly; restart first stops an active session, preserves it as stopped, and then creates a new session copying name, interval, duration, and tags, but not notes, pin state, snapshots, phase markers, segments, custom metrics, or node runtime context
 - clearing one selected session in place is not supported; developers restart or delete that session instead
 - a separate confirmed clear-all operation resets the complete performance store, includes pinned sessions, and is rejected while a logical session is active
 - the session store owns atomic start, active-state, and clear coordination; Entity Framework uses a transaction and concurrency constraint, while in-memory uses a process-local lock
@@ -938,6 +1026,9 @@ The following decisions are resolved for the feature:
 - oldest unpinned completed sessions are removed first and active sessions are never removed automatically
 - the minimum sampling interval is 500 ms and lower values are rejected
 - every session requires a collection duration and open-ended sessions are not supported
+- snapshot captures never overlap; busy opportunities are skipped, failures are counted separately, and both cumulative counts are preserved
+- node-local monotonic elapsed time is authoritative for rate, delay, and capture-duration calculations; UTC remains display and cross-node alignment metadata
+- snapshots preserve direct post-collection evidence for the latest GC and latest Gen2 GC, including heap, LOH, compacting, and concurrent values when available
 - failed measured operations persist exception type and message but no stack trace
 - node selection uses a dropdown and dashboard selections are preserved in browser localStorage
 - evaluation is programmatic and deterministic, uses no AI or network dependency, and is computed server-side on demand without persistence
@@ -948,5 +1039,6 @@ The following decisions are resolved for the feature:
 - fixed built-in interpretation rules focus on CPU, memory, allocations, and GC; they are not configurable, extensible, or versioned
 - signals use only `Notable` and `Investigate`, confidence uses only `Low`, `Medium`, and `High`, and every signal has one short deterministic suggested action
 - KPI cards remain visible independently of signals; thread-pool and socket metrics may be KPIs but custom metrics and those secondary metrics do not produce generic signals
+- DataQuality and KPI output include sampling coverage, skipped and failed captures, capture overhead, sampling delay, and debugger-attached limitations
 - the dashboard Live analysis switch is browser-wide, defaults off, and persists in localStorage; explicit Analyze now remains available
 - evaluation results are not persisted or exportable from the dashboard, while console and programmatic callers may request the computed contract as JSON

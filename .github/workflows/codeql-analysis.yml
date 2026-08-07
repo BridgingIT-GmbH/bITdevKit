@@ -1,7 +1,5 @@
 name: CodeQL # https://learn.microsoft.com/en-us/dotnet/devops/dotnet-secure-github-action
 
-on: [push]
-
 on:
   push:
     branches: [main]

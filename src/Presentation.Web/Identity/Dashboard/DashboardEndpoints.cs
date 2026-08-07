@@ -63,7 +63,7 @@ public class DashboardEndpoints(
 
     private async Task<IResult> HandleIdentityClientCredentialsLogin(HttpContext httpContext, string returnUrl)
     {
-        var redirectUrl = NormalizeDashboardReturnUrl(httpContext, returnUrl);
+        var redirectUrl = this.NormalizeDashboardReturnUrl(httpContext, returnUrl);
         var client = this.GetClientCredentialsClient();
 
         if (fakeIdentityProviderOptions is null || client is null || fakeIdentityProvider is null || tokenService is null)

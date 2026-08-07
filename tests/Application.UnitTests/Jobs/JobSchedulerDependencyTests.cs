@@ -16,7 +16,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     public async Task MaterializeScheduledOccurrencesAsync_ChainedSuccessorMaterializesAsNormalBlockedOccurrence()
     {
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulDependencyJob>("predecessor", job => job
@@ -52,7 +52,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     [Fact]
     public async Task ListReadyOccurrencesAsync_SuccessorWaitsForPredecessorSuccess()
     {
-        var (provider, predecessorId, successorId) = await CreateMaterializedChainAsync(JobDependencyFailurePolicy.KeepBlocked);
+        var (provider, predecessorId, successorId) = await this.CreateMaterializedChainAsync(JobDependencyFailurePolicy.KeepBlocked);
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -73,7 +73,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     public async Task ExecuteStoredOccurrenceAsync_PredecessorRetry_KeepsSuccessorBlocked()
     {
         RetryThenSucceedDependencyJob.Reset(failuresBeforeSuccess: 1);
-        var (provider, predecessorId, successorId) = await CreateMaterializedChainAsync(
+        var (provider, predecessorId, successorId) = await this.CreateMaterializedChainAsync(
             JobDependencyFailurePolicy.KeepBlocked,
             services =>
             {
@@ -109,7 +109,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     [InlineData(JobDependencyFailurePolicy.Fail, JobOccurrenceStatus.Failed)]
     public async Task ExecuteStoredOccurrenceAsync_PredecessorRetryExhaustion_AppliesDependencyFailurePolicy(JobDependencyFailurePolicy policy, JobOccurrenceStatus expectedStatus)
     {
-        var (provider, predecessorId, successorId) = await CreateMaterializedChainAsync(
+        var (provider, predecessorId, successorId) = await this.CreateMaterializedChainAsync(
             policy,
             services =>
             {
@@ -158,7 +158,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     [Fact]
     public async Task ExecuteStoredOccurrenceAsync_BlockedOccurrencesAreNotLeased()
     {
-        var (provider, _, successorId) = await CreateMaterializedChainAsync(JobDependencyFailurePolicy.KeepBlocked);
+        var (provider, _, successorId) = await this.CreateMaterializedChainAsync(JobDependencyFailurePolicy.KeepBlocked);
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -172,7 +172,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     [Fact]
     public async Task DependencyState_SurvivesInMemoryProviderRestartSimulation()
     {
-        var (provider, predecessorId, successorId) = await CreateMaterializedChainAsync(JobDependencyFailurePolicy.KeepBlocked);
+        var (provider, predecessorId, successorId) = await this.CreateMaterializedChainAsync(JobDependencyFailurePolicy.KeepBlocked);
         var restarted = new JobSchedulerService(
             provider.GetRequiredService<TimeProvider>(),
             provider.GetRequiredService<IServiceScopeFactory>(),
@@ -195,7 +195,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
     [Fact]
     public async Task BatchMembership_NeverCreatesDependencyLinks()
     {
-        var provider = CreateProvider(services => services.AddJobScheduler());
+        var provider = this.CreateProvider(services => services.AddJobScheduler());
         var store = provider.GetRequiredService<IJobStoreProvider>();
         var batchId = Guid.NewGuid();
 
@@ -237,7 +237,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
         Action<IServiceCollection> configure = null)
     {
         var provider = configure is null
-            ? CreateProvider(services =>
+            ? this.CreateProvider(services =>
             {
                 services.AddJobScheduler()
                     .WithJob<SuccessfulDependencyJob>("predecessor", job => job
@@ -248,7 +248,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
                         .Description("Runs second.")
                         .AddTrigger("manual", trigger => trigger.Manual()));
             })
-            : CreateProvider(configure);
+            : this.CreateProvider(configure);
 
         var fakeTime = (FakeTimeProvider)provider.GetRequiredService<TimeProvider>();
         fakeTime.Advance(TimeSpan.FromMinutes(1));

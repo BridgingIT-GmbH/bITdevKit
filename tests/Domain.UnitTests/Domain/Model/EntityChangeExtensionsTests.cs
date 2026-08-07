@@ -197,6 +197,181 @@ public class EntityChangeExtensionsTests
     }
 
     [Fact]
+    public void Change_Apply_WhenPropertiesChanged_ShouldCreateOnePendingChangeSet()
+    {
+        // Arrange
+        var person = new PersonStub { Id = Guid.NewGuid(), FirstName = "John", LastName = "Doe" };
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "Jane")
+            .Set(p => p.LastName, "Smith")
+            .Apply();
+
+        // Assert
+        result.ShouldBeSuccess();
+        var changeSet = EntityChangeHistoryAccessor.GetPendingChangeSets(person).Single();
+        changeSet.ChangeSetId.ShouldNotBe(Guid.Empty);
+        changeSet.EntityType.ShouldBe(nameof(PersonStub));
+        changeSet.EntityId.ShouldBe(person.Id.ToString());
+        changeSet.PropertyChanges.Count.ShouldBe(2);
+        changeSet.PropertyChanges[0].PropertyName.ShouldBe(nameof(PersonStub.FirstName));
+        changeSet.PropertyChanges[0].OldValue.ShouldBe("John");
+        changeSet.PropertyChanges[0].NewValue.ShouldBe("Jane");
+        changeSet.PropertyChanges[0].Sequence.ShouldBe(0);
+        changeSet.PropertyChanges[1].PropertyName.ShouldBe(nameof(PersonStub.LastName));
+        changeSet.PropertyChanges[1].OldValue.ShouldBe("Doe");
+        changeSet.PropertyChanges[1].NewValue.ShouldBe("Smith");
+        changeSet.PropertyChanges[1].Sequence.ShouldBe(1);
+    }
+
+    [Fact]
+    public void Change_Apply_WhenSameValueAssigned_ShouldNotCreatePropertyChange()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John", LastName = "Doe" };
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "John")
+            .Set(p => p.LastName, "Smith")
+            .Apply();
+
+        // Assert
+        result.ShouldBeSuccess();
+        var changeSet = EntityChangeHistoryAccessor.GetPendingChangeSets(person).Single();
+        var change = changeSet.PropertyChanges.Single();
+        change.PropertyName.ShouldBe(nameof(PersonStub.LastName));
+    }
+
+    [Fact]
+    public void Change_Apply_WhenPropertyChangedMultipleTimes_ShouldPreserveFirstOldAndFinalNewValue()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "Jane")
+            .Set(p => p.FirstName, "Janet")
+            .Apply();
+
+        // Assert
+        result.ShouldBeSuccess();
+        var change = EntityChangeHistoryAccessor.GetPendingChangeSets(person)
+            .Single()
+            .PropertyChanges
+            .Single();
+        change.PropertyName.ShouldBe(nameof(PersonStub.FirstName));
+        change.OldValue.ShouldBe("John");
+        change.NewValue.ShouldBe("Janet");
+    }
+
+    [Fact]
+    public void Change_Apply_WhenFails_ShouldNotCreatePendingChangeSet()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John", Age = 25 };
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "")
+            .Check(p => !string.IsNullOrEmpty(p.FirstName), "Name required")
+            .Set(p => p.Age, 30)
+            .Apply();
+
+        // Assert
+        result.ShouldBeFailure();
+        EntityChangeHistoryAccessor.GetPendingChangeSets(person).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Change_Apply_WhenGuardCancelsLaterOperations_ShouldCaptureEarlierChangesOnly()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John", LastName = "Doe", Age = 17 };
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "Jane")
+            .When(p => p.Age >= 18)
+            .Set(p => p.LastName, "Smith")
+            .Apply();
+
+        // Assert
+        result.ShouldBeSuccess();
+        var change = EntityChangeHistoryAccessor.GetPendingChangeSets(person)
+            .Single()
+            .PropertyChanges
+            .Single();
+        change.PropertyName.ShouldBe(nameof(PersonStub.FirstName));
+        change.OldValue.ShouldBe("John");
+        change.NewValue.ShouldBe("Jane");
+    }
+
+    [Fact]
+    public void Change_Execute_WhenNoTrackedPropertySet_ShouldNotCreatePendingChangeSet()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+
+        // Act
+        var result = person.Change()
+            .Execute(p => p.FirstName = "Jane")
+            .Apply();
+
+        // Assert
+        result.ShouldBeSuccess();
+        person.FirstName.ShouldBe("Jane");
+        EntityChangeHistoryAccessor.GetPendingChangeSets(person).ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Change_RegisterWithContext_ShouldExposeNewValuesAndChangeList()
+    {
+        // Arrange
+        var person = new PersonStub { Email = "old@mail.com" };
+        string oldEmail = null;
+        string newEmail = null;
+        int changeCount = 0;
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.Email, "new@mail.com")
+            .Register((_, ctx) =>
+            {
+                oldEmail = ctx.GetOldValue<string>(nameof(PersonStub.Email));
+                newEmail = ctx.GetNewValue<string>(nameof(PersonStub.Email));
+                changeCount = ctx.Changes.Count;
+                return new PersonStub.EmailChangedEvent(oldEmail, newEmail);
+            })
+            .Apply();
+
+        // Assert
+        result.ShouldBeSuccess();
+        oldEmail.ShouldBe("old@mail.com");
+        newEmail.ShouldBe("new@mail.com");
+        changeCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void EntityChangeHistoryAccessor_ConsumePendingChangeSets_ShouldReturnAndClearChangeSets()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+        person.Change()
+            .Set(p => p.FirstName, "Jane")
+            .Apply();
+
+        // Act
+        var consumed = EntityChangeHistoryAccessor.ConsumePendingChangeSets(person);
+
+        // Assert
+        consumed.Count.ShouldBe(1);
+        EntityChangeHistoryAccessor.GetPendingChangeSets(person).ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Change_OnPlainEntity_WhenNoEventsRegistered_ShouldSucceed()
     {
         // Arrange

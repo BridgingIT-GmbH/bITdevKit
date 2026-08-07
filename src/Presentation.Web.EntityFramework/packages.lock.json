@@ -26,6 +26,17 @@
         "resolved": "7.0.0",
         "contentHash": "2lMTCQl5bGP4iv0JNkockPnyllC6eHLz+CoK2ICvalvHod+exXSxueu9hq+zNkU7bZBJf8wMfeRC/Edn8AGmEg=="
       },
+      "RazorSlices": {
+        "type": "Direct",
+        "requested": "[0.11.1, )",
+        "resolved": "0.11.1",
+        "contentHash": "46RqRPa194qUYP2aZnnHRGZM6PG8kTOXRCpj50a82I7ugKjnNfq5QasVD6un+xd1OCR8mNx8gCvC5zK7S1rCqA=="
+      },
+      "BouncyCastle.Cryptography": {
+        "type": "Transitive",
+        "resolved": "2.6.2",
+        "contentHash": "7oWOcvnntmMKNzDLsdxAYqApt+AjpRpP2CShjMfIa3umZ42UQMvH0tl1qAliYPNYO6vTdcGMqnRrCPmsfzTI1w=="
+      },
       "Mapster.Core": {
         "type": "Transitive",
         "resolved": "10.0.10",
@@ -50,6 +61,24 @@
         "type": "Transitive",
         "resolved": "10.0.2",
         "contentHash": "LG9Yll3B5aNpxv0+D47g6LiOiKBIlodhcHdQwcYzo8VeexFLGqx5ymetmA2aBRyo9cCcWsQWrFsdbsr8LvmWDw=="
+      },
+      "Microsoft.Data.SqlClient.Extensions.Abstractions": {
+        "type": "Transitive",
+        "resolved": "7.0.2",
+        "contentHash": "Zx7z61fG2Nc6LdDn4jA7b5Aj1ABrljkOPRE31RvVUdjF6IgbG60leDUhMCafsnWFgaheiK3iqpLe+kbf5Z5L8Q==",
+        "dependencies": {
+          "Microsoft.Data.SqlClient.Internal.Logging": "[7.0.2, 8.0.0)"
+        }
+      },
+      "Microsoft.Data.SqlClient.Internal.Logging": {
+        "type": "Transitive",
+        "resolved": "7.0.2",
+        "contentHash": "iqgYBbGSVy/DIYWjzmQOa964Kn4rs4wW5vg2IamqVK0fQqfTiILVR5hMK27XWqoyONtAZs+VxH354cPJBtSnbg=="
+      },
+      "Microsoft.Data.SqlClient.SNI.runtime": {
+        "type": "Transitive",
+        "resolved": "6.0.2",
+        "contentHash": "f+pRODTWX7Y67jXO3T5S2dIPZ9qMJNySjlZT/TKmWVNWe19N8jcWmHaqHnnchaq3gxEKv1SWVY5EFzOD06l41w=="
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
@@ -284,6 +313,11 @@
         "resolved": "17.11.4",
         "contentHash": "mudqUHhNpeqIdJoUx2YDWZO/I9uEDYVowan89R6wsomfnUJQk6HteoQTlNjZDixhT2B4IXMkMtgZtoceIjLRmA=="
       },
+      "Microsoft.SqlServer.Server": {
+        "type": "Transitive",
+        "resolved": "1.0.0",
+        "contentHash": "N4KeF3cpcm1PUHym1RmakkzfkEv3GRMyofVv40uXsQhCQeglr2OHNcUk2WOG51AKpGO8ynGpo9M/kFXSzghwug=="
+      },
       "Namotion.Reflection": {
         "type": "Transitive",
         "resolved": "3.5.0",
@@ -392,15 +426,61 @@
         "resolved": "0.57.2",
         "contentHash": "Y1+u73shwP+JYHmrkdN6bSt2kaGBEAafhi2nrecczbXdFRey+k7J/WF9YPfcB0rqivv2S8fmif6FSBq9m/AFvw=="
       },
+      "System.Configuration.ConfigurationManager": {
+        "type": "Transitive",
+        "resolved": "9.0.13",
+        "contentHash": "GbBrJq9S/gYpHzm7Pxx6Y5tDyfSfyxW6tlP5oiKJV38uf19Wp+GIIAnWfyL1zmNiz1+EjwVapw2WkBFvvqKQzg==",
+        "dependencies": {
+          "System.Diagnostics.EventLog": "9.0.13",
+          "System.Security.Cryptography.ProtectedData": "9.0.13"
+        }
+      },
       "System.Diagnostics.EventLog": {
         "type": "Transitive",
         "resolved": "10.0.9",
         "contentHash": "s2PcxHK4IYQ6gmD3VSBkym9tWGkFisKjcjWBdl7a+n4Yy66ae4beJ1ZdjDp060SSll4W3Rt4H2LW87dWckv+QQ=="
       },
+      "System.Security.Cryptography.Pkcs": {
+        "type": "Transitive",
+        "resolved": "10.0.0",
+        "contentHash": "UPWqLSygJlFerRi9XNIuM0a1VC8gHUIufyP24xQ0sc+XimqUAEcjpOz9DhKpyDjH+5B/wO3RpC0KpkEeDj/ddg=="
+      },
+      "System.Security.Cryptography.ProtectedData": {
+        "type": "Transitive",
+        "resolved": "9.0.13",
+        "contentHash": "t8S9IDpjJKsLpLkeBdW8cWtcPyYqrGu93Dej1RO6WwuL/lkFSqWlan3rMJfortqz1mRIh+sys2AFsSA6jWJ3Jg=="
+      },
       "YamlDotNet": {
         "type": "Transitive",
         "resolved": "16.3.0",
         "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
+      },
+      "BridgingIT.DevKit.Application.Commands": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Microsoft.Extensions.Caching.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Entities": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Localization.Abstractions": "[10.0.9, )"
+        }
       },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
@@ -409,6 +489,106 @@
           "BridgingIT.DevKit.Domain": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.AspNetCore.Authorization": "[10.0.9, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Jobs": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Cronos": "[0.13.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.DependencyInjection": "[10.0.9, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.9, )",
+          "Microsoft.Extensions.Logging": "[10.0.9, )",
+          "Microsoft.Extensions.TimeProvider.Testing": "[10.7.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Messaging": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Notifications": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "MailKit": "[4.17.0, )",
+          "Microsoft.Extensions.Configuration.Binder": "[10.0.9, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.9, )",
+          "MimeKit": "[4.17.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Orchestrations": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.9, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Queries": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Microsoft.Extensions.Caching.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Queueing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "FluentValidation": "[12.1.1, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Storage": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "[10.0.9, )",
+          "Microsoft.Extensions.Logging": "[10.0.9, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )",
+          "Scrutor": "[4.2.2, 5.0.0)",
+          "SharpCompress": "[0.49.1, )"
         }
       },
       "BridgingIT.DevKit.Application.Utilities": {
@@ -540,6 +720,49 @@
           "System.Linq.Dynamic.Core": "[1.7.2, )"
         }
       },
+      "BridgingIT.DevKit.Domain.Mediator": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Scrutor": "[4.2.2, 5.0.0)"
+        }
+      },
+      "BridgingIT.DevKit.Domain.Outbox": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.9, )"
+        }
+      },
+      "BridgingIT.DevKit.Infrastructure.EntityFramework": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Notifications": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Orchestrations": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain.Outbox": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Data.SqlClient": "[7.0.2, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.9, )",
+          "Microsoft.EntityFrameworkCore.InMemory": "[10.0.9, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[10.0.9, )",
+          "System.Linq.Dynamic.Core": "[1.7.2, )"
+        }
+      },
       "BridgingIT.DevKit.Presentation": {
         "type": "Project",
         "dependencies": {
@@ -575,6 +798,12 @@
           "System.IdentityModel.Tokens.Jwt": "[8.19.1, )"
         }
       },
+      "Cronos": {
+        "type": "CentralTransitive",
+        "requested": "[0.13.0, )",
+        "resolved": "0.13.0",
+        "contentHash": "Nkve+Yi0+ol3ntSBRHeW0ka9cJQ8vndSUvvkXqF9LVqwpoqWueyxu/HS275r98RDOmF7/mzRnZW5XXUBXob+TA=="
+      },
       "CsvHelper": {
         "type": "CentralTransitive",
         "requested": "[33.1.0, )",
@@ -599,6 +828,15 @@
         "resolved": "3.0.10",
         "contentHash": "yZIhtw8sYuvsONzQbZxWpR60tMWYHXoo0DL6nyOqSFiU5POjBTSEyWFpTQtJEZuy+oqiYTXKXY/Mjx7KnqIQFw=="
       },
+      "MailKit": {
+        "type": "CentralTransitive",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "1nUAVLxM9fhT/78we6/AGsCesnpn5dRNLLeRqOfr52Wnk87pzVwo5YMTMyqnmoXrYc7piGhmayiMA/OgDluIjg==",
+        "dependencies": {
+          "MimeKit": "4.17.0"
+        }
+      },
       "Mapster": {
         "type": "CentralTransitive",
         "requested": "[10.0.10, )",
@@ -616,6 +854,16 @@
         "dependencies": {
           "Mapster": "10.0.10",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
+        }
+      },
+      "MediatR": {
+        "type": "CentralTransitive",
+        "requested": "[12.5.0, 12.5.0]",
+        "resolved": "12.5.0",
+        "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
+        "dependencies": {
+          "MediatR.Contracts": "[2.0.1, 3.0.0)",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
         }
       },
       "MediatR.Contracts": {
@@ -672,6 +920,35 @@
         "contentHash": "1ihb8FO9cGgEK1/m3CTtT/SfnynwmiZib0W2pcDVj3KSWk/Sca4VOXEtaptKQc582zpFrzTFiwkGRCglt6H+WQ==",
         "dependencies": {
           "Microsoft.OpenApi": "2.0.0"
+        }
+      },
+      "Microsoft.Data.SqlClient": {
+        "type": "CentralTransitive",
+        "requested": "[7.0.2, )",
+        "resolved": "7.0.2",
+        "contentHash": "zwv76lANFQQI6Gmp6ntkzMWIWVqm8Wf4Mz00AeGCk1n8HCi5afi6bNynSe18uI0xeL0n6J+Myjk9AiIsL5oSqw==",
+        "dependencies": {
+          "Microsoft.Bcl.Cryptography": "9.0.13",
+          "Microsoft.Data.SqlClient.Extensions.Abstractions": "[7.0.2, 8.0.0)",
+          "Microsoft.Data.SqlClient.Internal.Logging": "[7.0.2, 8.0.0)",
+          "Microsoft.Data.SqlClient.SNI.runtime": "[6.0.2, 7.0.0)",
+          "Microsoft.Extensions.Caching.Memory": "9.0.13",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.16.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.16.0",
+          "Microsoft.SqlServer.Server": "[1.0.0, 2.0.0)",
+          "System.Configuration.ConfigurationManager": "9.0.13",
+          "System.Security.Cryptography.Pkcs": "9.0.13"
+        }
+      },
+      "Microsoft.EntityFrameworkCore.InMemory": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.9, )",
+        "resolved": "10.0.9",
+        "contentHash": "lvlLJ7kgGivXApixK4FN7pB/aZZJ+bqdNRv2jLR0K0t2ZFIUwNylF1Mo6tMQAN8/2FsNKbv7U4S4FgSdfFtPIQ==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.9",
+          "Microsoft.Extensions.Caching.Memory": "10.0.9",
+          "Microsoft.Extensions.Logging": "10.0.9"
         }
       },
       "Microsoft.EntityFrameworkCore.Relational": {
@@ -860,6 +1137,12 @@
           "Microsoft.Extensions.Primitives": "10.0.9"
         }
       },
+      "Microsoft.Extensions.TimeProvider.Testing": {
+        "type": "CentralTransitive",
+        "requested": "[10.7.0, )",
+        "resolved": "10.7.0",
+        "contentHash": "THd3CJ9e/ftm/3+Z69E51MQy4n46so4Zs/vUevMCYR5tjZsP+INqD4npXARVQwB2nnG+eQ8SI6ERLe/tn6gwSA=="
+      },
       "Microsoft.IdentityModel.Protocols.OpenIdConnect": {
         "type": "CentralTransitive",
         "requested": "[8.16.0, )",
@@ -875,6 +1158,16 @@
         "requested": "[2.10.0, )",
         "resolved": "2.10.0",
         "contentHash": "tD7ve8JrWfJ+aRfW7J9yDj8t6pbMOzdr8nSc5BlIZaIRxqZZ67RJ8J69//Tx6HHSNFsqomBbipkPP20opnqvMg=="
+      },
+      "MimeKit": {
+        "type": "CentralTransitive",
+        "requested": "[4.17.0, )",
+        "resolved": "4.17.0",
+        "contentHash": "h/KXsCreJf8RpR/PSAtlbvYtZFndp9N8Wn1Bs248AL7ITyhn+AiIY5bLTvt60tbN2mu6g8KadtBNWygTji2lqg==",
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.6.2",
+          "System.Security.Cryptography.Pkcs": "10.0.0"
+        }
       },
       "NewId": {
         "type": "CentralTransitive",
@@ -922,12 +1215,6 @@
           "Polly": "7.1.0"
         }
       },
-      "RazorSlices": {
-        "type": "CentralTransitive",
-        "requested": "[0.11.1, )",
-        "resolved": "0.11.1",
-        "contentHash": "46RqRPa194qUYP2aZnnHRGZM6PG8kTOXRCpj50a82I7ugKjnNfq5QasVD6un+xd1OCR8mNx8gCvC5zK7S1rCqA=="
-      },
       "Scrutor": {
         "type": "CentralTransitive",
         "requested": "[4.2.2, 5.0.0)",
@@ -956,6 +1243,12 @@
           "Serilog": "4.3.0",
           "Serilog.Extensions.Logging": "10.0.0"
         }
+      },
+      "SharpCompress": {
+        "type": "CentralTransitive",
+        "requested": "[0.49.1, )",
+        "resolved": "0.49.1",
+        "contentHash": "Meygd8HAnUgqYzxvCsaYR5XnZAG2xBmxkQHVGi/HkCjrvEq+tiM+VPQRvYLxsbse3KUmec65ccdMiOXv8CkjsA=="
       },
       "Spectre.Console": {
         "type": "CentralTransitive",

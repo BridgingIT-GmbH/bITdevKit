@@ -16,7 +16,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAsync_WhenSignalWaitIsConfigured_PersistsWaitingStateAndCompletesAfterSignal()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -42,7 +42,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAsync_WhenTimeoutIsConfigured_TransitionsAfterTimerBecomesDue()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<TimeoutDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -66,7 +66,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task PauseAsync_WhenSignalArrivesWhilePaused_DoesNotAdvanceUntilResume()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -99,7 +99,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task CancelAsync_WhenInstanceIsWaiting_MarksInstanceCancelled()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -122,7 +122,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task TerminateAsync_WhenInstanceIsWaiting_MarksInstanceTerminated()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -145,7 +145,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAsync_WhenRetryOutcomeIsReturned_RetriesAndCompletes()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<RetryDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -168,7 +168,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAndWaitAsync_WhenStateWaitConditionIsReached_ReturnsSuccessfulWaitResult()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<TimeoutDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -189,7 +189,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAndWaitAsync_WhenBackgroundExecutionIsDisabled_StillAdvancesUntilStateWaitConditionIsReached()
     {
         // Arrange
-        var serviceProvider = CreateServices(services =>
+        var serviceProvider = this.CreateServices(services =>
         {
             services.AddSingleton(CreateExecutionSettings(enableBackgroundExecution: false));
             services.AddOrchestrations()
@@ -213,7 +213,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAndWaitAsync_WhenTimeoutExpires_ReturnsTimedOutWaitResult()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -234,7 +234,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task DispatchAndWaitAsync_WhenCancellationIsRequested_ReturnsFailedResult()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -256,7 +256,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task ExecuteAsync_WhenWaitingConditionIsReached_ReturnsFailedInlineIncompletionResult()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -273,7 +273,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task SignalAsync_WhenDuplicateIdempotencyKeyIsSubmittedWhilePaused_PersistsSingleSignalAndProcessesOnceOnResume()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -311,7 +311,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task SignalAsync_WhenCurrentStateHasNoHandler_RejectsSignalAndDoesNotAdvanceWorkflow()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SignalDrivenOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -339,7 +339,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task ContinueInstanceAsync_WhenPendingSignalBecomesStale_MarksSignalIgnored()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<TimeoutDrivenOrchestration>());
         var queries = serviceProvider.GetRequiredService<IOrchestrationQueryStore>();
@@ -365,7 +365,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task PauseAsync_WhenTimerBecomesOverdue_RemainsPendingUntilResumeAndThenFiresImmediately()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<PausedTimeoutOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -404,7 +404,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     {
         // Arrange
         var provider = new ControllablePersistenceProvider();
-        var serviceProvider = CreateServices(
+        var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<SignalDrivenOrchestration>(),
             provider);
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -437,7 +437,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task ContinueInstanceAsync_WhenWorkersRace_OnlyOneWorkerExecutesInstance()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SlowExecutionOrchestration>());
         var queries = serviceProvider.GetRequiredService<IOrchestrationQueryStore>();
@@ -463,7 +463,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     {
         // Arrange
         var provider = new ControllablePersistenceProvider { ForcedLeaseDuration = TimeSpan.FromMilliseconds(50) };
-        var serviceProvider = CreateServices(
+        var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<SlowExecutionOrchestration>(),
             provider);
         var queries = serviceProvider.GetRequiredService<IOrchestrationQueryStore>();
@@ -486,7 +486,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     {
         // Arrange
         var provider = new ControllablePersistenceProvider { ForcedLeaseDuration = TimeSpan.FromMilliseconds(50) };
-        var serviceProvider = CreateServices(
+        var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<SlowExecutionOrchestration>(),
             provider);
         var queries = serviceProvider.GetRequiredService<IOrchestrationQueryStore>();
@@ -508,7 +508,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     {
         // Arrange
         var provider = new ControllablePersistenceProvider { ForcedLeaseDuration = TimeSpan.FromMilliseconds(50) };
-        var serviceProvider = CreateServices(
+        var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<SlowExecutionOrchestration>(),
             provider);
         var queries = serviceProvider.GetRequiredService<IOrchestrationQueryStore>();
@@ -532,7 +532,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task SignalAsync_WhenSignalsArriveConcurrently_OnlyOneSignalWorkerAdvancesInstance()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SlowSignalOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -561,7 +561,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
     public async Task ContinueInstanceAsync_WhenTimerWorkersRace_ConsumesTimerOnce()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<SlowTimerOrchestration>());
         var queries = serviceProvider.GetRequiredService<IOrchestrationQueryStore>();

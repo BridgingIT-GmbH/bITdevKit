@@ -810,6 +810,17 @@
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
+      "BridgingIT.DevKit.Application.Entities": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Localization.Abstractions": "[10.0.9, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -1124,6 +1135,7 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",

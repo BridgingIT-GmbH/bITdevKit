@@ -20,7 +20,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
         OrderedBackgroundJob.ExecutionOrder.Clear();
         var dueSoonUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
         var dueLaterUtc = new DateTimeOffset(2026, 05, 26, 09, 02, 00, TimeSpan.Zero);
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -54,7 +54,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     {
         OrderedBackgroundJob.ExecutionOrder.Clear();
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -83,7 +83,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     [Fact]
     public async Task SweepOnceAsync_CronTriggerWithDefaultMissedPolicy_MaterializesAndExecutesOccurrence()
     {
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -117,7 +117,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     {
         ConcurrencyTrackingJob.Reset();
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -150,7 +150,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     {
         ConcurrencyTrackingJob.Reset(startSignalThreshold: 1);
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -190,7 +190,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     [InlineData(false, true)]
     public async Task SweepOnceAsync_DisabledOrPausedJobsAndTriggers_DoNotMaterializeWork(bool pauseJob, bool pauseTrigger)
     {
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options => options.EnableBackgroundExecution = false,
             services =>
             {
@@ -254,7 +254,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     public async Task StopAsync_GracefulShutdown_StopsNewDispatchAndCancelsInFlightJob()
     {
         ShutdownAwareJob.Reset();
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = true;
@@ -290,7 +290,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     {
         ResilientBackgroundJob.Reset();
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -327,7 +327,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     {
         OrderedBackgroundJob.ExecutionOrder.Clear();
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = false;
@@ -361,7 +361,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     public async Task StartAsync_BackgroundSweepFailure_InvokesRegisteredExceptionHandlerAndKeepsServiceHealthy()
     {
         var handler = new RecordingSchedulerExceptionHandler();
-        var provider = CreateProvider(
+        var provider = this.CreateProvider(
             options =>
             {
                 options.EnableBackgroundExecution = true;

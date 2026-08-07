@@ -153,9 +153,10 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddDashboard(o => o
     .Enabled(true)
-    .Authorize(o => o
+    .Authorize(a => a
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
-        .RequireRole(Role.Administrators)));
+        .RequireRole(Role.Administrators))
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints>());
 MetricsServiceCollectionExtensions.AddMetrics(
     builder.Services, o => o
         .Enabled()

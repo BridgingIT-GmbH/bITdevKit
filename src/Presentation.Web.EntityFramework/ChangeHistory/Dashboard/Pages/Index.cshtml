@@ -1,0 +1,147 @@
+@using ChangeHistoryDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = ChangeHistoryDashboardEndpoints.BuildChangeHistoryContentPath(dashboardOptions);
+    var restoreActionPath = ChangeHistoryDashboardEndpoints.BuildRestoreActionPath(dashboardOptions);
+}
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <span id="change-history-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="change-history-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="ChangeHistory refresh interval">
+            <option value="">Off</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+            <option value="60000">1 min</option>
+        </select>
+        <button type="button" id="change-history-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh ChangeHistory">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-change-history-shell">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Content>())
+</div>
+
+<div class="modal fade" id="change-history-restore-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="change-history-restore-form">
+            <div class="modal-header">
+                <h5 class="modal-title">Restore Change Set</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="registration">
+                <input type="hidden" name="entityId">
+                <input type="hidden" name="changeSetId">
+
+                <div class="mb-3">
+                    <label class="form-label" for="change-history-restore-mode">Mode</label>
+                    <select id="change-history-restore-mode" class="form-select" name="restoreMode">
+                        <option value="ChangeSet">Change set only</option>
+                        <option value="PointInTime">Point in time</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="change-history-restore-reason">Reason</label>
+                    <input id="change-history-restore-reason" class="form-control" name="reason" autocomplete="off" placeholder="Support correction">
+                </div>
+
+                <div class="mb-0">
+                    <label class="form-label" for="change-history-restore-concurrency">Expected concurrency version</label>
+                    <input id="change-history-restore-concurrency" class="form-control" name="expectedConcurrencyVersion" autocomplete="off" placeholder="optional GUID">
+                </div>
+
+                <p class="text-muted small mt-3 mb-0">
+                    The restore action uses the same ChangeHistory restore service and authorizers as the management endpoint.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Restore</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const shellElement = document.getElementById('dashboard-change-history-shell');
+        const contentPath = '@contentPath';
+        const restoreActionPath = '@restoreActionPath';
+        const restoreModalElement = document.getElementById('change-history-restore-modal');
+        const restoreForm = document.getElementById('change-history-restore-form');
+        const restoreModal = restoreModalElement ? new bootstrap.Modal(restoreModalElement) : null;
+
+        function buildContentUrl() {
+            const url = new URL(contentPath, window.location.origin);
+            const current = new URL(window.location.href);
+            current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+            return url;
+        }
+
+        const refresher = window.bdkDashboard.createRefresher({
+            buildUrl: buildContentUrl,
+            contentSelector: () => shellElement,
+            statusSelector: '#change-history-refresh-status',
+            intervalSelector: '#change-history-refresh-interval',
+            refreshButtonSelector: '#change-history-refresh-now',
+            storageKey: 'bdk.dashboard.changeHistory.refreshInterval'
+        });
+
+        shellElement?.addEventListener('click', event => {
+            const button = event.target.closest('[data-change-history-restore]');
+            if (!button || !restoreForm || !restoreModal) {
+                return;
+            }
+
+            restoreForm.elements.registration.value = button.dataset.registration || '';
+            restoreForm.elements.entityId.value = button.dataset.entityId || '';
+            restoreForm.elements.changeSetId.value = button.dataset.changeSetId || '';
+            restoreForm.elements.reason.value = '';
+            restoreForm.elements.expectedConcurrencyVersion.value = '';
+            restoreForm.elements.restoreMode.value = 'ChangeSet';
+            restoreModal.show();
+        });
+
+        restoreForm?.addEventListener('submit', async event => {
+            event.preventDefault();
+            const submitButton = restoreForm.querySelector('[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+
+            try {
+                const response = await fetch(restoreActionPath, {
+                    method: 'POST',
+                    body: new FormData(restoreForm),
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    const text = await response.text().catch(() => response.statusText);
+                    console.error('ChangeHistory restore failed:', text);
+                    alert('ChangeHistory restore failed. See the browser console for details.');
+                    return;
+                }
+
+                restoreModal?.hide();
+                await refresher.refresh(true);
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+            }
+        });
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Change History" };
+}

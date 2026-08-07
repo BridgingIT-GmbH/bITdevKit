@@ -184,8 +184,14 @@
                                                Size="Size.Small"
                                                OnClick="@(() => OpenAttachmentsDialogAsync(todoItem))" />
                             </MudTooltip>
+                            <MudTooltip Text="Change history">
+                                <MudIconButton Icon="@Icons.Material.Filled.History"
+                                               Color="Color.Secondary"
+                                               Size="Size.Small"
+                                               OnClick="@(() => OpenHistoryDialogAsync(todoItem))" />
+                            </MudTooltip>
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteTodo(todoItem))" />
+                                            Color="Color.Error" Size="Size.Small" OnClick="@(() => DeleteTodo(todoItem))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -193,6 +199,127 @@
         </MudItem>
     </MudGrid>
 </MudContainer>
+
+@* Change History Dialog *@
+<MudDialog @bind-Visible="showHistoryDialog" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Secondary" />
+            <div>
+                <MudText Typo="Typo.h6">Change history</MudText>
+                <MudText Typo="Typo.caption">@selectedHistoryTodo?.Title</MudText>
+            </div>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Spacing="2">
+            <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                <MudChip T="string" Size="Size.Small" Variant="Variant.Filled" Color="Color.Secondary">
+                    @historyChangeSets.Count change sets
+                </MudChip>
+                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Info">
+                    @historyChangeSets.Sum(changeSet => changeSet.Rows?.Count ?? 0) rows
+                </MudChip>
+                @if (historyLoading)
+                {
+                    <MudProgressCircular Indeterminate="true" Size="Size.Small" Color="Color.Info" />
+                }
+                <MudSpacer />
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           StartIcon="@Icons.Material.Filled.Refresh"
+                           Disabled="@(historyLoading || selectedHistoryTodo is null)"
+                           OnClick="LoadSelectedHistoryAsync">
+                    Refresh
+                </MudButton>
+            </MudStack>
+
+            @if (!string.IsNullOrWhiteSpace(historyError))
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">@historyError</MudAlert>
+            }
+            else if (historyLoading)
+            {
+                <MudSkeleton Animation="Animation.Pulse" Height="64px" />
+                <MudSkeleton Animation="Animation.Pulse" Height="64px" />
+                <MudSkeleton Animation="Animation.Pulse" Height="64px" />
+            }
+            else if (historyChangeSets.Count == 0)
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                    No history yet. Change the title, status, priority, due date, or steps and open history again.
+                </MudAlert>
+            }
+            else
+            {
+                <MudExpansionPanels MultiExpansion="true" Elevation="0">
+                    @foreach (var changeSet in historyChangeSets)
+                    {
+                        <MudExpansionPanel>
+                            <TitleContent>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="width: 100%;">
+                                    <MudIcon Icon="@GetHistoryOperationIcon(changeSet.Operation)" Color="@GetHistoryOperationColor(changeSet.Operation)" />
+                                    <div>
+                                        <MudText Typo="Typo.subtitle2">@FormatHistoryTitle(changeSet)</MudText>
+                                        <MudText Typo="Typo.caption">@FormatHistoryTimestamp(changeSet.ChangedDate) by @FormatHistoryUser(changeSet)</MudText>
+                                    </div>
+                                    <MudSpacer />
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Default">
+                                        @(changeSet.Rows?.Count ?? 0) changes
+                                    </MudChip>
+                                </MudStack>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudTable Items="@((changeSet.Rows ?? Enumerable.Empty<ChangeHistoryRecord>()).OrderBy(e => e.ChangeSetSequence ?? 0))" Dense="true" Hover="true" Elevation="0" Breakpoint="Breakpoint.Sm">
+                                    <HeaderContent>
+                                        <MudTh>Property</MudTh>
+                                        <MudTh>Before</MudTh>
+                                        <MudTh>After</MudTh>
+                                        <MudTh>Status</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate Context="row">
+                                        <MudTd DataLabel="Property">
+                                            <MudText Typo="Typo.body2">@FormatHistoryProperty(row)</MudText>
+                                            <MudText Typo="Typo.caption">@row.CaptureSource · @row.PathKind</MudText>
+                                        </MudTd>
+                                        <MudTd DataLabel="Before">
+                                            <MudText Typo="Typo.body2" Style="white-space: pre-wrap; word-break: break-word; max-width: 260px;">@FormatHistoryValue(row.OldValue, row.OldValueHash)</MudText>
+                                        </MudTd>
+                                        <MudTd DataLabel="After">
+                                            <MudText Typo="Typo.body2" Style="white-space: pre-wrap; word-break: break-word; max-width: 260px;">@FormatHistoryValue(row.NewValue, row.NewValueHash)</MudText>
+                                        </MudTd>
+                                        <MudTd DataLabel="Status">
+                                            <MudChip T="string" Size="Size.Small" Color="@(row.IsRestoreable == true ? Color.Success : Color.Default)" Variant="Variant.Outlined">
+                                                @(row.IsRestoreable == true ? "restoreable" : "locked")
+                                            </MudChip>
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mt-3">
+                                    <MudText Typo="Typo.caption">ChangeSet @changeSet.ChangeSetId</MudText>
+                                    <MudSpacer />
+                                    <MudButton Variant="Variant.Filled"
+                                               Color="Color.Warning"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Material.Filled.Restore"
+                                               Disabled="@(!CanRestore(changeSet) || historyRestoringChangeSetId == changeSet.ChangeSetId)"
+                                               OnClick="@(() => RestoreChangeSetAsync(changeSet))">
+                                        @(historyRestoringChangeSetId == changeSet.ChangeSetId ? "Restoring" : "Restore to this point")
+                                    </MudButton>
+                                </MudStack>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CloseHistoryDialog">Close</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @* Create Todo Dialog *@
 <MudDialog @bind-Visible="showCreateTodoDialog" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Medium }">
@@ -451,6 +578,14 @@
     private TodoItemModel selectedAttachmentTodo;
     private IBrowserFile attachmentUploadFile;
     private List<TodoAttachmentItem> attachments = [];
+    private bool showHistoryDialog;
+    private bool historyLoading;
+    private string historyError = string.Empty;
+    private TodoItemModel selectedHistoryTodo;
+    private List<ChangeHistoryChangeSetRecord> historyChangeSets = [];
+    private Guid? historyRestoringChangeSetId;
+    private readonly Dictionary<string, string> todoSnapshots = new(StringComparer.Ordinal);
+    private readonly HashSet<string> updatingTodoIds = new(StringComparer.Ordinal);
 
     protected override async Task OnInitializedAsync()
     {
@@ -533,6 +668,7 @@
             //         });
 
             items = await Api.Api.Core.Todoitems.Search.PostAsync(filter) ?? [];
+            StoreTodoSnapshots(items);
         }
         catch (ApiException ex)
         {
@@ -544,6 +680,179 @@
             loading = false;
         }
     }
+
+    private async Task OpenHistoryDialogAsync(TodoItemModel item)
+    {
+        selectedHistoryTodo = item;
+        showHistoryDialog = true;
+        await LoadSelectedHistoryAsync();
+    }
+
+    private void CloseHistoryDialog()
+    {
+        showHistoryDialog = false;
+        selectedHistoryTodo = null;
+        historyError = string.Empty;
+        historyChangeSets.Clear();
+    }
+
+    private async Task LoadSelectedHistoryAsync()
+    {
+        if (string.IsNullOrWhiteSpace(selectedHistoryTodo?.Id))
+        {
+            historyChangeSets.Clear();
+            return;
+        }
+
+        historyLoading = true;
+        historyError = string.Empty;
+
+        try
+        {
+            var result = await Api.Api.Core.Todoitems.History.ChangeSets.GetAsync(request =>
+            {
+                request.QueryParameters.EntityId = selectedHistoryTodo.Id;
+                request.QueryParameters.Page = 1;
+                request.QueryParameters.PageSize = 100;
+                request.QueryParameters.OrderAscending = false;
+            });
+
+            historyChangeSets = result?.Values ?? [];
+        }
+        catch (ApiException ex)
+        {
+            historyChangeSets.Clear();
+            historyError = $"Unable to load history: [{ex.ResponseStatusCode}] {ex.Message}";
+            Snackbar.Add(historyError, Severity.Error);
+        }
+        finally
+        {
+            historyLoading = false;
+        }
+    }
+
+    private async Task RestoreChangeSetAsync(ChangeHistoryChangeSetRecord changeSet)
+    {
+        if (!CanRestore(changeSet) || string.IsNullOrWhiteSpace(selectedHistoryTodo?.Id) || !changeSet.ChangeSetId.HasValue)
+        {
+            return;
+        }
+
+        historyRestoringChangeSetId = changeSet.ChangeSetId;
+
+        try
+        {
+            var request = new ChangeHistoryRestoreRequestModel
+            {
+                Reason = $"Restored from DoFiesta todo history UI at {DateTimeOffset.UtcNow:O}",
+                ExpectedConcurrencyVersion = TryParseGuid(selectedHistoryTodo.ConcurrencyVersion),
+                RestoreMode = CreatePointInTimeRestoreMode()
+            };
+
+            var response = await Api.Api.Core.Todoitems.History[selectedHistoryTodo.Id]
+                .ChangeSets[changeSet.ChangeSetId.Value]
+                .Restore
+                .PostAsync(request);
+
+            Snackbar.Add($"Restored {response?.RestoredPropertyCount ?? 0} values.", Severity.Success);
+            await LoadItems();
+
+            var refreshed = items?.FirstOrDefault(item => item.Id == selectedHistoryTodo.Id);
+            if (refreshed is not null)
+            {
+                selectedHistoryTodo = refreshed;
+            }
+
+            await LoadSelectedHistoryAsync();
+        }
+        catch (ApiException ex)
+        {
+            Snackbar.Add($"Restore failed: [{ex.ResponseStatusCode}] {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            historyRestoringChangeSetId = null;
+        }
+    }
+
+    private static bool CanRestore(ChangeHistoryChangeSetRecord changeSet)
+        => changeSet?.ChangeSetId.HasValue == true &&
+           changeSet.Rows?.Count > 0 &&
+           changeSet.Rows.All(row => row.IsRestoreable == true) &&
+           !string.Equals(changeSet.Operation, "Create", StringComparison.OrdinalIgnoreCase);
+
+    private static Guid? TryParseGuid(string value)
+        => Guid.TryParse(value, out var parsed) ? parsed : null;
+
+    private static ChangeHistoryRestoreRequestModel.ChangeHistoryRestoreRequestModel_restoreMode CreatePointInTimeRestoreMode()
+        => new()
+        {
+            ChangeHistoryRestoreMode = ChangeHistoryRestoreMode.PointInTime
+        };
+
+    private static string FormatHistoryTitle(ChangeHistoryChangeSetRecord changeSet)
+        => string.IsNullOrWhiteSpace(changeSet.Operation)
+            ? changeSet.CaptureSource ?? "Change"
+            : $"{changeSet.Operation} · {changeSet.CaptureSource}";
+
+    private static string FormatHistoryTimestamp(DateTimeOffset? timestamp)
+        => timestamp?.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss") ?? "unknown time";
+
+    private static string FormatHistoryUser(ChangeHistoryChangeSetRecord changeSet)
+        => !string.IsNullOrWhiteSpace(changeSet.ChangedByUserName)
+            ? changeSet.ChangedByUserName
+            : !string.IsNullOrWhiteSpace(changeSet.ChangedByUserId) ? changeSet.ChangedByUserId : "unknown";
+
+    private static string FormatHistoryProperty(ChangeHistoryRecord row)
+        => !string.IsNullOrWhiteSpace(row.PropertyPath)
+            ? row.PropertyPath
+            : !string.IsNullOrWhiteSpace(row.PropertyName) ? row.PropertyName : "value";
+
+    private static string FormatHistoryValue(string value, string hash)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            return TryFormatJson(value);
+        }
+
+        return !string.IsNullOrWhiteSpace(hash) ? $"hash:{hash}" : "null";
+    }
+
+    private static string TryFormatJson(string value)
+    {
+        try
+        {
+            using var document = System.Text.Json.JsonDocument.Parse(value);
+
+            return System.Text.Json.JsonSerializer.Serialize(
+                document.RootElement,
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        }
+        catch
+        {
+            return value;
+        }
+    }
+
+    private static Color GetHistoryOperationColor(string operation)
+        => operation switch
+        {
+            "Create" => Color.Success,
+            "Restore" => Color.Warning,
+            "BulkUpdate" => Color.Info,
+            "CollectionChanged" => Color.Secondary,
+            _ => Color.Primary
+        };
+
+    private static string GetHistoryOperationIcon(string operation)
+        => operation switch
+        {
+            "Create" => Icons.Material.Filled.AddCircle,
+            "Restore" => Icons.Material.Filled.Restore,
+            "BulkUpdate" => Icons.Material.Filled.PlaylistAddCheck,
+            "CollectionChanged" => Icons.Material.Filled.AccountTree,
+            _ => Icons.Material.Filled.EditNote
+        };
 
     private async Task OnStatusFilterChanged(int? statusId)
     {
@@ -822,24 +1131,87 @@
 
     private async Task UpdateTodo(TodoItemModel item)
     {
+        if (string.IsNullOrWhiteSpace(item?.Id))
+        {
+            return;
+        }
+
+        var currentSnapshot = CreateTodoSnapshot(item);
+        if (todoSnapshots.TryGetValue(item.Id, out var savedSnapshot) &&
+            string.Equals(savedSnapshot, currentSnapshot, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (!updatingTodoIds.Add(item.Id))
+        {
+            return;
+        }
+
         loading = true;
         Console.WriteLine($"Updating todo: {item.Id}");
 
         try
         {
-            await Api.Api.Core.Todoitems[item.Id].PutAsync(item);
+            var updated = await Api.Api.Core.Todoitems[item.Id].PutAsync(item);
+            if (updated is not null)
+            {
+                ApplyTodoModel(item, updated);
+            }
+
+            todoSnapshots[item.Id] = CreateTodoSnapshot(item);
 
             Snackbar.Add("Updated successfully", Severity.Success);
-            await LoadItems();
         }
         catch (ApiException ex)
         {
             Snackbar.Add($"Error updating todo: {ex.Message}", Severity.Error);
+            await LoadItems();
         }
         finally
         {
+            updatingTodoIds.Remove(item.Id);
             loading = false;
         }
+    }
+
+    private void StoreTodoSnapshots(IEnumerable<TodoItemModel> todoItems)
+    {
+        todoSnapshots.Clear();
+        foreach (var item in todoItems ?? [])
+        {
+            if (!string.IsNullOrWhiteSpace(item.Id))
+            {
+                todoSnapshots[item.Id] = CreateTodoSnapshot(item);
+            }
+        }
+    }
+
+    private static string CreateTodoSnapshot(TodoItemModel item)
+        => string.Join('\u001f',
+            item.Title ?? string.Empty,
+            item.Description ?? string.Empty,
+            item.Status?.ToString() ?? string.Empty,
+            item.Priority?.ToString() ?? string.Empty,
+            item.DueDate?.ToUniversalTime().Ticks.ToString() ?? string.Empty,
+            item.OrderIndex?.ToString() ?? string.Empty,
+            item.Assignee ?? string.Empty);
+
+    private static void ApplyTodoModel(TodoItemModel target, TodoItemModel source)
+    {
+        target.Id = source.Id;
+        target.UserId = source.UserId;
+        target.Number = source.Number;
+        target.Title = source.Title;
+        target.Description = source.Description;
+        target.Status = source.Status;
+        target.Priority = source.Priority;
+        target.DueDate = source.DueDate;
+        target.OrderIndex = source.OrderIndex;
+        target.Assignee = source.Assignee;
+        target.Steps = source.Steps;
+        target.Properties = source.Properties;
+        target.ConcurrencyVersion = source.ConcurrencyVersion;
     }
 
     private static DateTimeOffset? CombineDueDateAndTime(DateTime? date, string timeText)

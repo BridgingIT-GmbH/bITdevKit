@@ -567,7 +567,7 @@ public class EntityFrameworkJobStoreProvider<TContext> :
             }
 
             dbContext.JobBatches.Add(ToEntity(batch, this.Options.Serializer));
-            await AddMissingChildOccurrencesAsync(dbContext, childOccurrences, cancellationToken).ConfigureAwait(false);
+            await this.AddMissingChildOccurrencesAsync(dbContext, childOccurrences, cancellationToken).ConfigureAwait(false);
 
             foreach (var membership in DeduplicateMemberships(memberships))
             {
@@ -664,7 +664,7 @@ public class EntityFrameworkJobStoreProvider<TContext> :
                 return false;
             }
 
-            await AddMissingChildOccurrencesAsync(dbContext, childOccurrences, cancellationToken).ConfigureAwait(false);
+            await this.AddMissingChildOccurrencesAsync(dbContext, childOccurrences, cancellationToken).ConfigureAwait(false);
 
             var existingIds = await dbContext.JobBatchOccurrences.AsNoTracking()
                 .Where(x => x.BatchId == batchId)

@@ -103,8 +103,8 @@ public class ApplicationCommandTests : IAsyncLifetime
         // Arrange - Free plan allows max 3 cities (London seeded + Paris + Berlin = 3)
         await this.testHost.ResetDatabaseAsync();
 
-        await AddUserCityAsync(CityId.Create(TestData.ParisCityGuid), Guid.NewGuid(), 1);
-        await AddUserCityAsync(CityId.Create(TestData.BerlinCityGuid), Guid.NewGuid(), 2);
+        await this.AddUserCityAsync(CityId.Create(TestData.ParisCityGuid), Guid.NewGuid(), 1);
+        await this.AddUserCityAsync(CityId.Create(TestData.BerlinCityGuid), Guid.NewGuid(), 2);
 
         this.testHost.GeocodingClient
             .SearchCityAsync("Amsterdam", "NL", Arg.Any<CancellationToken>())

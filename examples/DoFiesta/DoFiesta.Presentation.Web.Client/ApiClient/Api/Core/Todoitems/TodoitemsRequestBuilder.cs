@@ -2,6 +2,7 @@
 #pragma warning disable CS0618
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Actions;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Dataporter;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.History;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Item;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Search;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
@@ -30,6 +31,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitem
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Dataporter.DataporterRequestBuilder Dataporter
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Dataporter.DataporterRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The history property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.History.HistoryRequestBuilder History
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.History.HistoryRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The search property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitems.Search.SearchRequestBuilder Search

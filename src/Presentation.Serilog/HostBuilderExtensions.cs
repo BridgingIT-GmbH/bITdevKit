@@ -264,31 +264,39 @@ public static class HostBuilderExtensions
                 options => // https://github.com/serilog/serilog-sinks-opentelemetry?tab=readme-ov-file#getting-started
                 {
                     options.Endpoint = configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
-                    foreach (var header in configuration["OTEL_EXPORTER_OTLP_HEADERS"]?.Split(',') ?? [])
+                    foreach (var header in ParseKeyValuePairs(configuration["OTEL_EXPORTER_OTLP_HEADERS"], "OTEL_EXPORTER_OTLP_HEADERS"))
                     {
-                        var (key, value) = header.Split('=') switch
-                        {
-                            [string k, string v] => (k, v),
-                            var v => throw new Exception($"Invalid header format {v}")
-                        };
-
-                        options.Headers.Add(key, value);
+                        options.Headers.Add(header.Key, header.Value);
                     }
 
                     options.ResourceAttributes.Add("service.name", "presentation-web-server");
 
-                    //To remove the duplicate issue, we can use the below code to get the key and value from the configuration
-                    // https://stackoverflow.com/a/78419578/1758814
-                    var (otelResourceAttribute, otelResourceAttributeValue) = configuration["OTEL_RESOURCE_ATTRIBUTES"]
-                            ?.Split('=') switch
+                    foreach (var attribute in ParseKeyValuePairs(configuration["OTEL_RESOURCE_ATTRIBUTES"], "OTEL_RESOURCE_ATTRIBUTES"))
                     {
-                        [string k, string v] => (k, v),
-                        _ => throw new Exception(
-                            $"Invalid header format {configuration["OTEL_RESOURCE_ATTRIBUTES"]}")
-                    };
-
-                    options.ResourceAttributes.Add(otelResourceAttribute, otelResourceAttributeValue);
+                        options.ResourceAttributes[attribute.Key] = attribute.Value;
+                    }
                 });
+        }
+    }
+
+    private static IEnumerable<KeyValuePair<string, string>> ParseKeyValuePairs(string value, string configurationKey)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            yield break;
+        }
+
+        foreach (var pair in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            var separatorIndex = pair.IndexOf('=');
+            if (separatorIndex <= 0 || separatorIndex == pair.Length - 1)
+            {
+                throw new Exception($"Invalid {configurationKey} format {pair}");
+            }
+
+            yield return new KeyValuePair<string, string>(
+                pair[..separatorIndex].Trim(),
+                pair[(separatorIndex + 1)..].Trim());
         }
     }
 }

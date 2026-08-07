@@ -247,6 +247,33 @@
         "resolved": "9.0.13",
         "contentHash": "t8S9IDpjJKsLpLkeBdW8cWtcPyYqrGu93Dej1RO6WwuL/lkFSqWlan3rMJfortqz1mRIh+sys2AFsSA6jWJ3Jg=="
       },
+      "BridgingIT.DevKit.Application.Commands": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Microsoft.Extensions.Caching.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Entities": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Localization.Abstractions": "[10.0.9, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -308,6 +335,23 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[10.0.9, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Queries": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Microsoft.Extensions.Caching.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
       "BridgingIT.DevKit.Application.Queueing": {
@@ -483,6 +527,7 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",

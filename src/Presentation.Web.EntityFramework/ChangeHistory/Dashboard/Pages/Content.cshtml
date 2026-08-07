@@ -1,0 +1,492 @@
+@using ChangeHistoryDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+    var query = vm.Query;
+}
+
+<style>
+    #change-history-dashboard-root {
+        height: calc(100vh - 11rem);
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        overflow: hidden;
+    }
+
+    #change-history-dashboard-root .change-history-filter {
+        flex: 0 0 auto;
+        border: 1px solid var(--bs-border-color);
+        border-radius: .375rem;
+        padding: .75rem;
+        background: var(--bs-body-bg);
+    }
+
+    #change-history-dashboard-root .change-history-content-zone {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+        border: 1px solid var(--bs-border-color);
+        border-radius: .375rem;
+        background: var(--bs-body-bg);
+    }
+
+    #change-history-dashboard-root .change-history-sticky-head th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--bs-body-bg);
+    }
+
+    #change-history-dashboard-root .change-history-value {
+        max-width: 26rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #change-history-dashboard-root .change-history-row-details {
+        max-height: 12rem;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+</style>
+
+<div id="change-history-dashboard-root">
+    @if (vm.Errors.Count > 0)
+    {
+        <div class="alert alert-warning py-2 mb-0">
+            @foreach (var error in vm.Errors)
+            {
+                <div>@error</div>
+            }
+        </div>
+    }
+
+    <form class="change-history-filter" method="get" action="@vm.PagePath">
+        <input type="hidden" name="page" value="1">
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-xl-3">
+                <label class="form-label" for="change-history-registration">Registration</label>
+                <select id="change-history-registration" class="form-select form-select-sm" name="registration" onchange="this.form.submit()">
+                    @foreach (var registration in vm.Registrations)
+                    {
+                        <option value="@registration.Key" selected="@(registration.Key == query.RegistrationKey ? "selected" : null)">
+                            @registration.EntityTypeName (@registration.ContextTypeName)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-entity-id">Entity id</label>
+                <input id="change-history-entity-id" class="form-control form-control-sm" name="entityId" value="@query.EntityId" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-property-name">Property</label>
+                <input id="change-history-property-name" class="form-control form-control-sm" name="propertyName" value="@query.PropertyName" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-operation">Operation</label>
+                <input id="change-history-operation" class="form-control form-control-sm" name="operation" value="@query.Operation" autocomplete="off" placeholder="Create, Update, Restore">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-capture-source">Capture source</label>
+                <input id="change-history-capture-source" class="form-control form-control-sm" name="captureSource" value="@query.CaptureSource" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-capture-strategy">Capture strategy</label>
+                <input id="change-history-capture-strategy" class="form-control form-control-sm" name="captureStrategy" value="@query.CaptureStrategy" autocomplete="off" placeholder="RepositorySnapshot">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-capture-status">Capture status</label>
+                <input id="change-history-capture-status" class="form-control form-control-sm" name="captureStatus" value="@query.CaptureStatus" autocomplete="off" placeholder="Captured, Failed">
+            </div>
+            <div class="col-12 col-xl-1">
+                <label class="form-label" for="change-history-page-size">Page size</label>
+                <input id="change-history-page-size" class="form-control form-control-sm" type="number" min="1" max="100" name="pageSize" value="@query.PageSize">
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <label class="form-label" for="change-history-change-set-id">Change set id</label>
+                <input id="change-history-change-set-id" class="form-control form-control-sm" name="changeSetId" value="@query.ChangeSetId" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <label class="form-label" for="change-history-bulk-operation-id">Bulk operation id</label>
+                <input id="change-history-bulk-operation-id" class="form-control form-control-sm" name="bulkOperationId" value="@query.BulkOperationId" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-user-id">User id</label>
+                <input id="change-history-user-id" class="form-control form-control-sm" name="changedByUserId" value="@query.ChangedByUserId" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-date-from">From</label>
+                <input id="change-history-date-from" class="form-control form-control-sm" name="changedDateFrom" value="@FormatDateInput(query.ChangedDateFrom)" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <label class="form-label" for="change-history-date-to">To</label>
+                <input id="change-history-date-to" class="form-control form-control-sm" name="changedDateTo" value="@FormatDateInput(query.ChangedDateTo)" autocomplete="off">
+            </div>
+            <div class="col-12 col-md-6 col-xl-2">
+                <div class="form-check mb-1">
+                    <input id="change-history-order-ascending" class="form-check-input" type="checkbox" name="orderAscending" value="true" checked="@(query.OrderAscending ? "checked" : null)">
+                    <label class="form-check-label" for="change-history-order-ascending">Oldest first</label>
+                </div>
+            </div>
+            <div class="col-12 col-xl-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm flex-fill">Apply</button>
+                <a class="btn btn-outline-secondary btn-sm" href="@vm.PagePath">Reset</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!vm.IsAvailable)
+    {
+        <div class="alert alert-info mb-0">No ChangeHistory endpoints are registered for the dashboard.</div>
+    }
+    else
+    {
+        <div class="row g-2 flex-shrink-0">
+            <div class="col-6 col-xl-3">
+                <div class="border rounded p-2">
+                    <div class="text-muted small">Change sets</div>
+                    <div class="fs-5">@FormatNumber(vm.ChangeSets?.TotalCount)</div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="border rounded p-2">
+                    <div class="text-muted small">Rows</div>
+                    <div class="fs-5">@FormatNumber(vm.Rows?.TotalCount)</div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="border rounded p-2">
+                    <div class="text-muted small">Entity</div>
+                    <div class="fs-6">@vm.SelectedRegistration.EntityTypeName</div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="border rounded p-2">
+                    <div class="text-muted small">Endpoint</div>
+                    <div class="fs-6 text-truncate" title="@vm.SelectedRegistration.ManagementPath">@vm.SelectedRegistration.ManagementPath</div>
+                </div>
+            </div>
+        </div>
+
+        <section class="change-history-content-zone">
+            <ul class="nav nav-tabs px-2 pt-2" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#change-history-change-sets" type="button" role="tab">
+                        Change Sets
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#change-history-rows" type="button" role="tab">
+                        Rows
+                    </button>
+                </li>
+                @if (vm.SelectedChangeSet is not null)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#change-history-selected" type="button" role="tab">
+                            Selected Change Set
+                        </button>
+                    </li>
+                }
+            </ul>
+
+            <div class="tab-content p-2">
+                <div class="tab-pane fade show active" id="change-history-change-sets" role="tabpanel" tabindex="0">
+                    @RenderChangeSets(vm)
+                </div>
+                <div class="tab-pane fade" id="change-history-rows" role="tabpanel" tabindex="0">
+                    @RenderRows(vm.Rows?.Values ?? [])
+                </div>
+                @if (vm.SelectedChangeSet is not null)
+                {
+                    <div class="tab-pane fade" id="change-history-selected" role="tabpanel" tabindex="0">
+                        @RenderChangeSet(vm.SelectedChangeSet, vm.SelectedRegistration)
+                    </div>
+                }
+            </div>
+        </section>
+
+        <div class="d-flex justify-content-between align-items-center flex-shrink-0">
+            <div class="text-muted small">
+                Page @(vm.ChangeSets?.CurrentPage ?? query.Page) of @(vm.ChangeSets?.TotalPages ?? 1)
+            </div>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary" type="submit" form="change-history-pager-form" name="page" value="@(Math.Max(1, query.Page - 1))" disabled="@(!(vm.ChangeSets?.HasPreviousPage ?? false) ? "disabled" : null)">Previous</button>
+                <button class="btn btn-outline-secondary" type="submit" form="change-history-pager-form" name="page" value="@(query.Page + 1)" disabled="@(!(vm.ChangeSets?.HasNextPage ?? false) ? "disabled" : null)">Next</button>
+            </div>
+        </div>
+        <form id="change-history-pager-form" method="get" action="@vm.PagePath" class="d-none">
+            @RenderHiddenFilters(query)
+        </form>
+    }
+</div>
+
+@functions {
+    private async Task<DashboardChangeHistoryViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var registrations = this.HttpContext.RequestServices.GetServices<ChangeHistoryDashboardDescriptor>()
+            .Where(descriptor => descriptor.IsValid)
+            .OrderBy(descriptor => descriptor.EntityTypeName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(descriptor => descriptor.ContextTypeName, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var query = ChangeHistoryDashboardQueryState.FromRequest(this.HttpContext);
+        var selected = registrations.FirstOrDefault(descriptor => descriptor.Key == query.RegistrationKey) ?? registrations.FirstOrDefault();
+        if (selected is not null && string.IsNullOrWhiteSpace(query.RegistrationKey))
+        {
+            query.RegistrationKey = selected.Key;
+        }
+
+        var model = new DashboardChangeHistoryViewModel
+        {
+            PagePath = ChangeHistoryDashboardEndpoints.BuildChangeHistoryPath(dashboardOptions),
+            RestoreActionPath = ChangeHistoryDashboardEndpoints.BuildRestoreActionPath(dashboardOptions),
+            Registrations = registrations,
+            SelectedRegistration = selected,
+            Query = query
+        };
+
+        if (selected is null)
+        {
+            return model;
+        }
+
+        var findAllQuery = query.ToFindAllQuery(selected);
+        var changeSets = await ChangeHistoryDashboardInvoker.FindAllChangeSetsAsync(this.HttpContext.RequestServices, selected, findAllQuery, this.HttpContext.RequestAborted);
+        if (changeSets.IsSuccess)
+        {
+            model.ChangeSets = changeSets.Value;
+        }
+        else
+        {
+            model.Errors.Add(changeSets.Errors.FirstOrDefault()?.Message ?? "ChangeHistory change sets could not be loaded.");
+        }
+
+        var rows = await ChangeHistoryDashboardInvoker.FindAllAsync(this.HttpContext.RequestServices, selected, findAllQuery, this.HttpContext.RequestAborted);
+        if (rows.IsSuccess)
+        {
+            model.Rows = rows.Value;
+        }
+        else
+        {
+            model.Errors.Add(rows.Errors.FirstOrDefault()?.Message ?? "ChangeHistory rows could not be loaded.");
+        }
+
+        if (query.ChangeSetId.HasValue)
+        {
+            var selectedChangeSet = await ChangeHistoryDashboardInvoker.FindOneChangeSetAsync(
+                this.HttpContext.RequestServices,
+                selected,
+                new ChangeHistoryFindOneChangeSetQuery
+                {
+                    ChangeSetId = query.ChangeSetId.Value,
+                    EntityType = selected.EntityTypeName,
+                    EntityId = query.EntityId,
+                    IncludeValues = selected.Options.IncludeValues
+                },
+                this.HttpContext.RequestAborted);
+
+            if (selectedChangeSet.IsSuccess)
+            {
+                model.SelectedChangeSet = selectedChangeSet.Value;
+            }
+            else
+            {
+                model.Errors.Add(selectedChangeSet.Errors.FirstOrDefault()?.Message ?? "Selected ChangeHistory change set could not be loaded.");
+            }
+        }
+
+        return model;
+    }
+
+    private IHtmlContent RenderChangeSets(DashboardChangeHistoryViewModel model)
+    {
+        var changeSets = (model.ChangeSets?.Values ?? []).ToArray();
+        if (changeSets.Length == 0)
+        {
+            return new HtmlString("<div class=\"text-muted p-3\">No change sets found.</div>");
+        }
+
+        var writer = new System.Text.StringBuilder();
+        writer.Append("<div class=\"accordion\" id=\"change-history-change-set-list\">");
+        foreach (var changeSet in changeSets)
+        {
+            writer.Append(RenderChangeSetHtml(changeSet, model.SelectedRegistration));
+        }
+
+        writer.Append("</div>");
+
+        return new HtmlString(writer.ToString());
+    }
+
+    private IHtmlContent RenderChangeSet(ChangeHistoryChangeSetRecord changeSet, ChangeHistoryDashboardDescriptor descriptor)
+        => new HtmlString(RenderChangeSetHtml(changeSet, descriptor));
+
+    private string RenderChangeSetHtml(ChangeHistoryChangeSetRecord changeSet, ChangeHistoryDashboardDescriptor descriptor)
+    {
+        var rows = changeSet.Rows ?? [];
+        var canRestore = rows.Any(row => row.IsRestoreable);
+        var collapseId = $"chs-{changeSet.ChangeSetId:N}";
+        var title = $"{changeSet.EntityType} / {changeSet.EntityId}";
+        var writer = new System.Text.StringBuilder();
+        writer.Append("<div class=\"accordion-item\">");
+        writer.Append("<h2 class=\"accordion-header\">");
+        writer.Append(CultureInfo.InvariantCulture, $"<button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#{collapseId}\">");
+        writer.Append("<span class=\"me-3 fw-semibold\">").Append(Encode(title)).Append("</span>");
+        writer.Append("<span class=\"badge text-bg-secondary me-2\">").Append(Encode(changeSet.Operation)).Append("</span>");
+        writer.Append("<span class=\"text-muted small\">").Append(Encode(FormatDate(changeSet.ChangedDate))).Append("</span>");
+        writer.Append("</button></h2>");
+        writer.Append(CultureInfo.InvariantCulture, $"<div id=\"{collapseId}\" class=\"accordion-collapse collapse\" data-bs-parent=\"#change-history-change-set-list\"><div class=\"accordion-body p-2\">");
+        writer.Append("<div class=\"d-flex justify-content-between align-items-center gap-2 mb-2\">");
+        writer.Append("<div class=\"small text-muted\">");
+        writer.Append("ChangeSet ").Append(Encode(changeSet.ChangeSetId.ToString())).Append(" · ");
+        writer.Append(Encode(changeSet.CaptureSource)).Append(" · ");
+        writer.Append(Encode(changeSet.ChangedByUserName ?? changeSet.ChangedByUserId ?? "unknown"));
+        writer.Append("</div>");
+        if (canRestore)
+        {
+            writer.Append("<button type=\"button\" class=\"btn btn-outline-danger btn-sm\" data-change-history-restore");
+            writer.Append(" data-registration=\"").Append(Encode(descriptor.Key)).Append("\"");
+            writer.Append(" data-entity-id=\"").Append(Encode(changeSet.EntityId)).Append("\"");
+            writer.Append(" data-change-set-id=\"").Append(Encode(changeSet.ChangeSetId.ToString())).Append("\">Restore</button>");
+        }
+        writer.Append("</div>");
+        writer.Append(RenderRowsHtml(rows));
+        writer.Append("</div></div></div>");
+
+        return writer.ToString();
+    }
+
+    private IHtmlContent RenderRows(IEnumerable<ChangeHistoryRecord> rows)
+        => new HtmlString(RenderRowsHtml(rows));
+
+    private string RenderRowsHtml(IEnumerable<ChangeHistoryRecord> rows)
+    {
+        var rowArray = rows?.ToArray() ?? [];
+        if (rowArray.Length == 0)
+        {
+            return "<div class=\"text-muted p-3\">No rows found.</div>";
+        }
+
+        var writer = new System.Text.StringBuilder();
+        writer.Append("<div class=\"table-responsive\"><table class=\"table table-sm align-middle mb-0 change-history-sticky-head\"><thead><tr>");
+        writer.Append("<th>Changed</th><th>Entity</th><th>Property</th><th>Old</th><th>New</th><th>Operation</th><th>Capture</th><th>User</th><th>Status</th>");
+        writer.Append("</tr></thead><tbody>");
+        foreach (var row in rowArray.OrderBy(row => row.ChangeSetSequence))
+        {
+            writer.Append("<tr>");
+            writer.Append("<td class=\"text-nowrap\">").Append(Encode(FormatDate(row.ChangedDate))).Append("</td>");
+            writer.Append("<td><div class=\"fw-semibold\">").Append(Encode(row.EntityType)).Append("</div><div class=\"text-muted small\">").Append(Encode(row.EntityId)).Append("</div></td>");
+            writer.Append("<td><div>").Append(Encode(row.PropertyPath ?? row.PropertyName)).Append("</div><div class=\"text-muted small\">").Append(Encode(row.CollectionAction)).Append("</div></td>");
+            writer.Append("<td class=\"change-history-value\" title=\"").Append(Encode(row.OldValue)).Append("\">").Append(Encode(FormatValue(row.OldValue, row.OldValueHash))).Append("</td>");
+            writer.Append("<td class=\"change-history-value\" title=\"").Append(Encode(row.NewValue)).Append("\">").Append(Encode(FormatValue(row.NewValue, row.NewValueHash))).Append("</td>");
+            writer.Append("<td>").Append(Encode(row.Operation)).Append("</td>");
+            writer.Append("<td><div>").Append(Encode(row.CaptureSource)).Append("</div><div class=\"text-muted small\">").Append(Encode(row.CaptureStrategy)).Append("</div></td>");
+            writer.Append("<td>").Append(Encode(row.ChangedByUserName ?? row.ChangedByUserId ?? row.ChangedByEmail)).Append("</td>");
+            writer.Append("<td>");
+            writer.Append(row.IsRestoreable ? "<span class=\"badge text-bg-success\">restoreable</span>" : "<span class=\"badge text-bg-secondary\">read only</span>");
+            writer.Append("<div class=\"text-muted small\">").Append(Encode(row.CaptureStatus)).Append("</div>");
+            if (!string.IsNullOrWhiteSpace(row.DomainRestoreHandlerName))
+            {
+                writer.Append("<div class=\"text-muted small\">").Append(Encode(row.DomainRestoreHandlerName)).Append("</div>");
+            }
+            writer.Append(RenderRowDetails(row));
+            writer.Append("</td>");
+            writer.Append("</tr>");
+        }
+
+        writer.Append("</tbody></table></div>");
+
+        return writer.ToString();
+    }
+
+    private IHtmlContent RenderHiddenFilters(ChangeHistoryDashboardQueryState query)
+    {
+        var writer = new System.Text.StringBuilder();
+        AppendHidden(writer, "registration", query.RegistrationKey);
+        AppendHidden(writer, "entityId", query.EntityId);
+        AppendHidden(writer, "propertyName", query.PropertyName);
+        AppendHidden(writer, "changeSetId", query.ChangeSetId?.ToString());
+        AppendHidden(writer, "bulkOperationId", query.BulkOperationId?.ToString());
+        AppendHidden(writer, "changedByUserId", query.ChangedByUserId);
+        AppendHidden(writer, "changedDateFrom", FormatDateInput(query.ChangedDateFrom));
+        AppendHidden(writer, "changedDateTo", FormatDateInput(query.ChangedDateTo));
+        AppendHidden(writer, "operation", query.Operation);
+        AppendHidden(writer, "captureSource", query.CaptureSource);
+        AppendHidden(writer, "captureStrategy", query.CaptureStrategy);
+        AppendHidden(writer, "captureStatus", query.CaptureStatus);
+        AppendHidden(writer, "pageSize", query.PageSize.ToString(CultureInfo.InvariantCulture));
+        if (query.OrderAscending)
+        {
+            AppendHidden(writer, "orderAscending", "true");
+        }
+
+        return new HtmlString(writer.ToString());
+    }
+
+    private static void AppendHidden(System.Text.StringBuilder writer, string name, string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            writer.Append("<input type=\"hidden\" name=\"").Append(Encode(name)).Append("\" value=\"").Append(Encode(value)).Append("\">");
+        }
+    }
+
+    private static string FormatNumber(long? value)
+        => value.HasValue ? value.Value.ToString("N0", CultureInfo.InvariantCulture) : "-";
+
+    private static string FormatDate(DateTimeOffset value)
+        => value.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+    private static string FormatDateInput(DateTimeOffset? value)
+        => value?.ToString("O", CultureInfo.InvariantCulture);
+
+    private static string FormatValue(string value, string hash)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        return string.IsNullOrWhiteSpace(hash) ? string.Empty : $"hash:{hash}";
+    }
+
+    private static string RenderRowDetails(ChangeHistoryRecord row)
+    {
+        var writer = new System.Text.StringBuilder();
+        writer.Append("<details class=\"mt-1\"><summary class=\"small text-muted\">Details</summary><div class=\"change-history-row-details small text-muted mt-1\">");
+        AppendDetail(writer, "Capture message", row.CaptureMessage);
+        AppendDetail(writer, "Restore plan", row.RestorePlanName);
+        AppendDetail(writer, "Restore mode", row.RestoreExecutionMode);
+        AppendDetail(writer, "Entity CLR type", row.EntityClrType);
+        AppendDetail(writer, "Entity id CLR type", row.EntityIdType);
+        AppendDetail(writer, "Value CLR type", row.ValueClrType);
+        AppendDetail(writer, "Changed date ticks", row.ChangedDateTicks.ToString(CultureInfo.InvariantCulture));
+        AppendDetail(writer, "Correlation id", row.CorrelationId);
+        AppendDetail(writer, "Flow id", row.FlowId);
+        AppendDetail(writer, "Module", row.ModuleName);
+        AppendDetail(writer, "Activity parent id", row.ActivityParentId);
+        AppendDetail(writer, "Properties", row.Properties);
+        writer.Append("</div></details>");
+
+        return writer.ToString();
+    }
+
+    private static void AppendDetail(System.Text.StringBuilder writer, string label, string value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            writer.Append("<div><span class=\"fw-semibold\">").Append(Encode(label)).Append(":</span> ").Append(Encode(value)).Append("</div>");
+        }
+    }
+
+    private static string Encode(string value)
+        => System.Net.WebUtility.HtmlEncode(value ?? string.Empty);
+}

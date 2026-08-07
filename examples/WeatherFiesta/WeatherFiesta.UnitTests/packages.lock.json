@@ -978,6 +978,22 @@
         "resolved": "16.3.0",
         "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
       },
+      "BridgingIT.DevKit.Application.Commands": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Microsoft.Extensions.Caching.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.DataPorter": {
         "type": "Project",
         "dependencies": {
@@ -991,6 +1007,17 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.9, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.9, )",
           "PDFsharp-MigraDoc": "[6.2.4, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Entities": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Commands": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queries": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Domain": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Localization.Abstractions": "[10.0.9, )"
         }
       },
       "BridgingIT.DevKit.Application.Identity": {
@@ -1069,6 +1096,23 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[10.0.9, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Queries": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "MediatR": "[12.5.0, 12.5.0]",
+          "Microsoft.Extensions.Caching.Abstractions": "[10.0.9, )",
+          "Polly": "[8.7.0, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
       "BridgingIT.DevKit.Application.Queueing": {
@@ -1381,6 +1425,7 @@
       "BridgingIT.DevKit.Infrastructure.EntityFramework": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
@@ -1478,9 +1523,12 @@
       "BridgingIT.DevKit.Presentation.Web.EntityFramework": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Entities": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Microsoft.EntityFrameworkCore": "[10.0.9, )"
+          "Microsoft.EntityFrameworkCore": "[10.0.9, )",
+          "RazorSlices": "[0.11.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Jobs": {

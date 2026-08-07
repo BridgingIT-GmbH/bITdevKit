@@ -104,9 +104,14 @@ public class CoreTodoItemEndpoints : EndpointsBase
             async ([FromServices] IRequester requester,
                    [FromRoute] string id,
                    [FromBody] TodoItemModel model, CancellationToken ct)
-                   => (await requester
+                   =>
+            {
+                model.Id = id;
+
+                return (await requester
                     .SendAsync(new TodoItemUpdateCommand { Model = model }, cancellationToken: ct))
-                    .MapHttpOk())
+                    .MapHttpOk();
+            })
             .WithName("Core.TodoItems.Update")
             .WithDescription("Updates an existing TodoItem with the specified details.")
             .RequireEntityPermission<TodoItem>(Permission.Write)

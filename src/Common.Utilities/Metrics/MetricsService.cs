@@ -438,7 +438,7 @@ public sealed class MetricsService : IMetricsService, IDisposable
 
         public void Dispose()
         {
-            if (Interlocked.Exchange(ref disposed, 1) != 0)
+            if (Interlocked.Exchange(ref this.disposed, 1) != 0)
             {
                 return;
             }

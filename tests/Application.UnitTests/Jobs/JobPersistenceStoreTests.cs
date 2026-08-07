@@ -15,7 +15,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task OccurrenceStore_CreateLoadAndUpdate_Succeeds()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var occurrence = CreateOccurrence();
 
         // Act
@@ -35,7 +35,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task OccurrenceStore_DeterministicOccurrenceDeduplication_PreventsDuplicates()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var occurrence = CreateOccurrence();
 
         // Act
@@ -51,7 +51,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task ExecutionHistoryStore_AppendBehavior_PreservesOrder()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var occurrence = CreateOccurrence();
         await sut.Occurrences.TryCreateAsync(occurrence);
 
@@ -73,7 +73,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task PreviousExecutionStore_FindsPreviousExecution()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var first = CreateExecution(1, JobExecutionStatus.Failed, DateTimeOffset.UtcNow.AddMinutes(-5));
         var second = CreateExecution(2, JobExecutionStatus.Started, DateTimeOffset.UtcNow.AddMinutes(-1), first.OccurrenceId);
         await sut.Executions.CreateAsync(first);
@@ -91,7 +91,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task PreviousExecutionStore_FindsPreviousSuccessfulExecution()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var earlier = CreateExecution(1, JobExecutionStatus.Completed, DateTimeOffset.UtcNow.AddMinutes(-20), completedUtc: DateTimeOffset.UtcNow.AddMinutes(-19));
         var later = CreateExecution(2, JobExecutionStatus.Failed, DateTimeOffset.UtcNow.AddMinutes(-10), earlier.OccurrenceId);
         await sut.Executions.CreateAsync(earlier);
@@ -109,7 +109,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task DependencyStore_AddAndLookup_Succeeds()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var dependency = new JobOccurrenceDependency
         {
             DependencyId = Guid.NewGuid(),
@@ -138,7 +138,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task DependencyStore_Update_ReplacesPersistedStatusAndReason()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var dependency = new JobOccurrenceDependency
         {
             DependencyId = Guid.NewGuid(),
@@ -171,7 +171,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task BatchStore_CreatesBatchAndMembership()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var batchId = Guid.NewGuid();
         var batch = new JobBatch
         {
@@ -254,7 +254,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task LeaseStore_RenewWithWrongOwnershipToken_ReturnsNull()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var occurrenceId = Guid.NewGuid();
         var lease = await sut.Leases.TryAcquireAsync(occurrenceId, "scheduler-a", TimeSpan.FromMinutes(1));
 
@@ -271,7 +271,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
     public async Task BatchStore_DuplicateCreate_IsRejected()
     {
         // Arrange
-        var sut = CreateProvider();
+        var sut = this.CreateProvider();
         var batchId = Guid.NewGuid();
         var batch = new JobBatch
         {

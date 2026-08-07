@@ -68,7 +68,7 @@ public class MetricsConsoleCommand : ConsoleCommandBase
         var snapshot = snapshotService.GetSnapshot();
         if (this.Overview)
         {
-            WriteOverview(console, BuildOverview(snapshot));
+            this.WriteOverview(console, BuildOverview(snapshot));
             return Task.CompletedTask;
         }
 
@@ -86,7 +86,7 @@ public class MetricsConsoleCommand : ConsoleCommandBase
 
         WriteSummary(console, snapshot, features);
         WriteFeatureOverview(console, features);
-        WriteRankedTables(console, snapshot, features);
+        this.WriteRankedTables(console, snapshot, features);
 
         if (this.All)
         {

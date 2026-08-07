@@ -14,7 +14,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_ByJobType_Succeeds()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -33,7 +33,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_ByJobName_Succeeds()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -52,7 +52,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_ByJobName_PersistsOccurrenceWithoutExecuting()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -75,7 +75,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_TargetedToAnotherInstance_AcceptsOccurrenceWithoutLocalExecution()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithBackgroundExecution(options => options.SchedulerInstanceId = "node-a")
@@ -99,7 +99,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_UnknownJob_Fails()
     {
-        var provider = CreateProvider(services => services.AddJobScheduler());
+        var provider = this.CreateProvider(services => services.AddJobScheduler());
         var sut = provider.GetRequiredService<IJobSchedulerService>();
 
         var result = await sut.DispatchAsync("missing-job");
@@ -112,7 +112,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [InlineData(false, true)]
     public async Task DispatchAsync_DisabledJobOrTrigger_Fails(bool disableJob, bool disableTrigger)
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job =>
@@ -144,7 +144,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_MissingManualTrigger_Fails()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -162,7 +162,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_AmbiguousManualTrigger_Fails()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -182,7 +182,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     public async Task DispatchAndWaitAsync_TypedData_IsAvailableInTypedContext()
     {
         TypedDataJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<TypedDataJob>("typed", job => job
@@ -202,7 +202,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     public async Task DispatchAndWaitAsync_InlineDelegateJob_UsesTypedContextAndNormalPipeline()
     {
         InlineDelegateRecorder.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddScoped<InlineDependency>();
             services.AddJobScheduler()
@@ -250,7 +250,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_InlineDelegateFailureResult_RecordsFailedAttempt()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob("inline-failed", job => job
@@ -278,7 +278,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_InlineDelegateThrownException_RecordsFailedAttempt()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob("inline-throwing", job => job
@@ -301,7 +301,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_InvalidData_FailsWithResultFailure()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<TypedDataJob>("typed", job => job
@@ -319,7 +319,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_JobSuccess_RecordsExecutionAndHistory()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -345,7 +345,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_FailedResult_RecordsFailedAttempt()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<FailedResultJob>("failed", job => job
@@ -367,7 +367,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_ThrownException_RecordsFailedAttempt()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<ThrowingJob>("throwing", job => job
@@ -389,7 +389,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAsync_ThrownExceptionWithRetry_SchedulesRetry()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<ThrowingJob>("throwing", job => job
@@ -418,7 +418,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     public async Task DispatchAndWaitAsync_ThrownException_InvokesRegisteredExceptionHandler()
     {
         var handler = new RecordingSchedulerExceptionHandler();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddSingleton(handler);
             services.AddSingleton<IJobSchedulerExceptionHandler>(sp => sp.GetRequiredService<RecordingSchedulerExceptionHandler>());
@@ -450,7 +450,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     public async Task DispatchAndWaitAsync_SingletonLifetime_ReusesSameJobInstance()
     {
         LifetimeTrackingJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<LifetimeTrackingJob>("singleton-lifetime", job => job
@@ -472,7 +472,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     public async Task DispatchAndWaitAsync_ScopedLifetime_CreatesOneJobInstancePerExecution()
     {
         LifetimeTrackingJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<LifetimeTrackingJob>("scoped-lifetime", job => job
@@ -493,7 +493,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_IneligibleTargetInstance_FailsClearly()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .InstanceId("node-a")
@@ -516,7 +516,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     [Fact]
     public async Task DispatchAndWaitAsync_ReturnsCompletedExecutionResult()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulJob>("success", job => job
@@ -537,7 +537,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
     public async Task DispatchAndWaitAsync_CancellationToken_ReachesJob()
     {
         CancellationAwareJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<CancellationAwareJob>("cancel-aware", job => job

@@ -6,6 +6,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
@@ -24,6 +25,9 @@ public partial class TodoItemUpdateCommand
     {
         validator.RuleFor(c => c.Model.Id).MustBeValidGuid().WithMessage("Invalid guid.");
         validator.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
+        validator.RuleFor(c => c.Model.ConcurrencyVersion)
+            .Must(value => string.IsNullOrWhiteSpace(value) || Guid.TryParse(value, out _))
+            .WithMessage("Invalid concurrency version.");
     }
 
     [Handle]
@@ -32,34 +36,86 @@ public partial class TodoItemUpdateCommand
         IGenericRepository<TodoItem> repository,
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
-        CancellationToken cancellationToken) =>
-        await Result.Success()
-            .Map(mapper.Map<TodoItemModel, TodoItem>(this.Model))
-            .EnsureAsync(async (e, ct) => // check permissions
-                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Write, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
-            .UnlessAsync(async (e, ct) => await Rule // check rules
-                .Add(RuleSet.IsNotEmpty(e.Title))
-                .Add(RuleSet.NotEqual(e.Title, "todo"))
-                //.Add(new TitleShouldBeUniqueRule(e.Title, this.repository))
-                .CheckAsync(cancellationToken), cancellationToken: cancellationToken)
-            .Tap(e => e.DomainEvents.Register(new TodoItemUpdatedDomainEvent(e)))
-            .BindAsync(async (e, ct) =>
-            {
-                // Preserve existing properties that are not included in the update model to avoid unintentional data loss
-                var existingResult = await repository.FindOneResultAsync(e.Id, cancellationToken: ct);
-                if (existingResult.IsSuccess)
-                {
-                    foreach (var property in existingResult.Value.Properties)
-                    {
-                        if (!e.Properties.Contains(property.Key))
-                        {
-                            e.Properties.Set(property.Key, property.Value);
-                        }
-                    }
-                }
+        CancellationToken cancellationToken)
+    {
+        var id = TodoItemId.Create(this.Model.Id);
+        var existingResult = await repository.FindOneResultAsync(id, cancellationToken: cancellationToken);
+        if (existingResult.IsFailure)
+        {
+            return Result<TodoItemModel>.Failure()
+                .WithErrors(existingResult.Errors)
+                .WithMessages(existingResult.Messages);
+        }
 
-                return await repository.UpdateResultAsync(e, ct);
-            }, cancellationToken)
-            .Tap(e => Console.WriteLine("AUDIT")) // do something
+        var existing = existingResult.Value;
+        if (!await permissionEvaluator.HasPermissionAsync(currentUserAccessor, existing.Id, Permission.Write, cancellationToken: cancellationToken))
+        {
+            return Result<TodoItemModel>.Failure(new UnauthorizedError());
+        }
+
+        var ruleResult = await Rule
+            .Add(RuleSet.IsNotEmpty(this.Model.Title))
+            .Add(RuleSet.NotEqual(this.Model.Title, "todo"))
+            //.Add(new TitleShouldBeUniqueRule(this.Model.Title, this.repository))
+            .CheckAsync(cancellationToken);
+        if (ruleResult.IsFailure)
+        {
+            return Result<TodoItemModel>.Failure()
+                .WithErrors(ruleResult.Errors)
+                .WithMessages(ruleResult.Messages);
+        }
+
+        if (!string.IsNullOrWhiteSpace(this.Model.ConcurrencyVersion))
+        {
+            if (!Guid.TryParse(this.Model.ConcurrencyVersion, out var expectedVersion))
+            {
+                return Result<TodoItemModel>.Failure(new ValidationError("Invalid concurrency version."));
+            }
+
+            if (existing.ConcurrencyVersion != expectedVersion)
+            {
+                return Result<TodoItemModel>.Failure(new ConcurrencyError
+                {
+                    EntityType = nameof(TodoItem),
+                    EntityId = existing.Id?.ToString()
+                });
+            }
+        }
+
+        var changed = false;
+        var changeResult = existing.Change()
+            .Set(e => e.Title, this.Model.Title)
+            .Set(e => e.Description, this.Model.Description)
+            .Set(e => e.Status, ResolveStatus(this.Model.Status))
+            .Set(e => e.Priority, ResolvePriority(this.Model.Priority))
+            .Set(e => e.DueDate, this.Model.DueDate)
+            .Set(e => e.OrderIndex, this.Model.OrderIndex)
+            .Set(e => e.Assignee, ResolveAssignee(this.Model.Assignee))
+            .Register((e, _) => new TodoItemUpdatedDomainEvent(e))
+            .OnChanged(_ => changed = true)
+            .Apply();
+        if (changeResult.IsFailure)
+        {
+            return Result<TodoItemModel>.Failure()
+                .WithErrors(changeResult.Errors)
+                .WithMessages(changeResult.Messages);
+        }
+
+        if (!changed)
+        {
+            return Result<TodoItemModel>.Success(mapper.Map<TodoItem, TodoItemModel>(existing));
+        }
+
+        return await repository.UpdateResultAsync(existing, cancellationToken)
             .Map(mapper.Map<TodoItem, TodoItemModel>);
+    }
+
+    private static TodoStatus ResolveStatus(int status)
+        => Enumeration.GetAll<TodoStatus>().FirstOrDefault(e => e.Id == status) ?? TodoStatus.New;
+
+    private static TodoPriority ResolvePriority(int priority)
+        => Enumeration.GetAll<TodoPriority>().FirstOrDefault(e => e.Id == priority) ?? TodoPriority.Low;
+
+    private static EmailAddress ResolveAssignee(string assignee)
+        => string.IsNullOrWhiteSpace(assignee) ? null : EmailAddress.Create(assignee);
 }

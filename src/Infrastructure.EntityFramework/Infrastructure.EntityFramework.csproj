@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.Entities\Application.Entities.csproj" />
     <ProjectReference Include="..\Application.Jobs\Application.Jobs.csproj" />
     <ProjectReference Include="..\Application.Orchestrations\Application.Orchestrations.csproj" />
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />

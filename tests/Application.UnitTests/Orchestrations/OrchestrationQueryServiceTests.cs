@@ -14,7 +14,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
     public async Task GetAsync_AndGetContextAsync_WhenInstanceExists_ReturnPersistedModels()
     {
         // Arrange
-        using var serviceProvider = CreateServices();
+        using var serviceProvider = this.CreateServices();
         var instances = serviceProvider.GetRequiredService<IOrchestrationInstanceStore>();
         var sut = serviceProvider.GetRequiredService<IOrchestrationQueryService>();
         var instanceId = Guid.NewGuid();
@@ -54,7 +54,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
     public async Task QueryAsync_WhenFilteringAndPagingAreApplied_ReturnsPagedPersistedInstances()
     {
         // Arrange
-        using var serviceProvider = CreateServices();
+        using var serviceProvider = this.CreateServices();
         var instances = serviceProvider.GetRequiredService<IOrchestrationInstanceStore>();
         var sut = serviceProvider.GetRequiredService<IOrchestrationQueryService>();
         var baseTime = new DateTimeOffset(2026, 05, 07, 08, 00, 00, TimeSpan.Zero);
@@ -90,7 +90,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
     public async Task GetHistoryAsync_WhenPersistedHistoryExists_ReturnsChronologicalHistoryModels()
     {
         // Arrange
-        using var serviceProvider = CreateServices();
+        using var serviceProvider = this.CreateServices();
         var instances = serviceProvider.GetRequiredService<IOrchestrationInstanceStore>();
         var historyStore = serviceProvider.GetRequiredService<IOrchestrationHistoryStore>();
         var sut = serviceProvider.GetRequiredService<IOrchestrationQueryService>();
@@ -132,7 +132,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
     public async Task GetSignalsAsync_WhenPersistedSignalsExist_ReturnsSignalModels()
     {
         // Arrange
-        using var serviceProvider = CreateServices();
+        using var serviceProvider = this.CreateServices();
         var instances = serviceProvider.GetRequiredService<IOrchestrationInstanceStore>();
         var signals = serviceProvider.GetRequiredService<IOrchestrationSignalStore>();
         var sut = serviceProvider.GetRequiredService<IOrchestrationQueryService>();
@@ -159,7 +159,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
     public async Task GetTimersAsync_WhenPersistedTimersExist_ReturnsTimerModels()
     {
         // Arrange
-        using var serviceProvider = CreateServices();
+        using var serviceProvider = this.CreateServices();
         var instances = serviceProvider.GetRequiredService<IOrchestrationInstanceStore>();
         var timers = serviceProvider.GetRequiredService<IOrchestrationTimerStore>();
         var sut = serviceProvider.GetRequiredService<IOrchestrationQueryService>();
@@ -188,7 +188,7 @@ public class OrchestrationQueryServiceTests(ITestOutputHelper output) : Orchestr
     public async Task GetMetricsAsync_WhenFiltered_ReturnsCorrectAggregatesFromPersistedState()
     {
         // Arrange
-        using var serviceProvider = CreateServices();
+        using var serviceProvider = this.CreateServices();
         var instances = serviceProvider.GetRequiredService<IOrchestrationInstanceStore>();
         var sut = serviceProvider.GetRequiredService<IOrchestrationQueryService>();
         var baseTime = new DateTimeOffset(2026, 05, 07, 07, 00, 00, TimeSpan.Zero);

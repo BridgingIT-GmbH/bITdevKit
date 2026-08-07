@@ -321,7 +321,7 @@ internal sealed class CompositionBuilder(IServiceCollection services, Compositio
             this.Services.AddSingleton(definition);
         }
 
-        EnsureRegistration(
+        this.EnsureRegistration(
             typeof(IStrategyResolver<TStrategy>),
             ServiceLifetime.Scoped,
             sp => new StrategyResolver<TStrategy>(sp, sp.GetRequiredService<StrategyDefinition<TStrategy>>()),
@@ -360,7 +360,7 @@ internal sealed class CompositionBuilder(IServiceCollection services, Compositio
     internal void ApplyRegistration(Type serviceType, ServiceLifetime lifetime, Func<IServiceProvider, object> factory, CompositionRegistrationMode mode)
     {
         var descriptor = new ServiceDescriptor(serviceType, sp => factory(sp), lifetime);
-        ApplyRegistration(descriptor, mode);
+        this.ApplyRegistration(descriptor, mode);
     }
 
     internal void ApplyRegistration(ServiceDescriptor descriptor, CompositionRegistrationMode mode)

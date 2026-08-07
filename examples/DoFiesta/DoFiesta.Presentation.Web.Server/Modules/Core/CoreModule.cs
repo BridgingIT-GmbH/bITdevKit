@@ -14,6 +14,7 @@ using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
@@ -104,14 +105,61 @@ public class CoreModule : WebModuleBase
             .WithHealthCheck()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
-                .HaltOnFailure())
-                //.DeleteOnStartup(environment.IsLocalDevelopment()))
+                .HaltOnFailure().DeleteOnStartup().PurgeOnStartup())
+            //.DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
                 .AutoArchiveAfter(TimeSpan.FromHours(1))
                 .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));
         //.PurgeOnStartup());
+
+        services.AddChangeHistory(options =>
+        {
+            options.UseOversizedValuePolicy(
+                ChangeHistoryOversizedValuePolicy.Truncate,
+                maxStoredValueLength: 4000);
+
+            options.Track<TodoItem>()
+                .CaptureChanges()
+                .CaptureBulkInserts()
+                .CaptureCollection<TodoStep, TodoStepId>(e => e.Steps, e => e.Id)
+                .HashOnly(e => e.UserId)
+                .Redact(e => e.Assignee)
+                .Exclude(e => e.Properties)
+                .UseRestoreAuthorizer<TodoItemChangeHistoryRestoreAuthorizer>()
+                .AllowRestoreUsingValidatedSetters(e => new
+                {
+                    e.Title,
+                    e.Description,
+                    e.Category,
+                    e.Priority,
+                    e.DueDate,
+                    e.OrderIndex
+                })
+                .AllowRestore(e => e.Status).UseDomainMethod((todoItem, value) =>
+                {
+                    todoItem.SetStatus(value);
+
+                    return Result.Success();
+                });
+
+            options.Track<Subscription>()
+                .CaptureChanges()
+                .HashOnly(e => e.UserId)
+                .UseRestoreAuthorizer<SubscriptionChangeHistoryRestoreAuthorizer>()
+                .AllowRestoreUsingValidatedSetters(e => new
+                {
+                    e.Plan,
+                    e.Status,
+                    e.BillingCycle,
+                    e.StartDate,
+                    e.EndDate
+                });
+        })
+            .WithReadAuthorizer<CoreDbContext, CoreChangeHistoryReadAuthorizer>()
+            .WithRestoreRequestAuthorizer<TodoItem, CoreDbContext, TodoItemChangeHistoryRestoreRequestAuthorizer>()
+            .WithRestoreRequestAuthorizer<Subscription, CoreDbContext, SubscriptionChangeHistoryRestoreRequestAuthorizer>();
 
         services.AddOrchestrations()
             .WithOrchestration<TodoItemLifecycleOrchestration>()
@@ -201,6 +249,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
             .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>()
+            .WithBehavior<RepositoryChangeHistoryBehavior<TodoItem, CoreDbContext>>()
             .WithBehavior<RepositoryOutboxDomainEventBehavior<TodoItem, CoreDbContext>>();
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
 
@@ -210,6 +259,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<EntityBulkInserterLoggingBehavior<TodoItem>>()
             .WithBehavior<EntityBulkInserterMetricsBehavior<TodoItem>>()
             .WithBehavior<EntityBulkInserterOutboxDomainEventBehavior<TodoItem, CoreDbContext>>()
+            .WithBehavior<EntityBulkInserterChangeHistoryBehavior<TodoItem, CoreDbContext>>()
             .WithBehavior<EntityBulkInserterAuditStateBehavior<TodoItem>>()
             .WithBehavior<EntityBulkInserterConcurrencyBehavior<TodoItem>>()
             .WithBehavior<EntityBulkInserterDomainEventBehavior<TodoItem>>()
@@ -221,6 +271,7 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
             .WithBehavior<RepositoryAuditStateBehavior<Subscription>>()
+            .WithBehavior<RepositoryChangeHistoryBehavior<Subscription, CoreDbContext>>()
             .WithBehavior<RepositoryOutboxDomainEventBehavior<Subscription, CoreDbContext>>();
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
 
@@ -273,6 +324,18 @@ public class CoreModule : WebModuleBase
         services.AddEndpoints<CoreTodoItemEndpoints>();
         services.AddEndpoints<CoreEnumerationEndpoints>();
         services.AddEndpoints<CoreDataPorterEndpoints>();
+        services.AddChangeHistoryEndpoints<TodoItem, CoreDbContext>(options => options
+            .GroupPath("api/core/todoitems/history")
+            .GroupTag("Core.TodoItem.ChangeHistory")
+            .RouteNamePrefix("Core.TodoItem.ChangeHistory")
+            .RequireAuthorization()
+            .IncludeValues());
+        services.AddChangeHistoryEndpoints<Subscription, CoreDbContext>(options => options
+            .GroupPath("api/core/subscriptions/history")
+            .GroupTag("Core.Subscription.ChangeHistory")
+            .RouteNamePrefix("Core.Subscription.ChangeHistory")
+            .RequireAuthorization()
+            .IncludeValues());
 
         return services;
     }

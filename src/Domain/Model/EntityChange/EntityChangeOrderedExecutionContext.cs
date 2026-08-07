@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Context for ordered operation execution, tracking changes and queued events.
@@ -23,6 +24,14 @@ internal class EntityChangeOrderedExecutionContext<TEntity>
     /// Gets the dictionary storing old values of changed properties for event factories.
     /// </summary>
     public Dictionary<string, object> OldValues { get; } = [];
+
+    private readonly List<EntityPropertyChange> propertyChanges = [];
+    private readonly Dictionary<string, EntityPropertyChange> propertyChangeLookup = [];
+
+    /// <summary>
+    /// Gets the captured property changes in change order.
+    /// </summary>
+    public IReadOnlyList<EntityPropertyChange> PropertyChanges => this.propertyChanges;
 
     /// <summary>
     /// Gets the list of queued event factories with their optional target aggregates to be registered at the end of Apply().
@@ -41,6 +50,45 @@ internal class EntityChangeOrderedExecutionContext<TEntity>
     {
         this.ChangesMade = true;
         this.OldValues[propertyName] = oldValue;
+    }
+
+    /// <summary>
+    /// Records a property change with its first old value and latest new value.
+    /// </summary>
+    public void RecordChange(string propertyName, object oldValue, object newValue)
+    {
+        this.ChangesMade = true;
+
+        if (!this.OldValues.ContainsKey(propertyName))
+        {
+            this.OldValues[propertyName] = oldValue;
+        }
+
+        if (!this.propertyChangeLookup.TryGetValue(propertyName, out var change))
+        {
+            change = new EntityPropertyChange
+            {
+                Sequence = this.propertyChanges.Count,
+                PropertyName = propertyName,
+                OldValue = oldValue,
+                NewValue = newValue,
+                ValueClrType = (newValue ?? oldValue)?.GetType().AssemblyQualifiedName
+            };
+
+            this.propertyChangeLookup[propertyName] = change;
+            this.propertyChanges.Add(change);
+            return;
+        }
+
+        change.NewValue = newValue;
+        change.ValueClrType = (newValue ?? change.OldValue)?.GetType().AssemblyQualifiedName;
+
+        if (Equals(change.OldValue, change.NewValue))
+        {
+            this.propertyChangeLookup.Remove(propertyName);
+            this.propertyChanges.Remove(change);
+            this.RenumberPropertyChanges();
+        }
     }
 
     /// <summary>
@@ -63,5 +111,13 @@ internal class EntityChangeOrderedExecutionContext<TEntity>
             return (T)value;
         }
         return default;
+    }
+
+    private void RenumberPropertyChanges()
+    {
+        foreach (var (change, index) in this.propertyChanges.Select((change, index) => (change, index)))
+        {
+            change.Sequence = index;
+        }
     }
 }

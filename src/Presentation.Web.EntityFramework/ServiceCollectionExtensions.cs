@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Presentation.Web.Host;
 /// <summary>
 ///     Extension methods for configuring Entity Framework Core exception handlers.
 /// </summary>
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     /// <summary>
     ///     Adds Entity Framework Core exception handlers to the

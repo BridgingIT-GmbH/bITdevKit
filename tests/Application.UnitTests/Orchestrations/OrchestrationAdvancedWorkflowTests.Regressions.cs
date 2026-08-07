@@ -148,7 +148,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task ExecuteAsync_WhenCancellationCompensationFails_ReportsFailedConsistently()
     {
-        using var serviceProvider = CreateServices(services => services
+        using var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<CancelCompensationFailureOrchestration>());
         var runtime = serviceProvider.GetRequiredService<IOrchestrationService>();
@@ -176,7 +176,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task ExecuteAsync_WhenTerminationCompensationFails_ReportsFailedConsistently()
     {
-        using var serviceProvider = CreateServices(services => services
+        using var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<TerminateCompensationFailureOrchestration>());
         var runtime = serviceProvider.GetRequiredService<IOrchestrationService>();

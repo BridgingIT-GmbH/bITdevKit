@@ -184,7 +184,7 @@ internal sealed class ChainExecutor<THandler, TContext>(
 {
     public ValueTask<ChainResult> ExecuteAsync(TContext context, CancellationToken cancellationToken = default)
     {
-        return ExecuteAtAsync(0, context, cancellationToken);
+        return this.ExecuteAtAsync(0, context, cancellationToken);
     }
 
     private ValueTask<ChainResult> ExecuteAtAsync(int index, TContext context, CancellationToken cancellationToken)
@@ -197,7 +197,7 @@ internal sealed class ChainExecutor<THandler, TContext>(
         var handler = (THandler)CompositionRuntime.ResolveOrCreate(definition.Handlers[index], services);
         return handler.HandleAsync(
             context,
-            (nextContext, ct) => ExecuteAtAsync(index + 1, nextContext, ct),
+            (nextContext, ct) => this.ExecuteAtAsync(index + 1, nextContext, ct),
             cancellationToken);
     }
 }

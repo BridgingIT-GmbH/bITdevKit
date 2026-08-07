@@ -7,5 +7,31 @@
   "settings": {
     "dotnet.defaultSolution": "bITdevKit.slnx",
     "peacock.color": "#14389d",
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#1a48ca",
+        "activityBar.background": "#1a48ca",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#e9567c",
+        "activityBarBadge.foreground": "#15202b",
+        "activityBarTop.activeBackground": "#1a48ca",
+        "activityBarTop.background": "#1a48ca",
+        "activityBarTop.foreground": "#e7e7e7",
+        "activityBarTop.inactiveForeground": "#e7e7e799",
+        "commandCenter.border": "#e7e7e799",
+        "commandCenter.foreground": "#e7e7e7",
+        "sash.hoverBorder": "#1a48ca",
+        "statusBar.background": "#14389d",
+        "statusBar.debuggingBackground": "#14389d",
+        "statusBar.debuggingForeground": "#e7e7e7",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#1a48ca",
+        "statusBarItem.remoteBackground": "#000000",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#14389d",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#14389d99",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
   }
 }

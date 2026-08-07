@@ -1,25 +1,26 @@
-name: "CodeQL" # https://learn.microsoft.com/en-us/dotnet/devops/dotnet-secure-github-action
+name: CodeQL # https://learn.microsoft.com/en-us/dotnet/devops/dotnet-secure-github-action
 
-# on: [push]
+on: [push]
 
-# on:
-#   push:
-#     branches: [main]
-#     paths:
-#     - '**.cs'
-#     - '**.csproj'
-#   pull_request:
-#     branches: [main]
-#     paths:
-#     - '**.cs'
-#     - '**.csproj'
-#   schedule:
-#     - cron: '0 8 * * *'
+on:
+  push:
+    branches: [main]
+    paths:
+    - '**.cs'
+    - '**.csproj'
+  pull_request:
+    branches: [main]
+    paths:
+    - '**.cs'
+    - '**.csproj'
+  schedule:
+    - cron: '0 8 * * *'
 
 jobs:
   analyze:
     name: Perform CodeQL Analysis
-    if: github.repository == 'bit-intern/bITdevKit'
+    if: ${{ false }} # <- make sure the workflow is skipped without any alert
+    # if: github.repository == 'bit-intern/bITdevKit'
     runs-on: ubuntu-latest
 
     permissions:

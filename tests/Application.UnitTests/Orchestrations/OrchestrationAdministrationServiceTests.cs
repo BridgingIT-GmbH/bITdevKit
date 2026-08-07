@@ -13,7 +13,7 @@ public class OrchestrationAdministrationServiceTests(ITestOutputHelper output) :
     [Fact]
     public async Task ArchiveAsync_WhenInstanceIsTerminal_ArchivesInstance()
     {
-        using var provider = CreateServices();
+        using var provider = this.CreateServices();
         var instances = provider.GetRequiredService<IOrchestrationInstanceStore>();
         var admin = provider.GetRequiredService<IOrchestrationAdministrationService>();
         var queries = provider.GetRequiredService<IOrchestrationQueryStore>();
@@ -34,7 +34,7 @@ public class OrchestrationAdministrationServiceTests(ITestOutputHelper output) :
     [Fact]
     public async Task ReleaseLeaseAsync_WhenLeaseExists_ReleasesLease()
     {
-        using var provider = CreateServices();
+        using var provider = this.CreateServices();
         var instances = provider.GetRequiredService<IOrchestrationInstanceStore>();
         var leases = provider.GetRequiredService<IOrchestrationLeaseStore>();
         var admin = provider.GetRequiredService<IOrchestrationAdministrationService>();
@@ -53,7 +53,7 @@ public class OrchestrationAdministrationServiceTests(ITestOutputHelper output) :
     [Fact]
     public async Task RequeueTimersAsync_WhenTimersWereProcessed_RequeuesTimers()
     {
-        using var provider = CreateServices();
+        using var provider = this.CreateServices();
         var instances = provider.GetRequiredService<IOrchestrationInstanceStore>();
         var timers = provider.GetRequiredService<IOrchestrationTimerStore>();
         var admin = provider.GetRequiredService<IOrchestrationAdministrationService>();
@@ -77,7 +77,7 @@ public class OrchestrationAdministrationServiceTests(ITestOutputHelper output) :
     [Fact]
     public async Task PurgeAsync_WhenFiltersMatch_RemovesRetainedData()
     {
-        using var provider = CreateServices();
+        using var provider = this.CreateServices();
         var instances = provider.GetRequiredService<IOrchestrationInstanceStore>();
         var history = provider.GetRequiredService<IOrchestrationHistoryStore>();
         var signals = provider.GetRequiredService<IOrchestrationSignalStore>();

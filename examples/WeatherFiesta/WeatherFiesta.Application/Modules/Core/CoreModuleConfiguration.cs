@@ -53,29 +53,34 @@ public class CoreModuleConfiguration
         /// </summary>
         public Validator(IJobCronEngine cronEngine)
         {
-            RuleFor(x => x.ConnectionStrings)
+            this
+                .RuleFor(x => x.ConnectionStrings)
                 .NotNull().NotEmpty().Must(c => c.ContainsKey("Default"))
                 .WithMessage("Connection string with name 'Default' is required");
 
-            RuleFor(x => x.StaleThresholdMinutes)
+            this
+                .RuleFor(x => x.StaleThresholdMinutes)
                 .GreaterThan(0)
                 .WithMessage("StaleThresholdMinutes must be greater than 0");
 
-            RuleFor(x => x.Jobs).SetValidator(new WeatherJobOptions.Validator(cronEngine));
+            this.RuleFor(x => x.Jobs).SetValidator(new WeatherJobOptions.Validator(cronEngine));
 
-            RuleFor(x => x.ForecastDays)
+            this
+                .RuleFor(x => x.ForecastDays)
                 .InclusiveBetween(1, 16)
                 .WithMessage("ForecastDays must be between 1 and 16");
 
-            RuleFor(x => x.ComparisonMaxCities)
+            this
+                .RuleFor(x => x.ComparisonMaxCities)
                 .InclusiveBetween(2, 50)
                 .WithMessage("ComparisonMaxCities must be between 2 and 50");
 
-            RuleFor(x => x.GeocodingMinQueryLength)
+            this
+                .RuleFor(x => x.GeocodingMinQueryLength)
                 .InclusiveBetween(1, 100)
                 .WithMessage("GeocodingMinQueryLength must be between 1 and 100");
 
-            RuleFor(x => x.OpenMeteo).SetValidator(new OpenMeteoOptions.Validator());
+            this.RuleFor(x => x.OpenMeteo).SetValidator(new OpenMeteoOptions.Validator());
         }
     }
 }
@@ -104,17 +109,20 @@ public class WeatherJobOptions
         /// </summary>
         public Validator(IJobCronEngine cronEngine)
         {
-            RuleFor(x => x.IngestionCron)
+            this
+                .RuleFor(x => x.IngestionCron)
                 .NotNull().NotEmpty()
                 .Must(value => cronEngine.Validate(value).IsSuccess)
                 .WithMessage("Jobs.IngestionCron must be a valid Jobs cron expression (for example '*/30 * * * *').");
 
-            RuleFor(x => x.CleanupCron)
+            this
+                .RuleFor(x => x.CleanupCron)
                 .NotNull().NotEmpty()
                 .Must(value => cronEngine.Validate(value).IsSuccess)
                 .WithMessage("Jobs.CleanupCron must be a valid Jobs cron expression (for example '0 2 * * *').");
 
-            RuleFor(x => x.CleanupRetentionDays)
+            this
+                .RuleFor(x => x.CleanupRetentionDays)
                 .GreaterThan(0)
                 .WithMessage("Jobs.CleanupRetentionDays must be greater than 0");
         }
@@ -157,13 +165,13 @@ public class OpenMeteoOptions
         /// </summary>
         public Validator()
         {
-            RuleFor(x => x.GeocodingBaseUrl).NotNull().NotEmpty();
-            RuleFor(x => x.ForecastBaseUrl).NotNull().NotEmpty();
-            RuleFor(x => x.LookupBaseUrl).NotNull().NotEmpty();
-            RuleFor(x => x.TimeoutSeconds).GreaterThan(0);
-            RuleFor(x => x.RetryCount).InclusiveBetween(0, 10);
-            RuleFor(x => x.RetryDelayMs).GreaterThan(0);
-            RuleFor(x => x.InterCallDelayMs).GreaterThanOrEqualTo(0);
+            this.RuleFor(x => x.GeocodingBaseUrl).NotNull().NotEmpty();
+            this.RuleFor(x => x.ForecastBaseUrl).NotNull().NotEmpty();
+            this.RuleFor(x => x.LookupBaseUrl).NotNull().NotEmpty();
+            this.RuleFor(x => x.TimeoutSeconds).GreaterThan(0);
+            this.RuleFor(x => x.RetryCount).InclusiveBetween(0, 10);
+            this.RuleFor(x => x.RetryDelayMs).GreaterThan(0);
+            this.RuleFor(x => x.InterCallDelayMs).GreaterThanOrEqualTo(0);
         }
     }
 }

@@ -18,6 +18,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Domain](./features-domain.md): Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
 - [Domain Events](./features-domain-events.md): Capture business-significant events in aggregates and publish side effects outside the domain model.
 - [Event Sourcing](./features-event-sourcing.md): Persist aggregates as immutable event streams and rebuild state through replay and snapshots.
+- [ChangeHistory](./features-change-history.md): Record property-level entity changes, query grouped change sets and restore selected values through explicit policies.
 - [Domain Repositories](./features-domain-repositories.md): Access aggregates through type-safe repositories with rich querying, paging and loading options.
 - [Domain Specifications](./features-domain-specifications.md): Model reusable business criteria as composable specifications for queries and in-memory evaluation.
 - [ActiveEntity](./features-domain-activeentity.md): Combine entity-centric CRUD convenience with provider-based persistence and Result-driven outcomes.

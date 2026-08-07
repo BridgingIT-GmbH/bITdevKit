@@ -23,7 +23,8 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     IEntityPermissionContext,
     IFileStorageContext,
     IFileMonitoringContext,
-    ILoggingContext
+    ILoggingContext,
+    IChangeHistoryContext
 {
     public DbSet<TodoItem> TodoItems { get; set; }
 
@@ -58,6 +59,8 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<FileEventEntity> FileEvents { get; set; }
 
     public DbSet<LogEntry> LogEntries { get; set; }
+
+    public DbSet<ChangeHistoryEntry> ChangeHistory { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

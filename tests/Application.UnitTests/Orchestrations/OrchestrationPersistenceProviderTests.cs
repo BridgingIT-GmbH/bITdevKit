@@ -16,7 +16,7 @@ public class OrchestrationPersistenceProviderTests(ITestOutputHelper output) : O
     {
         // Arrange
         var serializer = new TrackingSerializer();
-        var serviceProvider = CreateServices(services =>
+        var serviceProvider = this.CreateServices(services =>
         {
             services.AddSingleton<ISerializer>(serializer);
             services.AddOrchestrations();

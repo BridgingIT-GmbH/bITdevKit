@@ -39,6 +39,7 @@ nav:
           - Domain: reference/features-domain.md
           - Domain Events: reference/features-domain-events.md
           - Event Sourcing: reference/features-event-sourcing.md
+          - ChangeHistory: reference/features-change-history.md
           - Domain Repositories: reference/features-domain-repositories.md
           - Domain Specifications: reference/features-domain-specifications.md
           - ActiveEntity: reference/features-domain-activeentity.md

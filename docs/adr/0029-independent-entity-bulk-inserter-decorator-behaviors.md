@@ -34,7 +34,9 @@ outbox when the outbox decorator owns the transaction.
 - Provide Domain decorators for cancellation, tracing, logging, metrics, audit state,
   concurrency, created domain events, event metrics, and direct event publication. Provide
   the EF outbox decorator in Infrastructure because it needs `DbContext` and the outbox
-  context contract.
+  context contract. Provide native ChangeHistory capture as a separate Infrastructure
+  decorator because it needs `DbContext`, `IChangeHistoryContext`, and explicit
+  `ChangeHistoryOptions` opt-in.
 - Do not inspect repository decorators or EF interceptors, do not retain descriptor metadata,
   and do not provide an adapter, lifecycle registry, compatibility analysis, or repository
   fallback.
@@ -59,7 +61,7 @@ row-by-row persistence.
 
 - Repository and bulk-inserter lifecycles are independent and easy to reason about.
 - Applications choose exactly which bulk-insert semantics execute and in which order.
-- SQL Server root and outbox writes are atomic when the outbox decorator owns the transaction.
+- SQL Server root, ChangeHistory, and outbox writes are atomic when the outer decorator owns the transaction.
 - Unsupported provider use is explicit and typed.
 
 ### Negative
@@ -110,4 +112,5 @@ row-by-row persistence.
 Replace repository-attached `.WithBulkInsert()` registration with an independent
 `AddEntityFrameworkBulkInserter<TEntity, TContext>()` call. Re-register only the needed
 bulk decorators. For an atomic outbox chain, register the outbox decorator before audit,
-concurrency, and domain-event creation decorators.
+ChangeHistory, concurrency, and domain-event creation decorators. Native ChangeHistory is
+not inferred from repository create capture; configure `.CaptureBulkInserts(...)` explicitly.

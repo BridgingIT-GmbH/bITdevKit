@@ -62,7 +62,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
             }.ConnectionString;
         }
 
-        await SeedAsync();
+        await this.SeedAsync();
     }
 
     /// <inheritdoc/>

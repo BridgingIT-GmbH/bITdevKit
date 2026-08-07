@@ -15,7 +15,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task CreateBatchAsync_EmptyBatch_CreatesCompletedBatchWithoutChildren()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -32,7 +32,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task DispatchBatchAsync_InvalidChild_FailsWithoutPersistingRunnableOrphans()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -54,7 +54,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task DispatchBatchAsync_EmptyItems_CreatesCompletedBatchWithoutChildren()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -72,7 +72,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task DispatchBatchAsync_ValidItems_CreatesBatchOccurrencesAndMembershipAtomically()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -98,7 +98,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task DispatchBatchAsync_ValidItems_WritesBatchHistory()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -122,7 +122,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task AttachToBatchAsync_CompletedBatch_AddsChildrenAndReturnsToProcessing()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -149,7 +149,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task BatchStatus_RequireAllSucceeded_FailedChildYieldsFailed()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -177,7 +177,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task BatchStatus_AllowPartialCompletion_FailedChildYieldsCompletedWithFailures()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -205,7 +205,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task RetryBatchAsync_RetriesEligibleFailedChildrenOnly()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -238,7 +238,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task CancelBatchAsync_PreventsNotYetStartedChildrenFromExecuting()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -260,7 +260,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task PauseResumeBatchAsync_MapsToEligibleChildren()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
@@ -280,7 +280,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task ArchiveBatchAsync_RequiresTerminalChildrenAndArchivesRetentionState()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -304,7 +304,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task ArchiveBatchAsync_MixedArchivedAndCompletedChildren_RecomputesArchiveRollups()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
@@ -338,7 +338,7 @@ public class JobSchedulerBatchTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task ArchiveBatchAsync_AlreadyArchivedBatch_FailsClearly()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<JobSchedulerService>();
         var sut = provider.GetRequiredService<IJobSchedulerService>();
 

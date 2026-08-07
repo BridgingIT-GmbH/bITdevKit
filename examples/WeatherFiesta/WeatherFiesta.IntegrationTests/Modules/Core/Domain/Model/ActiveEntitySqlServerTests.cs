@@ -22,7 +22,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task City_InsertFindAndUpdate_PersistsScalarAndValueObjectState()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var city = CreateCity("London", "United Kingdom", "GB", "Europe/London", 2643743, 11m);
 
         // Act - insert and find by specification
@@ -60,7 +60,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task UserCity_InsertUpdateSoftDeleteAndReactivate_PersistsAuditAndOrderingState()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var city = await SeedCityAsync(serviceProvider);
         var userCity = UserCity.Create(TestData.TestUserId, city.Id, isPrimary: true, displayOrder: 0);
 
@@ -109,7 +109,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task CurrentWeather_UpsertInsertAndUpdate_PersistsWeatherMeasurements()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var city = await SeedCityAsync(serviceProvider);
         var weather = CurrentWeather.Create(city.Id);
         weather.Temperature = 18.5m;
@@ -155,7 +155,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task UserProfile_InsertFindUpdateAndSoftDelete_PersistsProfilePreferencesAndAuditState()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var profile = UserProfile.Create(TestData.TestUserId, "test@example.com", "Test User");
 
         // Act - insert and find by UserId, not entity Id
@@ -190,7 +190,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task UserSubscription_InsertFindUpdateCancelAndReactivate_PersistsPlanStatusAndAuditState()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var subscription = UserSubscription.CreateFree(TestData.TestUserId);
 
         // Act - insert and find by user id
@@ -237,7 +237,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task UpsertAsync_NewForecast_InsertsWithHourlyForecasts()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var city = await SeedCityAsync(serviceProvider);
         var forecastDate = DateOnly.FromDateTime(DateTime.UtcNow.Date.AddDays(1));
         var forecast = WeatherForecast.Create(city.Id);
@@ -280,7 +280,7 @@ public sealed class ActiveEntitySqlServerTests(WeatherFiestaSqlServerFixture fix
     public async Task UpsertAsync_ExistingForecast_ReplacesHourlyForecastsAndUpdatesScalars()
     {
         // Arrange
-        await using var serviceProvider = await CreateServiceProviderAsync();
+        await using var serviceProvider = await this.CreateServiceProviderAsync();
         var city = await SeedCityAsync(serviceProvider, "Berlin", "Germany", "DE", "Europe/Berlin", 2950159, 34m);
         var forecastDate = DateOnly.FromDateTime(DateTime.UtcNow.Date.AddDays(1));
         var forecast = WeatherForecast.Create(city.Id);

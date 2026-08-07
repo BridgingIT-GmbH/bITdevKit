@@ -16,7 +16,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task DispatchAsync_FailedExecution_SchedulesRetryForSameOccurrenceAfterSweep()
     {
         RetryThenSucceedJob.Reset(failuresBeforeSuccess: 1);
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<RetryThenSucceedJob>("retry-job", job => job
@@ -45,7 +45,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task RetryScheduledOccurrence_CreatesNewExecutionAttempt_NotNewOccurrence()
     {
         RetryThenSucceedJob.Reset(failuresBeforeSuccess: 1);
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<RetryThenSucceedJob>("retry-job", job => job
@@ -78,7 +78,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task RetryScheduledOccurrence_Exhaustion_MarksOccurrenceFailed()
     {
         RetryThenSucceedJob.Reset(failuresBeforeSuccess: 3);
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<RetryThenSucceedJob>("retry-job", job => job
@@ -109,7 +109,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task DispatchAndWaitAsync_Timeout_RecordsTimedOutExecutionOutcome()
     {
         TimeoutJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<TimeoutJob>("timeout-job", job => job
@@ -135,7 +135,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     [Fact]
     public async Task CancelOccurrenceAsync_BeforeExecution_MarksOccurrenceCancelled()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<SuccessfulControlJob>("scheduled-job", job => job
@@ -174,7 +174,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task CancelOccurrenceAsync_DuringExecution_PropagatesCancellationToken()
     {
         ControllableCancellationJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<ControllableCancellationJob>("cancel-job", job => job
@@ -202,7 +202,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task InterruptOccurrenceAsync_IsRecordedDistinctlyFromCancellation()
     {
         ControllableCancellationJob.Reset();
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<ControllableCancellationJob>("interrupt-job", job => job
@@ -232,7 +232,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     public async Task PauseOccurrenceAsync_PreventsNewAttemptsUntilResume()
     {
         RetryThenSucceedJob.Reset(failuresBeforeSuccess: 1);
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<RetryThenSucceedJob>("retry-job", job => job
@@ -261,7 +261,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     [Fact]
     public async Task PauseJobAndTrigger_Resume_RestoresEligibility()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulControlJob>("control-job", job => job
@@ -283,7 +283,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     [Fact]
     public async Task EnableJobAndTrigger_AllowsDispatchForDisabledRegistrations()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulControlJob>("control-job", job =>
@@ -311,7 +311,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     [Fact]
     public async Task ReleaseOccurrenceLeaseAsync_RemovesPersistedLease()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<SuccessfulControlJob>("control-job", job => job
@@ -357,7 +357,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     [Fact]
     public async Task CancelOccurrencesAsync_AggregatesSuccessesAndFailures()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler().WithBackgroundExecution(options => options.EnableBackgroundExecution = false)
                 .WithJob<SuccessfulControlJob>("control-job", job => job
@@ -413,7 +413,7 @@ public class JobSchedulerServiceControlTests(ITestOutputHelper output) : JobSche
     [Fact]
     public async Task InvalidLifecycleTransitions_ReturnResultFailure()
     {
-        var provider = CreateProvider(services =>
+        var provider = this.CreateProvider(services =>
         {
             services.AddJobScheduler()
                 .WithJob<SuccessfulControlJob>("control-job", job => job

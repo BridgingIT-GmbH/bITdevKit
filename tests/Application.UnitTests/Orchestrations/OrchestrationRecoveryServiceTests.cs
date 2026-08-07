@@ -20,7 +20,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     {
         var clock = new FakeOrchestrationClock();
         var provider = new WaitBoundaryFaultingPersistenceProvider(FaultPoint.WaitingSnapshotSaved);
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<DelayWaitOrchestration>(),
             clock,
             provider);
@@ -62,7 +62,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     {
         var clock = new FakeOrchestrationClock();
         var provider = new WaitBoundaryFaultingPersistenceProvider(FaultPoint.TimerScheduledHistoryAppended);
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<DelayWaitOrchestration>(),
             clock,
             provider);
@@ -97,7 +97,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     {
         var clock = new FakeOrchestrationClock();
         var provider = new WaitBoundaryFaultingPersistenceProvider(FaultPoint.WaitingSnapshotSaved);
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<StateTimeoutOrchestration>(),
             clock,
             provider);
@@ -127,7 +127,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     public async Task SweepOnceAsync_WhenWaitingForSignalsOnly_DoesNotCreateRecoveryTimers()
     {
         var clock = new FakeOrchestrationClock();
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<SignalOnlyWaitOrchestration>(),
             clock);
 
@@ -150,7 +150,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     public async Task SweepOnceAsync_WhenTimerIsAlreadyDueAtStartup_CompletesWaitingInstance()
     {
         var clock = new FakeOrchestrationClock();
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<StateTimeoutOrchestration>(),
             clock);
 
@@ -171,7 +171,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     public async Task SweepOnceAsync_WhenTimerBecomesDueLater_CompletesOnSubsequentSweep()
     {
         var clock = new FakeOrchestrationClock();
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<StateTimeoutOrchestration>(),
             clock);
 
@@ -194,7 +194,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     public async Task SweepOnceAsync_WhenWorkersRaceForDueTimer_ProcessesInstanceOnlyOnce()
     {
         var clock = new FakeOrchestrationClock();
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services =>
             {
                 services.AddSingleton(new RecoveryProbe());
@@ -220,7 +220,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     public async Task SweepOnceAsync_WhenMultipleDueInstancesExist_CompletesAllInstancesInSingleSweep()
     {
         var clock = new FakeOrchestrationClock();
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<StateTimeoutOrchestration>(),
             clock);
 
@@ -257,7 +257,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
     public async Task SweepOnceAsync_WhenOneDueInstanceHasActiveLease_ContinuesOtherDueInstancesAndRetriesSkippedInstanceLater()
     {
         var clock = new FakeOrchestrationClock();
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<StateTimeoutOrchestration>(),
             clock);
 
@@ -296,7 +296,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
             BackgroundSweepInterval = TimeSpan.FromMilliseconds(20),
         };
 
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<StateTimeoutOrchestration>(),
             clock,
             settings: settings);
@@ -331,7 +331,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
         };
         var provider = new WaitBoundaryFaultingPersistenceProvider(FaultPoint.WaitingSnapshotSaved);
 
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations().WithOrchestration<DelayWaitOrchestration>(),
             clock,
             provider,
@@ -369,7 +369,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
         };
         var provider = new TransientQueryFailurePersistenceProvider();
 
-        using var serviceProvider = CreateServices(
+        using var serviceProvider = this.CreateServices(
             services => services.AddOrchestrations(),
             clock,
             provider,

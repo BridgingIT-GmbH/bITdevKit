@@ -14,6 +14,20 @@ using System.Collections.Generic;
 public class EntityChangeContext
 {
     private readonly Dictionary<string, (object OldValue, object NewValue)> changes = [];
+    private readonly List<EntityPropertyChange> propertyChanges = [];
+
+    /// <summary>
+    /// Gets the read-only list of property changes captured for the transaction.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// if (context.Changes.Any(c =&gt; c.PropertyName == nameof(Customer.Email)))
+    /// {
+    ///     // Build an email-specific domain event.
+    /// }
+    /// </code>
+    /// </example>
+    public IReadOnlyList<EntityPropertyChange> Changes => this.propertyChanges;
 
     /// <summary>
     /// Records a change to a specific property.
@@ -21,6 +35,20 @@ public class EntityChangeContext
     internal void RecordChange(string propertyName, object oldValue, object newValue)
     {
         this.changes[propertyName] = (oldValue, newValue);
+    }
+
+    /// <summary>
+    /// Records a captured property change.
+    /// </summary>
+    internal void RecordChange(EntityPropertyChange change)
+    {
+        if (change is null)
+        {
+            return;
+        }
+
+        this.changes[change.PropertyName] = (change.OldValue, change.NewValue);
+        this.propertyChanges.Add(change);
     }
 
     /// <summary>

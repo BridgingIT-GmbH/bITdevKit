@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <PackageReference Include="Bogus" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
@@ -66,6 +67,7 @@
         <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+        <ProjectReference Include="..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure.LiteDB\Infrastructure.LiteDB.csproj" />
         <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />

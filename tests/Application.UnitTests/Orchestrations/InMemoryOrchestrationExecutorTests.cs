@@ -14,7 +14,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenStateProgressesThroughTransition_CompletesInTargetState()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<ProgressionOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -33,7 +33,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     {
         // Arrange
         var traceCollector = new TraceCollector();
-        var serviceProvider = CreateServices(services =>
+        var serviceProvider = this.CreateServices(services =>
         {
             services.AddSingleton(traceCollector);
             services.AddOrchestrations().WithOrchestration<ClassActivityOrchestration>();
@@ -53,7 +53,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenInlineActivityMutatesContext_PreservesUpdatedData()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<ContextMutationOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -72,7 +72,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenRetryOutcomeIsReturned_ReexecutesCurrentActivityUntilItContinues()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<RetryOutcomeOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -90,7 +90,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenWaitOutcomeIsReturned_EndsInWaitingState()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<WaitOutcomeOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -108,7 +108,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenCancelOutcomeIsReturned_EndsInCancelledState()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<CancelOutcomeOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -126,7 +126,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenTerminateOutcomeIsReturned_EndsInTerminatedState()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<TerminateOutcomeOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -144,7 +144,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenNoTransitionMatches_FailsExecution()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<NoTransitionOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -162,7 +162,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenDefinitionContainsUnknownTransitionTarget_ReturnsFailedValidationMessage()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<InvalidTransitionTargetOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();
@@ -179,7 +179,7 @@ public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : Orch
     public async Task ExecuteAsync_WhenDefinitionHasNoStates_ReturnsFailedValidationMessage()
     {
         // Arrange
-        var serviceProvider = CreateServices(services => services
+        var serviceProvider = this.CreateServices(services => services
             .AddOrchestrations()
             .WithOrchestration<NoStatesOrchestration>());
         var sut = serviceProvider.GetRequiredService<IOrchestrationExecutor>();

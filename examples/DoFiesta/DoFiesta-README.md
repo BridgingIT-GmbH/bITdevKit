@@ -58,6 +58,19 @@ the [ApiClient](.\DoFiesta.Presentation.Web.Client\Connected%20Services\DoFiesta
 - The server uses the named `attachments` file-storage provider and stores each todo item's files below a folder named after the todo item id.
 - The Blazor todo page exposes the feature through an attachment dialog on each row, supporting list, upload, download, and delete for text and binary files.
 
+## ChangeHistory
+
+- DoFiesta enables ChangeHistory for `TodoItem` and `Subscription` in the Core module.
+- History rows are stored in the shared `__ChangeHistory` table configured on `CoreDbContext`.
+- `TodoItem` captures creates, direct repository updates, bulk updates, and identifiable `Steps` collection changes.
+- `Subscription` captures creates, direct repository updates, and bulk updates.
+- User ids are hash-only, todo assignees are redacted, oversized values are truncated, and concurrency tokens are excluded.
+- Restore is enabled for selected scalar fields, todo status through domain logic, enum-like fields through validated setters, and configured collection history when stored values are restoreable.
+- Read and restore requests use DoFiesta entity permissions. Reads require entity/list read permissions, and restores require write permissions before and after the target entity is loaded.
+- Restore endpoints require authentication.
+- Todo history endpoints are available below `api/core/todoitems/history`.
+- Subscription history endpoints are available below `api/core/subscriptions/history`.
+
 ## Todo DataPorter bulk imports
 
 - The todo DataPorter import endpoint parses and validates uploaded rows first, then an `AfterImportCompletedAsync` interceptor writes successful `TodoItem` rows through the Domain-owned `IEntityBulkInserter<TodoItem>` capability.

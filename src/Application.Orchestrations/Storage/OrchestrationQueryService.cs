@@ -82,7 +82,7 @@ public class OrchestrationQueryService(IOrchestrationQueryStore queryStore) : IO
                 return ResultPaged<OrchestrationInstanceModel>.Failure().WithErrors(validation.Errors);
             }
 
-            var snapshots = await GetSnapshotsAsync(request, cancellationToken).ConfigureAwait(false);
+            var snapshots = await this.GetSnapshotsAsync(request, cancellationToken).ConfigureAwait(false);
             var sorted = SortSnapshots(snapshots, request.SortBy, request.SortDescending);
             var take = request.Take <= 0 ? 50 : request.Take;
             var skip = Math.Max(0, request.Skip);
@@ -188,7 +188,8 @@ public class OrchestrationQueryService(IOrchestrationQueryStore queryStore) : IO
                 return Result<OrchestrationMetricsModel>.Failure().WithErrors(validation.Errors);
             }
 
-            var snapshots = await GetSnapshotsAsync(new OrchestrationQueryRequest
+            var snapshots = await this
+                .GetSnapshotsAsync(new OrchestrationQueryRequest
             {
                 OrchestrationName = request.OrchestrationName,
                 Statuses = request.Statuses,

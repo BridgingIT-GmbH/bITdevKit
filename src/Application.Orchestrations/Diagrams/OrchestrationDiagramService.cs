@@ -132,8 +132,9 @@ public class OrchestrationDiagramService(
     private DiagramDocument ProjectDefinitionDocument(Type orchestrationType, object definition)
     {
         var dataType = registrations.GetDataType(orchestrationType);
-        var method = GetType()
-            .GetMethod(nameof(ProjectDefinitionDocumentCore), BindingFlags.Instance | BindingFlags.NonPublic)!
+        var method = this
+            .GetType()
+            .GetMethod(nameof(this.ProjectDefinitionDocumentCore), BindingFlags.Instance | BindingFlags.NonPublic)!
             .MakeGenericMethod(dataType);
         return (DiagramDocument)method.Invoke(this, [definition])!;
     }

@@ -32,7 +32,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
 
             var models = BuildJobModels(snapshot, request.IncludeOrphanedRuntimeState)
                 .Where(model => Matches(model.JobName, request.JobName))
@@ -66,7 +66,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var typeFilter = request.TriggerTypes.SafeNull().ToHashSet();
 
             var models = snapshot.Definitions
@@ -103,7 +103,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var typeFilter = request.TriggerTypes.SafeNull().ToHashSet();
 
             var models = snapshot.Definitions
@@ -141,7 +141,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var statusFilter = request.Statuses.SafeNull().ToHashSet();
 
             var models = snapshot.Occurrences
@@ -185,7 +185,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
 
             var models = snapshot.Occurrences
                 .Select(occurrence => MapRetry(occurrence, snapshot))
@@ -221,7 +221,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var statusFilter = request.Statuses.SafeNull().ToHashSet();
 
             var models = snapshot.Batches
@@ -263,7 +263,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var batch = snapshot.Batches.FirstOrDefault(x =>
                 string.Equals(x.ExternalBatchId, batchId, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(x.BatchId.ToString("D"), batchId, StringComparison.OrdinalIgnoreCase));
@@ -311,7 +311,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var batch = snapshot.Batches.FirstOrDefault(x =>
                 string.Equals(x.ExternalBatchId, batchId, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(x.BatchId.ToString("D"), batchId, StringComparison.OrdinalIgnoreCase));
@@ -355,7 +355,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var statusFilter = request.Statuses.SafeNull().ToHashSet();
             var failurePolicyFilter = request.FailurePolicies.SafeNull().ToHashSet();
 
@@ -395,7 +395,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var statusFilter = request.Statuses.SafeNull().ToHashSet();
 
             var models = snapshot.Executions
@@ -439,7 +439,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var occurrenceStatusFilter = request.OccurrenceStatuses.SafeNull().ToHashSet();
             var executionStatusFilter = request.ExecutionStatuses.SafeNull().ToHashSet();
             var eventNames = request.EventNames.SafeNull().Where(x => !string.IsNullOrWhiteSpace(x)).ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -482,7 +482,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var statusFilter = request.Statuses.SafeNull().ToHashSet();
 
             var models = snapshot.Leases
@@ -519,7 +519,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var statusFilter = request.Statuses.SafeNull().ToHashSet();
 
             var models = BuildServers(snapshot)
@@ -546,10 +546,10 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
-            var filteredOccurrences = FilterMetricsOccurrences(snapshot, request).ToList();
-            var filteredExecutions = FilterMetricsExecutions(snapshot, request).ToList();
-            var filteredLeases = FilterMetricsLeases(snapshot, request).ToList();
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var filteredOccurrences = this.FilterMetricsOccurrences(snapshot, request).ToList();
+            var filteredExecutions = this.FilterMetricsExecutions(snapshot, request).ToList();
+            var filteredLeases = this.FilterMetricsLeases(snapshot, request).ToList();
             var filteredServers = BuildServers(snapshot)
                 .Where(x => Matches(x.SchedulerInstanceId, request.SchedulerInstanceId))
                 .ToList();
@@ -601,7 +601,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var jobs = BuildJobModels(snapshot, includeOrphanedRuntimeState: true);
             var triggers = snapshot.Definitions.SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot, cronEngine, calendarEngine))).ToList();
             var occurrences = snapshot.Occurrences
@@ -649,7 +649,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var jobs = BuildJobModels(snapshot, includeOrphanedRuntimeState: true);
             var facets = BuildJobFacets(jobs);
 
@@ -682,7 +682,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var jobs = BuildJobModels(snapshot, includeOrphanedRuntimeState: true);
             var triggers = snapshot.Definitions.SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot, cronEngine, calendarEngine))).ToList();
 
@@ -726,7 +726,7 @@ public class JobSchedulerQueryService(
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            var snapshot = await this.LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var nowUtc = timeProvider.GetUtcNow();
             var fromUtc = request.From ?? nowUtc.AddHours(-24);
             var toUtc = request.To ?? nowUtc;
@@ -737,8 +737,8 @@ public class JobSchedulerQueryService(
             }
 
             var buckets = request.Mode == JobSchedulerTimelineMode.Executions
-                ? BuildExecutionTimelineBuckets(snapshot, request, fromUtc, toUtc)
-                : BuildOccurrenceTimelineBuckets(snapshot, request, fromUtc, toUtc);
+                ? this.BuildExecutionTimelineBuckets(snapshot, request, fromUtc, toUtc)
+                : this.BuildOccurrenceTimelineBuckets(snapshot, request, fromUtc, toUtc);
 
             return Result<JobSchedulerTimelineModel>.Success(new JobSchedulerTimelineModel
             {

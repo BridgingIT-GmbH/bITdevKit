@@ -16,7 +16,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task LeaseStore_OnlyOneWorkerCanAcquireOccurrenceLease()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var store = provider.GetRequiredService<IJobStoreProvider>();
 
         var first = await store.Leases.TryAcquireAsync(Guid.NewGuid(), "scheduler-a", TimeSpan.FromMinutes(1));
@@ -29,7 +29,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task LeaseStore_ConcurrentAcquisitionAttempts_AreRejected()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var store = provider.GetRequiredService<IJobStoreProvider>();
         var occurrenceId = Guid.NewGuid();
 
@@ -43,7 +43,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     [Fact]
     public async Task LeaseStore_Renewal_ExtendsOwnership()
     {
-        var provider = CreateProvider();
+        var provider = this.CreateProvider();
         var store = provider.GetRequiredService<IJobStoreProvider>();
         var fakeTime = (FakeTimeProvider)provider.GetRequiredService<TimeProvider>();
         var occurrenceId = Guid.NewGuid();
@@ -61,7 +61,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     public async Task SweepOnceAsync_ExpiredLeasesBecomeRecoverable()
     {
         SuccessfulLeaseJob.RunCount = 0;
-        var provider = CreateProvider(options =>
+        var provider = this.CreateProvider(options =>
         {
             options.EnableBackgroundExecution = false;
             options.LeaseDuration = TimeSpan.FromSeconds(5);
@@ -95,7 +95,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     public async Task ExecuteStoredOccurrenceAsync_WorkerCannotFinalizeAfterLeaseLoss()
     {
         LeaseLossAwareJob.Reset();
-        var provider = CreateProvider(options =>
+        var provider = this.CreateProvider(options =>
         {
             options.EnableBackgroundExecution = false;
             options.LeaseDuration = TimeSpan.FromSeconds(1);
@@ -127,7 +127,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     public async Task SweepOnceAsync_RecoveredOccurrenceReturnsToRunnableState()
     {
         SuccessfulLeaseJob.RunCount = 0;
-        var provider = CreateProvider(options =>
+        var provider = this.CreateProvider(options =>
         {
             options.EnableBackgroundExecution = false;
             options.LeaseDuration = TimeSpan.FromSeconds(2);
@@ -160,7 +160,7 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
     {
         ShutdownLeaseJob.Reset();
         var dueUtc = new DateTimeOffset(2026, 05, 26, 09, 01, 00, TimeSpan.Zero);
-        var provider = CreateProvider(options =>
+        var provider = this.CreateProvider(options =>
         {
             options.EnableBackgroundExecution = true;
             options.SweepInterval = TimeSpan.FromMilliseconds(50);

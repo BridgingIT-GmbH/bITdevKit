@@ -216,8 +216,8 @@ public class ApplicationQueryTests : IAsyncLifetime
     {
         // Arrange
         await this.testHost.ResetDatabaseAsync();
-        await SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
-        await SoftDeleteSubscriptionAsync();
+        await this.SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
+        await this.SoftDeleteSubscriptionAsync();
 
         // Act
         var result = await this.requester.SendAsync(new UserSubscriptionQuery());
@@ -441,7 +441,7 @@ public class ApplicationQueryTests : IAsyncLifetime
     {
         // Arrange
         await this.testHost.ResetDatabaseAsync();
-        await SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
+        await this.SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
 
         // Act
         var result = await this.requester.SendAsync(new CityExportQuery());
@@ -457,8 +457,8 @@ public class ApplicationQueryTests : IAsyncLifetime
     {
         // Arrange
         await this.testHost.ResetDatabaseAsync();
-        await SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
-        await SoftDeleteSubscriptionAsync();
+        await this.SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
+        await this.SoftDeleteSubscriptionAsync();
 
         // Act
         var result = await this.requester.SendAsync(new CityExportQuery());
@@ -484,7 +484,7 @@ public class ApplicationQueryTests : IAsyncLifetime
     {
         // Arrange - Free plan max 7 forecast days
         await this.testHost.ResetDatabaseAsync();
-        await SeedLondonForecastsAsync(16);
+        await this.SeedLondonForecastsAsync(16);
 
         // Act
         var result = await this.requester.SendAsync(

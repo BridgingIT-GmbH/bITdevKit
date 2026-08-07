@@ -16,7 +16,7 @@ public class JobSchedulerExamplesTests(ITestOutputHelper output) : JobSchedulerT
     [Fact]
     public async Task DispatchAndWaitAsync_ClassJobWithConstructorInjection_PersistsExpectedState()
     {
-        using var provider = CreateProvider();
+        using var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
         var recorder = provider.GetRequiredService<ExampleUsageRecorder>();
@@ -48,7 +48,7 @@ public class JobSchedulerExamplesTests(ITestOutputHelper output) : JobSchedulerT
     [Fact]
     public async Task DispatchAndWaitAsync_InlineJobWithServiceProviderInjection_PersistsExpectedState()
     {
-        using var provider = CreateProvider();
+        using var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<IJobSchedulerService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
         var recorder = provider.GetRequiredService<ExampleUsageRecorder>();
@@ -80,7 +80,7 @@ public class JobSchedulerExamplesTests(ITestOutputHelper output) : JobSchedulerT
     [Fact]
     public async Task SweepOnceAsync_ChainedJobs_CreateAndExecuteSuccessorOccurrence()
     {
-        using var provider = CreateProvider();
+        using var provider = this.CreateProvider();
         var scheduler = provider.GetRequiredService<IJobSchedulerService>();
         var background = provider.GetRequiredService<JobSchedulerBackgroundService>();
         var store = provider.GetRequiredService<IJobStoreProvider>();

@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -924,6 +925,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 // All operations before When executed, skip remaining operations
                 // Register queued events since changes before cancellation should be preserved
                 this.RegisterQueuedEvents(entity, context);
+                this.EnqueuePendingChangeSet(entity, context);
                 return Result<TEntity>.Success(entity);
             }
 
@@ -961,7 +963,29 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
         }
 
+        this.EnqueuePendingChangeSet(entity, context);
+
         return Result<TEntity>.Success(entity);
+    }
+
+    private void EnqueuePendingChangeSet(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
+    {
+        if (context.PropertyChanges.Count == 0)
+        {
+            return;
+        }
+
+        var entityType = entity.GetType();
+        var entityId = entity.Id;
+        EntityChangeHistoryAccessor.AddPendingChangeSet(entity, new EntityChangeSet
+        {
+            ChangeSetId = Guid.NewGuid(),
+            EntityType = entityType.Name,
+            EntityClrType = entityType.AssemblyQualifiedName,
+            EntityId = Convert.ToString(entityId, CultureInfo.InvariantCulture),
+            EntityIdType = entityId?.GetType().AssemblyQualifiedName,
+            PropertyChanges = context.PropertyChanges.ToArray()
+        });
     }
 
     /// <summary>
@@ -1112,7 +1136,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
 
             this.accessor.SetValue(entity, newValue);
-            context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
+            context.RecordChange(this.accessor.PropertyInfo.Name, currentValue, newValue);
             return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
@@ -1143,7 +1167,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
 
             this.accessor.SetValue(entity, result.Value);
-            context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
+            context.RecordChange(this.accessor.PropertyInfo.Name, currentValue, result.Value);
             return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
@@ -1192,7 +1216,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             try
             {
                 action(entity);
-                context.RecordChange("Execute", null);
+                context.ChangesMade = true;
                 return EntityChangeOperationExecutionResult.Success(hasChanged: true);
             }
             catch (Exception ex)
@@ -1217,7 +1241,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
-            context.RecordChange("Execute", null);
+            context.ChangesMade = true;
             return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
@@ -1235,7 +1259,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
-            context.RecordChange("Execute", null);
+            context.ChangesMade = true;
             return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
@@ -1274,9 +1298,9 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 // Create EntityChangeContext from OrderedExecutionContext
                 var changeContext = new EntityChangeContext();
-                foreach (var kvp in context.OldValues)
+                foreach (var change in context.PropertyChanges)
                 {
-                    changeContext.RecordChange(kvp.Key, kvp.Value, null); // We don't track new values separately
+                    changeContext.RecordChange(change);
                 }
 
                 return eventFactory(entity, changeContext);

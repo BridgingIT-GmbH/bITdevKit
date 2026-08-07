@@ -308,13 +308,14 @@ services.AddEntityFrameworkBulkInserter<TodoItem, CoreDbContext>(
     .WithBehavior<EntityBulkInserterLoggingBehavior<TodoItem>>()
     .WithBehavior<EntityBulkInserterMetricsBehavior<TodoItem>>()
     .WithBehavior<EntityBulkInserterOutboxDomainEventBehavior<TodoItem, CoreDbContext>>()
+    .WithBehavior<EntityBulkInserterChangeHistoryBehavior<TodoItem, CoreDbContext>>()
     .WithBehavior<EntityBulkInserterAuditStateBehavior<TodoItem>>()
     .WithBehavior<EntityBulkInserterConcurrencyBehavior<TodoItem>>()
     .WithBehavior<EntityBulkInserterDomainEventBehavior<TodoItem>>()
     .WithBehavior<EntityBulkInserterDomainEventMetricsBehavior<TodoItem>>();
 ```
 
-`WithBehavior` calls are ordered from outermost to innermost. Register the outbox decorator before mutation and event decorators so it owns the transaction enclosing both the native write and the outbox save. Do not combine the outbox decorator with `EntityBulkInserterDomainEventPublisherBehavior<TEntity>`: direct publication is intentionally non-atomic with the native write.
+`WithBehavior` calls are ordered from outermost to innermost. Register the outbox decorator before ChangeHistory, mutation, and event decorators so it owns the transaction enclosing the native write, ChangeHistory rows, and outbox save. Native ChangeHistory capture additionally requires `.CaptureBulkInserts(...)` on the tracked entity. Do not combine the outbox decorator with `EntityBulkInserterDomainEventPublisherBehavior<TEntity>`: direct publication is intentionally non-atomic with the native write.
 
 | Decorator | Entity requirement | Main dependency |
 | --- | --- | --- |
@@ -323,6 +324,7 @@ services.AddEntityFrameworkBulkInserter<TodoItem, CoreDbContext>(
 | Concurrency | `IConcurrency` | None |
 | Created domain event and event metrics | `IAggregateRoot` | Optional `IMetricsService` for metrics |
 | Outbox domain events | `IAggregateRoot` | `TContext : IOutboxDomainEventContext`, optional queue/options |
+| ChangeHistory | `IEntity` | `TContext : IChangeHistoryContext`, `ChangeHistoryOptions` with explicit bulk-insert capture |
 | Direct domain-event publisher | `IAggregateRoot` | `IDomainEventPublisher` |
 
 Then inject `IEntityBulkInserter<TEntity>` directly into application or presentation orchestration code, for example a DataPorter completion interceptor. The consumer needs only the Domain repository namespace for the contract:

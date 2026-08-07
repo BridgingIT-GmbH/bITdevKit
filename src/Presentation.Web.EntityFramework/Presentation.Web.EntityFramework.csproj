@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Presentation.Web.EntityFramework</AssemblyName>
-    <RootNamespace>BridgingIT.DevKit.Presentation.Web</RootNamespace>
+    <RootNamespace>BridgingIT.DevKit.Presentation.Web.EntityFramework</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
@@ -11,11 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.Entities\Application.Entities.csproj" />
+    <ProjectReference Include="..\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="RazorSlices" />
   </ItemGroup>
 
 </Project>

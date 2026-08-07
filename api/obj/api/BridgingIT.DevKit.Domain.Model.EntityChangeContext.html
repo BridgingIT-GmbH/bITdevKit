@@ -287,6 +287,48 @@ Used primarily within custom domain event factories to access previous values.</
 
 
 
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_EntityChangeContext_Changes_" data-uid="BridgingIT.DevKit.Domain.Model.EntityChangeContext.Changes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_EntityChangeContext_Changes" data-uid="BridgingIT.DevKit.Domain.Model.EntityChangeContext.Changes">
+  Changes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the read-only list of property changes captured for the transaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;EntityPropertyChange&gt; Changes { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityPropertyChange.html">EntityPropertyChange</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Model_EntityChangeContext_Changes_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (context.Changes.Any(c =&gt; c.PropertyName == nameof(Customer.Email)))
+{
+    // Build an email-specific domain event.
+}</code></pre>
+
+
+
+
+
+
   <h2 class="section" id="methods">Methods
 </h2>
 

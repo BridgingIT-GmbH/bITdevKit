@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Fluent builder for entity-specific ChangeHistory capture configuration.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1" class="text-break">
+Class ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a>.<a class="xref" href="BridgingIT.DevKit.Domain.Model.html">Model</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Fluent builder for entity-specific ChangeHistory capture configuration.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; where TEntity : class, IEntity</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The tracked entity type.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">options.Track&lt;Customer&gt;()
+    .UseCaptureStrategy(ChangeHistoryCaptureStrategy.EntityChangeOnly)
+    .Exclude(c =&gt; c.PasswordHash);</code></pre>
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_EntityOptions_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.EntityOptions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_EntityOptions" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.EntityOptions">
+  EntityOptions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the entity-specific options instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptions EntityOptions { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptions.html">ChangeHistoryEntityOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_Options_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.Options*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_Options" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.Options">
+  Options
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the root options instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryOptions Options { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryOptions.html">ChangeHistoryOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_AllowRestoreUsingValidatedSetters_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.AllowRestoreUsingValidatedSetters*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_AllowRestoreUsingValidatedSetters__1_System_Linq_Expressions_Expression_System_Func__0___0___" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.AllowRestoreUsingValidatedSetters``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+  AllowRestoreUsingValidatedSetters&lt;TProperties&gt;(Expression&lt;Func&lt;TEntity, TProperties&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows restore through validated setters for every property in a projection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; AllowRestoreUsingValidatedSetters&lt;TProperties&gt;(Expression&lt;Func&lt;TEntity, TProperties&gt;&gt; properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>properties</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperties&gt;&gt;</dt>
+    <dd><p>A single property or anonymous-object property projection.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperties</code></dt>
+    <dd><p>The projection type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_AllowRestoreUsingValidatedSetters__1_System_Linq_Expressions_Expression_System_Func__0___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">options.Track&lt;Customer&gt;()
+    .AllowRestoreUsingValidatedSetters(customer =&gt; new
+    {
+        customer.FirstName,
+        customer.LastName
+    });</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_AllowRestore_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.AllowRestore*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_AllowRestore__1_System_Linq_Expressions_Expression_System_Func__0___0___" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.AllowRestore``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+  AllowRestore&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Allows restore for the selected property.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryRestorePropertyOptionsBuilder&lt;TEntity, TProperty&gt; AllowRestore&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt; property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>property</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperty&gt;&gt;</dt>
+    <dd><p>The property expression.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptionsBuilder-2.html">ChangeHistoryRestorePropertyOptionsBuilder</a>&lt;TEntity, TProperty&gt;</dt>
+    <dd><p>A restore policy builder for the selected property.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The property value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureBulkInserts_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureBulkInserts*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureBulkInserts_BridgingIT_DevKit_Domain_Model_ChangeHistoryBulkInsertCaptureMode_System_Int32_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureBulkInserts(BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode,System.Int32)">
+  CaptureBulkInserts(ChangeHistoryBulkInsertCaptureMode, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables ChangeHistory capture for explicitly configured native entity bulk inserts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureBulkInserts(ChangeHistoryBulkInsertCaptureMode mode = ChangeHistoryBulkInsertCaptureMode.Summary, int maxDetailedEntities = 1000)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mode</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode.html">ChangeHistoryBulkInsertCaptureMode</a></dt>
+    <dd><p>The amount of history captured for each native bulk insert.</p>
+</dd>
+    <dt><code>maxDetailedEntities</code> <span class="xref">int</span></dt>
+    <dd><p>The safety limit used when <code class="paramref">mode</code> is <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode.html#BridgingIT_DevKit_Domain_Model_ChangeHistoryBulkInsertCaptureMode_Detailed">Detailed</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureBulkInserts_BridgingIT_DevKit_Domain_Model_ChangeHistoryBulkInsertCaptureMode_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">options.Track&lt;Customer&gt;().CaptureBulkInserts();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureChanges_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureChanges*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureChanges_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureMode_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureMode_System_Nullable_System_Int32__" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureChanges(BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode,BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode,System.Nullable{System.Int32})">
+  CaptureChanges(ChangeHistoryCaptureMode, ChangeHistoryCaptureMode, int?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables the standard ChangeHistory capture sources for this entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureChanges(ChangeHistoryCaptureMode directMutationMode = ChangeHistoryCaptureMode.Required, ChangeHistoryCaptureMode updateSetMode = ChangeHistoryCaptureMode.BestEffort, int? updateSetMaxAffectedRows = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>directMutationMode</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.html">ChangeHistoryCaptureMode</a></dt>
+    <dd><p>The direct-mutation capture mode.</p>
+</dd>
+    <dt><code>updateSetMode</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.html">ChangeHistoryCaptureMode</a></dt>
+    <dd><p>The set-based update capture mode.</p>
+</dd>
+    <dt><code>updateSetMaxAffectedRows</code> <span class="xref">int</span>?</dt>
+    <dd><p>The optional per-entity set-based update safety limit.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureChanges_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureMode_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureMode_System_Nullable_System_Int32___examples">Examples</h4>
+  <pre><code class="lang-csharp">options.Track&lt;Customer&gt;().CaptureChanges();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection__1_System_Linq_Expressions_Expression_System_Func__0_System_Collections_Generic_IEnumerable___0____System_Action_BridgingIT_DevKit_Domain_Model_ChangeHistoryPathOptionsBuilder__0___System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection``1(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IEnumerable{``0}}},System.Action{BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder{`0}},System.String)">
+  CaptureCollection&lt;TItem&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt;, Action&lt;ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures scalar changes for identifiable collection items using EF Core key metadata and configures path restore.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureCollection&lt;TItem&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt; path, Action&lt;ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;&gt; configure, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TItem&gt;&gt;&gt;</dt>
+    <dd><p>The collection path expression.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.html">ChangeHistoryPathOptionsBuilder</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The path policy configuration.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd><p>The collection item type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection__1_System_Linq_Expressions_Expression_System_Func__0_System_Collections_Generic_IEnumerable___0____System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection``1(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IEnumerable{``0}}},System.String)">
+  CaptureCollection&lt;TItem&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures scalar changes for identifiable collection items using EF Core key metadata to infer item identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureCollection&lt;TItem&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt; path, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TItem&gt;&gt;&gt;</dt>
+    <dd><p>The collection path expression.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd><p>The collection item type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection__2_System_Linq_Expressions_Expression_System_Func__0_System_Collections_Generic_IEnumerable___0____System_Linq_Expressions_Expression_System_Func___0___1___System_Action_BridgingIT_DevKit_Domain_Model_ChangeHistoryPathOptionsBuilder__0___System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection``2(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IEnumerable{``0}}},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Action{BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder{`0}},System.String)">
+  CaptureCollection&lt;TItem, TKey&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt;, Expression&lt;Func&lt;TItem, TKey&gt;&gt;, Action&lt;ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures scalar changes for identifiable collection items and configures path restore.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureCollection&lt;TItem, TKey&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt; path, Expression&lt;Func&lt;TItem, TKey&gt;&gt; identity, Action&lt;ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;&gt; configure, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TItem&gt;&gt;&gt;</dt>
+    <dd><p>The collection path expression.</p>
+</dd>
+    <dt><code>identity</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, TKey&gt;&gt;</dt>
+    <dd><p>The item identity expression.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.html">ChangeHistoryPathOptionsBuilder</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The path policy configuration.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd><p>The collection item type.</p>
+</dd>
+    <dt><code>TKey</code></dt>
+    <dd><p>The collection item identity type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCollection__2_System_Linq_Expressions_Expression_System_Func__0_System_Collections_Generic_IEnumerable___0____System_Linq_Expressions_Expression_System_Func___0___1___System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCollection``2(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.IEnumerable{``0}}},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.String)">
+  CaptureCollection&lt;TItem, TKey&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt;, Expression&lt;Func&lt;TItem, TKey&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures scalar changes for identifiable collection items.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureCollection&lt;TItem, TKey&gt;(Expression&lt;Func&lt;TEntity, IEnumerable&lt;TItem&gt;&gt;&gt; path, Expression&lt;Func&lt;TItem, TKey&gt;&gt; identity, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TItem&gt;&gt;&gt;</dt>
+    <dd><p>The collection path expression.</p>
+</dd>
+    <dt><code>identity</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TItem, TKey&gt;&gt;</dt>
+    <dd><p>The item identity expression.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TItem</code></dt>
+    <dd><p>The collection item type.</p>
+</dd>
+    <dt><code>TKey</code></dt>
+    <dd><p>The collection item identity type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCreates_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCreates*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureCreates" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureCreates">
+  CaptureCreates()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables initial-value capture for repository inserts and insert-style upserts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureCreates()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureDirectMutations_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureDirectMutations*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureDirectMutations_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureStrategy_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureMode_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureDirectMutations(BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy,BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode)">
+  CaptureDirectMutations(ChangeHistoryCaptureStrategy, ChangeHistoryCaptureMode)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables direct-mutation capture for this entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureDirectMutations(ChangeHistoryCaptureStrategy strategy = ChangeHistoryCaptureStrategy.RepositorySnapshot, ChangeHistoryCaptureMode mode = ChangeHistoryCaptureMode.BestEffort)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>strategy</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy.html">ChangeHistoryCaptureStrategy</a></dt>
+    <dd><p>The direct-mutation capture strategy.</p>
+</dd>
+    <dt><code>mode</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.html">ChangeHistoryCaptureMode</a></dt>
+    <dd><p>The direct-mutation capture mode.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureGraph_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureGraph*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureGraph_System_String_System_Action_BridgingIT_DevKit_Domain_Model_ChangeHistoryGraphOptionsBuilder__0___System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureGraph(System.String,System.Action{BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder{`0}},System.String)">
+  CaptureGraph(string, Action&lt;ChangeHistoryGraphOptionsBuilder&lt;TEntity&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds and configures a graph capture path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureGraph(string path, Action&lt;ChangeHistoryGraphOptionsBuilder&lt;TEntity&gt;&gt; configure, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The graph path.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder-1.html">ChangeHistoryGraphOptionsBuilder</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The graph policy configuration.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureGraph_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureGraph*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureGraph_System_String_System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureGraph(System.String,System.String)">
+  CaptureGraph(string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a graph include path for future graph-aware capture and restore plans.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureGraph(string path, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">string</span></dt>
+    <dd><p>The graph path.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureOwned_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureOwned*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureOwned__1_System_Linq_Expressions_Expression_System_Func__0___0___System_Action_BridgingIT_DevKit_Domain_Model_ChangeHistoryPathOptionsBuilder__0___System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureOwned``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Action{BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder{`0}},System.String)">
+  CaptureOwned&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt;, Action&lt;ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures scalar changes below an owned value-object path and configures path restore.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureOwned&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt; path, Action&lt;ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;&gt; configure, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperty&gt;&gt;</dt>
+    <dd><p>The owned path expression.</p>
+</dd>
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.html">ChangeHistoryPathOptionsBuilder</a>&lt;TEntity&gt;&gt;</dt>
+    <dd><p>The path policy configuration.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The owned value-object type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureOwned_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureOwned*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureOwned__1_System_Linq_Expressions_Expression_System_Func__0___0___System_String_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureOwned``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.String)">
+  CaptureOwned&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt;, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures scalar changes below an owned value-object path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureOwned&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt; path, string includePath = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>path</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperty&gt;&gt;</dt>
+    <dd><p>The owned path expression.</p>
+</dd>
+    <dt><code>includePath</code> <span class="xref">string</span></dt>
+    <dd><p>The optional EF include path.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The owned value-object type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureUpdateSet_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureUpdateSet*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_CaptureUpdateSet_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureMode_System_Nullable_System_Int32__" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.CaptureUpdateSet(BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode,System.Nullable{System.Int32})">
+  CaptureUpdateSet(ChangeHistoryCaptureMode, int?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Enables set-based update capture for this entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; CaptureUpdateSet(ChangeHistoryCaptureMode mode = ChangeHistoryCaptureMode.BestEffort, int? maxAffectedRows = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>mode</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.html">ChangeHistoryCaptureMode</a></dt>
+    <dd><p>The capture mode.</p>
+</dd>
+    <dt><code>maxAffectedRows</code> <span class="xref">int</span>?</dt>
+    <dd><p>The optional per-entity safety limit.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_Exclude_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.Exclude*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_Exclude__1_System_Linq_Expressions_Expression_System_Func__0___0___" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.Exclude``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+  Exclude&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Excludes a property from persisted change-history rows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; Exclude&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt; property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>property</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperty&gt;&gt;</dt>
+    <dd><p>The property expression.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The property value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_HashOnly_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.HashOnly*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_HashOnly__1_System_Linq_Expressions_Expression_System_Func__0___0___" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.HashOnly``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+  HashOnly&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores a row for a property but persists only hashes for its old and new values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; HashOnly&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt; property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>property</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperty&gt;&gt;</dt>
+    <dd><p>The property expression.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The property value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_Redact_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.Redact*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_Redact__1_System_Linq_Expressions_Expression_System_Func__0___0___" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.Redact``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+  Redact&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores a row for a property but redacts its old and new values.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; Redact&lt;TProperty&gt;(Expression&lt;Func&lt;TEntity, TProperty&gt;&gt; property)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>property</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProperty&gt;&gt;</dt>
+    <dd><p>The property expression.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TProperty</code></dt>
+    <dd><p>The property value type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_UseCaptureStrategy_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.UseCaptureStrategy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_UseCaptureStrategy_BridgingIT_DevKit_Domain_Model_ChangeHistoryCaptureStrategy_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.UseCaptureStrategy(BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy)">
+  UseCaptureStrategy(ChangeHistoryCaptureStrategy)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Overrides the capture strategy for this entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; UseCaptureStrategy(ChangeHistoryCaptureStrategy strategy)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>strategy</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy.html">ChangeHistoryCaptureStrategy</a></dt>
+    <dd><p>The strategy to use for this entity.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_UseRestoreAuthorizer_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.UseRestoreAuthorizer*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_UseRestoreAuthorizer__1" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.UseRestoreAuthorizer``1">
+  UseRestoreAuthorizer&lt;TAuthorizer&gt;()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures the restore authorizer for this entity. When configured through
+<code>AddChangeHistory</code>, the concrete authorizer is registered as a scoped service.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; UseRestoreAuthorizer&lt;TAuthorizer&gt;() where TAuthorizer : IChangeHistoryRestoreAuthorizer&lt;TEntity&gt;</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TAuthorizer</code></dt>
+    <dd><p>The authorizer type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_UseRestoreConcurrencyPolicy_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.UseRestoreConcurrencyPolicy*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_Model_ChangeHistoryEntityOptionsBuilder_1_UseRestoreConcurrencyPolicy_BridgingIT_DevKit_Domain_Model_ChangeHistoryRestoreConcurrencyPolicy_" data-uid="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder`1.UseRestoreConcurrencyPolicy(BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy)">
+  UseRestoreConcurrencyPolicy(ChangeHistoryRestoreConcurrencyPolicy)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Configures the restore concurrency policy for this entity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt; UseRestoreConcurrencyPolicy(ChangeHistoryRestoreConcurrencyPolicy policy)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy.html">ChangeHistoryRestoreConcurrencyPolicy</a></dt>
+    <dd><p>The concurrency policy.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder</a>&lt;TEntity&gt;</dt>
+    <dd><p>The current builder.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

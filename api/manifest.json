@@ -2576,6 +2576,132 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryChangeSetRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryChangeSetRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryChangeSetRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryChangeSetRecord.yml\" sourcestartlinenumber=\"1\">Safe read model representing one ChangeHistory change set and its rows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllChangeSetsResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllChangeSetsResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllChangeSetsResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllChangeSetsResult.yml\" sourcestartlinenumber=\"1\">Contains a paged grouped ChangeHistory query result.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllQuery.yml\" sourcestartlinenumber=\"1\">Describes filters and paging for querying ChangeHistory rows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindAllResult.yml\" sourcestartlinenumber=\"1\">Contains a paged ChangeHistory query result.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindOneChangeSetQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindOneChangeSetQuery.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryFindOneChangeSetQuery",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryFindOneChangeSetQuery.yml\" sourcestartlinenumber=\"1\">Describes filters for querying one ChangeHistory change set.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRecord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRecord.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryRecord",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRecord.yml\" sourcestartlinenumber=\"1\">Safe read model returned by ChangeHistory queries.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreCommand-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreCommand-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreCommand<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreCommand-1.yml\" sourcestartlinenumber=\"1\">Describes a ChangeHistory restore use case.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreMode.yml\" sourcestartlinenumber=\"1\">Defines how a ChangeHistory restore request selects values to restore.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.ChangeHistoryRestoreResult.yml\" sourcestartlinenumber=\"1\">Contains a ChangeHistory restore result.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.Check.yml",
       "output": {
         ".html": {
@@ -3021,6 +3147,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Entities.EntityUpdatedMessage<TEntity>",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.IChangeHistoryService-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Entities.IChangeHistoryService-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Entities.IChangeHistoryService<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Entities.IChangeHistoryService-2.yml\" sourcestartlinenumber=\"1\">Provides ChangeHistory read and restore use cases for one aggregate type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -31934,6 +32074,328 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode.yml\" sourcestartlinenumber=\"1\">Defines the amount of ChangeHistory data captured for a native entity bulk insert.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.yml\" sourcestartlinenumber=\"1\">Defines whether a configured capture source is required or best-effort.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathKind",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathKind.yml\" sourcestartlinenumber=\"1\">Defines the configured path kind for advanced ChangeHistory capture.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathOptions.yml\" sourcestartlinenumber=\"1\">Configures one advanced ChangeHistory capture path.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureSource.yml\" sourcestartlinenumber=\"1\">Identifies the source that produced a change-history row.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStatus",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStatus.yml\" sourcestartlinenumber=\"1\">Defines the outcome of a change-history capture attempt.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy.yml\" sourcestartlinenumber=\"1\">Defines how ChangeHistory captures mutations that were not produced by <xref href=\"BridgingIT.DevKit.Domain.Model.EntityChangeBuilder%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptions.yml\" sourcestartlinenumber=\"1\">Configures ChangeHistory capture for one entity type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for entity-specific ChangeHistory capture configuration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphIdentityOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphIdentityOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphIdentityOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphIdentityOptions.yml\" sourcestartlinenumber=\"1\">Configures identity for one graph collection path.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for graph capture paths.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphRestoreValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphRestoreValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphRestoreValue",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphRestoreValue.yml\" sourcestartlinenumber=\"1\">Describes one graph value passed to a graph restore plan.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOperation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOperation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryOperation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOperation.yml\" sourcestartlinenumber=\"1\">Defines the logical operation represented by a change-history row.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOptions.yml\" sourcestartlinenumber=\"1\">Configures ChangeHistory capture scope and persistence metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOversizedValuePolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOversizedValuePolicy.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryOversizedValuePolicy",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryOversizedValuePolicy.yml\" sourcestartlinenumber=\"1\">Defines how serialized ChangeHistory values exceeding the configured length are handled.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.yml\" sourcestartlinenumber=\"1\">Fluent builder for owned and collection capture paths.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreAuthorizationContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreAuthorizationContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreAuthorizationContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreAuthorizationContext.yml\" sourcestartlinenumber=\"1\">Describes a restore authorization request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy.yml\" sourcestartlinenumber=\"1\">Defines concurrency requirements for restore operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreContext.yml\" sourcestartlinenumber=\"1\">Describes one value being restored from ChangeHistory.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreExecutionMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreExecutionMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreExecutionMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreExecutionMode.yml\" sourcestartlinenumber=\"1\">Defines how a ChangeHistory restore path mutates an entity.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptions.yml\" sourcestartlinenumber=\"1\">Configures how one entity property/path can be restored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptionsBuilder-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptionsBuilder-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptionsBuilder<TEntity, TProperty>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptionsBuilder-2.yml\" sourcestartlinenumber=\"1\">Fluent builder for one restorable property/path.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryValuePolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryValuePolicy.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.ChangeHistoryValuePolicy",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.ChangeHistoryValuePolicy.yml\" sourcestartlinenumber=\"1\">Defines how captured values for a property should be stored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.ComparableValueObject.yml",
       "output": {
         ".html": {
@@ -32060,6 +32522,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeHistoryAccessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeHistoryAccessor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.EntityChangeHistoryAccessor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeHistoryAccessor.yml\" sourcestartlinenumber=\"1\">Provides access to in-memory entity change sets awaiting persistence by outer layers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeOperationOutcome.yml",
       "output": {
         ".html": {
@@ -32074,6 +32550,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.EntityChangeSet",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.EntityChangeSet.yml\" sourcestartlinenumber=\"1\">Describes the property changes produced by one successful <code>EntityChangeBuilder.Apply</code> call.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityId-1.yml",
       "output": {
         ".html": {
@@ -32085,6 +32575,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Model.EntityId<TId>",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityPropertyChange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.EntityPropertyChange.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.EntityPropertyChange",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.EntityPropertyChange.yml\" sourcestartlinenumber=\"1\">Describes one property value captured during a successful entity change transaction.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -32169,6 +32673,48 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Model.IAuditable",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.IAuditable.yml\" sourcestartlinenumber=\"1\">Represents an entity that can be audited.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryGraphRestorePlan-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryGraphRestorePlan-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.IChangeHistoryGraphRestorePlan<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryGraphRestorePlan-1.yml\" sourcestartlinenumber=\"1\">Restores a configured graph path through module-owned domain logic.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreAuthorizer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreAuthorizer-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreAuthorizer<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreAuthorizer-1.yml\" sourcestartlinenumber=\"1\">Authorizes ChangeHistory restore operations before mutation occurs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreHandler-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreHandler<TEntity>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreHandler-1.yml\" sourcestartlinenumber=\"1\">Applies a ChangeHistory restore value through module-owned domain logic.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -35154,6 +35700,230 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryBuilderContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryBuilderContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryBuilderContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryBuilderContext.yml\" sourcestartlinenumber=\"1\">Provides the shared builder context for ChangeHistory registration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryCaptureScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryCaptureScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryCaptureScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryCaptureScope.yml\" sourcestartlinenumber=\"1\">Provides an asynchronous-flow-local scope that temporarily suppresses change-history capture.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryEntry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryEntry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryEntry.yml\" sourcestartlinenumber=\"1\">Represents one persisted property-level ChangeHistory row.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequest-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequest-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequest<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequest-1.yml\" sourcestartlinenumber=\"1\">Dispatches a grouped ChangeHistory query through the requester pipeline for one EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequestHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequestHandler-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequestHandler<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequestHandler-1.yml\" sourcestartlinenumber=\"1\">Handles requester-based grouped ChangeHistory queries for one EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequest-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequest-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequest<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequest-1.yml\" sourcestartlinenumber=\"1\">Dispatches a ChangeHistory query through the requester pipeline for one EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequestHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequestHandler-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequestHandler<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequestHandler-1.yml\" sourcestartlinenumber=\"1\">Handles requester-based ChangeHistory queries for one EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequest-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequest-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequest<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequest-1.yml\" sourcestartlinenumber=\"1\">Dispatches a single ChangeHistory change-set query through the requester pipeline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequestHandler-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequestHandler-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequestHandler<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequestHandler-1.yml\" sourcestartlinenumber=\"1\">Handles requester-based single ChangeHistory change-set queries for one EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryQueryService-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryQueryService-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryQueryService<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryQueryService-1.yml\" sourcestartlinenumber=\"1\">Queries persisted ChangeHistory rows from an EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryReadAuthorizationContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryReadAuthorizationContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryReadAuthorizationContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryReadAuthorizationContext.yml\" sourcestartlinenumber=\"1\">Contains metadata for requester/query-level ChangeHistory read authorization.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreCommandHandler-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreCommandHandler-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreCommandHandler<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreCommandHandler-2.yml\" sourcestartlinenumber=\"1\">Restores scalar ChangeHistory rows using configured domain restore policies.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequest-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequest-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequest<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequest-2.yml\" sourcestartlinenumber=\"1\">Dispatches a ChangeHistory restore through the requester pipeline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestAuthorizationContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestAuthorizationContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestAuthorizationContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestAuthorizationContext.yml\" sourcestartlinenumber=\"1\">Contains metadata for requester-level ChangeHistory restore authorization.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestHandler-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestHandler-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestHandler<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestHandler-2.yml\" sourcestartlinenumber=\"1\">Handles requester-based ChangeHistory restore operations for one entity and EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryService-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryService-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryService<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryService-2.yml\" sourcestartlinenumber=\"1\">EF-backed implementation of the ChangeHistory application service contract.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Constants.yml",
       "output": {
         ".html": {
@@ -36215,6 +36985,48 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.IBlobStoreContext",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IBlobStoreContext.yml\" sourcestartlinenumber=\"1\">Defines the Entity Framework capability contract required by the database-backed blob store provider.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryContext.yml\" sourcestartlinenumber=\"1\">Exposes the EF Core set used to persist ChangeHistory rows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryReadAuthorizer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryReadAuthorizer-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryReadAuthorizer<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryReadAuthorizer-1.yml\" sourcestartlinenumber=\"1\">Authorizes requester/query-level ChangeHistory reads outside HTTP endpoint policy checks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryRestoreRequestAuthorizer-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryRestoreRequestAuthorizer-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryRestoreRequestAuthorizer<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryRestoreRequestAuthorizer-2.yml\" sourcestartlinenumber=\"1\">Authorizes requester-level ChangeHistory restore requests before restore command execution.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -37716,6 +38528,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInserterChangeHistoryBehavior-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInserterChangeHistoryBehavior-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInserterChangeHistoryBehavior<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInserterChangeHistoryBehavior-2.yml\" sourcestartlinenumber=\"1\">Persists explicitly configured ChangeHistory rows in the same transaction as a native entity bulk insert.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInserterOutboxDomainEventBehavior-2.yml",
       "output": {
         ".html": {
@@ -38133,6 +38959,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.RepositoryChangeHistoryBehavior-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.RepositoryChangeHistoryBehavior-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.RepositoryChangeHistoryBehavior<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.RepositoryChangeHistoryBehavior-2.yml\" sourcestartlinenumber=\"1\">Persists pending entity change sets and configured direct mutations as EF Core ChangeHistory rows.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -43523,6 +44363,230 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.EndpointsOptionsBuilderBase<TOptions, TBuilder>",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EndpointsOptionsBuilderBase-2.yml\" sourcestartlinenumber=\"1\">Provides a fluent base builder for endpoint options that derive from <xref href=\"BridgingIT.DevKit.Presentation.Web.EndpointsOptionsBase\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpoints-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpoints-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpoints<TEntity, TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpoints-2.yml\" sourcestartlinenumber=\"1\">Maps ChangeHistory query and restore endpoints for one entity and EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions.yml\" sourcestartlinenumber=\"1\">Configures ChangeHistory HTTP endpoints for one entity and EF Core context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptionsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptionsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptionsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptionsBuilder.yml\" sourcestartlinenumber=\"1\">Provides a fluent builder for <xref href=\"BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryEndpointsOptions\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreRequestModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreRequestModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreRequestModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreRequestModel.yml\" sourcestartlinenumber=\"1\">Represents the body of a ChangeHistory restore HTTP request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreResponseModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreResponseModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreResponseModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.ChangeHistoryRestoreResponseModel.yml\" sourcestartlinenumber=\"1\">Represents a successful ChangeHistory restore HTTP response.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardDescriptor.yml\" sourcestartlinenumber=\"1\">Describes one ChangeHistory endpoint registration that can be shown by the dashboard.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardInvoker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardInvoker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardInvoker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.ChangeHistoryDashboardInvoker.yml\" sourcestartlinenumber=\"1\">Invokes registered ChangeHistory services for dashboard pages without issuing HTTP calls to the same application.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints.yml\" sourcestartlinenumber=\"1\">Maps the ChangeHistory dashboard plugin pages and restore action endpoint.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardPageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardPageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardPageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardPageProvider.yml\" sourcestartlinenumber=\"1\">Provides the ChangeHistory dashboard page descriptor and index card.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.ChangeHistoryDashboardQueryState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.ChangeHistoryDashboardQueryState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.ChangeHistoryDashboardQueryState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.ChangeHistoryDashboardQueryState.yml\" sourcestartlinenumber=\"1\">Represents ChangeHistory dashboard filter state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Content.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Content.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Content",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Content.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>ChangeHistory/Dashboard/Pages/Content.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.DashboardChangeHistoryViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.DashboardChangeHistoryViewModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.DashboardChangeHistoryViewModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.DashboardChangeHistoryViewModel.yml\" sourcestartlinenumber=\"1\">View model for the server-rendered ChangeHistory dashboard content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Index.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Index.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Index",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.Index.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>ChangeHistory/Dashboard/Pages/Index.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.Pages",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory",
+      "Summary": null
     },
     {
       "type": "ManagedReference",

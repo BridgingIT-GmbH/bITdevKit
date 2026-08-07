@@ -134,6 +134,66 @@ and implementing the IAuditable interface.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathOptions.html">ChangeHistoryCapturePathOptions</a></dt>
+      <dd><p>Configures one advanced ChangeHistory capture path.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptions.html">ChangeHistoryEntityOptions</a></dt>
+      <dd><p>Configures ChangeHistory capture for one entity type.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryEntityOptionsBuilder-1.html">ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt;</a></dt>
+      <dd><p>Fluent builder for entity-specific ChangeHistory capture configuration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphIdentityOptions.html">ChangeHistoryGraphIdentityOptions</a></dt>
+      <dd><p>Configures identity for one graph collection path.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphOptionsBuilder-1.html">ChangeHistoryGraphOptionsBuilder&lt;TEntity&gt;</a></dt>
+      <dd><p>Fluent builder for graph capture paths.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryGraphRestoreValue.html">ChangeHistoryGraphRestoreValue</a></dt>
+      <dd><p>Describes one graph value passed to a graph restore plan.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryOptions.html">ChangeHistoryOptions</a></dt>
+      <dd><p>Configures ChangeHistory capture scope and persistence metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryPathOptionsBuilder-1.html">ChangeHistoryPathOptionsBuilder&lt;TEntity&gt;</a></dt>
+      <dd><p>Fluent builder for owned and collection capture paths.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreAuthorizationContext.html">ChangeHistoryRestoreAuthorizationContext</a></dt>
+      <dd><p>Describes a restore authorization request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreContext.html">ChangeHistoryRestoreContext</a></dt>
+      <dd><p>Describes one value being restored from ChangeHistory.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptions.html">ChangeHistoryRestorePropertyOptions</a></dt>
+      <dd><p>Configures how one entity property/path can be restored.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestorePropertyOptionsBuilder-2.html">ChangeHistoryRestorePropertyOptionsBuilder&lt;TEntity, TProperty&gt;</a></dt>
+      <dd><p>Fluent builder for one restorable property/path.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ComparableValueObject.html">ComparableValueObject</a></dt>
       <dd><p>Represents a value object that can be compared to other value objects for ordering purposes.</p>
 </dd>
@@ -170,13 +230,28 @@ transactional-style state changes with automatic change tracking and event regis
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityChangeHistoryAccessor.html">EntityChangeHistoryAccessor</a></dt>
+      <dd><p>Provides access to in-memory entity change sets awaiting persistence by outer layers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityChangeOperationOutcome.html">EntityChangeOperationOutcome</a></dt>
       <dd><p>Represents the outcome of an entity change operation, tracking whether changes occurred.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityChangeSet.html">EntityChangeSet</a></dt>
+      <dd><p>Describes the property changes produced by one successful <code>EntityChangeBuilder.Apply</code> call.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityId-1.html">EntityId&lt;TId&gt;</a></dt>
       <dd></dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityPropertyChange.html">EntityPropertyChange</a></dt>
+      <dd><p>Describes one property value captured during a successful entity change transaction.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityRecord-1.html">EntityRecord&lt;TId&gt;</a></dt>
@@ -251,6 +326,21 @@ can take care of keeping the aggregate in a consistent state.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.IChangeHistoryGraphRestorePlan-1.html">IChangeHistoryGraphRestorePlan&lt;TEntity&gt;</a></dt>
+      <dd><p>Restores a configured graph path through module-owned domain logic.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreAuthorizer-1.html">IChangeHistoryRestoreAuthorizer&lt;TEntity&gt;</a></dt>
+      <dd><p>Authorizes ChangeHistory restore operations before mutation occurs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.IChangeHistoryRestoreHandler-1.html">IChangeHistoryRestoreHandler&lt;TEntity&gt;</a></dt>
+      <dd><p>Applies a ChangeHistory restore value through module-owned domain logic.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.IConcurrency.html">IConcurrency</a></dt>
       <dd><p>Represents an interface used for entities that support concurrent access control.
 It is used to address issues related to concurrency in data operations by incorporating
@@ -270,6 +360,64 @@ a version attribute that can be used for optimistic locking mechanisms.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ISoftDeletable.html">ISoftDeletable</a></dt>
       <dd><p>Represents an entity that supports soft deletion functionality.</p>
+</dd>
+    </dl>
+    <h3 id="enums">
+Enums
+</h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryBulkInsertCaptureMode.html">ChangeHistoryBulkInsertCaptureMode</a></dt>
+      <dd><p>Defines the amount of ChangeHistory data captured for a native entity bulk insert.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureMode.html">ChangeHistoryCaptureMode</a></dt>
+      <dd><p>Defines whether a configured capture source is required or best-effort.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCapturePathKind.html">ChangeHistoryCapturePathKind</a></dt>
+      <dd><p>Defines the configured path kind for advanced ChangeHistory capture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureSource.html">ChangeHistoryCaptureSource</a></dt>
+      <dd><p>Identifies the source that produced a change-history row.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStatus.html">ChangeHistoryCaptureStatus</a></dt>
+      <dd><p>Defines the outcome of a change-history capture attempt.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryCaptureStrategy.html">ChangeHistoryCaptureStrategy</a></dt>
+      <dd><p>Defines how ChangeHistory captures mutations that were not produced by <a class="xref" href="BridgingIT.DevKit.Domain.Model.EntityChangeBuilder-1.html">EntityChangeBuilder&lt;TEntity&gt;</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryOperation.html">ChangeHistoryOperation</a></dt>
+      <dd><p>Defines the logical operation represented by a change-history row.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryOversizedValuePolicy.html">ChangeHistoryOversizedValuePolicy</a></dt>
+      <dd><p>Defines how serialized ChangeHistory values exceeding the configured length are handled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreConcurrencyPolicy.html">ChangeHistoryRestoreConcurrencyPolicy</a></dt>
+      <dd><p>Defines concurrency requirements for restore operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryRestoreExecutionMode.html">ChangeHistoryRestoreExecutionMode</a></dt>
+      <dd><p>Defines how a ChangeHistory restore path mutates an entity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.Model.ChangeHistoryValuePolicy.html">ChangeHistoryValuePolicy</a></dt>
+      <dd><p>Defines how captured values for a property should be stored.</p>
 </dd>
     </dl>
 

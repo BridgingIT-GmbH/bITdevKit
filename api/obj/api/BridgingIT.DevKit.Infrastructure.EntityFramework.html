@@ -114,6 +114,86 @@ Classes
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryBuilderContext.html">ChangeHistoryBuilderContext</a></dt>
+      <dd><p>Provides the shared builder context for ChangeHistory registration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryCaptureScope.html">ChangeHistoryCaptureScope</a></dt>
+      <dd><p>Provides an asynchronous-flow-local scope that temporarily suppresses change-history capture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryEntry.html">ChangeHistoryEntry</a></dt>
+      <dd><p>Represents one persisted property-level ChangeHistory row.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequestHandler-1.html">ChangeHistoryFindAllChangeSetsRequestHandler&lt;TContext&gt;</a></dt>
+      <dd><p>Handles requester-based grouped ChangeHistory queries for one EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllChangeSetsRequest-1.html">ChangeHistoryFindAllChangeSetsRequest&lt;TContext&gt;</a></dt>
+      <dd><p>Dispatches a grouped ChangeHistory query through the requester pipeline for one EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequestHandler-1.html">ChangeHistoryFindAllRequestHandler&lt;TContext&gt;</a></dt>
+      <dd><p>Handles requester-based ChangeHistory queries for one EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindAllRequest-1.html">ChangeHistoryFindAllRequest&lt;TContext&gt;</a></dt>
+      <dd><p>Dispatches a ChangeHistory query through the requester pipeline for one EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequestHandler-1.html">ChangeHistoryFindOneChangeSetRequestHandler&lt;TContext&gt;</a></dt>
+      <dd><p>Handles requester-based single ChangeHistory change-set queries for one EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryFindOneChangeSetRequest-1.html">ChangeHistoryFindOneChangeSetRequest&lt;TContext&gt;</a></dt>
+      <dd><p>Dispatches a single ChangeHistory change-set query through the requester pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryQueryService-1.html">ChangeHistoryQueryService&lt;TContext&gt;</a></dt>
+      <dd><p>Queries persisted ChangeHistory rows from an EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryReadAuthorizationContext.html">ChangeHistoryReadAuthorizationContext</a></dt>
+      <dd><p>Contains metadata for requester/query-level ChangeHistory read authorization.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreCommandHandler-2.html">ChangeHistoryRestoreCommandHandler&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Restores scalar ChangeHistory rows using configured domain restore policies.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestAuthorizationContext.html">ChangeHistoryRestoreRequestAuthorizationContext</a></dt>
+      <dd><p>Contains metadata for requester-level ChangeHistory restore authorization.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequestHandler-2.html">ChangeHistoryRestoreRequestHandler&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Handles requester-based ChangeHistory restore operations for one entity and EF Core context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryRestoreRequest-2.html">ChangeHistoryRestoreRequest&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Dispatches a ChangeHistory restore through the requester pipeline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.ChangeHistoryService-2.html">ChangeHistoryService&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>EF-backed implementation of the ChangeHistory application service contract.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.CosmosOptions.html">CosmosOptions</a></dt>
       <dd></dd>
     </dl>
@@ -469,6 +549,11 @@ This implementation uses native PostgreSQL sequences.</p>
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.RepositoryChangeHistoryBehavior-2.html">RepositoryChangeHistoryBehavior&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Persists pending entity change sets and configured direct mutations as EF Core ChangeHistory rows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.RepositoryOutboxDomainEventBehavior-2.html">RepositoryOutboxDomainEventBehavior&lt;TEntity, TContext&gt;</a></dt>
       <dd><p>Decorates a repository so domain events raised by aggregates are stored in the Entity Framework outbox.</p>
 </dd>
@@ -642,6 +727,21 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IBlobStoreContext.html">IBlobStoreContext</a></dt>
       <dd><p>Defines the Entity Framework capability contract required by the database-backed blob store provider.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryContext.html">IChangeHistoryContext</a></dt>
+      <dd><p>Exposes the EF Core set used to persist ChangeHistory rows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryReadAuthorizer-1.html">IChangeHistoryReadAuthorizer&lt;TContext&gt;</a></dt>
+      <dd><p>Authorizes requester/query-level ChangeHistory reads outside HTTP endpoint policy checks.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IChangeHistoryRestoreRequestAuthorizer-2.html">IChangeHistoryRestoreRequestAuthorizer&lt;TEntity, TContext&gt;</a></dt>
+      <dd><p>Authorizes requester-level ChangeHistory restore requests before restore command execution.</p>
 </dd>
     </dl>
     <dl class="jumplist">

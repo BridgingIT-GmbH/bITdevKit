@@ -1302,6 +1302,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-change-history.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ChangeHistory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -4240,12 +4268,13 @@
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterLoggingBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterMetricsBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterOutboxDomainEventBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="p">,</span><span class="w"> </span><span class="n">CoreDbContext</span><span class="o">&gt;&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterChangeHistoryBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="p">,</span><span class="w"> </span><span class="n">CoreDbContext</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterAuditStateBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterConcurrencyBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterDomainEventBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterDomainEventMetricsBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">();</span>
 </code></pre></div>
-<p><code>WithBehavior</code> calls are ordered from outermost to innermost. Register the outbox decorator before mutation and event decorators so it owns the transaction enclosing both the native write and the outbox save. Do not combine the outbox decorator with <code>EntityBulkInserterDomainEventPublisherBehavior&lt;TEntity&gt;</code>: direct publication is intentionally non-atomic with the native write.</p>
+<p><code>WithBehavior</code> calls are ordered from outermost to innermost. Register the outbox decorator before ChangeHistory, mutation, and event decorators so it owns the transaction enclosing the native write, ChangeHistory rows, and outbox save. Native ChangeHistory capture additionally requires <code>.CaptureBulkInserts(...)</code> on the tracked entity. Do not combine the outbox decorator with <code>EntityBulkInserterDomainEventPublisherBehavior&lt;TEntity&gt;</code>: direct publication is intentionally non-atomic with the native write.</p>
 <table>
 <thead>
 <tr>
@@ -4279,6 +4308,11 @@
 <td>Outbox domain events</td>
 <td><code>IAggregateRoot</code></td>
 <td><code>TContext : IOutboxDomainEventContext</code>, optional queue/options</td>
+</tr>
+<tr>
+<td>ChangeHistory</td>
+<td><code>IEntity</code></td>
+<td><code>TContext : IChangeHistoryContext</code>, <code>ChangeHistoryOptions</code> with explicit bulk-insert capture</td>
 </tr>
 <tr>
 <td>Direct domain-event publisher</td>

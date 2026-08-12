@@ -23142,6 +23142,244 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingArchiveService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingArchiveService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingArchiveService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingArchiveService.yml\" sourcestartlinenumber=\"1\">Exports and imports portable Profiling session archives through caller-owned streams.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingBroadcast.yml\" sourcestartlinenumber=\"1\">Marks a typed command as belonging to Profiling's Broadcast integration.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingBroadcastService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingBroadcastService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingBroadcastService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingBroadcastService.yml\" sourcestartlinenumber=\"1\">Coordinates Profiling's fixed target snapshots over the standalone Broadcast service.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingCollector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingCollector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingCollector",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingCollector.yml\" sourcestartlinenumber=\"1\">Owns node-local collection admission and single-flight capture.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingControlService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingControlService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingControlService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingControlService.yml\" sourcestartlinenumber=\"1\">Provides the one dashboard, console, and programmatic profiling control path.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingEvaluationService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingEvaluationService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingEvaluationService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingEvaluationService.yml\" sourcestartlinenumber=\"1\">Computes deterministic, unpersisted single-node profiling analysis.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingMeasurementScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingMeasurementScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingMeasurementScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingMeasurementScope.yml\" sourcestartlinenumber=\"1\">Represents one automatically closing measured profiling scope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingMeasurementService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingMeasurementService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingMeasurementService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingMeasurementService.yml\" sourcestartlinenumber=\"1\">Creates raw scopes and execution helpers over the shared profiling lifecycle.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingNodeIdentityProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingNodeIdentityProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingNodeIdentityProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingNodeIdentityProvider.yml\" sourcestartlinenumber=\"1\">Provides the stable process-lifetime profiling node identity.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingPerfettoExportService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingPerfettoExportService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingPerfettoExportService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingPerfettoExportService.yml\" sourcestartlinenumber=\"1\">Exports complete Profiling sessions as Perfetto-compatible Trace Event JSON.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingQueryService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingQueryService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingQueryService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingQueryService.yml\" sourcestartlinenumber=\"1\">Queries stored profiling data without implementing lifecycle behavior.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeContextFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeContextFactory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingRuntimeContextFactory",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeContextFactory.yml\" sourcestartlinenumber=\"1\">Creates immutable non-sensitive context for one session node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeContextSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeContextSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingRuntimeContextSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeContextSource.yml\" sourcestartlinenumber=\"1\">Supplies the process and runtime values used to create a profiling runtime context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeSnapshotSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeSnapshotSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingRuntimeSnapshotSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingRuntimeSnapshotSource.yml\" sourcestartlinenumber=\"1\">Supplies one raw process and runtime sample to the profiling snapshot probe.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingSnapshotProbe.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingSnapshotProbe.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingSnapshotProbe",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingSnapshotProbe.yml\" sourcestartlinenumber=\"1\">Captures one provider-neutral runtime snapshot without scheduling or persistence.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingStore.yml\" sourcestartlinenumber=\"1\">Stores profiling sessions and their immutable diagnostic observations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingStressService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IProfilingStressService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IProfilingStressService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IProfilingStressService.yml\" sourcestartlinenumber=\"1\">Starts a configurable, bounded host-local workload used to exercise Profiling.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IQueueBroker.yml",
       "output": {
         ".html": {
@@ -23601,6 +23839,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.InMemoryPipelineExecutionTracker",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.InMemoryPipelineExecutionTracker.yml\" sourcestartlinenumber=\"1\">Tracks pipeline execution snapshots in memory for the current process.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.InMemoryProfilingStore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.InMemoryProfilingStore.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.InMemoryProfilingStore",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.InMemoryProfilingStore.yml\" sourcestartlinenumber=\"1\">Stores profiling diagnostic sessions in process-local memory.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -26292,6 +26544,1462 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingActionMarker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingActionMarker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingActionMarker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingActionMarker.yml\" sourcestartlinenumber=\"1\">Describes an immutable node-local action marker.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingActiveSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingActiveSession.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingActiveSession",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingActiveSession.yml\" sourcestartlinenumber=\"1\">Contains the process-local session and stable node used for metric association.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingActiveSessionContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingActiveSessionContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingActiveSessionContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingActiveSessionContext.yml\" sourcestartlinenumber=\"1\">Exposes the process-local profiling session and node currently accepting metric observations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingAmbientSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingAmbientSegment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingAmbientSegment",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingAmbientSegment.yml\" sourcestartlinenumber=\"1\">Identifies the measured segment currently associated with application execution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchive.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchive.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchive",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchive.yml\" sourcestartlinenumber=\"1\">Contains one portable, versioned Profiling archive.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveError.yml\" sourcestartlinenumber=\"1\">Reports an invalid, unsupported, or inconsistent portable Profiling archive.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveFormat.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveFormat",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveFormat.yml\" sourcestartlinenumber=\"1\">Defines the fixed portable Profiling archive contract.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveImportResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveImportResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveImportResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveImportResult.yml\" sourcestartlinenumber=\"1\">Reports the fresh readable identities created by one archive import.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveKind",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveKind.yml\" sourcestartlinenumber=\"1\">Describes the evidence scope contained in an archive.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveMetricObservation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveMetricObservation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveMetricObservation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveMetricObservation.yml\" sourcestartlinenumber=\"1\">Wraps a metric with its optional archive-local segment reference.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveSegment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveSegment",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveSegment.yml\" sourcestartlinenumber=\"1\">Wraps a segment with archive-local reference identifiers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingArchiveService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingArchiveService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingArchiveService.yml\" sourcestartlinenumber=\"1\">Provides provider-neutral JSON archive export, validation, remapping, and import.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastExecutionTracker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastExecutionTracker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingBroadcastExecutionTracker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastExecutionTracker.yml\" sourcestartlinenumber=\"1\">Provides bounded process-local idempotency for profiling handler side effects.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingBroadcastService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastService.yml\" sourcestartlinenumber=\"1\">Adapts the standalone Broadcast service to Profiling's fixed participant snapshot semantics.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastTargetSnapshot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastTargetSnapshot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingBroadcastTargetSnapshot",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingBroadcastTargetSnapshot.yml\" sourcestartlinenumber=\"1\">Contains Profiling's immutable target set for one control operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBuilderContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingBuilderContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingBuilderContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingBuilderContext.yml\" sourcestartlinenumber=\"1\">Continues fluent configuration of the one host-wide profiling feature.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCaptureRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCaptureRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingCaptureRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingCaptureRequest.yml\" sourcestartlinenumber=\"1\">Defines one local probe capture request.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingClearResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingClearResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingClearResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingClearResult.yml\" sourcestartlinenumber=\"1\">Contains the result of a complete profiling-store reset.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCollector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCollector.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingCollector",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingCollector.yml\" sourcestartlinenumber=\"1\">Owns one node-local profiling collection loop and manual captures.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCollectorHostedService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCollectorHostedService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingCollectorHostedService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingCollectorHostedService.yml\" sourcestartlinenumber=\"1\">Owns profiling startup reconciliation and graceful collector shutdown.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingControlResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingControlResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingControlResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingControlResult.yml\" sourcestartlinenumber=\"1\">Contains the immediate result of a profiling control operation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingControlService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingControlService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingControlService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingControlService.yml\" sourcestartlinenumber=\"1\">Provides the single programmatic control path for deployment-wide profiling operations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCustomMetricHostedService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCustomMetricHostedService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingCustomMetricHostedService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingCustomMetricHostedService.yml\" sourcestartlinenumber=\"1\">Hosts the singleton custom metric listener with the application lifecycle.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCustomMetricListener.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingCustomMetricListener.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingCustomMetricListener",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingCustomMetricListener.yml\" sourcestartlinenumber=\"1\">Captures bounded observations from the existing DevKit meter during local profiling collection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingDataSufficiency.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingDataSufficiency.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingDataSufficiency",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingDataSufficiency.yml\" sourcestartlinenumber=\"1\">Describes deterministic analysis sufficiency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingDisabledError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingDisabledError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingDisabledError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingDisabledError.yml\" sourcestartlinenumber=\"1\">Reports that profiling collection is disabled.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationDataQuality.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationDataQuality.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingEvaluationDataQuality",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationDataQuality.yml\" sourcestartlinenumber=\"1\">Describes the sampling and input quality of an evaluation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingEvaluationMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationMode.yml\" sourcestartlinenumber=\"1\">Describes the supported deterministic evaluation mode.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingEvaluationRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationRequest.yml\" sourcestartlinenumber=\"1\">Defines one evaluation request using public readable keys.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingEvaluationResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationResult.yml\" sourcestartlinenumber=\"1\">Contains a complete unpersisted deterministic evaluation result.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingEvaluationScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingEvaluationScope.yml\" sourcestartlinenumber=\"1\">Describes the exact scope evaluated.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingEvaluator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingEvaluator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingEvaluator.yml\" sourcestartlinenumber=\"1\">Provides the calculation portion of <xref href=\"BridgingIT.DevKit.Common.ProfilingEvaluator\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcast.yml\" sourcestartlinenumber=\"1\">Triggers one normal node-local garbage collection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcastHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcastHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcastHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcastHandler.yml\" sourcestartlinenumber=\"1\">Performs one normal garbage collection and records a local action marker when a session exists.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGcObservation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGcObservation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingGcObservation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingGcObservation.yml\" sourcestartlinenumber=\"1\">Contains direct evidence for one garbage collection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGcObservationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGcObservationResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingGcObservationResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingGcObservationResult.yml\" sourcestartlinenumber=\"1\">Contains direct GC observations and derived pause evidence.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGcObservationState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingGcObservationState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingGcObservationState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingGcObservationState.yml\" sourcestartlinenumber=\"1\">Tracks the bounded previous-GC state required to derive pause evidence between snapshots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingInvalidKeyError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingInvalidKeyError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingInvalidKeyError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingInvalidKeyError.yml\" sourcestartlinenumber=\"1\">Reports an invalid readable profiling key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingInvalidStateError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingInvalidStateError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingInvalidStateError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingInvalidStateError.yml\" sourcestartlinenumber=\"1\">Reports that an operation is invalid for the current session state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingKpi.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingKpi.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingKpi",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingKpi.yml\" sourcestartlinenumber=\"1\">Contains one named deterministic KPI value.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMeasurementScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMeasurementScope.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingMeasurementScope",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingMeasurementScope.yml\" sourcestartlinenumber=\"1\">Closes one stored profiling segment and its optionally owned session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMeasurementService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMeasurementService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingMeasurementService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingMeasurementService.yml\" sourcestartlinenumber=\"1\">Creates application-facing profiling scopes without exposing collector implementation details.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMetricKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMetricKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingMetricKind",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingMetricKind.yml\" sourcestartlinenumber=\"1\">Describes a custom metric observation kind.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMetricObservation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingMetricObservation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingMetricObservation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingMetricObservation.yml\" sourcestartlinenumber=\"1\">Describes one immutable observation from the existing DevKit meter.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNode.yml\" sourcestartlinenumber=\"1\">Describes one stable profiling node and its private Broadcast correlation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeCorrelation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeCorrelation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeCorrelation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeCorrelation.yml\" sourcestartlinenumber=\"1\">Correlates one private Broadcast registration to a stable profiling node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeIdentity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeIdentity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeIdentity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeIdentity.yml\" sourcestartlinenumber=\"1\">Identifies one application-process node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.yml\" sourcestartlinenumber=\"1\">Resolves the local Broadcast process registration to one stable profiling node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeOutcome.yml\" sourcestartlinenumber=\"1\">Describes an immediate delivery outcome using the public profiling node key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeParticipation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeParticipation.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeParticipation",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeParticipation.yml\" sourcestartlinenumber=\"1\">Preserves one node's role, state, and capture totals in a session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeReference.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeReference.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeReference",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeReference.yml\" sourcestartlinenumber=\"1\">References one node through its public key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeRole.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeRole.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeRole",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeRole.yml\" sourcestartlinenumber=\"1\">Describes how a node contributes data to a session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeSessionData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingNodeSessionData.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingNodeSessionData",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingNodeSessionData.yml\" sourcestartlinenumber=\"1\">Contains one selected node's complete profiling read model.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingOptions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingOptions.yml\" sourcestartlinenumber=\"1\">Configures the opt-in profiling feature.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingOptionsBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingOptionsBuilder",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingOptionsBuilder.yml\" sourcestartlinenumber=\"1\">Fluently updates one shared <xref href=\"BridgingIT.DevKit.Common.ProfilingOptions\" data-throw-if-not-resolved=\"false\"></xref> instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingParticipationState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingParticipationState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingParticipationState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingParticipationState.yml\" sourcestartlinenumber=\"1\">Describes node-local collection progress.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingPerfettoExportService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingPerfettoExportService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingPerfettoExportService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingPerfettoExportService.yml\" sourcestartlinenumber=\"1\">Writes stored Profiling evidence as Perfetto-compatible Trace Event JSON.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingPhaseMarker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingPhaseMarker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingPhaseMarker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingPhaseMarker.yml\" sourcestartlinenumber=\"1\">Describes an immutable shared session phase marker.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingQueryService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingQueryService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingQueryService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingQueryService.yml\" sourcestartlinenumber=\"1\">Provides the provider-neutral profiling read, metadata, raw export, and comparison surface.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingRuntimeContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContext.yml\" sourcestartlinenumber=\"1\">Contains immutable non-sensitive runtime context for one session node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContextFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContextFactory.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingRuntimeContextFactory",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContextFactory.yml\" sourcestartlinenumber=\"1\">Creates immutable, non-sensitive context for one profiling session node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContextValues.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContextValues.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingRuntimeContextValues",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeContextValues.yml\" sourcestartlinenumber=\"1\">Contains non-sensitive runtime context values captured for a profiling node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeSample.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeSample.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingRuntimeSample",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingRuntimeSample.yml\" sourcestartlinenumber=\"1\">Contains the raw process and runtime values captured at one instant.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSamplingStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSamplingStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSamplingStatus",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSamplingStatus.yml\" sourcestartlinenumber=\"1\">Describes the current persisted sampling state for one selected node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSegment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSegment.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSegment",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSegment.yml\" sourcestartlinenumber=\"1\">Describes one node-owned measured segment.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSegmentContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSegmentContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSegmentContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSegmentContext.yml\" sourcestartlinenumber=\"1\">Carries the ambient measured segment through asynchronous application execution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSegmentOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSegmentOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSegmentOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSegmentOutcome.yml\" sourcestartlinenumber=\"1\">Describes the outcome of a measured segment.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSession.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSession",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSession.yml\" sourcestartlinenumber=\"1\">Describes one logical profiling collection session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionBroadcast.yml\" sourcestartlinenumber=\"1\">Contains the session values required by node-local profiling control handlers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionCreateRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionCreateRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionCreateRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionCreateRequest.yml\" sourcestartlinenumber=\"1\">Supplies the values for atomic session creation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionData.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionData",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionData.yml\" sourcestartlinenumber=\"1\">Contains the complete stored records needed to render one session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionFinalizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionFinalizer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionFinalizer",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionFinalizer.yml\" sourcestartlinenumber=\"1\">Idempotently completes an elapsed profiling session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionIdentity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionIdentity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionIdentity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionIdentity.yml\" sourcestartlinenumber=\"1\">Identifies one stored profiling session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionMetadata.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionMetadata",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionMetadata.yml\" sourcestartlinenumber=\"1\">Defines editable descriptive session metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionReference.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionReference.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionReference",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionReference.yml\" sourcestartlinenumber=\"1\">References one session through its public key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionResolution.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionResolution.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionResolution",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionResolution.yml\" sourcestartlinenumber=\"1\">Contains the result of atomic active-session resolution.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSessionState.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSessionState",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSessionState.yml\" sourcestartlinenumber=\"1\">Describes the lifecycle state of a profiling session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSharedStoreRequiredError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSharedStoreRequiredError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSharedStoreRequiredError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSharedStoreRequiredError.yml\" sourcestartlinenumber=\"1\">Reports that a shared store is required for the selected targets.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignal.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSignal",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSignal.yml\" sourcestartlinenumber=\"1\">Contains one deterministic evidence-backed interpretation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignalConfidence.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignalConfidence.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSignalConfidence",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSignalConfidence.yml\" sourcestartlinenumber=\"1\">Describes deterministic evidence confidence.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignalEvidence.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignalEvidence.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSignalEvidence",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSignalEvidence.yml\" sourcestartlinenumber=\"1\">Contains one raw value or threshold supporting a signal.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignalLabel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSignalLabel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSignalLabel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSignalLabel.yml\" sourcestartlinenumber=\"1\">Describes a deterministic signal label.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshot",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshot.yml\" sourcestartlinenumber=\"1\">Contains one immutable node-local runtime snapshot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotBroadcast.yml\" sourcestartlinenumber=\"1\">Collects one immediate node-local snapshot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotBroadcastHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotBroadcastHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotBroadcastHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotBroadcastHandler.yml\" sourcestartlinenumber=\"1\">Captures one immediate node-local snapshot for the supplied session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotComparison.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotComparison.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotComparison",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotComparison.yml\" sourcestartlinenumber=\"1\">Contains raw differences for two ordered same-node snapshots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotIdentity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotIdentity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotIdentity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotIdentity.yml\" sourcestartlinenumber=\"1\">Identifies one immutable runtime snapshot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotMetricDelta.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotMetricDelta.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotMetricDelta",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotMetricDelta.yml\" sourcestartlinenumber=\"1\">Describes one raw quantitative metric difference.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotProbe.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotProbe.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotProbe",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotProbe.yml\" sourcestartlinenumber=\"1\">Captures one provider-neutral snapshot from the current process and runtime.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotReference.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotReference.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingSnapshotReference",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingSnapshotReference.yml\" sourcestartlinenumber=\"1\">References one snapshot through its public key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStartBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStartBroadcast.yml\" sourcestartlinenumber=\"1\">Starts one node-local collector for a deployment-wide session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartBroadcastHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartBroadcastHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStartBroadcastHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStartBroadcastHandler.yml\" sourcestartlinenumber=\"1\">Admits a deployment-wide session into the node-local collector.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStartRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStartRequest.yml\" sourcestartlinenumber=\"1\">Defines a start or restart request using validated collection settings.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartupReconciler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStartupReconciler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStartupReconciler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStartupReconciler.yml\" sourcestartlinenumber=\"1\">Finalizes profiling sessions abandoned beyond their lifecycle deadline.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStatus.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStatus",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStatus.yml\" sourcestartlinenumber=\"1\">Contains feature availability and current logical-session status.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStopBroadcast.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStopBroadcast.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStopBroadcast",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStopBroadcast.yml\" sourcestartlinenumber=\"1\">Stops one node-local collector without changing the original session end.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStopBroadcastHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStopBroadcastHandler.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStopBroadcastHandler",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStopBroadcastHandler.yml\" sourcestartlinenumber=\"1\">Stops the identified node-local collector on a best-effort basis.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStoreCapabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStoreCapabilities.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStoreCapabilities",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStoreCapabilities.yml\" sourcestartlinenumber=\"1\">Describes provider capabilities used before distributed control mutates state.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStressRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStressRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStressRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStressRequest.yml\" sourcestartlinenumber=\"1\">Configures one bounded host-local profiling stress workload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStressResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStressResult.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStressResult",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStressResult.yml\" sourcestartlinenumber=\"1\">Describes the accepted shape of a host-local stress workload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStressService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingStressService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingStressService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingStressService.yml\" sourcestartlinenumber=\"1\">Runs one configurable, bounded workload that produces CPU, allocation, heap, and GC pressure.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingTraceExportError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingTraceExportError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingTraceExportError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingTraceExportError.yml\" sourcestartlinenumber=\"1\">Reports a failure while producing a Profiling visualization trace.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingUnavailableError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingUnavailableError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingUnavailableError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingUnavailableError.yml\" sourcestartlinenumber=\"1\">Reports that required profiling infrastructure is unavailable.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ProfilingValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ProfilingValidationError",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ProfilingValidationError.yml\" sourcestartlinenumber=\"1\">Reports a safe profiling request validation failure.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ProgressReport.yml",
       "output": {
         ".html": {
@@ -27912,7 +29620,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ServiceCollectionExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Provides helpers for inspecting service registrations.</p>\n"
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -28403,6 +30111,34 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.SvgStateDiagramRenderer",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.SvgStateDiagramRenderer.yml\" sourcestartlinenumber=\"1\">Renders deterministic SVG for state diagrams.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.SystemProfilingRuntimeContextSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.SystemProfilingRuntimeContextSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.SystemProfilingRuntimeContextSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.SystemProfilingRuntimeContextSource.yml\" sourcestartlinenumber=\"1\">Captures profiling runtime context values from the current process.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.SystemProfilingRuntimeSnapshotSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.SystemProfilingRuntimeSnapshotSource.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.SystemProfilingRuntimeSnapshotSource",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.SystemProfilingRuntimeSnapshotSource.yml\" sourcestartlinenumber=\"1\">Captures profiling snapshot values from the current process and runtime.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -38276,6 +40012,258 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStore-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStore-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStore<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStore-1.yml\" sourcestartlinenumber=\"1\">Stores shared profiling sessions through an application-owned Entity Framework context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStoreConstants.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStoreConstants.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStoreConstants",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStoreConstants.yml\" sourcestartlinenumber=\"1\">Defines durable profiling store coordination constants.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.IProfilingContext.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.IProfilingContext.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.IProfilingContext",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.IProfilingContext.yml\" sourcestartlinenumber=\"1\">Defines the Entity Framework sets required by durable profiling persistence.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity.yml\" sourcestartlinenumber=\"1\">Represents one immutable action marker owned by a profiling session JSON document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.yml\" sourcestartlinenumber=\"1\">Maps provider-neutral profiling models to durable Entity Framework rows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingInvalidSessionEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingInvalidSessionEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingInvalidSessionEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingInvalidSessionEntity.yml\" sourcestartlinenumber=\"1\">Preserves one invalidated session identity after data deletion.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity.yml\" sourcestartlinenumber=\"1\">Represents one immutable custom profiling metric observation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingModelBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingModelBuilderExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingModelBuilderExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingModelBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Provides Entity Framework model configuration for durable Profiling storage.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.yml\" sourcestartlinenumber=\"1\">Represents one process-lifetime profiling node.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity.yml\" sourcestartlinenumber=\"1\">Represents one node's mutable participation in a profiling session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity.yml\" sourcestartlinenumber=\"1\">Represents one immutable phase marker owned by a profiling session JSON document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity.yml\" sourcestartlinenumber=\"1\">Represents immutable runtime context owned by a profiling session JSON document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity.yml\" sourcestartlinenumber=\"1\">Represents one measured segment owned by a profiling session JSON document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentTagEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentTagEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentTagEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentTagEntity.yml\" sourcestartlinenumber=\"1\">Represents one ordered tag nested in a segment JSON document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.yml\" sourcestartlinenumber=\"1\">Represents one durable profiling session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionTagEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionTagEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionTagEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionTagEntity.yml\" sourcestartlinenumber=\"1\">Represents one ordered session tag owned by a profiling session JSON document.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity.yml\" sourcestartlinenumber=\"1\">Represents one immutable node-local profiling snapshot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing.EntityFrameworkQueueBroker-1.yml",
       "output": {
         ".html": {
@@ -41815,6 +43803,174 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.ProcessDocsBrowserLauncher",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProcessDocsBrowserLauncher.yml\" sourcestartlinenumber=\"1\">Opens documentation URLs with the operating system default browser.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingAnalyzeConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingAnalyzeConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingAnalyzeConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingAnalyzeConsoleCommand.yml\" sourcestartlinenumber=\"1\">Computes an unpersisted deterministic profiling evaluation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingClearConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingClearConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingClearConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingClearConsoleCommand.yml\" sourcestartlinenumber=\"1\">Clears all stored profiling data after explicit confirmation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.yml\" sourcestartlinenumber=\"1\">Provides shared presentation behavior for grouped profiling commands.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingDurationParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingDurationParser.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingDurationParser",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingDurationParser.yml\" sourcestartlinenumber=\"1\">Parses profiling command durations without extending the shared command binder.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingExportConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingExportConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingExportConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingExportConsoleCommand.yml\" sourcestartlinenumber=\"1\">Exports a portable archive or a one-way Perfetto visualization trace.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingGarbageCollectionConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingGarbageCollectionConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingGarbageCollectionConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingGarbageCollectionConsoleCommand.yml\" sourcestartlinenumber=\"1\">Requests one normal deployment-wide garbage collection action.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingImportConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingImportConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingImportConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingImportConsoleCommand.yml\" sourcestartlinenumber=\"1\">Imports one portable Profiling JSON archive as a fresh terminal session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingMarkConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingMarkConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingMarkConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingMarkConsoleCommand.yml\" sourcestartlinenumber=\"1\">Adds a named phase marker to the active session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingSnapshotConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingSnapshotConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingSnapshotConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingSnapshotConsoleCommand.yml\" sourcestartlinenumber=\"1\">Captures a manual snapshot, optionally in a named standalone session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingStartConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingStartConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingStartConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingStartConsoleCommand.yml\" sourcestartlinenumber=\"1\">Starts profiling collection with optional core setting overrides.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingStatusConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingStatusConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingStatusConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingStatusConsoleCommand.yml\" sourcestartlinenumber=\"1\">Shows profiling availability and the active session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingStopConsoleCommand.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ProfilingStopConsoleCommand.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ProfilingStopConsoleCommand",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ProfilingStopConsoleCommand.yml\" sourcestartlinenumber=\"1\">Stops the active profiling session.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -45556,6 +47712,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages._SigninStyles.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages._SigninStyles.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages._SigninStyles",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages._SigninStyles.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>IdentityProvider/Pages/_SigninStyles.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages.yml",
       "output": {
         ".html": {
@@ -47488,6 +49658,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Pages/_DashboardTheme.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Pages/_DashboardThemePicker.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Pages._FooterLinks.yml",
       "output": {
         ".html": {
@@ -47569,6 +49767,244 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.ProblemError",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.ProblemError.yml\" sourcestartlinenumber=\"1\">Represents an individual non resut error entry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.yml\" sourcestartlinenumber=\"1\">Maps the authorized Profiling dashboard and operational endpoints.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardPageProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardPageProvider.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardPageProvider",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardPageProvider.yml\" sourcestartlinenumber=\"1\">Provides the Profiling dashboard navigation and index card.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Profiling/Dashboard/Pages/Content.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.DashboardProfilingViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.DashboardProfilingViewModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.DashboardProfilingViewModel",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.DashboardProfilingViewModel.yml\" sourcestartlinenumber=\"1\">Contains the server-rendered state and endpoint paths for the Profiling dashboard.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Data.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Data.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Data",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Data.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Profiling/Dashboard/Pages/Data.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Index.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Index.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Index",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Index.yml\" sourcestartlinenumber=\"1\">Static proxy for the Razor Slice defined in <code>Profiling/Dashboard/Pages/Index.cshtml</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardAnalyzeRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardAnalyzeRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardAnalyzeRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardAnalyzeRequest.yml\" sourcestartlinenumber=\"1\">Defines an unpersisted dashboard analysis selection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardClearRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardClearRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardClearRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardClearRequest.yml\" sourcestartlinenumber=\"1\">Defines explicit confirmation for the destructive profiling reset.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardCompareRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardCompareRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardCompareRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardCompareRequest.yml\" sourcestartlinenumber=\"1\">Defines an exact two-snapshot comparison selection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.yml\" sourcestartlinenumber=\"1\">Contains the dashboard status, session list, and optional selected data.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMarkerRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMarkerRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMarkerRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMarkerRequest.yml\" sourcestartlinenumber=\"1\">Defines a dashboard request to add an active-session marker.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMetadataRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMetadataRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMetadataRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardMetadataRequest.yml\" sourcestartlinenumber=\"1\">Defines editable dashboard session metadata.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardSnapshotRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardSnapshotRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardSnapshotRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardSnapshotRequest.yml\" sourcestartlinenumber=\"1\">Defines a dashboard request for a manual snapshot.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardStartRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardStartRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardStartRequest",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardStartRequest.yml\" sourcestartlinenumber=\"1\">Defines a dashboard request to start one profiling session.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Models.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.Profiling.Models",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -49184,11 +51620,11 @@
       "type": "Toc",
       "source_relative_path": "obj/api/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "obj/api/toc.html"
-        },
         ".json": {
           "relative_path": "obj/api/toc.json"
+        },
+        ".html": {
+          "relative_path": "obj/api/toc.html"
         }
       },
       "version": ""
@@ -49197,11 +51633,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "toc.html"
-        },
         ".json": {
           "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
         }
       },
       "version": ""

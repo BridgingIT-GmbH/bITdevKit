@@ -1,0 +1,3840 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+      
+      
+      
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-profiling/">
+      
+      
+        <link rel="prev" href="../common-observability-tracing/">
+      
+      
+        <link rel="next" href="../features-utilities/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Profiling - bITdevKit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/themes.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/theme-picker.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#profiling-feature-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bITdevKit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Profiling
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        
+<form class="md-header__option bdk-theme-picker" data-md-component="palette">
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme)"
+      data-md-color-scheme="default"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use system theme"
+      type="radio"
+      name="__palette"
+      id="__palette_0"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_1"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: light)"
+      data-md-color-scheme="light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_1"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_2"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media="(prefers-color-scheme: dark)"
+      data-md-color-scheme="dark"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use dark theme"
+      type="radio"
+      name="__palette"
+      id="__palette_2"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_3"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin theme"
+      type="radio"
+      name="__palette"
+      id="__palette_3"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_4"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="darkforest"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Darkforest theme"
+      type="radio"
+      name="__palette"
+      id="__palette_4"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_5"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="carbon"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Carbon theme"
+      type="radio"
+      name="__palette"
+      id="__palette_5"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_6"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="tokionights"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Tokyo Night theme"
+      type="radio"
+      name="__palette"
+      id="__palette_6"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_7"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="matrix"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Matrix theme"
+      type="radio"
+      name="__palette"
+      id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_0"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+
+  <details class="bdk-theme-picker__details" data-bdk-theme-picker>
+    <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
+      <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
+      <span data-bdk-theme-label>System</span>
+      <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
+      <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="dark" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#66d9ef;--theme-accent:#fd971f"></span>
+        <span>Dark</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#11111b;--theme-primary:#89b4fa;--theme-accent:#f5c2e7"></span>
+        <span>Catppuccin</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="darkforest" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#07120d;--theme-primary:#9ece6a;--theme-accent:#e0af68"></span>
+        <span>Darkforest</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="carbon" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#161616;--theme-primary:#78a9ff;--theme-accent:#ff7eb6"></span>
+        <span>Carbon</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="tokionights" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#0f1021;--theme-primary:#7aa2f7;--theme-accent:#bb9af7"></span>
+        <span>Tokyo Night</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="matrix" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#020802;--theme-primary:#00ff66;--theme-accent:#39ff14"></span>
+        <span>Matrix</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="light" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#f7f7f2;--theme-primary:#0f62fe;--theme-accent:#8a3ffc"></span>
+        <span>Light</span>
+      </label>
+      <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="system" role="radio" tabindex="0">
+        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#a59f99;--theme-accent:#f7f7f2"></span>
+        <span>System</span>
+      </label>
+    </div>
+  </details>
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    bITdevKit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-options-builders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Options Builders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-observability-tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Observability Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start-local-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start: Local Development
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dashboard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard Usage Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-local-stress-workload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Local Stress Workload
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#live-analysis-refresh-and-charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Analysis, Refresh, and Charts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#console-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Console Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#programmatic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programmatic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#durable-and-multi-node-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Durable and Multi-Node Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Durable and Multi-Node Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-framework-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework Context
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-and-node-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session and Node Semantics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deterministic-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deterministic Evaluation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deterministic Evaluation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export Boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-and-operational-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security and Operational Guidance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Domain and Application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Domain and Application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-change-history.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ChangeHistory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-repositories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-commands-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Commands and Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-dataporter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataPorter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution, Messaging and Modularity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Execution, Messaging and Modularity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-requester-notifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester and Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-orchestrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-filtering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filtering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security and Access
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security and Access
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-entitypermissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entity Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-identityprovider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation and Hosts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation and Hosts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-endpoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-cli-mcp-clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Client Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-exception-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exception Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-appstate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, Scheduling and Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage, Scheduling and Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-startuptasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Startup Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobscheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Scheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-blobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-permalinks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Permalinks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-log-entries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Entries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing and Test Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing and Test Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-fake-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Authentication for Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-common-xunit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Common XUnit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start-local-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Start: Local Development
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dashboard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dashboard Usage Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-local-stress-workload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Local Stress Workload
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#live-analysis-refresh-and-charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Live Analysis, Refresh, and Charts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#console-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Console Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#programmatic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programmatic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#durable-and-multi-node-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Durable and Multi-Node Registration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Durable and Multi-Node Registration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entity-framework-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework Context
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-and-node-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session and Node Semantics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deterministic-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deterministic Evaluation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deterministic Evaluation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation Limitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Export Boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-and-operational-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security and Operational Guidance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../common-extensions/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Common Infrastructure
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="profiling-feature-documentation">Profiling Feature Documentation<a class="headerlink" href="#profiling-feature-documentation" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Collect bounded local runtime snapshots, compare them, and compute deterministic evidence-backed performance signals without an AI service or an overall score.</p>
+</blockquote>
+<div class="toc">
+<ul>
+<li><a href="#profiling-feature-documentation">Profiling Feature Documentation</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#quick-start-local-development">Quick Start: Local Development</a></li>
+<li><a href="#dashboard">Dashboard</a><ul>
+<li><a href="#dashboard-usage-guide">Dashboard Usage Guide</a></li>
+<li><a href="#optional-local-stress-workload">Optional Local Stress Workload</a></li>
+<li><a href="#live-analysis-refresh-and-charts">Live Analysis, Refresh, and Charts</a></li>
+</ul>
+</li>
+<li><a href="#console-commands">Console Commands</a></li>
+<li><a href="#programmatic-usage">Programmatic Usage</a></li>
+<li><a href="#durable-and-multi-node-registration">Durable and Multi-Node Registration</a><ul>
+<li><a href="#entity-framework-context">Entity Framework Context</a></li>
+</ul>
+</li>
+<li><a href="#session-and-node-semantics">Session and Node Semantics</a></li>
+<li><a href="#deterministic-evaluation">Deterministic Evaluation</a><ul>
+<li><a href="#evaluation-limitations">Evaluation Limitations</a></li>
+</ul>
+</li>
+<li><a href="#export-boundary">Export Boundary</a></li>
+<li><a href="#security-and-operational-guidance">Security and Operational Guidance</a></li>
+<li><a href="#related-features">Related Features</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Profiling is an opt-in developer feature for investigating CPU, memory, allocations, and garbage collection on a local development machine. A session collects immutable runtime snapshots for a bounded duration. You can control the same lifecycle through the dashboard, Console Commands, or programmatic services.</p>
+<p>Use Profiling when you want to:</p>
+<ul>
+<li>observe a repeatable local workload over time;</li>
+<li>investigate CPU saturation, allocation churn, memory growth, fragmentation, or GC pressure;</li>
+<li>compare an earlier and later point in one run;</li>
+<li>preserve a useful run for later inspection.</li>
+</ul>
+<p>Evaluation always targets one selected node. It can use all available snapshots for that node in a session or exactly two ordered snapshots from the same session and node. Results are calculated on demand and are never persisted.</p>
+<p>Profiling is not an APM or production-monitoring product. It does not continuously monitor applications, compare nodes or sessions, calculate one overall performance score, or use AI analysis.</p>
+<h2 id="quick-start-local-development">Quick Start: Local Development<a class="headerlink" href="#quick-start-local-development" title="Permanent link">&para;</a></h2>
+<p>Start with the process-local in-memory provider when profiling one application process. Keep collection, the dashboard, and Console Commands restricted to Development.</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddProfiling</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
+<span class="w">        </span><span class="p">.</span><span class="n">SamplingInterval</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConsoleCommands</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">());</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDashboard</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">()));</span>
+</code></pre></div>
+<p>After building the application, map the registered endpoints as usual:</p>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
+</code></pre></div>
+<p><code>AddProfiling</code> uses <code>InMemoryProfilingStore</code> unless you explicitly select another provider. It also registers the required Profiling handlers over the standalone Broadcasting feature. When Profiling is disabled, no collector or operational runtime starts.</p>
+<p>The global <code>AddDashboard</code> call discovers Profiling automatically. There is no Profiling-specific dashboard registration call: the navigation item appears when Profiling is enabled and stays hidden when it is disabled.</p>
+<p>The built-in defaults are:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th style="text-align: right;">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sampling interval</td>
+<td style="text-align: right;">1 second</td>
+</tr>
+<tr>
+<td>Minimum sampling interval</td>
+<td style="text-align: right;">500 milliseconds</td>
+</tr>
+<tr>
+<td>Session duration</td>
+<td style="text-align: right;">30 seconds</td>
+</tr>
+<tr>
+<td>Dashboard refresh</td>
+<td style="text-align: right;">5 seconds</td>
+</tr>
+<tr>
+<td>Maximum retained unpinned terminal sessions</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Maximum unpinned terminal session age</td>
+<td style="text-align: right;">7 days</td>
+</tr>
+<tr>
+<td>Participation deadline</td>
+<td style="text-align: right;">1 second</td>
+</tr>
+<tr>
+<td>Finalization grace period</td>
+<td style="text-align: right;">1 second</td>
+</tr>
+</tbody>
+</table>
+<p>Every session has an automatic maximum duration. A manual stop ends collection early without changing that original logical end time.</p>
+<h2 id="dashboard">Dashboard<a class="headerlink" href="#dashboard" title="Permanent link">&para;</a></h2>
+<p>The dashboard plugin is available at <code>/_bdk/dashboard/profiling</code> when the dashboard uses its default group path. A selected session and node can be shared with readable eight-character keys:</p>
+<div class="highlight"><pre><span></span><code>/_bdk/dashboard/profiling?session=a1b2c3d4&amp;node=e5f6g7h8
+</code></pre></div>
+<p>The dashboard groups the workflow into four tabs:</p>
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Use it to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Overview</strong></td>
+<td>Inspect the latest or selected snapshot, follow memory and GC-pressure charts, and view phase and action markers, measured ranges, and the selected snapshot.</td>
+</tr>
+<tr>
+<td><strong>Analysis</strong></td>
+<td>Evaluate the selected node's timeline or the selected snapshot pair using deterministic KPIs and evidence-backed signals.</td>
+</tr>
+<tr>
+<td><strong>Comparison</strong></td>
+<td>Compare exactly two ordered snapshots from the selected session and node.</td>
+</tr>
+<tr>
+<td><strong>Info</strong></td>
+<td>Inspect measured segments, custom metric observations, and immutable runtime context.</td>
+</tr>
+</tbody>
+</table>
+<p>Session controls above the tabs start or stop collection, take a manual snapshot, request a normal <code>GC.Collect()</code>, add phase markers, edit metadata, export or import sessions, and remove stored data. Information icons explain metrics and evaluation results in plain language.</p>
+<h3 id="dashboard-usage-guide">Dashboard Usage Guide<a class="headerlink" href="#dashboard-usage-guide" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Start a session.</strong> Enter a short <strong>Name</strong>, choose the sampling interval and maximum duration, and select the green start control. The control becomes a red stop control while collection is running. Use <strong>History</strong> when you want to inspect an existing session instead.</li>
+<li><strong>Reproduce one focused scenario.</strong> Exercise the code path you want to investigate. Add phase markers before transitions such as warm-up, workload, and recovery so those moments are visible on the charts.</li>
+<li><strong>Inspect the evidence.</strong> In <strong>Overview</strong>, choose the contributing <strong>Node</strong> and follow the snapshot cards and charts. Select a snapshot to mark it on both charts and inspect its values. The focus actions enlarge both charts or show every metric from the selected snapshot.</li>
+<li><strong>Compare or evaluate.</strong> Use <strong>Comparison</strong> for a bounded earlier-versus-later question. Use <strong>Analysis</strong> for trends across the complete selected-node timeline. Read data-quality limitations first, then review each KPI, signal, supporting evidence, and suggested action.</li>
+<li><strong>Preserve or investigate a useful run.</strong> Stop the session, add metadata or pin it when needed, then use the download action next to <strong>History</strong> for an importable archive or the activity action for a Perfetto trace. Imported archive JSON reappears in History and can be inspected and evaluated normally. A Perfetto trace is for visualization only. Use <strong>Copy JSON</strong> when only the selected snapshot is needed.</li>
+<li><strong>Clean up deliberately.</strong> The overflow menu imports sessions and contains deletion operations. Delete the selected terminal session, remove all unpinned sessions, or use the confirmed clear-all operation to empty the Profiling store.</li>
+</ol>
+<p>For useful timeline analysis, collect at least five snapshots over five seconds. Ten snapshots over ten seconds gives the evaluator enough coverage for high-confidence results when the required metrics and sampling quality are also available. Compare related evidence instead of interpreting one isolated value: for example, CPU together with allocation rate and GC pause, or managed-heap growth together with post-Gen2 evidence.</p>
+<p>A manual snapshot works during collection. When no session is active, it creates a terminal standalone session containing that snapshot. Requesting garbage collection changes the runtime you are measuring, so use it deliberately when investigating post-GC retention rather than as a routine step.</p>
+<p>Session and node selection remain visible above the tabs. Metadata is viewed and edited through a compact button and standard dashboard dialog. Session operations use icon controls with tooltips and an overflow panel for import and destructive actions. The Sessions and Current Snapshot sections can be collapsed to make more room for the charts.</p>
+<h3 id="optional-local-stress-workload">Optional Local Stress Workload<a class="headerlink" href="#optional-local-stress-workload" title="Permanent link">&para;</a></h3>
+<p>The flame action immediately left of the refresh interval starts the default stress workload and returns without blocking the dashboard request. It uses dedicated CPU workers, sustains short-lived and large-object allocations, retains a bounded 32–128 MiB based on available memory, and forces one full GC while retained objects remain reachable. The complete background workload is recorded as a named <code>Profiling stress test</code> segment so its duration is visible as a labeled range on both charts. A second run is rejected until the current 30-second run finishes. The workload affects only the process hosting the dashboard and stops during application shutdown.</p>
+<p>Application code can reuse <code>IProfilingStressService</code> with a <code>ProfilingStressRequest</code> to select the duration, CPU-worker count, and retained-memory size for one run. <code>ProfilingStressRequest.Default</code> provides the same adaptive 30-second settings used by the dashboard; the dashboard intentionally exposes no editable stress profile.</p>
+<p>Use this workload only to verify that collection and visualization work or to learn how known CPU, allocation, memory, and GC activity appears. It is not a benchmark and does not represent an application's real workload.</p>
+<h3 id="live-analysis-refresh-and-charts">Live Analysis, Refresh, and Charts<a class="headerlink" href="#live-analysis-refresh-and-charts" title="Permanent link">&para;</a></h3>
+<p>The browser-wide <strong>Live analysis</strong> switch is off by default. When enabled, it evaluates only after a new snapshot, never overlaps evaluation calls, and cannot run more frequently than dashboard refresh. This switch changes browser behavior only; it does not enable collection or alter console/programmatic evaluation.</p>
+<p>Periodic refresh is state-preserving. It patches collection status, metrics, charts, snapshot choices, segments, and custom metrics in place instead of replacing the complete workbench. Focused controls, unsaved metadata and marker text, selected comparison snapshots, file selection, open detail panels, analysis output, chart filters, and scroll position remain unchanged. Selecting another session or node deliberately resets context-specific controls and analysis.</p>
+<p>Chart timelines display browser-local time, matching the snapshot selectors, while stored and exported timestamps remain UTC. Every snapshot option includes its sequence, local date and time to the second, and readable snapshot key. Phase and action labels reserve additional space above the plotting area so their rotated text remains visible.</p>
+<p>The charts use Plotly's standard interaction controls, including area-selection zoom, pan, autoscale, and reset. Mouse-wheel zoom is disabled so scrolling over a chart does not unexpectedly change its time range. The chart focus action opens both charts together on the same timeline.</p>
+<p>Profiling dashboard routes inherit the dashboard's authentication and authorization policy. Do not expose the dashboard anonymously. There is intentionally no evaluation export, copy, or download route.</p>
+<h2 id="console-commands">Console Commands<a class="headerlink" href="#console-commands" title="Permanent link">&para;</a></h2>
+<p>Register commands with <code>.AddConsoleCommands()</code>. The primary group is <code>profiling</code> and the short group alias is <code>prof</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profiling status</code></td>
+<td>Show feature availability, the active session, state, and participating-node count.</td>
+</tr>
+<tr>
+<td><code>profiling start --name warmup --interval 500ms --duration 30s</code></td>
+<td>Start a session with optional name, sampling interval, and duration overrides.</td>
+</tr>
+<tr>
+<td><code>profiling stop</code></td>
+<td>Best-effort stop of the active logical session across the current target snapshot.</td>
+</tr>
+<tr>
+<td><code>profiling snapshot --name checkpoint</code></td>
+<td>Capture immediately; when idle, create one terminal standalone snapshot session.</td>
+</tr>
+<tr>
+<td><code>profiling gc</code></td>
+<td>Request one normal deployment-wide <code>GC.Collect()</code> action.</td>
+</tr>
+<tr>
+<td><code>profiling mark --name "load started"</code></td>
+<td>Add a shared phase marker to the active session.</td>
+</tr>
+<tr>
+<td><code>profiling analyze --session a1b2c3d4 --node e5f6g7h8</code></td>
+<td>Analyze the complete available timeline for one selected node.</td>
+</tr>
+<tr>
+<td><code>profiling analyze --session a1b2c3d4 --node e5f6g7h8 --snapshot-a i9j0k1l2 --snapshot-b m3n4o5p6</code></td>
+<td>Analyze exactly two ordered snapshots.</td>
+</tr>
+<tr>
+<td><code>profiling analyze --session a1b2c3d4 --node e5f6g7h8 --json</code></td>
+<td>Write the computed evaluation contract as JSON without persisting it.</td>
+</tr>
+<tr>
+<td><code>profiling export --session a1b2c3d4 --output run.json</code></td>
+<td>Export a complete terminal session archive. Add paired <code>--node</code> and <code>--snapshot</code> to export one snapshot.</td>
+</tr>
+<tr>
+<td><code>profiling export --session a1b2c3d4 --format perfetto --output run.perfetto.json</code></td>
+<td>Export a complete terminal session as a one-way Perfetto visualization trace.</td>
+</tr>
+<tr>
+<td><code>profiling export --session a1b2c3d4 --output run.json --overwrite</code></td>
+<td>Explicitly replace an existing archive after a successful temporary-file write.</td>
+</tr>
+<tr>
+<td><code>profiling import --file run.json</code></td>
+<td>Import an archive as a fresh terminal session and report its new key.</td>
+</tr>
+<tr>
+<td><code>profiling clear --yes</code></td>
+<td>Remove every stored session and snapshot, including pinned sessions.</td>
+</tr>
+</tbody>
+</table>
+<p><code>profiling clear</code> without <code>--yes</code> changes nothing. Clear is also rejected while a session is active.</p>
+<h2 id="programmatic-usage">Programmatic Usage<a class="headerlink" href="#programmatic-usage" title="Permanent link">&para;</a></h2>
+<p><code>IProfilingControlService</code> is the shared lifecycle path used by dashboard and Console Commands:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">started</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">control</span><span class="p">.</span><span class="n">StartAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ProfilingStartRequest</span><span class="p">(</span><span class="s">&quot;checkout&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Duration</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">20</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">control</span><span class="p">.</span><span class="n">AddPhaseMarkerAsync</span><span class="p">(</span><span class="s">&quot;warmup complete&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="n">control</span><span class="p">.</span><span class="n">SnapshotAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="n">control</span><span class="p">.</span><span class="n">CollectGarbageAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="n">control</span><span class="p">.</span><span class="n">StopAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Use <code>IProfilingMeasurementService</code> for developer-defined operations. When no session is active, the outer scope owns a bounded session and stops it when disposed. During an active session it creates a node-owned segment and does not stop the shared session. Nested scopes create nested segments on the same node.</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">measurements</span><span class="p">.</span><span class="n">MeasureAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;import customers&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">token</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">ImportAsync</span><span class="p">(</span><span class="n">token</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">measurements</span><span class="p">.</span><span class="n">BeginAsync</span><span class="p">(</span><span class="s">&quot;rebuild index&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)).</span><span class="n">Value</span><span class="p">;</span>
+<span class="k">try</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">rebuilder</span><span class="p">.</span><span class="n">RunAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">scope</span><span class="p">.</span><span class="n">MarkFailed</span><span class="p">(</span><span class="n">exception</span><span class="p">);</span><span class="w"> </span><span class="c1">// stores safe exception metadata, not a stack trace</span>
+<span class="w">    </span><span class="k">throw</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Use <code>IProfilingQueryService</code> for stored data, raw comparisons, raw snapshot export, and computed evaluation:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">evaluation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">queries</span><span class="p">.</span><span class="n">EvaluateAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ProfilingEvaluationRequest</span><span class="p">(</span><span class="n">sessionKey</span><span class="p">,</span><span class="w"> </span><span class="n">nodeKey</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">queries</span><span class="p">.</span><span class="n">EvaluateAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ProfilingEvaluationRequest</span><span class="p">(</span><span class="n">sessionKey</span><span class="p">,</span><span class="w"> </span><span class="n">nodeKey</span><span class="p">,</span><span class="w"> </span><span class="n">snapshotAKey</span><span class="p">,</span><span class="w"> </span><span class="n">snapshotBKey</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">rawJson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">queries</span><span class="p">.</span><span class="n">ExportSnapshotsJsonAsync</span><span class="p">(</span><span class="n">sessionKey</span><span class="p">,</span><span class="w"> </span><span class="n">nodeKey</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Use <code>IProfilingArchiveService</code> for round-trippable archives. Callers own the streams; the service never accepts a filesystem path:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">archives</span><span class="p">.</span><span class="n">ExportSessionAsync</span><span class="p">(</span><span class="n">sessionKey</span><span class="p">,</span><span class="w"> </span><span class="n">destination</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="k">await</span><span class="w"> </span><span class="n">archives</span><span class="p">.</span><span class="n">ExportSnapshotAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">sessionKey</span><span class="p">,</span>
+<span class="w">    </span><span class="n">nodeKey</span><span class="p">,</span>
+<span class="w">    </span><span class="n">snapshotKey</span><span class="p">,</span>
+<span class="w">    </span><span class="n">destination</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">imported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">archives</span><span class="p">.</span><span class="n">ImportAsync</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">importedSessionKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">imported</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">SessionKey</span><span class="p">;</span>
+</code></pre></div>
+<p>Use <code>IProfilingPerfettoExportService</code> when another developer tool needs the session as Trace Event JSON. The caller owns the stream, and only terminal sessions are accepted:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">perfetto</span><span class="p">.</span><span class="n">ExportSessionAsync</span><span class="p">(</span><span class="n">sessionKey</span><span class="p">,</span><span class="w"> </span><span class="n">destination</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+</code></pre></div>
+<p>Open the resulting <code>*.perfetto.json</code> file in <a href="https://ui.perfetto.dev/">Perfetto UI</a>. The trace uses a session lane for shared phase markers and a separate synthetic process for each profiling node. Captured numeric metrics become counters, action and snapshot markers become instant events, and measured segments become duration events. Runtime and session context remain available in event details.</p>
+<p>This is a visualization export, not a sampled call-stack trace. It does not create flame graphs, method-level CPU attribution, or allocation stack traces because Profiling does not collect that evidence.</p>
+<p>Imported sessions appear in the normal session list and can be selected, inspected, and evaluated like any other terminal session. This does not add session-to-session comparison.</p>
+<p>Application code can also emit supported stable, untagged .NET <code>Meter</code> counters, gauges, and durations. Profiling bounds accepted instrument identities and does not accept high-cardinality tags.</p>
+<h2 id="durable-and-multi-node-registration">Durable and Multi-Node Registration<a class="headerlink" href="#durable-and-multi-node-registration" title="Permanent link">&para;</a></h2>
+<p>Most local profiling needs only the in-memory setup. Use this section when profiling must survive process restarts or one session must collect from multiple application processes.</p>
+<p>Independent processes require both of these capabilities:</p>
+<ol>
+<li>One shared Profiling store, normally the Entity Framework provider.</li>
+<li>One shared Broadcasting registry plus a transport through which every registered node is directly reachable.</li>
+</ol>
+<p>Register the shared Broadcast provider before adding the HTTP transport and Profiling:</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddBroadcasting</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Scopes</span><span class="p">(</span><span class="s">&quot;my-application&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">UseRegistryProvider</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">MySharedBroadcastRegistry</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithHttpTransport</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">SharedSecret</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">&quot;Broadcasting:SharedSecret&quot;</span><span class="p">]));</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddProfiling</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">()))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithEntityFrameworkStore</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConsoleCommands</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">());</span>
+</code></pre></div>
+<p><code>MySharedBroadcastRegistry</code> is an application-selected <code>IBroadcastRegistryStore</code> implementation whose <code>Capabilities.IsShared</code> value is <code>true</code>. Every process must use the same registry, Profiling database, Broadcast scopes, and HTTP authentication secret. <code>app.MapEndpoints()</code> maps the Broadcast receiver and Profiling dashboard endpoints.</p>
+<p>Profiling rejects start and snapshot operations before creating a session or publishing a command when multiple targets are present and the selected Profiling store reports that it is process-local. This prevents a misleading partial multi-node session.</p>
+<h3 id="entity-framework-context">Entity Framework Context<a class="headerlink" href="#entity-framework-context" title="Permanent link">&para;</a></h3>
+<p>The consuming application owns its <code>DbContext</code> and implements <code>IProfilingContext</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">AppDbContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">)</span>
+<span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">DbContext</span><span class="p">(</span><span class="n">options</span><span class="p">),</span><span class="w"> </span><span class="n">IProfilingContext</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ProfilingSessionEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProfilingSessions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ProfilingInvalidSessionEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProfilingInvalidSessions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ProfilingNodeEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProfilingNodes</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ProfilingParticipationEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProfilingParticipations</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ProfilingSnapshotEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProfilingSnapshots</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">ProfilingMetricObservationEntity</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProfilingMetricObservations</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span><span class="w"> </span><span class="n">modelBuilder</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">base</span><span class="p">.</span><span class="n">OnModelCreating</span><span class="p">(</span><span class="n">modelBuilder</span><span class="p">);</span>
+<span class="w">        </span><span class="n">modelBuilder</span><span class="p">.</span><span class="n">ConfigureProfiling</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>ConfigureProfiling()</code> keeps high-volume or independently addressable data in tables and maps session-owned runtime context, markers, segments, and tags into JSON columns.</p>
+<p>The bITdevKit repository does not provide a Profiling migration. After implementing <code>IProfilingContext</code>, the consuming application creates, reviews, and deploys its own EF migration using its normal migration workflow.</p>
+<h2 id="session-and-node-semantics">Session and Node Semantics<a class="headerlink" href="#session-and-node-semantics" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Start freezes one exact Broadcast target snapshot. Only nodes that accept that start command are expected participants.</li>
+<li>A later manual snapshot targets all currently registered nodes. A late node contributes as an ad-hoc participant and does not change the expected set.</li>
+<li>Stop is best effort. The logical session becomes <code>Stopped</code> before the current target snapshot receives the stop command, and an unreachable node is reported in the immediate outcomes.</li>
+<li>Automatic finalization after the original end and grace period is idempotent. An expected participant that did not complete, or that recorded a failed capture, produces <code>CompletedWithWarnings</code>.</li>
+<li>Startup reconciliation performs one bounded pass for overdue running sessions. It does not poll the store.</li>
+<li>Late records cannot recreate a deleted or cleared session.</li>
+<li>Retention removes old unpinned terminal sessions by age and count. Pinned sessions are retained until explicitly deleted or included in a confirmed clear-all operation.</li>
+</ul>
+<h2 id="deterministic-evaluation">Deterministic Evaluation<a class="headerlink" href="#deterministic-evaluation" title="Permanent link">&para;</a></h2>
+<p>Evaluation returns independent KPIs, evidence-backed signals, suggested actions, data quality, and limitations. There is explicitly no combined performance score. Rule thresholds and labels are built in and cannot be configured, extended, or versioned.</p>
+<p>Timeline analysis needs at least five valid snapshots spanning five seconds before it emits interpretive signals. High confidence additionally needs at least ten snapshots spanning ten seconds, complete required evidence, acceptable sampling quality, and no attached debugger. Two-snapshot signals are always low confidence.</p>
+<p>The principal fixed rules are:</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Fixed evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU</td>
+<td>Sustained: average at least 70% and at least 60% of intervals at 70%+. Strong: average at least 85% and at least 80% of intervals at 80%+. Rising: second-half increase of at least 20 percentage points and an elevated ending value.</td>
+</tr>
+<tr>
+<td>Managed/private/LOH growth</td>
+<td>At least 20% relative growth plus floors of 32 MiB managed heap, 64 MiB private memory, or 32 MiB LOH.</td>
+</tr>
+<tr>
+<td>Retention</td>
+<td>Managed growth remains after directly observed Gen2 evidence. Missing post-Gen2 evidence suppresses this signal; it is not inferred from ordinary before/after snapshots.</td>
+</tr>
+<tr>
+<td>LOH fragmentation</td>
+<td>Ending fragmentation at least 20% after a rise of at least 10 percentage points.</td>
+</tr>
+<tr>
+<td>Allocations</td>
+<td>Sustained average at least 50 MiB/s; rising allocation at least doubles with a 10 MiB/s increase floor; churn also requires Gen0 rate at least 0.5 collections/s without material heap growth.</td>
+</tr>
+<tr>
+<td>GC</td>
+<td>Notable pause burden at least 5%; strong at least 10%; frequent full GC requires at least two Gen2 collections and at least 0.1 Gen2 collections/s. Supporting allocation or memory evidence distinguishes broader GC pressure.</td>
+</tr>
+</tbody>
+</table>
+<p>Signals use only the simple labels <code>Notable</code> and <code>Investigate</code>. They focus on CPU, memory, allocation, and GC evidence and return one short fixed suggested action.</p>
+<h3 id="evaluation-limitations">Evaluation Limitations<a class="headerlink" href="#evaluation-limitations" title="Permanent link">&para;</a></h3>
+<p>The result explicitly reports limitations instead of manufacturing certainty when:</p>
+<ul>
+<li>the selected timeline is still collecting or has fewer than five snapshots/five seconds;</li>
+<li>the session stopped, failed, or completed with warnings;</li>
+<li>a debugger is attached;</li>
+<li>metrics, post-GC evidence, or intervals are unavailable;</li>
+<li>cumulative counters reset or snapshot sequences contain gaps;</li>
+<li>capture failures occurred, sampling coverage is below 90%, capture overhead is high, or sampling delay is material.</li>
+</ul>
+<p>Runtime availability differs by operating system and .NET runtime. An unavailable metric is represented as unavailable and suppresses only the rules that require it.</p>
+<h2 id="export-boundary">Export Boundary<a class="headerlink" href="#export-boundary" title="Permanent link">&para;</a></h2>
+<p>Raw JSON export contains normal immutable runtime snapshots only. A selected node export contains that node's snapshots; a complete-session export contains snapshots from expected and ad-hoc contributors. It excludes runtime context, markers, segments, custom metrics, evaluation KPIs, signals, actions, and limitations.</p>
+<p>Evaluation JSON produced by <code>profiling analyze --json</code> is computed command output, not a persisted or downloadable dashboard artifact.</p>
+<p>Portable archives are a separate fixed JSON contract for durable local transfer. Format <code>bitdevkit.profiling.archive</code>, version <code>1</code>, supports complete terminal sessions and individual immutable snapshots up to 25 MiB. Import generates fresh eight-character lowercase session, node, and snapshot keys, validates the complete graph before one atomic provider mutation, and never restores private Broadcast identities. Re-importing creates another independent terminal copy. The in-memory and Entity Framework providers use their existing physical storage model; no archive table or migration is required.</p>
+<p>Perfetto export is a separate, one-way Trace Event JSON representation for visual investigation. It includes session and runtime context, readable keys, snapshot counters, shared phase markers, node actions, measured segments, and custom metric counters. It excludes internal GUIDs and computed evaluation results. Perfetto JSON is not accepted by <code>profiling import</code>; use the portable archive when a session must be restored to History.</p>
+<h2 id="security-and-operational-guidance">Security and Operational Guidance<a class="headerlink" href="#security-and-operational-guidance" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Enable Profiling only for trusted local Development environments. Snapshot collection and forced GC change runtime behavior and consume CPU, memory, and storage.</li>
+<li>Protect the dashboard with the existing dashboard authentication and authorization policy.</li>
+<li>Protect multi-node Broadcast HTTP traffic with a shared secret or an application-selected <code>IBroadcastHttpAuthentication</code> implementation.</li>
+<li>Treat host names, process ids, runtime versions, session notes, tags, and raw metrics as diagnostic information.</li>
+<li>Do not put secrets, personal data, request payloads, or high-cardinality identifiers in session metadata, marker names, segment names, or custom metrics.</li>
+<li>Prefer the in-memory provider for one local process. Use shared Profiling and Broadcast providers only when multiple independent development processes must participate.</li>
+</ul>
+<h2 id="related-features">Related Features<a class="headerlink" href="#related-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../features-presentation-dashboard/">Presentation Dashboard</a></li>
+<li><a href="../features-presentation-console-commands/">Console Commands</a></li>
+<li><a href="../common-observability-tracing/">Common Observability Tracing</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/bridgingIT/bITdevKit" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.nuget.org/packages?q=bitdevkit" target="_blank" rel="noopener" title="NuGet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M224.3-2.5c19.8-11.4 44.2-11.4 64 0L464.2 99c19.8 11.4 32 32.6 32 55.4v203c0 22.9-12.2 44-32 55.4L288.3 514.5a64.16 64.16 0 0 1-64 0L48.5 413c-19.8-11.4-32-32.6-32-55.4v-203c0-22.9 12.2-44 32-55.4zm207.8 360V191.4l-143.8 83v166.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
+      
+        <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+    
+  </body>
+</html>

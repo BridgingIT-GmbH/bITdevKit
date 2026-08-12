@@ -1581,6 +1581,11 @@ machine name and <code>base32</code> encoded <span class="xref">long</span> usin
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.InMemoryProfilingStore.html">InMemoryProfilingStore</a></dt>
+      <dd><p>Stores profiling diagnostic sessions in process-local memory.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.InRule-1.html">InRule&lt;T&gt;</a></dt>
       <dd><p>Represents a single validation rule that can be applied to input values.</p>
 </dd>
@@ -2416,6 +2421,461 @@ is no current user context available or to avoid null reference exceptions.</p>
       <dd></dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingActionMarker.html">ProfilingActionMarker</a></dt>
+      <dd><p>Describes an immutable node-local action marker.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingActiveSession.html">ProfilingActiveSession</a></dt>
+      <dd><p>Contains the process-local session and stable node used for metric association.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingActiveSessionContext.html">ProfilingActiveSessionContext</a></dt>
+      <dd><p>Exposes the process-local profiling session and node currently accepting metric observations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingAmbientSegment.html">ProfilingAmbientSegment</a></dt>
+      <dd><p>Identifies the measured segment currently associated with application execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchive.html">ProfilingArchive</a></dt>
+      <dd><p>Contains one portable, versioned Profiling archive.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveError.html">ProfilingArchiveError</a></dt>
+      <dd><p>Reports an invalid, unsupported, or inconsistent portable Profiling archive.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveFormat.html">ProfilingArchiveFormat</a></dt>
+      <dd><p>Defines the fixed portable Profiling archive contract.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveImportResult.html">ProfilingArchiveImportResult</a></dt>
+      <dd><p>Reports the fresh readable identities created by one archive import.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveMetricObservation.html">ProfilingArchiveMetricObservation</a></dt>
+      <dd><p>Wraps a metric with its optional archive-local segment reference.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveSegment.html">ProfilingArchiveSegment</a></dt>
+      <dd><p>Wraps a segment with archive-local reference identifiers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveService.html">ProfilingArchiveService</a></dt>
+      <dd><p>Provides provider-neutral JSON archive export, validation, remapping, and import.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingBroadcastExecutionTracker.html">ProfilingBroadcastExecutionTracker</a></dt>
+      <dd><p>Provides bounded process-local idempotency for profiling handler side effects.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingBroadcastService.html">ProfilingBroadcastService</a></dt>
+      <dd><p>Adapts the standalone Broadcast service to Profiling's fixed participant snapshot semantics.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingBroadcastTargetSnapshot.html">ProfilingBroadcastTargetSnapshot</a></dt>
+      <dd><p>Contains Profiling's immutable target set for one control operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingBuilderContext.html">ProfilingBuilderContext</a></dt>
+      <dd><p>Continues fluent configuration of the one host-wide profiling feature.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingCaptureRequest.html">ProfilingCaptureRequest</a></dt>
+      <dd><p>Defines one local probe capture request.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearResult.html">ProfilingClearResult</a></dt>
+      <dd><p>Contains the result of a complete profiling-store reset.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingCollector.html">ProfilingCollector</a></dt>
+      <dd><p>Owns one node-local profiling collection loop and manual captures.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingCollectorHostedService.html">ProfilingCollectorHostedService</a></dt>
+      <dd><p>Owns profiling startup reconciliation and graceful collector shutdown.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingControlResult.html">ProfilingControlResult</a></dt>
+      <dd><p>Contains the immediate result of a profiling control operation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingControlService.html">ProfilingControlService</a></dt>
+      <dd><p>Provides the single programmatic control path for deployment-wide profiling operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingCustomMetricHostedService.html">ProfilingCustomMetricHostedService</a></dt>
+      <dd><p>Hosts the singleton custom metric listener with the application lifecycle.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingCustomMetricListener.html">ProfilingCustomMetricListener</a></dt>
+      <dd><p>Captures bounded observations from the existing DevKit meter during local profiling collection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingDisabledError.html">ProfilingDisabledError</a></dt>
+      <dd><p>Reports that profiling collection is disabled.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluationDataQuality.html">ProfilingEvaluationDataQuality</a></dt>
+      <dd><p>Describes the sampling and input quality of an evaluation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluationRequest.html">ProfilingEvaluationRequest</a></dt>
+      <dd><p>Defines one evaluation request using public readable keys.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluationResult.html">ProfilingEvaluationResult</a></dt>
+      <dd><p>Contains a complete unpersisted deterministic evaluation result.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluationScope.html">ProfilingEvaluationScope</a></dt>
+      <dd><p>Describes the exact scope evaluated.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluator.html">ProfilingEvaluator</a></dt>
+      <dd><p>Provides the calculation portion of <a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluator.html">ProfilingEvaluator</a>.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcast.html">ProfilingGarbageCollectionBroadcast</a></dt>
+      <dd><p>Triggers one normal node-local garbage collection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingGarbageCollectionBroadcastHandler.html">ProfilingGarbageCollectionBroadcastHandler</a></dt>
+      <dd><p>Performs one normal garbage collection and records a local action marker when a session exists.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingGcObservation.html">ProfilingGcObservation</a></dt>
+      <dd><p>Contains direct evidence for one garbage collection.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingGcObservationResult.html">ProfilingGcObservationResult</a></dt>
+      <dd><p>Contains direct GC observations and derived pause evidence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingGcObservationState.html">ProfilingGcObservationState</a></dt>
+      <dd><p>Tracks the bounded previous-GC state required to derive pause evidence between snapshots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingInvalidKeyError.html">ProfilingInvalidKeyError</a></dt>
+      <dd><p>Reports an invalid readable profiling key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingInvalidStateError.html">ProfilingInvalidStateError</a></dt>
+      <dd><p>Reports that an operation is invalid for the current session state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingKpi.html">ProfilingKpi</a></dt>
+      <dd><p>Contains one named deterministic KPI value.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMeasurementScope.html">ProfilingMeasurementScope</a></dt>
+      <dd><p>Closes one stored profiling segment and its optionally owned session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMeasurementService.html">ProfilingMeasurementService</a></dt>
+      <dd><p>Creates application-facing profiling scopes without exposing collector implementation details.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMetricObservation.html">ProfilingMetricObservation</a></dt>
+      <dd><p>Describes one immutable observation from the existing DevKit meter.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a></dt>
+      <dd><p>Describes one stable profiling node and its private Broadcast correlation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeCorrelation.html">ProfilingNodeCorrelation</a></dt>
+      <dd><p>Correlates one private Broadcast registration to a stable profiling node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.html">ProfilingNodeIdentityProvider</a></dt>
+      <dd><p>Resolves the local Broadcast process registration to one stable profiling node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeOutcome.html">ProfilingNodeOutcome</a></dt>
+      <dd><p>Describes an immediate delivery outcome using the public profiling node key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeParticipation.html">ProfilingNodeParticipation</a></dt>
+      <dd><p>Preserves one node's role, state, and capture totals in a session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeReference.html">ProfilingNodeReference</a></dt>
+      <dd><p>References one node through its public key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeSessionData.html">ProfilingNodeSessionData</a></dt>
+      <dd><p>Contains one selected node's complete profiling read model.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptions.html">ProfilingOptions</a></dt>
+      <dd><p>Configures the opt-in profiling feature.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
+      <dd><p>Fluently updates one shared <a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptions.html">ProfilingOptions</a> instance.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingPerfettoExportService.html">ProfilingPerfettoExportService</a></dt>
+      <dd><p>Writes stored Profiling evidence as Perfetto-compatible Trace Event JSON.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingPhaseMarker.html">ProfilingPhaseMarker</a></dt>
+      <dd><p>Describes an immutable shared session phase marker.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingQueryService.html">ProfilingQueryService</a></dt>
+      <dd><p>Provides the provider-neutral profiling read, metadata, raw export, and comparison surface.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingRuntimeContext.html">ProfilingRuntimeContext</a></dt>
+      <dd><p>Contains immutable non-sensitive runtime context for one session node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingRuntimeContextFactory.html">ProfilingRuntimeContextFactory</a></dt>
+      <dd><p>Creates immutable, non-sensitive context for one profiling session node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingRuntimeContextValues.html">ProfilingRuntimeContextValues</a></dt>
+      <dd><p>Contains non-sensitive runtime context values captured for a profiling node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingRuntimeSample.html">ProfilingRuntimeSample</a></dt>
+      <dd><p>Contains the raw process and runtime values captured at one instant.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSamplingStatus.html">ProfilingSamplingStatus</a></dt>
+      <dd><p>Describes the current persisted sampling state for one selected node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSegment.html">ProfilingSegment</a></dt>
+      <dd><p>Describes one node-owned measured segment.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSegmentContext.html">ProfilingSegmentContext</a></dt>
+      <dd><p>Carries the ambient measured segment through asynchronous application execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSession.html">ProfilingSession</a></dt>
+      <dd><p>Describes one logical profiling collection session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionBroadcast.html">ProfilingSessionBroadcast</a></dt>
+      <dd><p>Contains the session values required by node-local profiling control handlers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionCreateRequest.html">ProfilingSessionCreateRequest</a></dt>
+      <dd><p>Supplies the values for atomic session creation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionData.html">ProfilingSessionData</a></dt>
+      <dd><p>Contains the complete stored records needed to render one session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionFinalizer.html">ProfilingSessionFinalizer</a></dt>
+      <dd><p>Idempotently completes an elapsed profiling session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionMetadata.html">ProfilingSessionMetadata</a></dt>
+      <dd><p>Defines editable descriptive session metadata.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionReference.html">ProfilingSessionReference</a></dt>
+      <dd><p>References one session through its public key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionResolution.html">ProfilingSessionResolution</a></dt>
+      <dd><p>Contains the result of atomic active-session resolution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSharedStoreRequiredError.html">ProfilingSharedStoreRequiredError</a></dt>
+      <dd><p>Reports that a shared store is required for the selected targets.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSignal.html">ProfilingSignal</a></dt>
+      <dd><p>Contains one deterministic evidence-backed interpretation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSignalEvidence.html">ProfilingSignalEvidence</a></dt>
+      <dd><p>Contains one raw value or threshold supporting a signal.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshot.html">ProfilingSnapshot</a></dt>
+      <dd><p>Contains one immutable node-local runtime snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotBroadcast.html">ProfilingSnapshotBroadcast</a></dt>
+      <dd><p>Collects one immediate node-local snapshot.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotBroadcastHandler.html">ProfilingSnapshotBroadcastHandler</a></dt>
+      <dd><p>Captures one immediate node-local snapshot for the supplied session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotComparison.html">ProfilingSnapshotComparison</a></dt>
+      <dd><p>Contains raw differences for two ordered same-node snapshots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotMetricDelta.html">ProfilingSnapshotMetricDelta</a></dt>
+      <dd><p>Describes one raw quantitative metric difference.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotProbe.html">ProfilingSnapshotProbe</a></dt>
+      <dd><p>Captures one provider-neutral snapshot from the current process and runtime.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotReference.html">ProfilingSnapshotReference</a></dt>
+      <dd><p>References one snapshot through its public key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStartBroadcast.html">ProfilingStartBroadcast</a></dt>
+      <dd><p>Starts one node-local collector for a deployment-wide session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStartBroadcastHandler.html">ProfilingStartBroadcastHandler</a></dt>
+      <dd><p>Admits a deployment-wide session into the node-local collector.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStartRequest.html">ProfilingStartRequest</a></dt>
+      <dd><p>Defines a start or restart request using validated collection settings.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStartupReconciler.html">ProfilingStartupReconciler</a></dt>
+      <dd><p>Finalizes profiling sessions abandoned beyond their lifecycle deadline.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStatus.html">ProfilingStatus</a></dt>
+      <dd><p>Contains feature availability and current logical-session status.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStopBroadcast.html">ProfilingStopBroadcast</a></dt>
+      <dd><p>Stops one node-local collector without changing the original session end.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStopBroadcastHandler.html">ProfilingStopBroadcastHandler</a></dt>
+      <dd><p>Stops the identified node-local collector on a best-effort basis.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStoreCapabilities.html">ProfilingStoreCapabilities</a></dt>
+      <dd><p>Describes provider capabilities used before distributed control mutates state.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStressRequest.html">ProfilingStressRequest</a></dt>
+      <dd><p>Configures one bounded host-local profiling stress workload.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStressResult.html">ProfilingStressResult</a></dt>
+      <dd><p>Describes the accepted shape of a host-local stress workload.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStressService.html">ProfilingStressService</a></dt>
+      <dd><p>Runs one configurable, bounded workload that produces CPU, allocation, heap, and GC pressure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingTraceExportError.html">ProfilingTraceExportError</a></dt>
+      <dd><p>Reports a failure while producing a Profiling visualization trace.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingUnavailableError.html">ProfilingUnavailableError</a></dt>
+      <dd><p>Reports that required profiling infrastructure is unavailable.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingValidationError.html">ProfilingValidationError</a></dt>
+      <dd><p>Reports a safe profiling request validation failure.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ProgressReport.html">ProgressReport</a></dt>
       <dd><p>Represents a progress report for request or notification processing.</p>
 </dd>
@@ -2921,8 +3381,7 @@ distributed operations without traditional two-phase commit.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ServiceCollectionExtensions.html">ServiceCollectionExtensions</a></dt>
-      <dd><p>Provides helpers for inspecting service registrations.</p>
-</dd>
+      <dd></dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ServiceUnavailableError.html">ServiceUnavailableError</a></dt>
@@ -3088,6 +3547,16 @@ distributed operations without traditional two-phase commit.
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.SvgStateDiagramRenderer.html">SvgStateDiagramRenderer</a></dt>
       <dd><p>Renders deterministic SVG for state diagrams.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.SystemProfilingRuntimeContextSource.html">SystemProfilingRuntimeContextSource</a></dt>
+      <dd><p>Captures profiling runtime context values from the current process.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.SystemProfilingRuntimeSnapshotSource.html">SystemProfilingRuntimeSnapshotSource</a></dt>
+      <dd><p>Captures profiling snapshot values from the current process and runtime.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -3500,6 +3969,21 @@ Structs
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Permission.html">Permission</a></dt>
       <dd><p>Defines a permission constant structure to prevent magic strings.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeIdentity.html">ProfilingNodeIdentity</a></dt>
+      <dd><p>Identifies one application-process node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionIdentity.html">ProfilingSessionIdentity</a></dt>
+      <dd><p>Identifies one stored profiling session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshotIdentity.html">ProfilingSnapshotIdentity</a></dt>
+      <dd><p>Identifies one immutable runtime snapshot.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -3960,6 +4444,91 @@ This is the base interface for all operation scopes used with ResultOperationSco
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingArchiveService.html">IProfilingArchiveService</a></dt>
+      <dd><p>Exports and imports portable Profiling session archives through caller-owned streams.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingBroadcast.html">IProfilingBroadcast</a></dt>
+      <dd><p>Marks a typed command as belonging to Profiling's Broadcast integration.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingBroadcastService.html">IProfilingBroadcastService</a></dt>
+      <dd><p>Coordinates Profiling's fixed target snapshots over the standalone Broadcast service.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingCollector.html">IProfilingCollector</a></dt>
+      <dd><p>Owns node-local collection admission and single-flight capture.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingControlService.html">IProfilingControlService</a></dt>
+      <dd><p>Provides the one dashboard, console, and programmatic profiling control path.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingEvaluationService.html">IProfilingEvaluationService</a></dt>
+      <dd><p>Computes deterministic, unpersisted single-node profiling analysis.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingMeasurementScope.html">IProfilingMeasurementScope</a></dt>
+      <dd><p>Represents one automatically closing measured profiling scope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingMeasurementService.html">IProfilingMeasurementService</a></dt>
+      <dd><p>Creates raw scopes and execution helpers over the shared profiling lifecycle.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingNodeIdentityProvider.html">IProfilingNodeIdentityProvider</a></dt>
+      <dd><p>Provides the stable process-lifetime profiling node identity.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingPerfettoExportService.html">IProfilingPerfettoExportService</a></dt>
+      <dd><p>Exports complete Profiling sessions as Perfetto-compatible Trace Event JSON.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingQueryService.html">IProfilingQueryService</a></dt>
+      <dd><p>Queries stored profiling data without implementing lifecycle behavior.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingRuntimeContextFactory.html">IProfilingRuntimeContextFactory</a></dt>
+      <dd><p>Creates immutable non-sensitive context for one session node.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingRuntimeContextSource.html">IProfilingRuntimeContextSource</a></dt>
+      <dd><p>Supplies the process and runtime values used to create a profiling runtime context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingRuntimeSnapshotSource.html">IProfilingRuntimeSnapshotSource</a></dt>
+      <dd><p>Supplies one raw process and runtime sample to the profiling snapshot probe.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingSnapshotProbe.html">IProfilingSnapshotProbe</a></dt>
+      <dd><p>Captures one provider-neutral runtime snapshot without scheduling or persistence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingStore.html">IProfilingStore</a></dt>
+      <dd><p>Stores profiling sessions and their immutable diagnostic observations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingStressService.html">IProfilingStressService</a></dt>
+      <dd><p>Starts a configurable, bounded host-local workload used to exercise Profiling.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IQueueBroker.html">IQueueBroker</a></dt>
       <dd><p>Provides outbound enqueue semantics for queue messages.</p>
 </dd>
@@ -4250,6 +4819,56 @@ Matches values commonly used by ADO.NET providers.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.PipelineStepSourceKind.html">PipelineStepSourceKind</a></dt>
       <dd><p>Represents how a step is represented inside a built pipeline definition.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingArchiveKind.html">ProfilingArchiveKind</a></dt>
+      <dd><p>Describes the evidence scope contained in an archive.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingDataSufficiency.html">ProfilingDataSufficiency</a></dt>
+      <dd><p>Describes deterministic analysis sufficiency.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingEvaluationMode.html">ProfilingEvaluationMode</a></dt>
+      <dd><p>Describes the supported deterministic evaluation mode.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMetricKind.html">ProfilingMetricKind</a></dt>
+      <dd><p>Describes a custom metric observation kind.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeRole.html">ProfilingNodeRole</a></dt>
+      <dd><p>Describes how a node contributes data to a session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingParticipationState.html">ProfilingParticipationState</a></dt>
+      <dd><p>Describes node-local collection progress.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSegmentOutcome.html">ProfilingSegmentOutcome</a></dt>
+      <dd><p>Describes the outcome of a measured segment.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionState.html">ProfilingSessionState</a></dt>
+      <dd><p>Describes the lifecycle state of a profiling session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSignalConfidence.html">ProfilingSignalConfidence</a></dt>
+      <dd><p>Describes deterministic evidence confidence.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSignalLabel.html">ProfilingSignalLabel</a></dt>
+      <dd><p>Describes a deterministic signal label.</p>
 </dd>
     </dl>
     <dl class="jumplist">

@@ -1,0 +1,435 @@
+@using System.Text
+@using System.Text.Json
+@using System.Globalization
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages
+@using Microsoft.AspNetCore.Html
+@using RazorSlices
+@inherits RazorSlice<DashboardProfilingViewModel>
+
+@{
+    var session = Model.SelectedSession?.Session;
+    var node = Model.SelectedNode;
+    var snapshot = string.IsNullOrWhiteSpace(Model.SnapshotKey)
+        ? node?.LatestSnapshot
+        : node?.Snapshots.FirstOrDefault(item => item.Identity.Key == Model.SnapshotKey);
+    var runtime = node?.RuntimeContext;
+    var running = session?.State == ProfilingSessionState.Running;
+    var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(node, JsonOptions)));
+}
+
+<section id="profiling-dashboard-data"
+         class="profiling-workbench"
+         data-profiling-payload="@payload"
+         data-session-key="@Model.SessionKey"
+         data-node-key="@Model.NodeKey"
+         data-snapshot-key="@Model.SnapshotKey"
+         data-session-running="@running.ToString().ToLowerInvariant()"
+         data-latest-snapshot-key="@node?.LatestSnapshot?.Identity.Key"
+         data-refresh-interval="@Model.RefreshIntervalMilliseconds"
+         data-page-path="@Model.PagePath"
+         data-content-path="@Model.ContentPath"
+         data-start-path="@Model.StartPath"
+         data-stop-path="@Model.StopPath"
+         data-snapshot-path="@Model.SnapshotPath"
+         data-gc-path="@Model.GarbageCollectionPath"
+         data-stress-path="@Model.StressPath"
+         data-marker-path="@Model.MarkerPath"
+         data-metadata-path="@Model.MetadataPath"
+         data-delete-path="@Model.DeleteSessionPath"
+         data-delete-unpinned-path="@Model.DeleteUnpinnedPath"
+         data-clear-path="@Model.ClearPath"
+         data-compare-path="@Model.ComparePath"
+         data-analyze-path="@Model.AnalyzePath"
+         data-archive-import-path="@Model.ArchiveImportPath">
+
+    <div id="profiling-availability-status" data-profiling-live-region>
+        @if (!string.IsNullOrWhiteSpace(Model.Error))
+        {
+            <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                <span>@Model.Error</span>
+            </div>
+        }
+
+        @if (Model.Status is { Enabled: false })
+        {
+            <div class="alert alert-secondary" role="status">Profiling is disabled. Enable it through application configuration before collecting snapshots.</div>
+        }
+        else if (Model.Status is { Available: false })
+        {
+            <div class="alert alert-warning" role="status">Profiling is enabled but its configured store or runtime services are unavailable.</div>
+        }
+    </div>
+
+    <div id="profiling-action-outcomes" class="mb-2" role="status" aria-live="polite"></div>
+
+    <section class="card profiling-panel profiling-context-card mb-2" aria-labelledby="profiling-sessions-title">
+        <div class="card-header profiling-sessions-header">
+            <div class="d-flex align-items-center gap-2">
+                <button id="profiling-toggle-sessions" class="btn btn-outline-secondary btn-sm profiling-tool-button" type="button" aria-expanded="true" aria-controls="profiling-sessions-body" title="Collapse sessions" aria-label="Collapse sessions"><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+                <h2 id="profiling-sessions-title" class="h6 mb-0">Sessions</h2>
+            </div>
+            <div class="profiling-session-actions">
+                <div class="input-group input-group-sm profiling-marker-control">
+                    <label for="profiling-marker-name" class="visually-hidden">Phase marker name</label>
+                    <input id="profiling-marker-name" class="form-control" maxlength="120" placeholder="Phase marker" disabled="@(running ? null : "disabled")" title="@(running ? "Name a marker for the active session" : "Start a session before adding a marker")" />
+                    <button class="btn btn-outline-secondary profiling-tool-button" id="profiling-add-marker" type="button" data-requires-running="true" disabled="@(running ? null : "disabled")" title="@(running ? "Add phase marker" : "Start a session before adding a marker")" aria-label="Add phase marker"><i class="bi bi-flag" aria-hidden="true"></i></button>
+                </div>
+                <button id="profiling-snapshot" class="btn btn-outline-info btn-sm profiling-tool-button" type="button" title="Take an ad-hoc snapshot" aria-label="Take profiling snapshot"><i class="bi bi-camera" aria-hidden="true"></i></button>
+                <button id="profiling-gc" class="btn btn-outline-danger btn-sm profiling-tool-button" type="button" title="Request a normal GC collection" aria-label="Request garbage collection"><i class="bi bi-recycle" aria-hidden="true"></i></button>
+                <button id="profiling-edit-metadata" type="button" class="btn btn-outline-info btn-sm profiling-tool-button" data-bs-toggle="modal" data-bs-target="#profiling-metadata-modal" disabled="@(session is null ? "disabled" : null)" title="@(session is null ? "Select a profiling session to view or edit metadata" : "View or edit session metadata")" aria-label="View or edit session metadata"><i class="bi bi-pencil-square" aria-hidden="true"></i></button>
+                <details class="profiling-tools-menu">
+                    <summary class="btn btn-outline-secondary btn-sm profiling-tool-button" title="Import sessions and manage stored sessions" aria-label="More session tools"><i class="bi bi-three-dots" aria-hidden="true"></i></summary>
+                    <div class="profiling-tools-popover">
+                        <form id="profiling-archive-import-form" enctype="multipart/form-data">
+                            <label for="profiling-archive-file" class="form-label small mb-1">Import session JSON</label>
+                            <input id="profiling-archive-file" name="archive" class="form-control form-control-sm mb-2" type="file" accept="application/json,.json" required />
+                            <button class="btn btn-outline-info btn-sm w-100" type="submit"><i class="bi bi-upload me-1" aria-hidden="true"></i>Import JSON</button>
+                        </form>
+                        <hr />
+                        <div class="d-grid gap-2">
+                            <button id="profiling-delete-session" class="btn btn-outline-danger btn-sm" type="button" title="Delete the selected terminal session">Delete selected session</button>
+                            <button id="profiling-delete-unpinned" class="btn btn-outline-danger btn-sm" type="button" title="Delete every unpinned terminal session">Delete all unpinned</button>
+                            <button id="profiling-clear" class="btn btn-danger btn-sm" type="button" title="Permanently clear all profiling data, including pinned sessions">Clear all profiling data</button>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+        <div id="profiling-sessions-body" class="card-body p-2">
+            <form id="profiling-start-form" class="row g-2 align-items-end mb-2" aria-label="Profiling session settings">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label for="profiling-start-name" class="form-label small">Name</label>
+                    <input id="profiling-start-name" class="form-control form-control-sm" maxlength="120" placeholder="warm-up or workload name" />
+                </div>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <label for="profiling-start-interval" class="form-label small">Interval (ms)</label>
+                    <input id="profiling-start-interval" class="form-control form-control-sm" type="number" min="500" step="100" value="@(session?.SamplingInterval.TotalMilliseconds ?? 1000)" />
+                </div>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <label for="profiling-start-duration" class="form-label small">Duration (sec)</label>
+                    <input id="profiling-start-duration" class="form-control form-control-sm" type="number" min="1" step="1" value="@(session?.Duration.TotalSeconds ?? 30)" />
+                </div>
+                <div class="col-auto profiling-session-control">
+                    <button id="profiling-session-toggle" class="btn @(running ? "btn-danger is-running" : "btn-success is-stopped") btn-sm profiling-session-toggle" type="button" data-session-action="@(running ? "stop" : "start")" title="@(running ? "Stop the active profiling session" : "Start a profiling session")" aria-label="@(running ? "Stop profiling session" : "Start profiling session")"><i class="bi @(running ? "bi-stop-fill" : "bi-play-fill")" aria-hidden="true"></i></button>
+                </div>
+            </form>
+            <div class="row g-2">
+                <div class="col-12 col-lg-7">
+                    <label for="profiling-session-select" class="form-label small">History</label>
+                    <div class="input-group input-group-sm">
+                        <select id="profiling-session-select" class="form-select" aria-label="Selected profiling session">
+                            @if (Model.Sessions.Count == 0)
+                            {
+                                <option value="">No stored sessions</option>
+                            }
+                            @foreach (var item in Model.Sessions)
+                            {
+                                <option value="@item.Identity.Key" selected="@(item.Identity.Key == Model.SessionKey)">@SessionOptionText(item)</option>
+                            }
+                        </select>
+                        <a id="profiling-session-export" class="btn btn-outline-secondary @(session is null || running ? "disabled" : null)" href="@(session is null || running ? null : Model.SessionExportPath)" download="@(session is null ? null : $"profiling-session-{session.Identity.Key}.json")" title="@(running ? "Stop the session before exporting it" : "Export the selected session as importable JSON")" aria-label="Export selected session JSON" aria-disabled="@(session is null || running ? "true" : "false")" data-profiling-live-region><i class="bi bi-download" aria-hidden="true"></i></a>
+                        <a id="profiling-session-perfetto" class="btn btn-outline-info @(session is null || running ? "disabled" : null)" href="@(session is null || running ? null : Model.SessionPerfettoPath)" download="@(session is null ? null : $"profiling-session-{session.Identity.Key}.perfetto.json")" title="@(running ? "Stop the session before exporting a Perfetto trace" : "Export the selected session for visual investigation in Perfetto")" aria-label="Export selected session as a Perfetto trace" aria-disabled="@(session is null || running ? "true" : "false")" data-profiling-live-region><i class="bi bi-activity" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <label for="profiling-node-select" class="form-label small">Node</label>
+                    <select id="profiling-node-select" class="form-select form-select-sm" aria-label="Selected profiling node">
+                        @if (Model.NodeKeys.Count == 0)
+                        {
+                            <option value="">No contributing nodes</option>
+                        }
+                        @foreach (var key in Model.NodeKeys)
+                        {
+                            var storedNode = Model.SelectedSession?.Nodes.FirstOrDefault(item => item.Identity.Key == key);
+                            var nodeSnapshot = Model.SelectedSession?.Snapshots.FirstOrDefault(item => item.NodeKey == key);
+                            var hostName = storedNode?.HostName ?? nodeSnapshot?.HostName ?? "Unknown node";
+                            var processId = storedNode?.ProcessId ?? nodeSnapshot?.ProcessId;
+                            <option value="@key" selected="@(key == Model.NodeKey)">@hostName · PID @(processId?.ToString(CultureInfo.InvariantCulture) ?? "unknown")</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="profiling-metadata-modal" tabindex="-1" aria-labelledby="profiling-metadata-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <form id="profiling-metadata-form" class="modal-content" aria-label="Edit session metadata">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="profiling-metadata-title">Session metadata</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-7"><label for="profiling-metadata-name" class="form-label">Name</label><input id="profiling-metadata-name" class="form-control" value="@session?.Name" /></div>
+                        <div class="col-12 col-md-5"><label for="profiling-metadata-tags" class="form-label">Tags</label><input id="profiling-metadata-tags" class="form-control" value="@string.Join(", ", session?.Tags ?? [])" placeholder="comma separated" /></div>
+                        <div class="col-12"><label for="profiling-metadata-note" class="form-label">Note</label><textarea id="profiling-metadata-note" class="form-control" rows="4">@session?.Note</textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div class="form-check form-switch"><input id="profiling-metadata-pinned" class="form-check-input" type="checkbox" checked="@(session?.IsPinned == true)" /><label class="form-check-label" for="profiling-metadata-pinned">Pinned</label></div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary btn-sm" type="submit">Save metadata</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <nav class="profiling-tabs mb-3" role="tablist" aria-label="Profiling workbench views">
+        <button id="profiling-tab-overview" class="profiling-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="profiling-panel-overview" data-profiling-tab="overview"><i class="bi bi-activity" aria-hidden="true"></i><span>Overview</span></button>
+        <button id="profiling-tab-analysis" class="profiling-tab" type="button" role="tab" aria-selected="false" aria-controls="profiling-panel-analysis" data-profiling-tab="analysis"><i class="bi bi-clipboard-data" aria-hidden="true"></i><span>Analysis</span></button>
+        <button id="profiling-tab-comparison" class="profiling-tab" type="button" role="tab" aria-selected="false" aria-controls="profiling-panel-comparison" data-profiling-tab="comparison"><i class="bi bi-arrow-left-right" aria-hidden="true"></i><span>Comparison</span></button>
+        <button id="profiling-tab-info" class="profiling-tab" type="button" role="tab" aria-selected="false" aria-controls="profiling-panel-info" data-profiling-tab="info"><i class="bi bi-info-circle" aria-hidden="true"></i><span>Info</span></button>
+    </nav>
+
+    <div id="profiling-panel-overview" class="profiling-tab-panel" role="tabpanel" aria-labelledby="profiling-tab-overview" data-profiling-tab-panel="overview">
+
+    <section id="profiling-current-snapshot" class="card profiling-panel mb-3" aria-labelledby="profiling-current-title" data-profiling-live-region>
+        <div class="card-header profiling-panel-header">
+            <div class="d-flex align-items-center gap-2">
+                <button id="profiling-toggle-snapshot-details" class="btn btn-outline-secondary btn-sm profiling-tool-button" type="button" aria-expanded="true" aria-controls="profiling-current-snapshot-body" title="Collapse snapshot details" aria-label="Collapse snapshot details"><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+                <h2 id="profiling-current-title" class="h6 mb-0">@(string.IsNullOrWhiteSpace(Model.SnapshotKey) ? "Current Snapshot" : "Selected Snapshot") @InfoIcon("Snapshot details", "Shows the immutable metrics for the selected retained snapshot. Reset the selection to resume following the latest snapshot.")</h2>
+            </div>
+            <div class="profiling-snapshot-controls">
+                <div class="input-group input-group-sm profiling-snapshot-picker">
+                    <label class="input-group-text" for="profiling-snapshot-select">Snapshot</label>
+                    <select id="profiling-snapshot-select" class="form-select" aria-label="Snapshot to inspect" disabled="@(node?.Snapshots.Count > 0 ? null : "disabled")">
+                        <option value="" selected="@string.IsNullOrWhiteSpace(Model.SnapshotKey)">Current (latest)</option>
+                        @foreach (var item in (node?.Snapshots ?? []).OrderByDescending(item => item.Sequence))
+                        {
+                            <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)" selected="@(item.Identity.Key == Model.SnapshotKey)">#@item.Sequence · @item.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) · @item.Identity.Key</option>
+                        }
+                    </select>
+                    <button id="profiling-reset-snapshot" class="btn btn-outline-secondary" type="button" disabled="@(string.IsNullOrWhiteSpace(Model.SnapshotKey) ? "disabled" : null)" title="Reset to the current snapshot" aria-label="Reset to the current snapshot"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i></button>
+                </div>
+                <button id="profiling-focus-snapshot" class="btn btn-outline-secondary btn-sm profiling-tool-button profiling-compact-focus-button" type="button" disabled="@(snapshot is null ? "disabled" : null)" title="View every captured snapshot metric" aria-label="View every captured snapshot metric"><i class="bi bi-arrows-fullscreen" aria-hidden="true"></i></button>
+                <button id="profiling-copy-snapshot" class="btn btn-outline-secondary btn-sm" type="button" disabled="@(snapshot is null ? "disabled" : null)" aria-label="Copy displayed snapshot as JSON"><i class="bi bi-copy me-1" aria-hidden="true"></i>Copy JSON</button>
+            </div>
+        </div>
+        <div id="profiling-current-snapshot-body" class="card-body p-3 profiling-snapshot-body">
+            @if (snapshot is null)
+            {
+                <div class="profiling-empty" role="status">No snapshot is available for this node yet.</div>
+            }
+            else
+            {
+                <div class="profiling-vitals-grid">
+                    @MetricCard("CPU", FormatPercent(snapshot.CpuUsagePercent), $"PID {snapshot.ProcessId} · {snapshot.ProcessThreadCount?.ToString(CultureInfo.InvariantCulture) ?? "unavailable"} threads", "Process CPU over the sampling interval.")
+                    @MetricCard("Managed memory", FormatBytes(snapshot.ManagedMemoryBytes), $"heap {FormatBytes(snapshot.ManagedHeapSizeBytes)} · committed {FormatBytes(snapshot.TotalCommittedBytes)}", "Live managed memory, GC heap size, and total committed runtime memory.")
+                    @MetricCard("Private memory", FormatBytes(snapshot.PrivateMemoryBytes), $"working set {FormatBytes(snapshot.WorkingSetBytes)}", "Process-private committed memory and resident working set.")
+                    @MetricCard("Physical memory", FormatBytes(snapshot.UsedPhysicalMemoryBytes), $"available {FormatBytes(snapshot.AvailablePhysicalMemoryBytes)}", "Machine physical memory usage visible to this process.")
+                    @MetricCard("Allocation rate", FormatRate(snapshot.AllocationRateBytesPerSecond), $"total {FormatBytes(snapshot.TotalAllocatedBytes)}", "Estimated managed allocation throughput.")
+                    @MetricCard("Memory pressure", FormatPercent(snapshot.MemoryPressurePercent), $"load {FormatBytes(snapshot.MemoryLoadBytes)}", "Runtime memory load relative to its available-memory estimate.")
+                    @MetricCard("Heap fragmentation", FormatPercent(snapshot.HeapFragmentationPercent), $"{FormatBytes(snapshot.FragmentedBytes)} fragmented", "Fragmented bytes as a share of the managed heap.")
+                    @MetricCard("LOH", FormatBytes(snapshot.LargeObjectHeapBytes), $"{FormatPercent(snapshot.LargeObjectHeapFragmentationPercent)} fragmented", "Large Object Heap size and fragmentation.")
+                    @MetricCard("GC collections", $"{Value(snapshot.Gen0CollectionCount)} / {Value(snapshot.Gen1CollectionCount)} / {Value(snapshot.Gen2CollectionCount)}", $"pause {FormatPercent(snapshot.GcPausePercent)}", "Cumulative Gen0 / Gen1 / Gen2 counts and interval GC pause burden.")
+                    @MetricCard("GC runtime state", $"{Value(snapshot.PinnedObjectCount)} pinned", $"{Value(snapshot.FinalizationPendingCount)} awaiting finalization", "Pinned objects and objects waiting for finalization, when available.")
+                    @MetricCard("Post-GC evidence", FormatBytes(snapshot.LatestGcManagedHeapBytes), $"Gen {Value(snapshot.LatestGcGeneration)} · LOH {FormatBytes(snapshot.LatestGcLargeObjectHeapBytes)}", "Latest event-derived post-GC heap evidence, when available.")
+                    @MetricCard("Thread pool", Value(snapshot.ThreadPoolThreadCount), $"{Value(snapshot.ThreadPoolPendingWorkItemCount)} pending · {Value(snapshot.ThreadPoolAvailableWorkerThreadCount)} available", "Thread-pool size, queued work, and worker availability.")
+                    @MetricCard("Sockets", Value(snapshot.TotalUsedSocketCount), $"{Value(snapshot.ActiveTcpConnectionCount)} active TCP · {Value(snapshot.TcpListenerCount)} listeners", "Current operating-system socket counts.")
+                </div>
+            }
+        </div>
+    </section>
+
+    <div class="profiling-chart-grid mb-3">
+        <section class="card profiling-panel profiling-chart-panel" aria-labelledby="profiling-memory-title">
+            <div id="profiling-memory-chart-header" class="card-header profiling-panel-header" data-profiling-live-region>
+                <h2 id="profiling-memory-title" class="h6 mb-0">Memory History @InfoIcon("Memory history", "Shows how managed heap, private memory, working set, committed memory, and the Large Object Heap change over time. Persistent upward movement is usually more useful than one isolated peak.")</h2>
+                <button type="button" class="btn btn-outline-secondary btn-sm profiling-tool-button" data-profiling-chart-focus="memory" title="Open both session charts in focus view" aria-label="Open both session charts in focus view"><i class="bi bi-arrows-fullscreen" aria-hidden="true"></i></button>
+            </div>
+            <div id="profiling-memory-chart" class="profiling-primary-chart" role="img" aria-label="Memory history chart showing managed, heap, private, working set, committed, and LOH memory"></div>
+        </section>
+
+        <section class="card profiling-panel profiling-chart-panel" aria-labelledby="profiling-gc-title">
+            <div id="profiling-gc-chart-header" class="card-header profiling-panel-header" data-profiling-live-region>
+                <h2 id="profiling-gc-title" class="h6 mb-0">GC Pressure History @InfoIcon("GC pressure history", "Combines CPU, allocation throughput, garbage-collection pause burden, memory pressure, and heap fragmentation. Look for related movements rather than treating one line as a diagnosis.")</h2>
+                <button type="button" class="btn btn-outline-secondary btn-sm profiling-tool-button" data-profiling-chart-focus="gc" title="Open both session charts in focus view" aria-label="Open both session charts in focus view"><i class="bi bi-arrows-fullscreen" aria-hidden="true"></i></button>
+            </div>
+            <div id="profiling-gc-chart" class="profiling-primary-chart" role="img" aria-label="GC pressure history chart showing CPU, memory pressure, fragmentation, pause, and allocation rate"></div>
+        </section>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3 align-items-center mb-3 profiling-chart-filters" aria-label="Chart annotation filters">
+        <div class="form-check form-switch"><input id="profiling-filter-phases" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-phases">Phase markers</label></div>
+        <div class="form-check form-switch"><input id="profiling-filter-actions" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-actions">Node actions</label></div>
+        <div class="form-check form-switch"><input id="profiling-filter-segments" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-segments">Segments</label></div>
+    </div>
+    </div>
+
+    <div id="profiling-panel-analysis" class="profiling-tab-panel" role="tabpanel" aria-labelledby="profiling-tab-analysis" data-profiling-tab-panel="analysis" hidden>
+    <section class="card profiling-panel mb-3" id="profiling-session-analysis">
+        <div class="card-header profiling-panel-header">
+            <h2 class="h6 mb-0">Analysis @InfoIcon("Deterministic analysis", "Applies fixed rules to the selected node's captured evidence. Signals are independent observations, not diagnoses or a combined health score. KPIs summarize the evaluated time window.")</h2>
+            <div class="d-flex align-items-center gap-3">
+                <div class="form-check form-switch"><input id="profiling-live-analysis" class="form-check-input" type="checkbox" role="switch" /><label class="form-check-label small" for="profiling-live-analysis">Live analysis</label></div>
+                <button id="profiling-analyze-now" class="btn btn-primary btn-sm" type="button">Analyze now</button>
+            </div>
+        </div>
+        <div class="card-body p-3" id="profiling-session-analysis-result" aria-live="polite"><div class="profiling-empty">Analysis has not been requested. Live analysis is off by default.</div></div>
+    </section>
+    </div>
+
+    <div id="profiling-panel-comparison" class="profiling-tab-panel" role="tabpanel" aria-labelledby="profiling-tab-comparison" data-profiling-tab-panel="comparison" hidden>
+    <section class="card profiling-panel mb-3" aria-labelledby="profiling-compare-title">
+        <div class="card-header profiling-panel-header"><h2 id="profiling-compare-title" class="h6 mb-0">Snapshot comparison @InfoIcon("Snapshot comparison", "Compares an earlier and later snapshot from the same session and node. Difference is later minus earlier; Change is the percentage difference when the earlier value permits a safe calculation.")</h2></div>
+        <div class="card-body p-3">
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-12 col-md-5"><label for="profiling-snapshot-a" class="form-label small">Earlier snapshot A</label><select id="profiling-snapshot-a" class="form-select form-select-sm"><option value="">Select earlier snapshot</option>@foreach (var item in node?.Snapshots ?? []) { <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)">#@item.Sequence · @item.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) · @item.Identity.Key</option> }</select></div>
+                <div class="col-12 col-md-5"><label for="profiling-snapshot-b" class="form-label small">Later snapshot B</label><select id="profiling-snapshot-b" class="form-select form-select-sm"><option value="">Select later snapshot</option>@foreach (var item in node?.Snapshots ?? []) { <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)">#@item.Sequence · @item.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) · @item.Identity.Key</option> }</select></div>
+                <div class="col-12 col-md-2"><button id="profiling-compare" class="btn btn-primary btn-sm w-100" type="button">Analyze pair</button></div>
+            </div>
+            <div id="profiling-pair-validation" class="small text-danger mb-2" role="alert"></div>
+            <div id="profiling-pair-analysis" class="profiling-analysis-result mb-3" aria-live="polite"><div class="profiling-empty">Select an earlier and later snapshot to calculate deterministic signals.</div></div>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0" id="profiling-delta-table">
+                    <thead><tr><th>Metric @InfoIcon("Comparison metrics", "Each row is one raw captured measurement. Use its information icon to learn what it measures.")</th><th>Unit</th><th class="text-end">Earlier</th><th class="text-end">Later</th><th class="text-end">Difference</th><th class="text-end">Change @InfoIcon("Percentage change", "The difference divided by the earlier value. It is unavailable when the earlier value is zero, missing, or otherwise unsafe as a baseline.")</th></tr></thead>
+                    <tbody><tr><td colspan="6" class="text-muted">Raw metric deltas appear after a valid pair analysis.</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    </div>
+
+    <div id="profiling-panel-info" class="profiling-tab-panel" role="tabpanel" aria-labelledby="profiling-tab-info" data-profiling-tab-panel="info" hidden>
+    <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-outline-info btn-sm profiling-tool-button" data-bs-toggle="modal" data-bs-target="#profiling-runtime-context-modal" title="Show immutable runtime context" aria-label="Show immutable runtime context"><i class="bi bi-info-circle" aria-hidden="true"></i></button>
+    </div>
+
+    <div class="row g-2 mb-3">
+        <div class="col-12 col-xl-7">
+            <details class="card profiling-panel h-100">
+                <summary class="card-header profiling-analysis-summary"><span id="profiling-segment-count" data-profiling-live-region>Measured segments (@(node?.Segments.Count ?? 0))</span></summary>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Name</th><th>Start</th><th>End</th><th>Duration</th><th>Outcome</th><th>Parent</th><th>Correlation</th></tr></thead>
+                        <tbody id="profiling-segment-rows" data-profiling-live-region>
+                            @if (node?.Segments.Count > 0)
+                            {
+                                @foreach (var segment in node.Segments)
+                                {
+                                    <tr>
+                                        <td>@segment.Name</td>
+                                        <td>@segment.StartedUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</td>
+                                        <td>@FormatSegmentEnd(segment)</td>
+                                        <td>@FormatDuration(segment.Elapsed)</td>
+                                        <td>@segment.Outcome</td>
+                                        <td>@DisplayParent(segment, node.Segments)</td>
+                                        <td>@Display(segment.CorrelationId)</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="7" class="text-muted">No measured segments.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        </div>
+        <div class="col-12 col-xl-5">
+            <details class="card profiling-panel h-100">
+                <summary class="card-header profiling-analysis-summary"><span id="profiling-custom-metric-count" data-profiling-live-region>Custom metrics (@(node?.MetricObservations.Count ?? 0)) @InfoIcon("Custom metrics", "Application-defined measurements collected from System.Diagnostics.Metrics. Their exact meaning and unit come from the instrument that emitted them.")</span></summary>
+                <div class="card-body p-0 table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Metric</th><th>Kind</th><th class="text-end">Value</th><th>Captured</th></tr></thead><tbody id="profiling-custom-metric-rows" data-profiling-live-region>@if (node?.MetricObservations.Count > 0) { @foreach (var metric in node.MetricObservations.OrderByDescending(item => item.TimestampUtc).Take(100)) { <tr><td>@metric.MetricIdentifier</td><td>@metric.Kind</td><td class="text-end">@metric.Value.ToString("N2", CultureInfo.InvariantCulture) @metric.Unit</td><td>@metric.TimestampUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</td></tr> } } else { <tr><td colspan="4" class="text-muted">No custom metric observations.</td></tr> }</tbody></table></div>
+            </details>
+        </div>
+    </div>
+
+    <div class="modal fade" id="profiling-runtime-context-modal" tabindex="-1" aria-labelledby="profiling-runtime-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="profiling-runtime-title">Runtime context</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="profiling-runtime-context" class="profiling-context-grid">
+                        <span><small>Application</small><strong>@Display(runtime?.ApplicationName) @Display(runtime?.ApplicationVersion)</strong></span>
+                        <span><small>Runtime</small><strong>@Display(runtime?.RuntimeDescription)</strong></span>
+                        <span><small>Platform</small><strong>@Display(runtime?.OperatingSystemDescription)</strong></span>
+                        <span><small>Architecture</small><strong>@Display(runtime?.ProcessArchitecture) / @Display(runtime?.OperatingSystemArchitecture)</strong></span>
+                        <span><small>GC mode</small><strong>@(runtime?.ServerGarbageCollection is null ? "unavailable" : runtime.ServerGarbageCollection.Value ? "Server" : "Workstation")</strong></span>
+                        <span><small>Debugger</small><strong>@(runtime is null ? "unavailable" : runtime.DebuggerAttached ? "Attached" : "Not attached")</strong></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+@functions {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
+    private static string SessionOptionText(ProfilingSession session)
+    {
+        var parts = new List<string>
+        {
+            session.StartedUtc.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture),
+            session.Identity.Key,
+        };
+        if (!IsGeneratedSessionName(session))
+        {
+            parts.Add(session.Name);
+        }
+
+        parts.Add(session.State.ToString());
+        return string.Join(" · ", parts);
+    }
+
+    private static bool IsGeneratedSessionName(ProfilingSession session) =>
+        string.IsNullOrWhiteSpace(session.Name)
+        || (
+            DateTimeOffset.TryParseExact(
+                session.Name,
+                ProfilingOptions.DefaultSessionNameFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.RoundtripKind,
+                out var generatedAt
+            )
+            && generatedAt == session.StartedUtc
+        );
+
+    private static IHtmlContent MetricCard(string label, string value, string detail, string help) =>
+        new HtmlString($"<article class=\"profiling-vital\"><span>{Encode(label)} {InfoButtonMarkup(label, help)}</span><strong>{Encode(value)}</strong><small>{Encode(detail)}</small></article>");
+
+    private static IHtmlContent InfoIcon(string label, string help) =>
+        new HtmlString(InfoButtonMarkup(label, help));
+
+    private static string InfoButtonMarkup(string label, string help) =>
+        $"<button type=\"button\" class=\"profiling-info\" aria-label=\"{Encode($"About {label}: {help}")}\" data-description=\"{Encode(help)}\"><i class=\"bi bi-info-circle\" aria-hidden=\"true\"></i></button>";
+
+    private static string Encode(string value) => System.Net.WebUtility.HtmlEncode(value ?? "unavailable");
+    private static string Display(string value) => string.IsNullOrWhiteSpace(value) ? "unavailable" : value;
+    private static string Value<T>(T? value) where T : struct => value?.ToString() ?? "unavailable";
+    private static string FormatPercent(double? value) => value is null ? "unavailable" : $"{value.Value:N1}%";
+    private static string FormatBytes(long? value) => value is null ? "unavailable" : value.Value switch
+    {
+        >= 1_073_741_824 => $"{value.Value / 1_073_741_824d:N2} GiB",
+        >= 1_048_576 => $"{value.Value / 1_048_576d:N1} MiB",
+        >= 1024 => $"{value.Value / 1024d:N1} KiB",
+        _ => $"{value.Value:N0} B",
+    };
+    private static string FormatRate(double? value) => value is null ? "unavailable" : $"{FormatBytes((long)value.Value)}/s";
+    private static string FormatDuration(TimeSpan? value) => value is null ? "unavailable" : value.Value.TotalMilliseconds < 1000 ? $"{value.Value.TotalMilliseconds:N1} ms" : $"{value.Value.TotalSeconds:N2} s";
+    private static string FormatSegmentEnd(ProfilingSegment segment) => segment.EndedUtc is { } endedUtc
+        ? endedUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)
+        : segment.Outcome == ProfilingSegmentOutcome.Open ? "open" : "unavailable";
+    private static string DisplayParent(ProfilingSegment segment, IReadOnlyList<ProfilingSegment> segments)
+    {
+        if (segment.ParentSegmentId is not { } parentId)
+        {
+            return "none";
+        }
+
+        return segments.FirstOrDefault(candidate => candidate.Id == parentId)?.Name ?? "unavailable";
+    }
+}

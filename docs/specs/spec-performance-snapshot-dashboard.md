@@ -1,21 +1,21 @@
 ---
 created: 2026-08-04
-status: draft
+status: implemented
 ---
 
-# Design Specification: Performance Snapshot Dashboard
+# Design Specification: Profiling Dashboard
 
-> This draft specification defines a lightweight, developer-focused performance dashboard for short-lived runtime diagnostics. The feature is intended for stress testing, warm-up validation, and ad-hoc troubleshooting, not for long-term production monitoring.
+> This specification defines a lightweight, developer-focused profiling dashboard for short-lived runtime diagnostics. The feature is intended for stress testing, warm-up validation, and ad-hoc troubleshooting, not for long-term production monitoring.
 
 [TOC]
 
 ## Overview
 
-The performance dashboard introduces a dedicated dashboard page for collecting and reviewing short bursts of runtime performance data while an application is running. The feature is designed for application developers who want to start a workload, collect a focused set of performance snapshots, and inspect the results immediately in the browser.
+The Profiling feature introduces a dedicated dashboard page for collecting and reviewing short bursts of runtime performance data while an application is running. The feature is designed for application developers who want to start a workload, collect a focused set of performance snapshots, and inspect the results immediately in the browser.
 
 The feature shall also provide lightweight programmatic and console-command control surfaces so application code or a developer at the command line can start, stop, or manage collection sessions directly. This makes it suitable for integrated DevKit usage where a feature, test workflow, or terminal session can trigger collection around a specific operation without requiring manual dashboard interaction.
 
-Deployment-wide control shall use the DevKit Broadcast feature from `Common.Utilities/Broadcasting`. The performance feature shall not poll its session store for control commands. Broadcast supplies the registered-node snapshot and direct push delivery used for session start, stop, manual snapshot, and manual GC actions.
+Deployment-wide control shall use the DevKit Broadcast feature from `Common.Utilities/Broadcasting`. The Profiling feature shall not poll its session store for control commands. Broadcast supplies the registered-node snapshot and direct push delivery used for session start, stop, manual snapshot, and manual GC actions.
 
 This feature complements, rather than replaces, long-term observability platforms such as Grafana, Prometheus, OpenTelemetry, or vendor APM tools.
 
@@ -144,7 +144,7 @@ A manual phase marker shall be a session-level timestamped annotation for an ope
 
 The session store shall atomically verify that the session is still active while adding the marker. The operation shall store the marker once without a Broadcast operation and shall reject an idle or terminal session. Phase markers shall be immutable and shall not have individual edit or delete operations; session deletion, retention, and clear-all shall remove them with the session. They shall appear on every selected-node chart for the session. They shall not restrict evaluation to an interval or alter the snapshots included in evaluation.
 
-The collection lifecycle shall also be available programmatically so application code, background jobs, integration tests, custom developer workflows, or console commands can start and stop sessions directly. The programmatic surface shall support an optional session name and expose the same start, stop, status, restart, deletion, full-storage-reset, phase-marker, snapshot-comparison, and node-session-evaluation semantics as the dashboard.
+The collection lifecycle shall also be available programmatically so application code, background jobs, integration tests, custom developer workflows, or console commands can start and stop sessions directly. The programmatic surface shall support an optional session name and expose the same start, stop, status, restart, deletion, full-storage-reset, phase-marker, snapshot-comparison, node-session-evaluation, portable-archive, and Perfetto-trace export semantics as the dashboard.
 
 The dashboard shall support shareable session URLs. A session link identifies the target session but does not bypass normal access restrictions.
 
@@ -189,56 +189,56 @@ Cleared, deleted, and expired session identities shall remain invalid for future
 
 ### Console-command control
 
-When the performance integration is registered and the host's Console Commands capability is enabled, the feature shall register a `performance` command group with `perf` as an alias. These commands shall execute inside the selected running application host through the existing DevKit Console Commands infrastructure. They shall invoke the same application-facing performance control service as the dashboard and shall not implement a separate collector, session lifecycle, storage path, or Broadcast integration. Keeping the commands registered while runtime collection is configuration-disabled allows `performance status` and attempted control operations to report that disabled state clearly.
+When the Profiling integration is registered and the host's Console Commands capability is enabled, the feature shall register a `profiling` command group with `prof` as an alias. These commands shall execute inside the selected running application host through the existing DevKit Console Commands infrastructure. They shall invoke the same application-facing profiling control service as the dashboard and shall not implement a separate collector, session lifecycle, storage path, or Broadcast integration. Keeping the commands registered while runtime collection is configuration-disabled allows `profiling status` and attempted control operations to report that disabled state clearly.
 
 The command group shall provide the following collection-control operations:
 
-- `performance status` shows feature availability, the current session state, session identity, configured interval and duration, and participant status when a session exists
-- `performance start` starts a deployment-wide session and accepts optional `--name`, `--interval`, and `--duration` options
-- `performance stop` stops the active deployment-wide session
-- `performance snapshot` performs the same one-off manual snapshot action as the dashboard and accepts an optional `--name` for a standalone one-snapshot session
-- `performance gc` performs the same deployment-wide manual GC action as the dashboard
-- `performance mark --name <text>` adds a phase marker to the active session
-- `performance clear --yes` performs the same confirmed full storage reset as the dashboard
-- `performance analyze --session <key> --node <key>` evaluates the complete available timeline for one node in one session
-- `performance analyze --session <key> --node <key> --snapshot-a <key> --snapshot-b <key>` evaluates exactly two snapshots from the same session and node
-- `performance analyze ... --json` writes the same computed evaluation result as JSON instead of the concise terminal presentation
+- `profiling status` shows feature availability, the current session state, session identity, configured interval and duration, and participant status when a session exists
+- `profiling start` starts a deployment-wide session and accepts optional `--name`, `--interval`, and `--duration` options
+- `profiling stop` stops the active deployment-wide session
+- `profiling snapshot` performs the same one-off manual snapshot action as the dashboard and accepts an optional `--name` for a standalone one-snapshot session
+- `profiling gc` performs the same deployment-wide manual GC action as the dashboard
+- `profiling mark --name <text>` adds a phase marker to the active session
+- `profiling clear --yes` performs the same confirmed full storage reset as the dashboard
+- `profiling analyze --session <key> --node <key>` evaluates the complete available timeline for one node in one session
+- `profiling analyze --session <key> --node <key> --snapshot-a <key> --snapshot-b <key>` evaluates exactly two snapshots from the same session and node
+- `profiling analyze ... --json` writes the same computed evaluation result as JSON instead of the concise terminal presentation
 
 The commands may be invoked directly through an interactive Console Commands host or forwarded to a running host through `bdk host run`, for example:
 
 ```text
-performance start --name "warm-up" --interval 1s --duration 30s
-performance status
-performance snapshot
-performance stop
-performance gc
-performance mark --name "load started"
-performance clear --yes
-performance analyze --session a1b2c3d4 --node e5f6g7h8
-performance analyze --session a1b2c3d4 --node e5f6g7h8 --snapshot-a i9j0k1l2 --snapshot-b m3n4o5p6 --json
+profiling start --name "warm-up" --interval 1s --duration 30s
+profiling status
+profiling snapshot
+profiling stop
+profiling gc
+profiling mark --name "load started"
+profiling clear --yes
+profiling analyze --session a1b2c3d4 --node e5f6g7h8
+profiling analyze --session a1b2c3d4 --node e5f6g7h8 --snapshot-a i9j0k1l2 --snapshot-b m3n4o5p6 --json
 
-bdk host run -- performance start --name "warm-up" --duration 30s
-bdk host run -- performance snapshot
-bdk host run -- performance mark --name "load started"
-bdk host run -- performance stop
-bdk host run -- performance clear --yes
+bdk host run -- profiling start --name "warm-up" --duration 30s
+bdk host run -- profiling snapshot
+bdk host run -- profiling mark --name "load started"
+bdk host run -- profiling stop
+bdk host run -- profiling clear --yes
 ```
 
 A command invoked on one host shall retain the deployment-wide semantics of the corresponding dashboard operation. The selected host is the initiating node; session start, stop, manual snapshot, and manual GC shall still use the configured DevKit Broadcast scope.
 
-`performance mark` shall add one shared phase marker directly to the active logical session. It shall not broadcast a per-node command. It shall reject a missing or invalid name and shall return a clear no-active-session result without creating a session when collection is idle.
+`profiling mark` shall add one shared phase marker directly to the active logical session. It shall not broadcast a per-node command. It shall reject a missing or invalid name and shall return a clear no-active-session result without creating a session when collection is idle.
 
 Command options shall use the same validation and defaults as dashboard or programmatic requests. In particular, intervals below 500 ms shall be rejected, duration shall be required after defaults are applied, and a start attempt made while a session is already active shall report the existing active session rather than create another one.
 
-Duration options shall accept the friendly suffixes `ms`, `s`, `m`, and `h`, as well as the standard .NET `TimeSpan` representation. Parsing shall be implemented by a small performance-feature-local parser and shall not add or alter a shared Console Commands binder.
+Duration options shall accept the friendly suffixes `ms`, `s`, `m`, and `h`, as well as the standard .NET `TimeSpan` representation. Parsing shall be implemented by a small Profiling-feature-local parser and shall not add or alter a shared Console Commands binder.
 
 Session, node, and snapshot command arguments and output shall use their readable eight-character keys. Command output shall be concise and suitable for terminal use. It shall identify the affected session and resulting state. For Broadcast-backed operations, it shall summarize immediate per-node outcomes using the same accepted, rejected, unsupported, expired, unreachable, and timed-out meanings used by the dashboard. It shall not report handler acceptance as completed local execution.
 
-For `performance analyze`, omitting both snapshot options selects the complete available node timeline. Supplying exactly one snapshot option shall be rejected; both are required for two-snapshot analysis. The command shall compute and print the result without storing it. JSON is an output representation for console and programmatic use, not a persisted evaluation artifact or dashboard download.
+For `profiling analyze`, omitting both snapshot options selects the complete available node timeline. Supplying exactly one snapshot option shall be rejected; both are required for two-snapshot analysis. The command shall compute and print the result without storing it. JSON is an output representation for console and programmatic use, not a persisted evaluation artifact or dashboard download.
 
-The existing `diag perf` and `diag gc` commands shall remain local, immediate, non-persisted diagnostics. The new `performance` commands are the persisted, deployment-wide performance-session operations and shall not change the semantics of the existing diagnostic commands.
+The existing `diag perf` and `diag gc` commands shall remain local, immediate, non-persisted diagnostics. The new `profiling` commands are the persisted, deployment-wide profiling-session operations and shall not change the semantics of the existing diagnostic commands.
 
-If the performance feature is disabled, Console Commands are unavailable, or required performance infrastructure is missing, the operation shall fail safely with a clear unavailable or disabled message and shall not change application state. Console commands shall respect cancellation and shall not leave a second logical session running after an interrupted start attempt. A rejected or cancelled clear command shall leave the store unchanged.
+If the Profiling feature is disabled, Console Commands are unavailable, or required performance infrastructure is missing, the operation shall fail safely with a clear unavailable or disabled message and shall not change application state. Console commands shall respect cancellation and shall not leave a second logical session running after an interrupted start attempt. A rejected or cancelled clear command shall leave the store unchanged.
 
 ### Session ownership and lifecycle
 
@@ -267,7 +267,7 @@ Restarting a session shall create a new session identity. When the selected sess
 
 ### Broadcast integration
 
-The performance feature shall consume the standalone DevKit Broadcast feature and shall not implement its own node registry, HTTP receiver, delivery transport, or broadcast polling loop.
+The Profiling feature shall consume the standalone DevKit Broadcast feature and shall not implement its own node registry, HTTP receiver, delivery transport, or broadcast polling loop.
 
 The integration shall use typed broadcasts for:
 
@@ -291,7 +291,7 @@ Broadcast requirements for this feature are:
 - a load-balanced application address is not a valid per-node broadcast address
 - a manual snapshot targets every current registration, not only the expected participants of an active session
 
-For local single-process development, the Broadcast feature may use its in-memory registry and local dispatch path. For multi-node usage, the Broadcast feature shall use its shared Entity Framework registry provider and direct HTTP push. The performance feature remains independent of how node addresses are resolved or how registrations are maintained.
+For local single-process development, the Broadcast feature may use its in-memory registry and local dispatch path. For multi-node usage, the Broadcast feature shall use its shared Entity Framework registry provider and direct HTTP push. The Profiling feature remains independent of how node addresses are resolved or how registrations are maintained.
 
 ### Scoped programmatic sessions and segments
 
@@ -337,6 +337,14 @@ Each node-local collector shall execute at most one snapshot capture at a time. 
 Snapshot timing shall use a node-local monotonic clock for elapsed durations, rate denominators, sampling delay, and capture duration. UTC timestamps shall remain the display and cross-node alignment timestamps, but UTC clock adjustments shall not affect node-local rate calculations.
 
 The snapshot sequence and successful-, skipped-, and failed-capture counts shall be node-local and reset for each session. The sequence shall increment only after a snapshot is captured successfully. Skipped and failed opportunities shall not consume a snapshot sequence value. When local collection ends, the node participation record shall preserve the final successful, skipped, and failed totals so failures after the last valid snapshot remain visible.
+
+### Profiling overhead benchmarks
+
+The existing `Common.Benchmarks` project shall contain BenchmarkDotNet coverage for the core profiling hot paths: raw system runtime sampling, fixed-source probe and snapshot-model overhead, complete system-backed snapshot capture, GC observation calculation, runtime-context capture, and immutable in-memory snapshot append. Each benchmark shall report execution time and managed allocations through `MemoryDiagnoser`.
+
+On a representative local development machine, the complete system-backed snapshot capture should average below 25 ms, which is five percent of the minimum supported 500 ms sampling interval. Fixed-source probe/model overhead should average below 1 ms, GC observation below 10 microseconds, runtime-context capture below 10 ms, and in-memory snapshot append below 1 ms per snapshot. These are regression-review budgets rather than cross-machine unit-test assertions; exceeding one requires investigation and documented justification because operating-system state and hardware affect benchmark results.
+
+Disabled and idle overhead, scheduled collection at 1 second and 500 ms, missed-opportunity behavior, and capture overlap shall also be measured during final hardening. Benchmark results shall not be persisted by the profiling feature or exposed as a runtime health score.
 
 ### Metrics to collect
 
@@ -468,11 +476,11 @@ The dashboard shall display a clear indication of when the data was captured and
 
 ### Multi-node behavior
 
-A collection session shall be deployment-wide within one or more configured Broadcast scopes. Starting a session shall use the DevKit Broadcast feature to read the current active registration snapshot and directly push the collection-start command to every registered target node. Nodes do not poll the performance store or Broadcast registry for commands.
+A collection session shall be deployment-wide within one or more configured Broadcast scopes. Starting a session shall use a Profiling-owned adapter over the DevKit Broadcast feature to read the current active registration snapshot and directly push the collection-start command to every registered target node. The standalone Broadcast service, its contracts, and its general behavior shall remain independent of Profiling and shall not gain Profiling-specific APIs. Nodes do not poll the performance store or Broadcast registry for commands.
 
 Before creating a session or broadcasting a session start or standalone manual snapshot, the control service shall determine the current target count. If more than one node is targeted and the configured performance session provider reports `SupportsMultiNode = false`, the operation shall be rejected with a shared-store-required result before any store mutation or broadcast is sent. This validation shall not block manual GC because that action does not persist a session.
 
-The performance feature shall use the node identity and delivery outcomes supplied by Broadcast. Nodes that return `Accepted` within the participation deadline become the fixed participant set. Registered nodes that return another response or do not respond may be shown in the immediate start-operation delivery summary but are not session participants. The Broadcast feature does not persist that delivery summary as broadcast history. A node registered after the target snapshot was read shall not join the session automatically.
+The Profiling feature shall use the node identity and delivery outcomes supplied by Broadcast. Its adapter shall freeze the target registrations before validation and shall delegate delivery to the unchanged Broadcast service through that fixed target view, without rereading the live registry. Nodes that return `Accepted` within the participation deadline become the fixed participant set. Registered nodes that return another response or do not respond may be shown in the immediate start-operation delivery summary but are not session participants. The Broadcast feature does not persist that delivery summary as broadcast history. A node registered after the target snapshot was read shall not join the session automatically.
 
 Each participating node shall record its participation and collect and store its own node-identified snapshots. The session shall record collection status independently for each participant. A participating node that fails during collection or does not complete shall not stop the remaining nodes from collecting. Partial completion and node-level failures shall be visible in the session view.
 
@@ -486,7 +494,7 @@ Manual snapshots and deployment-wide diagnostic actions shall use typed DevKit B
 
 The dashboard shall support a configurable refresh interval, following the same pattern as other dashboard pages.
 
-Supported refresh modes should include:
+Supported refresh modes shall include:
 
 - off
 - 1 second
@@ -496,6 +504,8 @@ Supported refresh modes should include:
 - 30 seconds
 - 60 seconds
 
+Immediately left of the refresh selector, the dashboard shall provide a compact, tooltip-described host-local stress action. It shall start the default 30-second background workload and return without holding the HTTP request open. The workload shall use dedicated CPU workers and sustained managed plus large-object allocations, retain a bounded memory set, and force a full GC while the retained set remains reachable so CPU, allocation, memory, LOH, GC, and post-GC evidence are observable. Its complete background execution shall be recorded as a named `Profiling stress test` segment, and that segment name shall identify its highlighted range on both primary charts. The programmatic `IProfilingStressService` surface shall accept a per-run duration, CPU-worker count, and retained-memory size so custom developer workflows can reuse the workload, while the dashboard action shall always pass the built-in defaults and shall not expose editable profiles. Only one workload may run in a process at a time; overlapping requests shall be rejected. The workload shall stop during host shutdown and shall not introduce saved profiles or recurring schedules.
+
 ## Dashboard Requirements
 
 ### Dashboard layout
@@ -504,6 +514,7 @@ The dashboard view shall include:
 
 - a status section showing whether collection is idle, running, completed, completed with warnings, stopped, or failed
 - controls for start, stop, duration, interval, manual snapshot collection, manual GC collection, and adding a phase marker
+- a compact fixed-duration process stress action immediately left of the refresh interval
 - a current-snapshot summary in a compact card grid
 - exactly two primary charts: a Memory History chart and a GC Pressure History chart
 - a node selector
@@ -533,6 +544,8 @@ Unavailable indicators shall be clearly shown as unavailable rather than as zero
 
 The current sampling-status summary shall use the latest persisted snapshot and participation totals already returned by the normal dashboard query. Full sampling coverage and p95 timing KPIs shall be computed only as part of an explicit or Live analysis request, so displaying the dashboard does not bypass the Live analysis switch.
 
+Periodic refresh shall update only live data regions such as collection status, current metrics, chart data, available snapshot choices, segments, and custom metrics. It shall not replace the complete Profiling content tree. User-owned interaction state—including the active workbench tab, focused controls, typed but unsaved text, selected comparison snapshots, archive file selection, expanded details, analysis results, chart filters, scroll position, and the Live analysis switch—shall survive background refresh. A deliberate session or node context change may reset context-specific controls and analysis because they no longer describe the selected context.
+
 ### Visualizations
 
 The dashboard shall present exactly two primary runtime charts:
@@ -540,15 +553,17 @@ The dashboard shall present exactly two primary runtime charts:
 - **Memory History:** a time series of managed memory, heap size, private memory, working set, committed memory, and LOH size
 - **GC Pressure History:** a time series of CPU usage, memory pressure, heap fragmentation, LOH fragmentation, GC pause, and allocation rate
 
-The charts shall use the dashboard's standard charting technology and shall be optimized for short diagnostic windows. Named session segments shall be rendered as markers or highlighted time ranges so runtime changes can be related to measured code sections.
+The charts shall use the dashboard's standard charting technology and shall be optimized for short diagnostic windows. Standard Plotly interaction controls shall remain available, including drag zoom, wheel zoom, box selection, pan, autoscale, and reset. Named session segments shall be rendered as markers or highlighted time ranges so runtime changes can be related to measured code sections.
+
+The chart X axes, segment ranges, phase markers, action markers, and every snapshot selector shall render in the browser's local time while persisted timestamps and API contracts remain UTC. Snapshot options shall show the sequence, full local date and time including milliseconds, and readable snapshot key. Rotated marker labels shall have sufficient top margin and positioning headroom to remain visible rather than being clipped by the plot boundary.
 
 Each chart panel shall include:
 
 - a concise panel title
 - a clear legend
 - readable units
-- a retained-point indicator
-- node and session context
+
+The chart headers shall not repeat the selected node, session, or retained-point count because that context is already visible in the session selector and sampling summary.
 
 The written layout requirements define the intended information density and visual direction: a compact current-snapshot card grid followed by two full-width history panels.
 
@@ -559,11 +574,15 @@ The dashboard shall provide tools that help developers inspect diagnostic sessio
 - editable session name, tags, and note
 - selection of exactly two snapshots from the current session and selected node for side-by-side comparison in a table
 - deterministic analysis of those two snapshots above the raw comparison table
-- deterministic analysis of the complete available selected-node timeline in a collapsible session **Analysis** panel
+- deterministic analysis of the complete available selected-node timeline in a dedicated **Analysis** tab
 - per-metric earlier value, later value, absolute difference, and percentage difference in that comparison table
 - percentage differences shown as unavailable when the earlier value is zero or the calculation is otherwise not meaningful
-- inline help explaining the meaning and unit of each card and chart series
+- plain-language inline help explaining the meaning and unit of each snapshot card, chart, evaluation KPI, signal, signal-evidence value, and raw comparison metric
+- visible information icons whose tooltips work with pointer hover and keyboard focus, expose equivalent accessible names to assistive technology, and retain readable fallbacks when a metric identifier is application-defined
 - export of normal runtime snapshots for the selected node or the complete session as JSON
+- download of a complete terminal session or one selected immutable snapshot as a portable JSON archive
+- export of a complete terminal session as Perfetto-compatible Trace Event JSON for visual investigation
+- upload and atomic import of a portable JSON archive as a fresh terminal session
 - copy the current snapshot to the clipboard as JSON
 - bookmarkable session and node selections
 - named phase markers for annotating operator-observed workload transitions
@@ -572,17 +591,18 @@ The feature shall not provide session-to-session comparison, cross-node snapshot
 
 ### Dashboard screen details
 
-The dashboard shall reflect the following visual structure:
+The selected session, selected participant, a compact metadata action, and an icon-based **Session tools** toolbar shall remain above the workbench tabs. The metadata action shall open the standard dashboard dialog for viewing and editing the selected session's name, tags, note, and pinned state; metadata fields shall not remain visible in the normal workbench. Toolbar controls shall expose descriptive accessible names and hover tooltips. Destructive and archive-import operations may be grouped into a compact overflow panel.
 
-- a top **Current Snapshot** panel with a dense card-grid layout
-- a full-width **Memory History** panel
-- a full-width **GC Pressure History** panel
-- a collapsible full-session **Analysis** panel below the two primary charts
-- optional custom metric and segment-detail panels below the two primary charts
+The dashboard shall use four workbench tabs with the following visual structure:
+
+- **Overview**: a top **Current Snapshot** panel with a dense card-grid layout, followed by the full-width **Memory History** and **GC Pressure History** panels
+- **Comparison**: exactly-two-snapshot selection, deterministic pair analysis, and raw metric deltas
+- **Analysis**: complete selected-node timeline analysis with **Analyze now** and the browser-wide **Live analysis** switch
+- **Info**: supporting segment and custom-metric detail, with immutable runtime capture context available from a compact information-icon action that opens the standard dashboard dialog
 
 The Current Snapshot panel shall clearly show the selected node identity and the snapshot timestamp. Cards shall emphasize one primary value and use smaller supporting lines for related values.
 
-The Memory History panel shall plot memory series on a shared timeline and show the number of retained points.
+The Memory History panel shall plot memory series on a shared timeline.
 
 The GC Pressure History panel shall plot percentage-based pressure series and allocation activity on a shared timeline. Multiple units may use separate axes where necessary, provided the chart remains readable.
 
@@ -613,6 +633,8 @@ The dashboard shall clearly show the active or selected session and allow the us
 - clear the complete performance store after explicit confirmation, including pinned sessions and all associated records
 - select a previously saved or completed session
 - open a session directly from a shareable URL
+
+The **Start** control shall be disabled while a session is running. The **Stop** control shall be disabled when no session is running.
 - trigger a manual one-off snapshot collection
 - trigger a manual deployment-wide GC collection
 - add a named phase marker while the selected session is active
@@ -620,11 +642,36 @@ The dashboard shall clearly show the active or selected session and allow the us
 - inspect the immutable runtime context and sampling quality for each selected node
 - edit the session name, tags, notes, and pin state without changing collected snapshots or metric values
 - export normal runtime snapshots for either the currently selected node or the complete multi-node session as JSON
+- download a portable archive for the complete terminal session or any selected immutable snapshot
+- export a complete terminal session as a one-way Perfetto trace whose filename contains the readable session key
+- upload a portable archive from the browser and select the newly imported terminal session
 - explicitly analyze the selected node on demand, even when automatic live analysis is off
 
 Snapshot export shall use JSON only. A selected-node export shall contain the normal runtime snapshots collected for that node. A complete-session export shall contain the normal runtime snapshots collected across all expected participants and ad-hoc contributing nodes. The node identity is part of each exported snapshot. Session metadata, phase markers, segment records, custom metric observations, node runtime context, and other auxiliary records are not included in snapshot exports.
 
 Computed evaluation results shall not be offered as a dashboard export, copy, or download. This restriction does not alter the normal raw-snapshot JSON export.
+
+### Portable session archives
+
+Portable archives are separate from the existing raw snapshot JSON export. Raw snapshot exports remain inspection-only JSON arrays and are not accepted for import. A portable archive shall use JSON with the fixed format identifier `bitdevkit.profiling.archive`, integer compatibility version `1`, and kind `session` or `snapshot`. The maximum accepted or produced archive size is 25 MiB. Compression, encryption, archive migration frameworks, configurable format versions, automatic backup, directory watching, and cloud storage are outside scope.
+
+A complete-session archive may be exported only after the source session reaches a terminal state. It shall contain the complete stored session graph: session metadata, contributing nodes without private Broadcast correlation, participations, runtime contexts, snapshots, phase markers, node action markers, measured segments, and custom metric observations. Segment-parent and metric-to-segment relationships shall use archive-local references. Internal GUIDs, Broadcast identities, computed evaluations, stack traces, and provider details shall not be serialized.
+
+An immutable snapshot may be exported while its source session is active. Its archive shall contain exactly that snapshot and the minimum source session, node, participation, and runtime-context data needed for normal inspection. Import shall represent it as a new `Completed` one-snapshot session named `Imported snapshot — <source session name> — #<sequence>`. Existing evaluation behavior shall report limited or insufficient evidence naturally; import shall not synthesize additional snapshots or evaluation results.
+
+Import shall deserialize only the fixed archive contract, reject unknown properties and unsupported format, version, or kind values, validate all identities, timestamps, enum values, and relationships before mutation, and store the complete graph atomically. Every import shall generate fresh internal GUIDs plus fresh eight-character lowercase session, node, and snapshot keys through `KeyGenerator.CreateLowercase(8)`. It shall never preserve private node correlation, overwrite existing records, merge with another session, become the active session, or allow a collector to resume it. Repeated import of the same archive shall create independent terminal copies. Normal retention and pinning rules apply after import.
+
+`IProfilingArchiveService` shall provide caller-owned stream operations for complete-session export, selected-snapshot export, and import. Both the in-memory and Entity Framework stores shall support one atomic imported-session graph mutation using the existing physical data model; this addition shall introduce no new table or migration. Console export shall write through a temporary sibling file and replace an existing destination only when `--overwrite` is explicit. Dashboard import shall accept a browser file upload only and shall never accept a server filesystem path.
+
+### Perfetto visualization traces
+
+Perfetto export is separate from portable archives and shall use the Perfetto-compatible Trace Event JSON object form with a `traceEvents` array. It is a one-way visualization representation and shall never be accepted by archive import. A trace may be exported only after the complete source session reaches a terminal state.
+
+The trace shall use session-relative microsecond timestamps, one session lane for shared phase markers, and one synthetic process per profiling node so equal operating-system process identifiers on different hosts cannot collide. Normal numeric snapshot metrics and custom numeric observations shall become counter events, phase markers and node action markers shall become instant events, and completed measured segments shall become duration events. Incomplete segment evidence shall remain visible as an instant event rather than receive a manufactured duration. Session metadata and immutable runtime context shall remain available in trace event arguments.
+
+The export shall preserve readable session, node, and snapshot keys while excluding internal GUIDs, private Broadcast correlation, persisted-provider details, and computed evaluation results. It shall not claim to contain sampled call stacks, method-level CPU attribution, allocation stacks, or flame-graph evidence. `IProfilingPerfettoExportService` shall expose the caller-owned stream operation. The dashboard shall offer a compact tooltip-described action next to the selected session, and `profiling export --format perfetto` shall reuse the same service. Archive remains the default console format for backward compatibility; Perfetto format shall reject node or snapshot selectors.
+
+Imported sessions appear in the ordinary session list and use the existing selection, inspection, metadata, deletion, retention, and one-session/one-node evaluation behavior. This portability capability does not add session-to-session comparison.
 
 Session metadata shall use zero or more plain string tags and one optional free-text note. Tag hierarchies, key/value labels, comment threads, and metadata history are outside scope.
 
@@ -809,11 +856,24 @@ A durable provider shall preserve sessions, snapshots, phase markers, segments, 
 
 Multi-node sessions require a shared provider accessible to all participating nodes. The in-memory provider shall not be presented as supporting deployment-wide multi-node collection across independent application processes.
 
+The Entity Framework provider shall use six physical Profiling tables:
+
+- sessions as the aggregate root
+- stable process-lifetime nodes
+- mutable node participations
+- immutable runtime snapshots
+- immutable custom metric observations
+- invalidated session identities retained as deletion/reset tombstones
+
+Session tags, immutable node runtime contexts, phase markers, action markers, and measured segments with their tags are session-owned records. They shall be mapped as owned collections in JSON columns on the session row rather than as separate physical tables. Runtime snapshots shall remain separate rows because they form the high-volume, independently indexed timeline. Mutable node participations shall remain separate because their capture counters are updated on the collection hot path and independent nodes must not rewrite or contend on the complete session JSON document. Custom metric observations shall remain separate immutable rows because their volume can grow independently and appending one observation must not rewrite an expanding JSON array. Nodes shall remain separate because one stable process-lifetime node can participate in multiple sessions. Invalidated identities shall remain separate because their tombstones must survive session deletion.
+
+Every mutation of a session-owned JSON collection shall advance the session aggregate concurrency token and execute through the provider's bounded transaction/retry path. Participation rows shall retain their own optimistic concurrency token. The store shall validate referenced session and node identities before changing an owned collection; JSON ownership does not replace these application-level integrity checks. Consuming DbContexts shall invoke the Profiling model-builder configuration from `OnModelCreating`. The consuming application continues to own migrations.
+
 ### Retention rules
 
 The feature shall remain bounded and shall not be designed as a long-term archive. Retention shall apply automatically according to configurable limits.
 
-Snapshot count shall not be capped per node or session when the selected provider can persist the data. Session-level retention shall remain bounded through the following suggested defaults:
+Snapshot count shall not be capped per node or session when the selected provider can persist the data. Session-level retention shall remain bounded through the following defaults:
 
 - maximum retained completed sessions: 20
 - maximum session age: 7 days
@@ -824,12 +884,14 @@ When a retention limit is reached, the oldest unpinned completed sessions shall 
 
 ## Architecture
 
-The feature should follow a small, separated architecture:
+The feature shall follow a small, separated architecture:
 
 - a background collector running inside each participating application process
 - the standalone DevKit Broadcast feature for node registration, registry lookup, direct HTTP push, local self-delivery, and immediate per-node delivery responses
 - one local performance broadcast handler per supported control command
 - a session store for sessions, node participation, snapshots, phase markers, segments, custom metrics, immutable node runtime context, and metadata, including an atomic full-reset operation
+- a provider-neutral portable archive service and one atomic imported-session graph operation on each store provider
+- a provider-neutral, one-way Perfetto trace export service that reads stored terminal-session evidence without changing persistence
 - atomic session-lifecycle coordination implemented by each store provider
 - a startup reconciler and idempotent session finalizer
 - a dashboard query layer that loads one selected session and node timeline
@@ -838,16 +900,19 @@ The feature should follow a small, separated architecture:
 - grouped console commands that delegate to the application-facing control surface
 - an integration with the existing DevKit metrics abstraction for stable custom metrics
 - a dashboard page for control, session selection, current values, deterministic evaluation, snapshot comparison tables, raw snapshot export, and metadata editing
+- browser-only archive download and upload controls that reuse the provider-neutral archive service
 
 The collector shall remain independent from dashboard rendering so collection continues without an open browser page.
 
-The performance feature shall not implement message polling, its own node registry, heartbeat infrastructure, delivery transport, deployment-wide metric aggregation, request-diagnostics infrastructure, or session-to-session comparison infrastructure. Node registration and optional low-frequency registration leases belong to the Broadcast feature.
+Profiling shall participate in the existing dashboard's automatic plugin discovery. A host enables Profiling with `AddProfiling(...)` and enables the dashboard once with the normal `services.AddDashboard(...)` call. No Profiling-specific `AddDashboard` extension, registration marker, or duplicate dashboard registration shall be required. When both features are enabled, the Profiling navigation page and endpoints shall be discovered automatically; when Profiling is disabled, its navigation page shall remain hidden.
+
+The Profiling feature shall not implement message polling, its own node registry, heartbeat infrastructure, delivery transport, deployment-wide metric aggregation, request-diagnostics infrastructure, or session-to-session comparison infrastructure. Node registration and optional low-frequency registration leases belong to the Broadcast feature.
 
 ## Configuration and Defaults
 
 The feature shall be configured through application options and environment settings.
 
-Suggested defaults:
+Defaults:
 
 - enabled: false
 - minimum sampling interval: 500 ms
@@ -886,6 +951,7 @@ Suggested defaults:
 The feature is considered complete when:
 
 - when the feature is enabled through configuration, a developer can start a short performance collection session from the dashboard
+- the global dashboard automatically discovers enabled Profiling navigation and endpoints without a Profiling-specific dashboard registration call
 - only one logical deployment-wide session can run at a time
 - concurrent logical start attempts resolve to the existing active session without a second start broadcast
 - starting a session uses the DevKit Broadcast feature and does not poll the session store or registry for commands
@@ -909,8 +975,12 @@ The feature is considered complete when:
 - a developer can add an immutable named phase marker to an active session from the dashboard, console, or programmatic API, and it appears on every selected-node chart
 - phase-marker creation rejects an invalid name or inactive session without creating a session or broadcasting
 - the dashboard supports configurable refresh intervals
+- the dashboard can start one non-overlapping, host-local 30-second CPU, allocation, retained-memory, LOH, and GC stress workload without blocking its request
+- background refresh updates live Profiling regions without resetting focused controls, unsaved input, selections, expanded panels, analysis output, filters, or scroll position
 - sample intervals below 500 ms are rejected and every session requires a duration
 - sessions can be named, tagged, noted, pinned, edited, selected, shared by URL, restarted, exported, copied as JSON, and deleted
+- complete terminal sessions and individual immutable snapshots can be exported as portable JSON archives and imported as fresh terminal sessions
+- complete terminal sessions can be exported as one-way Perfetto Trace Event JSON without internal identifiers or computed evaluations
 - the dashboard can clear all stored performance data, including pinned sessions and associated records, after explicit confirmation
 - clearing is rejected while a logical session is active and leaves the store unchanged
 - a completed clear leaves an empty performance store and rejects delayed writes for cleared session identities
@@ -922,15 +992,17 @@ The feature is considered complete when:
 - session start and standalone manual snapshot are rejected before broadcast when multiple nodes are targeted and the provider does not support multi-node storage
 - exactly two snapshots from the currently selected session and node can be selected for side-by-side metric comparison in a table, including absolute and percentage differences
 - application code can create scoped sessions and measured segments
-- when Console Commands are enabled, `performance` and `perf` expose status, start, stop, manual snapshot, manual GC, phase-marker, clear-all, and analysis operations
+- when Console Commands are enabled, `profiling` and `prof` expose status, start, stop, manual snapshot, manual GC, phase-marker, clear-all, analysis, portable export/import, and Perfetto trace export operations
 - console commands invoke the same control service and preserve the same deployment-wide Broadcast behavior as dashboard operations
 - console start accepts optional name, interval, and duration values and applies the same defaults and validation as the dashboard
 - console durations accept `ms`, `s`, `m`, `h`, and standard `TimeSpan` formats through a feature-local parser
-- `performance analyze` supports one complete node-session timeline or exactly two same-session, same-node snapshots, with optional JSON output, and never stores the result
+- `profiling analyze` supports one complete node-session timeline or exactly two same-session, same-node snapshots, with optional JSON output, and never stores the result
+- `profiling export` defaults to archive format and accepts a session, optional paired node and snapshot selection, output path, optional `--format archive|perfetto`, and optional `--overwrite`; Perfetto format is session-only, while `profiling import` accepts only a local portable archive file
+- archive import/export is manual, off the collection hot path, and adds no hosted service or background I/O
 - existing `diag perf` and `diag gc` remain local and non-persisted
 - console status and Broadcast-backed command results clearly report session state and immediate per-node outcomes
 - disabled or unavailable console operations fail safely without changing collection state
-- `performance clear` changes no data without `--yes` and, when confirmed, applies the same full-reset rules as the dashboard
+- `profiling clear` changes no data without `--yes` and, when confirmed, applies the same full-reset rules as the dashboard
 - a scoped code section starts and owns a session when none is active
 - a scoped code section encountered during an active session joins it as a named segment
 - raw scopes default to completed unless explicitly marked failed or cancelled
@@ -955,6 +1027,7 @@ The feature is considered complete when:
 - the dashboard's browser-wide Live analysis switch defaults off, makes no automatic calls while off, and when on evaluates only after a new snapshot without overlapping calls or exceeding refresh cadence
 - dashboard evaluation results cannot be persisted, copied, or exported; normal raw snapshot JSON export remains available
 - request analytics, aggregate-node views, session comparison, cross-node snapshot comparison, arbitrary-interval analysis, baselines, production alarms, configurable thresholds, and node rankings are absent from the feature
+- portable archives are a fixed local-development JSON contract limited to 25 MiB; they are distinct from raw snapshot export and never contain computed evaluations or internal identifiers
 
 ## Resolved Decisions
 
@@ -963,10 +1036,11 @@ The following decisions are resolved for the feature:
 - the specification defines the complete feature and does not use implementation phases or feature versions
 - application developers are the primary users
 - sessions may be started manually or programmatically around code sections
-- collection may also be controlled through the grouped `performance` console commands, with `perf` as an alias
+- collection may also be controlled through the grouped `profiling` console commands, with `prof` as an alias
 - console commands reuse the application-facing control service and the same deployment-wide Broadcast operations as the dashboard
-- the console-command surface provides status, start, stop, one-off snapshot, manual GC, phase-marker, confirmed clear-all, and deterministic analysis operations
-- friendly console durations accept `ms`, `s`, `m`, `h`, and standard `TimeSpan` values through a performance-feature-local parser
+- the console-command surface provides status, start, stop, one-off snapshot, manual GC, phase-marker, confirmed clear-all, deterministic analysis, portable export, and portable import operations
+- imported sessions use the existing inspection and one-session/one-node evaluation behavior without adding cross-session comparison
+- friendly console durations accept `ms`, `s`, `m`, `h`, and standard `TimeSpan` values through a Profiling-feature-local parser
 - the existing `diag perf` and `diag gc` commands remain local, immediate, and non-persisted
 - only one logical session may be active for the deployment at a time
 - embedded scoped starts join the active session as named segments instead of starting another session
@@ -975,7 +1049,7 @@ The following decisions are resolved for the feature:
 - segments are node-owned, may overlap, and may optionally reference a parent from the same session and node without strict nesting
 - manual phase markers are immutable session-level annotations, require an active session, appear across selected-node charts, and do not create arbitrary evaluation intervals
 - deployment-wide control uses the standalone DevKit Broadcast feature from `Common.Utilities/Broadcasting`
-- broadcasts are direct push operations and the performance feature performs no polling for commands
+- broadcasts are direct push operations and the Profiling feature performs no polling for commands
 - any actively registered node may initiate a session; there is no master node
 - the current active registrations in the configured Broadcast scope form the target snapshot
 - nodes returning an accepted response within the short configurable participation deadline become participants; the default deadline is one second

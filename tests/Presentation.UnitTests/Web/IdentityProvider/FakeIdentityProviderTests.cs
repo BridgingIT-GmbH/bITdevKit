@@ -195,6 +195,12 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         content.ShouldContain(this.testConfig.DefaultUser.Email);
         content.ShouldContain(this.testConfig.RegularUser.Email);
+        content.ShouldContain("dashboard-navbar-heading");
+        content.ShouldContain("BDK Identity Provider");
+        content.ShouldContain("identity-signin");
+        content.ShouldContain("data-theme-option=\"catppuccin\"");
+        content.ShouldContain("window.addEventListener('storage'");
+        content.ShouldNotContain("id=\"sidebarMenu\"");
     }
 
     [Fact]

@@ -32,7 +32,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
         {
             Group = "bdk",
             GroupOrder = 0,
-            Order = 50,
+            Order = 31,
             Description = "Run console commands",
             Card = context => ValueTask.FromResult(new DashboardPageCard("Console", "Interactive command runner", "Ready")
             {
@@ -41,7 +41,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
                 Url = DashboardEndpoints.BuildConsolePath(options),
                 Group = "bdk",
                 GroupOrder = 0,
-                Order = 50
+                Order = 31
             })
         };
     }

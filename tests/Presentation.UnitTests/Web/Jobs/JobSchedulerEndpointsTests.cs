@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

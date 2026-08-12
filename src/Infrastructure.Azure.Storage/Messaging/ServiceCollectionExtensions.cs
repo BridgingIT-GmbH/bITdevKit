@@ -50,7 +50,7 @@ public static partial class ServiceCollectionExtensions
 
             var broker = new AzureQueueStorageMessageBroker(options);
 
-            foreach (var subscription in ServiceCollectionMessagingExtensions.Subscriptions)
+            foreach (var subscription in ServiceCollectionMessagingExtensions.GetSubscriptions())
             {
                 broker.Subscribe(subscription.message, subscription.handler).AnyContext();
             }

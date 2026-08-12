@@ -26,6 +26,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public int? AffectedEntityCount { get; set; }
         /// <summary>The bulkOperationId property</summary>
         public Guid? BulkOperationId { get; set; }
+        /// <summary>The captureMessage property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? CaptureMessage { get; set; }
+#nullable restore
+#else
+        public string CaptureMessage { get; set; }
+#endif
         /// <summary>The captureSource property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -41,6 +49,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #nullable restore
 #else
         public string CaptureStatus { get; set; }
+#endif
+        /// <summary>The captureStrategy property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? CaptureStrategy { get; set; }
+#nullable restore
+#else
+        public string CaptureStrategy { get; set; }
 #endif
         /// <summary>The changedByEmail property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -68,6 +84,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #endif
         /// <summary>The changedDate property</summary>
         public DateTimeOffset? ChangedDate { get; set; }
+        /// <summary>The changedDateTicks property</summary>
+        public long? ChangedDateTicks { get; set; }
         /// <summary>The changeSetId property</summary>
         public Guid? ChangeSetId { get; set; }
         /// <summary>The changeSetSequence property</summary>
@@ -104,6 +122,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #else
         public string DomainRestoreHandlerName { get; set; }
 #endif
+        /// <summary>The entityClrType property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? EntityClrType { get; set; }
+#nullable restore
+#else
+        public string EntityClrType { get; set; }
+#endif
         /// <summary>The entityId property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -111,6 +137,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #nullable restore
 #else
         public string EntityId { get; set; }
+#endif
+        /// <summary>The entityIdType property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? EntityIdType { get; set; }
+#nullable restore
+#else
+        public string EntityIdType { get; set; }
 #endif
         /// <summary>The entityType property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -228,6 +262,22 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #else
         public string RestoreExecutionMode { get; set; }
 #endif
+        /// <summary>The restorePlanName property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? RestorePlanName { get; set; }
+#nullable restore
+#else
+        public string RestorePlanName { get; set; }
+#endif
+        /// <summary>The valueClrType property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? ValueClrType { get; set; }
+#nullable restore
+#else
+        public string ValueClrType { get; set; }
+#endif
         /// <summary>
         /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ChangeHistoryRecord"/> and sets the default values.
         /// </summary>
@@ -256,19 +306,24 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "activityParentId", n => { ActivityParentId = n.GetStringValue(); } },
                 { "affectedEntityCount", n => { AffectedEntityCount = n.GetIntValue(); } },
                 { "bulkOperationId", n => { BulkOperationId = n.GetGuidValue(); } },
+                { "captureMessage", n => { CaptureMessage = n.GetStringValue(); } },
                 { "captureSource", n => { CaptureSource = n.GetStringValue(); } },
                 { "captureStatus", n => { CaptureStatus = n.GetStringValue(); } },
+                { "captureStrategy", n => { CaptureStrategy = n.GetStringValue(); } },
                 { "changeSetId", n => { ChangeSetId = n.GetGuidValue(); } },
                 { "changeSetSequence", n => { ChangeSetSequence = n.GetIntValue(); } },
                 { "changedByEmail", n => { ChangedByEmail = n.GetStringValue(); } },
                 { "changedByUserId", n => { ChangedByUserId = n.GetStringValue(); } },
                 { "changedByUserName", n => { ChangedByUserName = n.GetStringValue(); } },
                 { "changedDate", n => { ChangedDate = n.GetDateTimeOffsetValue(); } },
+                { "changedDateTicks", n => { ChangedDateTicks = n.GetLongValue(); } },
                 { "collectionAction", n => { CollectionAction = n.GetStringValue(); } },
                 { "collectionItemId", n => { CollectionItemId = n.GetStringValue(); } },
                 { "correlationId", n => { CorrelationId = n.GetStringValue(); } },
                 { "domainRestoreHandlerName", n => { DomainRestoreHandlerName = n.GetStringValue(); } },
+                { "entityClrType", n => { EntityClrType = n.GetStringValue(); } },
                 { "entityId", n => { EntityId = n.GetStringValue(); } },
+                { "entityIdType", n => { EntityIdType = n.GetStringValue(); } },
                 { "entityType", n => { EntityType = n.GetStringValue(); } },
                 { "flowId", n => { FlowId = n.GetStringValue(); } },
                 { "id", n => { Id = n.GetGuidValue(); } },
@@ -285,6 +340,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "propertyPath", n => { PropertyPath = n.GetStringValue(); } },
                 { "reason", n => { Reason = n.GetStringValue(); } },
                 { "restoreExecutionMode", n => { RestoreExecutionMode = n.GetStringValue(); } },
+                { "restorePlanName", n => { RestorePlanName = n.GetStringValue(); } },
+                { "valueClrType", n => { ValueClrType = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -297,19 +354,24 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteStringValue("activityParentId", ActivityParentId);
             writer.WriteIntValue("affectedEntityCount", AffectedEntityCount);
             writer.WriteGuidValue("bulkOperationId", BulkOperationId);
+            writer.WriteStringValue("captureMessage", CaptureMessage);
             writer.WriteStringValue("captureSource", CaptureSource);
             writer.WriteStringValue("captureStatus", CaptureStatus);
+            writer.WriteStringValue("captureStrategy", CaptureStrategy);
             writer.WriteStringValue("changedByEmail", ChangedByEmail);
             writer.WriteStringValue("changedByUserId", ChangedByUserId);
             writer.WriteStringValue("changedByUserName", ChangedByUserName);
             writer.WriteDateTimeOffsetValue("changedDate", ChangedDate);
+            writer.WriteLongValue("changedDateTicks", ChangedDateTicks);
             writer.WriteGuidValue("changeSetId", ChangeSetId);
             writer.WriteIntValue("changeSetSequence", ChangeSetSequence);
             writer.WriteStringValue("collectionAction", CollectionAction);
             writer.WriteStringValue("collectionItemId", CollectionItemId);
             writer.WriteStringValue("correlationId", CorrelationId);
             writer.WriteStringValue("domainRestoreHandlerName", DomainRestoreHandlerName);
+            writer.WriteStringValue("entityClrType", EntityClrType);
             writer.WriteStringValue("entityId", EntityId);
+            writer.WriteStringValue("entityIdType", EntityIdType);
             writer.WriteStringValue("entityType", EntityType);
             writer.WriteStringValue("flowId", FlowId);
             writer.WriteGuidValue("id", Id);
@@ -326,6 +388,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteStringValue("propertyPath", PropertyPath);
             writer.WriteStringValue("reason", Reason);
             writer.WriteStringValue("restoreExecutionMode", RestoreExecutionMode);
+            writer.WriteStringValue("restorePlanName", RestorePlanName);
+            writer.WriteStringValue("valueClrType", ValueClrType);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

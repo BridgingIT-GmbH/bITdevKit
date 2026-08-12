@@ -1,0 +1,1384 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using RazorSlices
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <button type="button" id="profiling-stress" class="btn btn-outline-warning btn-sm profiling-tool-button profiling-stress-button" aria-label="Run a 30-second profiling stress workload" title="Stress this process for 30 seconds with high CPU, managed allocations, and retained memory"><i class="bi bi-fire" aria-hidden="true"></i></button>
+        <label for="profiling-refresh-interval" class="visually-hidden">Profiling refresh interval</label>
+        <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 8.5rem">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000" selected>5 sec</option>
+            <option value="10000">10 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+            <option value="60000">60 sec</option>
+        </select>
+        <button type="button" id="profiling-refresh-now" class="btn btn-outline-secondary btn-sm" aria-label="Refresh profiling dashboard now" title="Refresh now"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+    </div>
+</div>
+
+<div id="dashboard-profiling-content">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content>())
+</div>
+
+<div class="modal fade" id="profiling-chart-focus-modal" tabindex="-1" aria-labelledby="profiling-chart-focus-title" aria-hidden="true">
+    <div class="modal-dialog profiling-chart-focus-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="profiling-chart-focus-title">Session charts</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body profiling-chart-focus-body">
+                <section class="profiling-focused-panel" aria-labelledby="profiling-focused-memory-title">
+                    <h3 id="profiling-focused-memory-title" class="h6 mb-1">Memory History</h3>
+                    <div id="profiling-focused-memory-chart" class="profiling-focused-chart" role="img" aria-label="Focused Memory History chart"></div>
+                </section>
+                <section class="profiling-focused-panel" aria-labelledby="profiling-focused-gc-title">
+                    <h3 id="profiling-focused-gc-title" class="h6 mb-1">GC Pressure History</h3>
+                    <div id="profiling-focused-gc-chart" class="profiling-focused-chart" role="img" aria-label="Focused GC Pressure History chart"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="profiling-snapshot-focus-modal" tabindex="-1" aria-labelledby="profiling-snapshot-focus-title" aria-hidden="true">
+    <div class="modal-dialog profiling-snapshot-focus-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title h5" id="profiling-snapshot-focus-title">Snapshot metrics</h2>
+                    <div id="profiling-snapshot-focus-subtitle" class="small text-muted"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="profiling-snapshot-focus-content" class="modal-body profiling-snapshot-focus-content"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profiling-panel { border-color: var(--dashboard-panel-border, var(--bs-border-color)); border-radius: 0; overflow: hidden; box-shadow: none; }
+    .profiling-context-card { overflow: visible; }
+    .profiling-context-card .form-label { margin-bottom: .2rem; color: var(--bs-secondary-color); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
+    .profiling-sessions-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .55rem; border-bottom: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); background: transparent; }
+    .profiling-session-actions { display: flex; align-items: center; justify-content: flex-end; flex: 1 1 auto; flex-wrap: wrap; gap: .35rem; min-width: 0; }
+    .profiling-marker-control { flex: 0 1 16rem; width: 16rem; min-width: 11rem; }
+    .profiling-sessions-body[hidden] { display: none !important; }
+    .profiling-tool-button { display: inline-flex; align-items: center; justify-content: center; width: 2.15rem; height: 2rem; padding: 0; }
+    .profiling-compact-focus-button { width: 1.8rem; height: 1.8rem; font-size: .76rem; }
+    .profiling-session-control { display: flex; align-items: flex-end; }
+    .profiling-session-toggle { display: inline-flex; align-items: center; justify-content: center; width: 2.65rem; height: 2rem; padding: 0; border-width: 2px; border-radius: 0; background-image: none; font-size: 1.05rem; box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 16%, transparent); transition: color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+    .profiling-session-toggle:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent); }
+    .profiling-session-toggle.is-running { animation: profiling-running-pulse 1.8s ease-in-out infinite; }
+    @@keyframes profiling-running-pulse { 0%, 100% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--bs-danger) 18%, transparent); } 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--bs-danger) 28%, transparent); } }
+    .profiling-stress-button.is-running { color: var(--bs-dark); background: var(--bs-warning); border-color: var(--bs-warning); }
+    .profiling-tools-menu { position: relative; }
+    .profiling-tools-menu > summary { list-style: none; cursor: pointer; }
+    .profiling-tools-menu > summary::-webkit-details-marker { display: none; }
+    .profiling-tools-menu[open] > summary { color: var(--bs-body-color); background: color-mix(in srgb, var(--bs-info) 16%, transparent); }
+    .profiling-tools-popover { z-index: 15; position: absolute; top: calc(100% + .45rem); right: 0; width: min(22rem, calc(100vw - 2rem)); padding: .75rem; border: 1px solid var(--dashboard-panel-border-hover, var(--bs-border-color)); border-radius: 0; background: var(--bs-body-bg); box-shadow: 0 .8rem 2rem rgba(0, 0, 0, .32); }
+    .profiling-tabs { display: flex; align-items: stretch; gap: .25rem; overflow-x: auto; border-bottom: 1px solid var(--bs-border-color); }
+    .profiling-tab { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-width: 8.5rem; padding: .65rem .9rem; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--bs-secondary-color); font-size: .82rem; font-weight: 650; letter-spacing: .02em; }
+    .profiling-tab:hover { color: var(--bs-body-color); background: color-mix(in srgb, var(--bs-info) 6%, transparent); }
+    .profiling-tab:focus-visible { z-index: 1; outline: 2px solid var(--bs-info); outline-offset: -2px; }
+    .profiling-tab.is-active { border-bottom-color: var(--bs-info); color: var(--bs-body-color); background: transparent; }
+    .profiling-tab-panel[hidden] { display: none; }
+    .profiling-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); background: transparent; }
+    .profiling-vitals-grid { display: grid; grid-template-columns: repeat(7, minmax(8rem, 1fr)); gap: .55rem; }
+    .profiling-vital { min-height: 7rem; display: flex; flex-direction: column; padding: .75rem; border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); border-radius: 0; background: transparent; }
+    .profiling-vital > span { display: flex; align-items: center; gap: .3rem; color: var(--bs-secondary-color); font-size: .72rem; letter-spacing: .035em; text-transform: uppercase; }
+    .profiling-vital > strong { margin: auto 0 .2rem; font-size: 1.18rem; font-weight: 600; line-height: 1.1; overflow-wrap: anywhere; }
+    .profiling-vital > small { color: var(--bs-secondary-color); line-height: 1.2; }
+    .profiling-info { display: inline-flex; align-items: center; justify-content: center; width: 1.15rem; height: 1.15rem; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--bs-info); font-size: .8rem; line-height: 1; vertical-align: text-bottom; }
+    .profiling-info:hover, .profiling-info:focus-visible { color: var(--bs-body-color); background: color-mix(in srgb, var(--bs-info) 18%, transparent); outline: 2px solid color-mix(in srgb, var(--bs-info) 45%, transparent); outline-offset: 1px; }
+    .profiling-tooltip { z-index: 1090; position: fixed; width: min(20rem, calc(100vw - 1rem)); padding: .55rem .65rem; border: 1px solid var(--dashboard-panel-border-hover, var(--bs-border-color)); border-radius: 0; background: var(--bs-emphasis-color); color: var(--bs-body-bg); box-shadow: 0 .5rem 1.4rem rgba(0, 0, 0, .24); font-size: .78rem; font-weight: 400; line-height: 1.35; letter-spacing: normal; text-align: left; text-transform: none; pointer-events: none; }
+    .profiling-snapshot-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .4rem; min-width: 0; }
+    .profiling-snapshot-picker { width: min(31rem, 52vw); }
+    .profiling-snapshot-body[hidden] { display: none !important; }
+    .profiling-context-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; }
+    .profiling-context-grid span { min-width: 0; }
+    .profiling-context-grid small, .profiling-context-grid strong { display: block; }
+    .profiling-context-grid small { color: var(--bs-secondary-color); text-transform: uppercase; font-size: .65rem; letter-spacing: .08em; }
+    .profiling-context-grid strong { margin-top: .2rem; font-size: .82rem; overflow-wrap: anywhere; }
+    .profiling-chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(34rem, 100%), 1fr)); gap: .75rem; }
+    .profiling-chart-panel { min-width: 0; }
+    .profiling-primary-chart { width: 100%; height: 25rem; min-height: 20rem; }
+    .profiling-chart-focus-dialog { width: calc(100vw - 2rem); max-width: none; height: calc(100vh - 2rem); margin: 1rem; }
+    .profiling-chart-focus-dialog .modal-content { height: 100%; border-radius: 0; }
+    .profiling-chart-focus-body { display: grid; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: .65rem; min-height: 0; padding: .75rem; }
+    .profiling-focused-panel { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; min-height: 0; padding: .5rem; border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
+    .profiling-focused-chart { width: 100%; min-width: 0; min-height: 13rem; height: 100%; }
+    .profiling-snapshot-focus-dialog { width: calc(100vw - 2rem); max-width: none; height: calc(100vh - 2rem); margin: 1rem; }
+    .profiling-snapshot-focus-dialog .modal-content { height: 100%; border-radius: 0; }
+    .profiling-snapshot-focus-content { overflow-y: auto; }
+    .profiling-snapshot-metric-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(26rem, 100%), 1fr)); gap: .75rem; align-items: start; }
+    .profiling-snapshot-metric-group { min-width: 0; border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
+    .profiling-snapshot-metric-group > h3 { margin: 0; padding: .55rem .7rem; border-bottom: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); color: var(--bs-info); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+    .profiling-snapshot-metric-list { margin: 0; }
+    .profiling-snapshot-metric-row { display: grid; grid-template-columns: minmax(11rem, 1fr) minmax(8rem, auto); gap: 1rem; align-items: center; min-height: 2.5rem; padding: .4rem .7rem; border-bottom: 1px solid color-mix(in srgb, var(--bs-border-color) 58%, transparent); }
+    .profiling-snapshot-metric-row:last-child { border-bottom: 0; }
+    .profiling-snapshot-metric-row dt { min-width: 0; color: var(--bs-secondary-color); font-size: .72rem; font-weight: 500; }
+    .profiling-snapshot-metric-row dt > span { display: flex; align-items: center; gap: .3rem; }
+    .profiling-snapshot-metric-row dt code { display: block; margin-top: .08rem; color: var(--bs-secondary-color); font-size: .62rem; font-weight: 400; }
+    .profiling-snapshot-metric-row dd { margin: 0; overflow-wrap: anywhere; color: var(--bs-body-color); font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
+    .profiling-chart-filters { padding: .55rem .75rem; border: 1px dashed var(--bs-border-color); font-size: .8rem; }
+    .profiling-analysis-summary { list-style: none; cursor: pointer; user-select: none; }
+    .profiling-analysis-summary::-webkit-details-marker { display: none; }
+    .profiling-analysis-result { border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
+    .profiling-analysis-result .profiling-analysis-inner { padding: .75rem; background: transparent; }
+    .profiling-signal { padding: .65rem .75rem; margin-top: .55rem; border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
+    .profiling-signal-title { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem; }
+    .profiling-evidence { display: inline-flex; align-items: center; gap: .2rem; margin: .25rem .35rem 0 0; padding: .18rem .35rem; border: 1px solid var(--bs-border-color); border-radius: 0; background: transparent; }
+    .profiling-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .4rem; margin-top: .65rem; }
+    .profiling-kpi { padding: .45rem .55rem; border: 1px solid var(--bs-border-color); font-size: .74rem; }
+    .profiling-kpi-label { display: flex; align-items: center; gap: .25rem; color: var(--bs-secondary-color); }
+    .profiling-kpi strong { display: block; margin-top: .2rem; }
+    .profiling-metric-name { display: flex; align-items: center; gap: .3rem; font-weight: 600; }
+    .profiling-technical-name { display: block; margin-top: .15rem; color: var(--bs-secondary-color); font-size: .68rem; font-weight: 400; }
+    .profiling-empty { padding: .9rem; border: 1px dashed var(--bs-border-color); color: var(--bs-secondary-color); font-size: .85rem; }
+    .profiling-workbench table { font-size: .78rem; }
+    .profiling-workbench code { color: var(--bs-info); }
+    @@media (max-width: 1399.98px) { .profiling-vitals-grid { grid-template-columns: repeat(4, minmax(9rem, 1fr)); } .profiling-context-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @@media (max-width: 767.98px) { .profiling-session-actions { flex-basis: 100%; justify-content: flex-start; } .profiling-marker-control { flex: 1 1 14rem; width: auto; } .profiling-vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .profiling-context-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .profiling-primary-chart { height: 20rem; } .profiling-panel-header { align-items: flex-start; flex-wrap: wrap; } .profiling-snapshot-controls, .profiling-snapshot-picker { width: 100%; } .profiling-tab { min-width: 7.5rem; } .profiling-chart-focus-dialog, .profiling-snapshot-focus-dialog { width: 100vw; height: 100vh; margin: 0; } .profiling-chart-focus-body { grid-template-rows: repeat(2, minmax(18rem, 1fr)); overflow-y: auto; } .profiling-snapshot-metric-row { grid-template-columns: 1fr; gap: .2rem; } .profiling-snapshot-metric-row dd { text-align: left; } }
+    @@media (max-width: 420px) { .profiling-vitals-grid, .profiling-context-grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+    (() => {
+        const storage = {
+            refresh: 'bdk.dashboard.profiling.refreshInterval',
+            session: 'bdk.dashboard.profiling.session',
+            node: 'bdk.dashboard.profiling.node',
+            filters: 'bdk.dashboard.profiling.filters',
+            live: 'bdk.dashboard.profiling.liveAnalysis',
+            tab: 'bdk.dashboard.profiling.activeTab',
+            sessions: 'bdk.dashboard.profiling.sessionsExpanded',
+            snapshotDetails: 'bdk.dashboard.profiling.snapshotDetailsExpanded'
+        };
+        const state = {
+            root: null,
+            data: null,
+            refresher: null,
+            analysisInFlight: false,
+            lastObservedSnapshot: null,
+            observationScope: null,
+            sessionAnalysis: null,
+            pairAnalysis: null,
+            comparison: null,
+            lastOutcome: null,
+            stressTimeout: null,
+            copyFeedbackTimeout: null,
+            copyFeedbackUntil: 0,
+            chartSpecs: null,
+            chartRenderVersion: 0,
+            chartRenderPromise: Promise.resolve()
+        };
+
+        const plotlyConfig = Object.freeze({ displayModeBar: true, displaylogo: false, responsive: true, scrollZoom: false });
+
+        const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+        const display = value => value === null || value === undefined || value === '' ? 'unavailable' : String(value);
+        const formatNumber = value => value === null || value === undefined ? 'unavailable' : Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        const enumName = (value, names) => typeof value === 'number' ? (names[value] || String(value)) : display(value);
+
+        const profilingGlossary = Object.freeze({
+            'snapshot-key': 'Readable identity of this immutable snapshot.',
+            'session-key': 'Readable identity of the profiling session that owns this snapshot.',
+            'node-key': 'Readable identity of the process node that captured this snapshot.',
+            'timestamp': 'Browser-local date and time at which this snapshot capture began.',
+            'host-name': 'Machine name reported by the process that captured this snapshot.',
+            'process-id': 'Operating-system process identifier for the captured application instance.',
+            'sequence': 'The capture order within this node. A gap can indicate a skipped or failed capture.',
+            'scheduled-elapsed': 'Time from session start to when this snapshot was scheduled.',
+            'capture-started-elapsed': 'Time from session start to when measurement actually began.',
+            'capture-duration': 'Time spent collecting this snapshot. Large values can add measurement overhead.',
+            'sampling-delay': 'Delay between the scheduled capture time and the actual capture start.',
+            'skipped-capture-count': 'Cumulative captures skipped because a previous capture was still running or collection could not start.',
+            'failed-capture-count': 'Cumulative snapshot captures that ended in failure.',
+            'cpu-usage': 'Process CPU utilization during the interval, normalized across the available logical processors.',
+            'process-cpu-duration': 'Cumulative processor time consumed by the process.',
+            'logical-processor-count': 'Logical processors used to normalize process CPU utilization.',
+            'working-set': 'Physical memory pages currently resident for this process. The operating system can reclaim some of them.',
+            'private-memory': 'Committed process memory that cannot be shared with other processes. This includes managed and native memory.',
+            'managed-memory': 'Managed bytes currently reported by the runtime for live .NET objects.',
+            'total-physical-memory': 'Total physical memory installed or available to the operating system.',
+            'available-physical-memory': 'Physical memory currently available to the operating system.',
+            'used-physical-memory': 'Machine physical memory currently in use.',
+            'managed-heap-size': 'Current size of the managed garbage-collected heap.',
+            'fragmented': 'Managed heap bytes left in free regions between live objects.',
+            'heap-fragmentation': 'Fragmented managed heap bytes as a percentage of heap size.',
+            'memory-load': 'Runtime estimate of the physical memory load relevant to garbage collection.',
+            'total-available-memory': 'Runtime estimate of memory available before stronger GC pressure is expected.',
+            'high-memory-load-threshold': 'Runtime threshold at which memory load is considered high.',
+            'total-committed': 'Memory committed by the runtime for managed heaps and related GC structures.',
+            'total-allocated': 'Cumulative managed bytes allocated since process start. This only increases unless the process or counter resets.',
+            'allocation-rate': 'Managed allocation throughput per second. A high rate can cause frequent garbage collections even when heap size stays stable.',
+            'memory-pressure': 'Runtime memory load as a percentage of its available-memory estimate.',
+            'gen0-collection-count': 'Cumulative generation 0 collections, primarily reclaiming short-lived objects.',
+            'gen1-collection-count': 'Cumulative generation 1 collections, reclaiming objects that survived generation 0.',
+            'gen2-collection-count': 'Cumulative full generation 2 collections, including older long-lived objects.',
+            'latest-gc-index': 'Sequence number of the latest directly observed garbage collection.',
+            'latest-gc-generation': 'Highest generation collected by the latest directly observed garbage collection.',
+            'latest-gc-managed-heap': 'Managed heap size measured immediately after the latest directly observed garbage collection.',
+            'latest-gc-loh': 'Large Object Heap size measured immediately after the latest directly observed garbage collection.',
+            'latest-gc-compacting': 'Whether the latest directly observed garbage collection compacted surviving objects.',
+            'latest-gc-concurrent': 'Whether the latest directly observed garbage collection ran concurrently with application work.',
+            'latest-gen2-gc-index': 'Sequence number of the latest directly observed full generation 2 collection.',
+            'latest-gen2-managed-heap': 'Managed heap remaining immediately after the latest directly observed generation 2 collection. Persistent growth here is stronger retention evidence.',
+            'latest-gen2-loh': 'Large Object Heap remaining immediately after the latest directly observed generation 2 collection.',
+            'latest-gen2-gc-compacting': 'Whether the latest directly observed generation 2 collection compacted surviving objects.',
+            'latest-gen2-gc-concurrent': 'Whether the latest directly observed generation 2 collection ran concurrently with application work.',
+            'cumulative-gc-pause': 'Cumulative time application threads were paused for garbage collection.',
+            'gc-pause': 'Share of the measured interval spent paused for garbage collection.',
+            'pinned-object-count': 'Managed objects pinned in place and unavailable for relocation by the garbage collector.',
+            'finalization-pending-count': 'Objects waiting for their finalizers to execute.',
+            'loh-size': 'Current size of the Large Object Heap, normally used for objects of about 85 KB or larger.',
+            'loh-fragmented': 'Free fragmented bytes inside the Large Object Heap.',
+            'loh-fragmentation': 'Fragmented Large Object Heap bytes as a percentage of LOH size.',
+            'server-garbage-collection': 'Whether the process uses server GC instead of workstation GC.',
+            'garbage-collection-latency-mode': 'Current .NET garbage-collector latency mode for this process.',
+            'process-handle-count': 'Operating-system handles currently held by the process.',
+            'process-thread-count': 'Operating-system threads currently owned by the process.',
+            'thread-pool-thread-count': 'Worker threads currently managed by the .NET thread pool.',
+            'thread-pool-completed-work-item-count': 'Cumulative work items completed by the .NET thread pool.',
+            'thread-pool-pending-work-item-count': 'Work items queued and waiting for a .NET thread-pool worker.',
+            'thread-pool-available-worker-thread-count': 'Additional worker threads the thread pool can make available.',
+            'thread-pool-available-completion-port-thread-count': 'Additional asynchronous I/O completion threads the thread pool can make available.',
+            'active-tcp-connection-count': 'TCP connections currently active for the machine.',
+            'tcp-listener-count': 'TCP endpoints currently listening for incoming connections.',
+            'udp-listener-count': 'UDP endpoints currently bound and listening.',
+            'total-used-socket-count': 'Combined operating-system socket count currently in use.',
+            'sampling-coverage': 'Successful captures as a percentage of expected captures in the evaluated window.',
+            'capture-overhead-p95': 'At least 95% of captures used no more than this percentage of the configured sampling interval.',
+            'capture-duration-p95': 'At least 95% of snapshot captures completed within this duration.',
+            'sampling-delay-p95': 'At least 95% of snapshots started within this delay from their scheduled time.',
+            'skipped-captures': 'Captures skipped during the evaluated window.',
+            'failed-captures': 'Captures that failed during the evaluated window.'
+        });
+
+        const profilingConcepts = Object.freeze({
+            'cpu': 'process CPU utilization',
+            'managed-heap': 'managed garbage-collected heap size',
+            'private-memory': 'private committed process memory',
+            'loh-fragmentation': 'Large Object Heap fragmentation',
+            'heap-fragmentation': 'managed heap fragmentation',
+            'loh': 'Large Object Heap size',
+            'allocation': 'managed allocation throughput',
+            'gc-pause': 'garbage-collection pause burden',
+            'gen0': 'generation 0 garbage collections',
+            'gen1': 'generation 1 garbage collections',
+            'gen2': 'full generation 2 garbage collections'
+        });
+
+        const humanizeIdentifier = value => {
+            const acronyms = { cpu: 'CPU', gc: 'GC', loh: 'LOH', p95: 'P95', tcp: 'TCP', udp: 'UDP', gen0: 'Gen0', gen1: 'Gen1', gen2: 'Gen2' };
+            const parts = String(value ?? '').split('-').filter(Boolean).map(part => acronyms[part] || part);
+            if (!parts.length) return 'Unknown metric';
+            const label = parts.join(' ');
+            return `${label.charAt(0).toUpperCase()}${label.slice(1)}`;
+        };
+
+        function descriptionFor(identifier) {
+            if (profilingGlossary[identifier]) return profilingGlossary[identifier];
+            const concept = Object.entries(profilingConcepts).find(([prefix]) => identifier === prefix || identifier.startsWith(`${prefix}-`));
+            if (concept) {
+                const [, meaning] = concept;
+                if (identifier.endsWith('-average')) return `Time-weighted average ${meaning} across the evaluated window.`;
+                if (identifier.endsWith('-peak')) return `Highest observed ${meaning} in the evaluated window.`;
+                if (identifier.endsWith('-ending') || identifier.endsWith('-end')) return `${humanizeIdentifier(identifier)} at the end of the evaluated window.`;
+                if (identifier.endsWith('-start')) return `${humanizeIdentifier(identifier)} at the beginning of the evaluated window.`;
+                if (identifier.endsWith('-change-percent')) return `Percentage change in ${meaning} from the beginning to the end of the evaluated window.`;
+                if (identifier.endsWith('-change')) return `End value minus start value for ${meaning}.`;
+                if (identifier.endsWith('-count-delta')) return `Number of additional ${meaning} observed in the evaluated window.`;
+                if (identifier.endsWith('-rate')) return `Average ${meaning} per second in the evaluated window.`;
+                return `Evidence about ${meaning} used by a fixed Profiling evaluation rule.`;
+            }
+
+            if (identifier.endsWith('-threshold') || identifier.endsWith('-floor')) return 'Built-in rule boundary shown so the signal can be verified against its evidence.';
+            if (identifier.endsWith('-ratio')) return 'Share of the evaluated time intervals that met the rule condition.';
+            if (identifier.endsWith('-delta')) return 'Later value minus earlier value in the evaluated window.';
+            return `Captured evidence for ${humanizeIdentifier(identifier).toLowerCase()}.`;
+        }
+
+        const infoHtml = (description, subject) => `<button type="button" class="profiling-info" aria-label="${escapeHtml(`About ${subject}: ${description}`)}" data-description="${escapeHtml(description)}"><i class="bi bi-info-circle" aria-hidden="true"></i></button>`;
+
+        const snapshotMetricGroups = Object.freeze([
+            {
+                title: 'Capture identity and timing',
+                metrics: [
+                    ['snapshot-key', 'Snapshot key', snapshot => snapshot.identity?.key],
+                    ['session-key', 'Session key', snapshot => snapshot.sessionKey],
+                    ['node-key', 'Node key', snapshot => snapshot.nodeKey],
+                    ['timestamp', 'Captured', snapshot => snapshot.timestampUtc, 'timestamp'],
+                    ['host-name', 'Host', snapshot => snapshot.hostName],
+                    ['process-id', 'Process ID', snapshot => snapshot.processId, 'number'],
+                    ['sequence', 'Sequence', snapshot => snapshot.sequence, 'number'],
+                    ['scheduled-elapsed', 'Scheduled elapsed', snapshot => snapshot.scheduledElapsed, 'duration'],
+                    ['capture-started-elapsed', 'Capture started elapsed', snapshot => snapshot.captureStartedElapsed, 'duration'],
+                    ['capture-duration', 'Capture duration', snapshot => snapshot.captureDuration, 'duration'],
+                    ['skipped-capture-count', 'Skipped captures', snapshot => snapshot.skippedCaptureCount, 'number'],
+                    ['failed-capture-count', 'Failed captures', snapshot => snapshot.failedCaptureCount, 'number']
+                ]
+            },
+            {
+                title: 'CPU and process',
+                metrics: [
+                    ['cpu-usage', 'CPU usage', snapshot => snapshot.cpuUsagePercent, 'percent'],
+                    ['process-cpu-duration', 'Process CPU duration', snapshot => snapshot.processCpuDuration, 'duration'],
+                    ['logical-processor-count', 'Logical processors', snapshot => snapshot.logicalProcessorCount, 'number'],
+                    ['process-handle-count', 'Process handles', snapshot => snapshot.processHandleCount, 'number'],
+                    ['process-thread-count', 'Process threads', snapshot => snapshot.processThreadCount, 'number']
+                ]
+            },
+            {
+                title: 'Memory and allocation',
+                metrics: [
+                    ['working-set', 'Working set', snapshot => snapshot.workingSetBytes, 'bytes'],
+                    ['private-memory', 'Private memory', snapshot => snapshot.privateMemoryBytes, 'bytes'],
+                    ['managed-memory', 'Managed memory', snapshot => snapshot.managedMemoryBytes, 'bytes'],
+                    ['total-physical-memory', 'Total physical memory', snapshot => snapshot.totalPhysicalMemoryBytes, 'bytes'],
+                    ['available-physical-memory', 'Available physical memory', snapshot => snapshot.availablePhysicalMemoryBytes, 'bytes'],
+                    ['used-physical-memory', 'Used physical memory', snapshot => snapshot.usedPhysicalMemoryBytes, 'bytes'],
+                    ['managed-heap-size', 'Managed heap size', snapshot => snapshot.managedHeapSizeBytes, 'bytes'],
+                    ['fragmented', 'Fragmented heap', snapshot => snapshot.fragmentedBytes, 'bytes'],
+                    ['heap-fragmentation', 'Heap fragmentation', snapshot => snapshot.heapFragmentationPercent, 'percent'],
+                    ['memory-load', 'Memory load', snapshot => snapshot.memoryLoadBytes, 'bytes'],
+                    ['total-available-memory', 'Total available memory', snapshot => snapshot.totalAvailableMemoryBytes, 'bytes'],
+                    ['high-memory-load-threshold', 'High-memory threshold', snapshot => snapshot.highMemoryLoadThresholdBytes, 'bytes'],
+                    ['total-committed', 'Total committed', snapshot => snapshot.totalCommittedBytes, 'bytes'],
+                    ['total-allocated', 'Total allocated', snapshot => snapshot.totalAllocatedBytes, 'bytes'],
+                    ['allocation-rate', 'Allocation rate', snapshot => snapshot.allocationRateBytesPerSecond, 'rate'],
+                    ['memory-pressure', 'Memory pressure', snapshot => snapshot.memoryPressurePercent, 'percent']
+                ]
+            },
+            {
+                title: 'Garbage collection',
+                metrics: [
+                    ['gen0-collection-count', 'Gen0 collections', snapshot => snapshot.gen0CollectionCount, 'number'],
+                    ['gen1-collection-count', 'Gen1 collections', snapshot => snapshot.gen1CollectionCount, 'number'],
+                    ['gen2-collection-count', 'Gen2 collections', snapshot => snapshot.gen2CollectionCount, 'number'],
+                    ['cumulative-gc-pause', 'Cumulative GC pause', snapshot => snapshot.cumulativeGcPauseDuration, 'duration'],
+                    ['gc-pause', 'GC pause', snapshot => snapshot.gcPausePercent, 'percent'],
+                    ['pinned-object-count', 'Pinned objects', snapshot => snapshot.pinnedObjectCount, 'number'],
+                    ['finalization-pending-count', 'Awaiting finalization', snapshot => snapshot.finalizationPendingCount, 'number'],
+                    ['loh-size', 'Large Object Heap', snapshot => snapshot.largeObjectHeapBytes, 'bytes'],
+                    ['loh-fragmented', 'Fragmented LOH', snapshot => snapshot.largeObjectHeapFragmentedBytes, 'bytes'],
+                    ['loh-fragmentation', 'LOH fragmentation', snapshot => snapshot.largeObjectHeapFragmentationPercent, 'percent'],
+                    ['server-garbage-collection', 'GC mode', snapshot => snapshot.serverGarbageCollection, 'gc-mode'],
+                    ['garbage-collection-latency-mode', 'GC latency mode', snapshot => snapshot.garbageCollectionLatencyMode]
+                ]
+            },
+            {
+                title: 'Latest GC evidence',
+                metrics: [
+                    ['latest-gc-index', 'Latest GC index', snapshot => snapshot.latestGcIndex, 'number'],
+                    ['latest-gc-generation', 'Latest GC generation', snapshot => snapshot.latestGcGeneration, 'number'],
+                    ['latest-gc-managed-heap', 'Post-GC managed heap', snapshot => snapshot.latestGcManagedHeapBytes, 'bytes'],
+                    ['latest-gc-loh', 'Post-GC LOH', snapshot => snapshot.latestGcLargeObjectHeapBytes, 'bytes'],
+                    ['latest-gc-compacting', 'Latest GC compacting', snapshot => snapshot.latestGcCompacting, 'boolean'],
+                    ['latest-gc-concurrent', 'Latest GC concurrent', snapshot => snapshot.latestGcConcurrent, 'boolean'],
+                    ['latest-gen2-gc-index', 'Latest Gen2 GC index', snapshot => snapshot.latestGen2GcIndex, 'number'],
+                    ['latest-gen2-managed-heap', 'Post-Gen2 managed heap', snapshot => snapshot.latestGen2ManagedHeapBytes, 'bytes'],
+                    ['latest-gen2-loh', 'Post-Gen2 LOH', snapshot => snapshot.latestGen2LargeObjectHeapBytes, 'bytes'],
+                    ['latest-gen2-gc-compacting', 'Latest Gen2 compacting', snapshot => snapshot.latestGen2GcCompacting, 'boolean'],
+                    ['latest-gen2-gc-concurrent', 'Latest Gen2 concurrent', snapshot => snapshot.latestGen2GcConcurrent, 'boolean']
+                ]
+            },
+            {
+                title: 'Thread pool',
+                metrics: [
+                    ['thread-pool-thread-count', 'Thread-pool threads', snapshot => snapshot.threadPoolThreadCount, 'number'],
+                    ['thread-pool-completed-work-item-count', 'Completed work items', snapshot => snapshot.threadPoolCompletedWorkItemCount, 'number'],
+                    ['thread-pool-pending-work-item-count', 'Pending work items', snapshot => snapshot.threadPoolPendingWorkItemCount, 'number'],
+                    ['thread-pool-available-worker-thread-count', 'Available worker threads', snapshot => snapshot.threadPoolAvailableWorkerThreadCount, 'number'],
+                    ['thread-pool-available-completion-port-thread-count', 'Available completion-port threads', snapshot => snapshot.threadPoolAvailableCompletionPortThreadCount, 'number']
+                ]
+            },
+            {
+                title: 'Network',
+                metrics: [
+                    ['active-tcp-connection-count', 'Active TCP connections', snapshot => snapshot.activeTcpConnectionCount, 'number'],
+                    ['tcp-listener-count', 'TCP listeners', snapshot => snapshot.tcpListenerCount, 'number'],
+                    ['udp-listener-count', 'UDP listeners', snapshot => snapshot.udpListenerCount, 'number'],
+                    ['total-used-socket-count', 'Used sockets', snapshot => snapshot.totalUsedSocketCount, 'number']
+                ]
+            }
+        ]);
+
+        function formatSnapshotMetric(value, format) {
+            if (value === null || value === undefined || value === '') return 'unavailable';
+            if (format === 'timestamp') {
+                const date = new Date(value);
+                return Number.isNaN(date.getTime()) ? 'unavailable' : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'long' });
+            }
+            if (format === 'bytes' || format === 'rate') {
+                const bytes = Number(value);
+                if (!Number.isFinite(bytes)) return 'unavailable';
+                const units = [[1073741824, 'GiB'], [1048576, 'MiB'], [1024, 'KiB']];
+                const unit = units.find(([threshold]) => Math.abs(bytes) >= threshold);
+                const formatted = unit
+                    ? `${(bytes / unit[0]).toLocaleString(undefined, { maximumFractionDigits: unit[0] === 1073741824 ? 2 : 1 })} ${unit[1]}`
+                    : `${bytes.toLocaleString(undefined, { maximumFractionDigits: 0 })} B`;
+                return format === 'rate' ? `${formatted}/s` : formatted;
+            }
+            if (format === 'percent') return `${Number(value).toLocaleString(undefined, { maximumFractionDigits: 1 })}%`;
+            if (format === 'number') return Number(value).toLocaleString();
+            if (format === 'boolean') return value ? 'Yes' : 'No';
+            if (format === 'gc-mode') return value ? 'Server' : 'Workstation';
+            return display(value);
+        }
+
+        let profilingTooltip = null;
+        function showProfilingTooltip(control) {
+            if (!control?.dataset.description) return;
+            profilingTooltip?.remove();
+            profilingTooltip = document.createElement('div');
+            profilingTooltip.className = 'profiling-tooltip';
+            profilingTooltip.setAttribute('role', 'tooltip');
+            profilingTooltip.textContent = control.dataset.description;
+            document.body.appendChild(profilingTooltip);
+            const controlBounds = control.getBoundingClientRect();
+            const tooltipBounds = profilingTooltip.getBoundingClientRect();
+            const centered = controlBounds.left + controlBounds.width / 2 - tooltipBounds.width / 2;
+            profilingTooltip.style.left = `${Math.max(8, Math.min(window.innerWidth - tooltipBounds.width - 8, centered))}px`;
+            const below = controlBounds.bottom + 8;
+            profilingTooltip.style.top = `${below + tooltipBounds.height <= window.innerHeight - 8 ? below : Math.max(8, controlBounds.top - tooltipBounds.height - 8)}px`;
+            control.setAttribute('aria-describedby', 'profiling-active-tooltip');
+            profilingTooltip.id = 'profiling-active-tooltip';
+        }
+
+        function hideProfilingTooltip(control) {
+            control?.removeAttribute('aria-describedby');
+            profilingTooltip?.remove();
+            profilingTooltip = null;
+        }
+
+        document.addEventListener('mouseover', event => {
+            const control = event.target.closest?.('.profiling-info');
+            if (control && !control.contains(event.relatedTarget)) showProfilingTooltip(control);
+        });
+        document.addEventListener('mouseout', event => {
+            const control = event.target.closest?.('.profiling-info');
+            if (control && !control.contains(event.relatedTarget)) hideProfilingTooltip(control);
+        });
+        document.addEventListener('focusin', event => {
+            const control = event.target.closest?.('.profiling-info');
+            if (control) showProfilingTooltip(control);
+        });
+        document.addEventListener('focusout', event => {
+            const control = event.target.closest?.('.profiling-info');
+            if (control) hideProfilingTooltip(control);
+        });
+        document.addEventListener('click', event => {
+            const control = event.target.closest?.('.profiling-info');
+            if (!control) return;
+            event.preventDefault();
+            event.stopPropagation();
+            showProfilingTooltip(control);
+        });
+        window.addEventListener('scroll', () => hideProfilingTooltip(document.querySelector('.profiling-info[aria-describedby]')), { passive: true });
+        window.addEventListener('resize', () => hideProfilingTooltip(document.querySelector('.profiling-info[aria-describedby]')));
+
+        function decodePayload(value) {
+            if (!value) return null;
+            try {
+                const bytes = Uint8Array.from(atob(value), character => character.charCodeAt(0));
+                return JSON.parse(new TextDecoder().decode(bytes));
+            } catch { return null; }
+        }
+
+        function problemText(payload, fallback) {
+            return payload?.detail || payload?.title || fallback;
+        }
+
+        async function request(url, method = 'GET', body = undefined) {
+            if (!url) throw new Error('The requested action is unavailable for the current selection.');
+            const response = await fetch(url, {
+                method,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'fetch' },
+                body: body === undefined ? undefined : JSON.stringify(body)
+            });
+            const text = await response.text();
+            let payload = null;
+            try { payload = text ? JSON.parse(text) : null; } catch { payload = text; }
+            if (!response.ok) throw new Error(problemText(payload, `Request failed (${response.status}).`));
+            return payload;
+        }
+
+        async function importArchive(form) {
+            const response = await fetch(state.root?.dataset.archiveImportPath, {
+                method: 'POST',
+                cache: 'no-store',
+                headers: { 'X-Requested-With': 'fetch' },
+                body: new FormData(form)
+            });
+            const text = await response.text();
+            let payload = null;
+            try { payload = text ? JSON.parse(text) : null; } catch { payload = text; }
+            if (!response.ok) throw new Error(problemText(payload, `Import failed (${response.status}).`));
+            return payload;
+        }
+
+        function showOutcome(message, kind = 'info') {
+            state.lastOutcome = { message, kind };
+            const target = document.querySelector('#profiling-action-outcomes');
+            if (target) target.innerHTML = `<div class="alert alert-${kind} py-2 mb-2">${escapeHtml(message)}</div>`;
+        }
+
+        function summarizeControl(payload, label) {
+            const outcomes = payload?.nodeOutcomes || [];
+            if (!outcomes.length) return label;
+            return `${label} ${outcomes.map(item => `${item.nodeKey}: ${item.outcome}`).join(' · ')}`;
+        }
+
+        function toTimeSpan(milliseconds) {
+            const totalMilliseconds = Math.max(0, Math.round(Number(milliseconds) || 0));
+            const days = Math.floor(totalMilliseconds / 86400000);
+            const withinDay = totalMilliseconds % 86400000;
+            const hours = Math.floor(withinDay / 3600000).toString().padStart(2, '0');
+            const minutes = Math.floor((withinDay % 3600000) / 60000).toString().padStart(2, '0');
+            const seconds = Math.floor((withinDay % 60000) / 1000).toString().padStart(2, '0');
+            const fractionMilliseconds = withinDay % 1000;
+            const dayPrefix = days > 0 ? `${days}.` : '';
+            const fraction = fractionMilliseconds > 0
+                ? `.${fractionMilliseconds.toString().padStart(3, '0')}0000`
+                : '';
+            return `${dayPrefix}${hours}:${minutes}:${seconds}${fraction}`;
+        }
+
+        function formatLocalSnapshotTimestamp(value) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return 'invalid date';
+            const pad = (part, length = 2) => String(part).padStart(length, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+        }
+
+        function localizeSnapshotOptions() {
+            document.querySelectorAll('[data-profiling-snapshot-option]').forEach(option => {
+                option.textContent = `#${option.dataset.sequence} · ${formatLocalSnapshotTimestamp(option.dataset.timestampUtc)} · ${option.dataset.key}`;
+            });
+        }
+
+        function inspectedSnapshot() {
+            const selectedKey = state.root?.dataset.snapshotKey;
+            return selectedKey
+                ? state.data?.snapshots?.find(item => item.identity?.key === selectedKey)
+                : state.data?.latestSnapshot;
+        }
+
+        function synchronizeSnapshotCopyFeedback() {
+            if (Date.now() >= state.copyFeedbackUntil) return;
+            const button = document.querySelector('#profiling-copy-snapshot');
+            if (!button) return;
+            button.disabled = true;
+            button.innerHTML = '<i class="bi bi-check2 me-1" aria-hidden="true"></i>Copied';
+        }
+
+        function showSnapshotCopiedFeedback() {
+            window.clearTimeout(state.copyFeedbackTimeout);
+            state.copyFeedbackUntil = Date.now() + 1200;
+            synchronizeSnapshotCopyFeedback();
+            state.copyFeedbackTimeout = window.setTimeout(() => {
+                state.copyFeedbackUntil = 0;
+                const button = document.querySelector('#profiling-copy-snapshot');
+                if (!button) return;
+                button.innerHTML = '<i class="bi bi-copy me-1" aria-hidden="true"></i>Copy JSON';
+                button.disabled = !inspectedSnapshot();
+            }, 1200);
+        }
+
+        function renderSnapshotFocus() {
+            const snapshot = inspectedSnapshot();
+            const content = document.querySelector('#profiling-snapshot-focus-content');
+            const subtitle = document.querySelector('#profiling-snapshot-focus-subtitle');
+            if (!content || !subtitle) return false;
+            if (!snapshot) {
+                subtitle.textContent = '';
+                content.innerHTML = '<div class="profiling-empty">No snapshot is available.</div>';
+                return false;
+            }
+
+            subtitle.textContent = `#${snapshot.sequence} · ${formatLocalSnapshotTimestamp(snapshot.timestampUtc)} · ${snapshot.identity?.key || 'unavailable'}`;
+            content.innerHTML = `<div class="profiling-snapshot-metric-groups">${snapshotMetricGroups.map(group => `
+                <section class="profiling-snapshot-metric-group">
+                    <h3>${escapeHtml(group.title)}</h3>
+                    <dl class="profiling-snapshot-metric-list">${group.metrics.map(([identifier, label, getValue, format]) => {
+                        const description = descriptionFor(identifier);
+                        return `<div class="profiling-snapshot-metric-row"><dt><span>${escapeHtml(label)} ${infoHtml(description, label)}</span><code>${escapeHtml(identifier)}</code></dt><dd>${escapeHtml(formatSnapshotMetric(getValue(snapshot), format))}</dd></div>`;
+                    }).join('')}</dl>
+                </section>`).join('')}</div>`;
+            return true;
+        }
+
+        function openSnapshotFocus() {
+            const modal = document.querySelector('#profiling-snapshot-focus-modal');
+            if (!modal || !renderSnapshotFocus()) {
+                showOutcome('No snapshot is available to focus.', 'warning');
+                return;
+            }
+
+            window.bootstrap.Modal.getOrCreateInstance(modal).show();
+        }
+
+        function setSnapshotDetailsExpanded(expanded, persist = false) {
+            const toggle = document.querySelector('#profiling-toggle-snapshot-details');
+            const body = document.querySelector('#profiling-current-snapshot-body');
+            if (!toggle || !body) return;
+            body.hidden = !expanded;
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            toggle.title = expanded ? 'Collapse snapshot details' : 'Expand snapshot details';
+            toggle.setAttribute('aria-label', toggle.title);
+            const icon = toggle.querySelector('i');
+            if (icon) icon.className = `bi bi-chevron-${expanded ? 'up' : 'down'}`;
+            if (persist) localStorage.setItem(storage.snapshotDetails, expanded ? 'true' : 'false');
+        }
+
+        function setSessionsExpanded(expanded, persist = false) {
+            const toggle = document.querySelector('#profiling-toggle-sessions');
+            const body = document.querySelector('#profiling-sessions-body');
+            if (!toggle || !body) return;
+            body.hidden = !expanded;
+            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            toggle.title = expanded ? 'Collapse sessions' : 'Expand sessions';
+            toggle.setAttribute('aria-label', toggle.title);
+            const icon = toggle.querySelector('i');
+            if (icon) icon.className = `bi bi-chevron-${expanded ? 'up' : 'down'}`;
+            if (persist) localStorage.setItem(storage.sessions, expanded ? 'true' : 'false');
+        }
+
+        async function copyText(value) {
+            if (navigator.clipboard?.writeText) {
+                try {
+                    await navigator.clipboard.writeText(value);
+                    return true;
+                } catch {
+                    // Fall through for browsers that block the async clipboard API.
+                }
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = value;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            const copied = document.execCommand('copy');
+            textarea.remove();
+            return copied;
+        }
+
+        function selectedContextUrl(session, node) {
+            const pagePath = state.root?.dataset.pagePath || window.location.pathname;
+            const url = new URL(pagePath, window.location.origin);
+            if (session) url.searchParams.set('session', session);
+            if (node) url.searchParams.set('node', node);
+            return url;
+        }
+
+        async function selectContext(session, node) {
+            if (session) localStorage.setItem(storage.session, session); else localStorage.removeItem(storage.session);
+            if (node) localStorage.setItem(storage.node, node); else localStorage.removeItem(storage.node);
+            history.replaceState({}, '', selectedContextUrl(session, node));
+            state.lastObservedSnapshot = null;
+            state.observationScope = null;
+            state.sessionAnalysis = null;
+            state.pairAnalysis = null;
+            state.comparison = null;
+            await state.refresher?.refresh(true);
+        }
+
+        async function selectSnapshot(snapshot) {
+            const url = new URL(window.location.href);
+            if (snapshot) url.searchParams.set('snapshot', snapshot); else url.searchParams.delete('snapshot');
+            history.replaceState({}, '', url);
+            if (document.activeElement?.closest?.('#profiling-current-snapshot')) document.activeElement.blur();
+            await state.refresher?.refresh(true);
+        }
+
+        function buildContentUrl() {
+            const root = document.querySelector('#profiling-dashboard-data') || state.root;
+            const url = new URL(root?.dataset.contentPath || window.location.pathname, window.location.origin);
+            const page = new URL(window.location.href);
+            const session = page.searchParams.get('session') || root?.dataset.sessionKey;
+            const node = page.searchParams.get('node') || root?.dataset.nodeKey;
+            const snapshot = page.searchParams.get('snapshot');
+            if (session) url.searchParams.set('session', session);
+            if (node) url.searchParams.set('node', node);
+            if (snapshot) url.searchParams.set('snapshot', snapshot);
+            return url;
+        }
+
+        function synchronizeAttributes(current, next, dataOnly = false) {
+            const included = attribute => !dataOnly || attribute.name.startsWith('data-');
+            Array.from(current.attributes)
+                .filter(attribute => included(attribute) && attribute.name !== 'id')
+                .forEach(attribute => current.removeAttribute(attribute.name));
+            Array.from(next.attributes)
+                .filter(attribute => included(attribute) && attribute.name !== 'id')
+                .forEach(attribute => current.setAttribute(attribute.name, attribute.value));
+        }
+
+        function synchronizeSelect(nextRoot, selector, preferredValue) {
+            const current = document.querySelector(selector);
+            const next = nextRoot.querySelector(selector);
+            if (!current || !next) return;
+            if (preferredValue === undefined && current === document.activeElement) return;
+            const value = preferredValue === undefined ? current.value : preferredValue;
+            current.replaceChildren(...Array.from(next.options, option => option.cloneNode(true)));
+            if (Array.from(current.options).some(option => option.value === value)) current.value = value;
+            else current.value = next.value;
+        }
+
+        function updateRegion(current, next) {
+            if (!current || !next || current.contains(document.activeElement)) return;
+            const selections = new Map(Array.from(current.querySelectorAll('select[id]'), select => [select.id, select.value]));
+            synchronizeAttributes(current, next);
+            current.replaceChildren(...Array.from(next.childNodes, child => child.cloneNode(true)));
+            selections.forEach((value, id) => {
+                const select = current.querySelector(`#${id}`);
+                if (select && Array.from(select.options).some(option => option.value === value)) select.value = value;
+            });
+        }
+
+        function updateContextRegion(nextRoot, selector) {
+            const current = document.querySelector(selector);
+            const next = nextRoot.querySelector(selector);
+            if (current && next) {
+                synchronizeAttributes(current, next);
+                current.replaceChildren(...Array.from(next.childNodes, child => child.cloneNode(true)));
+            }
+        }
+
+        function applyContentRefresh(contentElement, responseText) {
+            const scrollPosition = { x: window.scrollX, y: window.scrollY };
+            const template = document.createElement('template');
+            template.innerHTML = responseText.trim();
+            const nextRoot = template.content.querySelector('#profiling-dashboard-data');
+            const currentRoot = document.querySelector('#profiling-dashboard-data');
+            if (!nextRoot || !currentRoot) throw new Error('The Profiling refresh response is incomplete.');
+
+            const currentScope = `${currentRoot.dataset.sessionKey || ''}/${currentRoot.dataset.nodeKey || ''}`;
+            const nextScope = `${nextRoot.dataset.sessionKey || ''}/${nextRoot.dataset.nodeKey || ''}`;
+            const contextChanged = currentScope !== nextScope;
+            const snapshotChanged = (currentRoot.dataset.snapshotKey || '') !== (nextRoot.dataset.snapshotKey || '');
+            synchronizeAttributes(currentRoot, nextRoot, true);
+
+            synchronizeSelect(nextRoot, '#profiling-session-select', contextChanged ? nextRoot.dataset.sessionKey || '' : undefined);
+            synchronizeSelect(nextRoot, '#profiling-node-select', contextChanged ? nextRoot.dataset.nodeKey || '' : undefined);
+            synchronizeSelect(nextRoot, '#profiling-snapshot-a', contextChanged ? '' : undefined);
+            synchronizeSelect(nextRoot, '#profiling-snapshot-b', contextChanged ? '' : undefined);
+
+            nextRoot.querySelectorAll('[data-profiling-live-region][id]').forEach(next => {
+                updateRegion(document.getElementById(next.id), next);
+            });
+
+            if ((contextChanged || snapshotChanged) && document.activeElement?.id !== 'profiling-snapshot-select') {
+                synchronizeSelect(nextRoot, '#profiling-snapshot-select', nextRoot.dataset.snapshotKey || '');
+            }
+
+            if (contextChanged) {
+                ['#profiling-start-form', '#profiling-metadata-form', '#profiling-runtime-context', '#profiling-pair-validation', '#profiling-pair-analysis', '#profiling-delta-table tbody', '#profiling-session-analysis-result']
+                    .forEach(selector => updateContextRegion(nextRoot, selector));
+                state.sessionAnalysis = null;
+                state.pairAnalysis = null;
+                state.comparison = null;
+                state.lastObservedSnapshot = null;
+                state.observationScope = null;
+            }
+            window.scrollTo(scrollPosition.x, scrollPosition.y);
+        }
+
+        function getFilters() {
+            try { return { phases: true, actions: true, segments: true, ...JSON.parse(localStorage.getItem(storage.filters) || '{}') }; }
+            catch { return { phases: true, actions: true, segments: true }; }
+        }
+
+        function toPlotlyLocalTime(value) {
+            if (!value) return value;
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return value;
+            const offsetMilliseconds = date.getTimezoneOffset() * 60 * 1000;
+            return new Date(date.getTime() - offsetMilliseconds).toISOString().replace(/Z$/, '');
+        }
+
+        function annotationLayers(data, selectedSnapshotKey, selectedColor) {
+            const filters = getFilters();
+            const shapes = [];
+            const annotations = [];
+            if (filters.segments) {
+                (data?.segments || []).forEach((segment, index) => {
+                    const started = toPlotlyLocalTime(segment.startedUtc);
+                    const ended = toPlotlyLocalTime(segment.endedUtc || data?.latestSnapshot?.timestampUtc || segment.startedUtc);
+                    const color = index % 2 ? '#fd971f' : '#66d9ef';
+                    shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: started, x1: ended, y0: 0, y1: 1, fillcolor: index % 2 ? 'rgba(253,151,31,.08)' : 'rgba(102,217,239,.08)', line: { width: 1, dash: 'dot', color: 'rgba(165,159,153,.55)' }, layer: 'below' });
+                    annotations.push({ x: started, y: 0.98, xref: 'x', yref: 'paper', text: `SEGMENT · ${escapeHtml(segment.name)}`, showarrow: false, xanchor: 'left', yanchor: 'top', font: { size: 9, color }, bgcolor: 'rgba(0,0,0,.58)', borderpad: 2 });
+                });
+            }
+            const addMarker = (marker, color, dash, prefix) => {
+                const timestamp = toPlotlyLocalTime(marker.timestampUtc);
+                shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color, width: 1.4, dash } });
+                annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `${prefix}${escapeHtml(marker.name)}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 9, color } });
+            };
+            if (filters.phases) (data?.phaseMarkers || []).forEach(marker => addMarker(marker, '#fd971f', 'dash', 'PHASE · '));
+            if (filters.actions) (data?.actionMarkers || []).forEach(marker => addMarker(marker, '#66d9ef', 'dot', 'ACTION · '));
+            const selectedSnapshot = selectedSnapshotKey
+                ? (data?.snapshots || []).find(item => item.identity?.key === selectedSnapshotKey)
+                : null;
+            if (selectedSnapshot) {
+                const timestamp = toPlotlyLocalTime(selectedSnapshot.timestampUtc);
+                shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color: selectedColor, width: 2.5 } });
+                annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `SELECTED · #${selectedSnapshot.sequence}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 10, color: selectedColor } });
+            }
+            return { shapes, annotations };
+        }
+
+        function scheduleChartRender() {
+            const renderVersion = ++state.chartRenderVersion;
+            window.requestAnimationFrame(() => {
+                state.chartRenderPromise = state.chartRenderPromise
+                    .catch(() => undefined)
+                    .then(() => renderCharts(renderVersion));
+            });
+        }
+
+        async function renderCharts(renderVersion) {
+            const memory = document.querySelector('#profiling-memory-chart');
+            const gc = document.querySelector('#profiling-gc-chart');
+            if (!memory || !gc) return;
+            if (renderVersion !== state.chartRenderVersion) return;
+            const data = state.data;
+            const selectedSnapshotKey = state.root?.dataset.snapshotKey;
+            try {
+                const Plotly = await window.bdkDashboard.loadPlotly();
+                if (renderVersion !== state.chartRenderVersion) return;
+                if (!data?.snapshots?.length) {
+                    state.chartSpecs = null;
+                    Plotly.purge(memory);
+                    Plotly.purge(gc);
+                    memory.innerHTML = '<div class="profiling-empty m-3">No retained points are available.</div>';
+                    gc.innerHTML = '<div class="profiling-empty m-3">No retained points are available.</div>';
+                    if (document.querySelector('#profiling-chart-focus-modal.show')) await renderFocusedChart();
+                    return;
+                }
+                const points = data.snapshots;
+                const x = points.map(item => toPlotlyLocalTime(item.timestampUtc));
+                const mb = values => values.map(value => value === null || value === undefined ? null : value / 1048576);
+                const trace = (name, values, color, axis = 'y') => ({ name, x, y: values, type: 'scatter', mode: 'lines', connectgaps: false, yaxis: axis, line: { width: 1.7, color }, hovertemplate: `%{y:.2f}<extra>${name}</extra>` });
+                const theme = window.bdkDashboard.getChartTheme();
+                const layers = annotationLayers(data, selectedSnapshotKey, theme.danger);
+                const memoryLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 56, r: 22, t: 84, b: 58 }, showlegend: true, legend: { orientation: 'h', x: 0, y: -0.18 } });
+                memoryLayout.dragmode = 'zoom';
+                memoryLayout.yaxis.title = { text: 'MiB' };
+                memoryLayout.xaxis.hoverformat = '%Y-%m-%d %H:%M:%S.%L';
+                memoryLayout.shapes = layers.shapes;
+                memoryLayout.annotations = layers.annotations;
+                const memoryTraces = [
+                    trace('Managed memory', mb(points.map(item => item.managedMemoryBytes)), theme.primary),
+                    trace('Managed heap', mb(points.map(item => item.managedHeapSizeBytes)), theme.success),
+                    trace('Private memory', mb(points.map(item => item.privateMemoryBytes)), theme.warning),
+                    trace('Working set', mb(points.map(item => item.workingSetBytes)), theme.secondary),
+                    trace('Committed', mb(points.map(item => item.totalCommittedBytes)), theme.info),
+                    trace('LOH', mb(points.map(item => item.largeObjectHeapBytes)), theme.danger)
+                ];
+                const gcLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 56, r: 64, t: 84, b: 58 }, showlegend: true, legend: { orientation: 'h', x: 0, y: -0.18 } });
+                gcLayout.dragmode = 'zoom';
+                gcLayout.yaxis.title = { text: 'Percent' };
+                gcLayout.xaxis.hoverformat = '%Y-%m-%d %H:%M:%S.%L';
+                gcLayout.yaxis.range = [0, 100];
+                gcLayout.yaxis2 = { title: { text: 'MiB/s' }, overlaying: 'y', side: 'right', rangemode: 'tozero', showgrid: false, color: theme.muted };
+                gcLayout.shapes = layers.shapes;
+                gcLayout.annotations = layers.annotations;
+                const gcTraces = [
+                    trace('CPU', points.map(item => item.cpuUsagePercent), theme.primary),
+                    trace('Memory pressure', points.map(item => item.memoryPressurePercent), theme.warning),
+                    trace('Heap fragmentation', points.map(item => item.heapFragmentationPercent), theme.secondary),
+                    trace('LOH fragmentation', points.map(item => item.largeObjectHeapFragmentationPercent), theme.danger),
+                    trace('GC pause', points.map(item => item.gcPausePercent), theme.success),
+                    trace('Allocation rate', points.map(item => item.allocationRateBytesPerSecond === null || item.allocationRateBytesPerSecond === undefined ? null : item.allocationRateBytesPerSecond / 1048576), theme.info, 'y2')
+                ];
+                state.chartSpecs = {
+                    memory: { title: 'Memory History', ariaLabel: 'Focused Memory History chart', traces: memoryTraces, layout: memoryLayout },
+                    gc: { title: 'GC Pressure History', ariaLabel: 'Focused GC Pressure History chart', traces: gcTraces, layout: gcLayout }
+                };
+                await Promise.all([
+                    Plotly.react(memory, memoryTraces, memoryLayout, plotlyConfig),
+                    Plotly.react(gc, gcTraces, gcLayout, plotlyConfig)
+                ]);
+                if (renderVersion === state.chartRenderVersion && document.querySelector('#profiling-chart-focus-modal.show')) await renderFocusedChart();
+            } catch {
+                if (renderVersion !== state.chartRenderVersion) return;
+                state.chartSpecs = null;
+                memory.innerHTML = '<div class="alert alert-warning m-3">The chart library could not be loaded.</div>';
+                gc.innerHTML = '<div class="alert alert-warning m-3">The chart library could not be loaded.</div>';
+            }
+        }
+
+        async function renderFocusedChart() {
+            const memoryTarget = document.querySelector('#profiling-focused-memory-chart');
+            const gcTarget = document.querySelector('#profiling-focused-gc-chart');
+            const memorySpec = state.chartSpecs?.memory;
+            const gcSpec = state.chartSpecs?.gc;
+            if (!memoryTarget || !gcTarget) return;
+            if (!memorySpec || !gcSpec) {
+                memoryTarget.innerHTML = '<div class="profiling-empty m-3">No chart data is available.</div>';
+                gcTarget.innerHTML = '<div class="profiling-empty m-3">No chart data is available.</div>';
+                return;
+            }
+            try {
+                const Plotly = await window.bdkDashboard.loadPlotly();
+                const timeline = memorySpec.traces?.[0]?.x || [];
+                const timelineRange = timeline.length > 1 ? [timeline[0], timeline[timeline.length - 1]] : null;
+                const createLayout = spec => ({
+                    ...spec.layout,
+                    autosize: true,
+                    margin: { ...spec.layout.margin, l: 70, r: 80, t: 66, b: 58 },
+                    xaxis: { ...spec.layout.xaxis, ...(timelineRange ? { range: timelineRange, autorange: false } : {}) }
+                });
+                await Promise.all([
+                    Plotly.react(memoryTarget, memorySpec.traces, createLayout(memorySpec), plotlyConfig),
+                    Plotly.react(gcTarget, gcSpec.traces, createLayout(gcSpec), plotlyConfig)
+                ]);
+                synchronizeFocusedTimelines(Plotly, memoryTarget, gcTarget);
+            } catch {
+                memoryTarget.innerHTML = '<div class="alert alert-warning m-3">The focused charts could not be rendered.</div>';
+                gcTarget.innerHTML = '<div class="alert alert-warning m-3">The focused charts could not be rendered.</div>';
+            }
+        }
+
+        function synchronizeFocusedTimelines(Plotly, memoryTarget, gcTarget) {
+            let synchronizing = false;
+            const synchronize = (source, target) => {
+                source.removeAllListeners?.('plotly_relayout');
+                source.on?.('plotly_relayout', changes => {
+                    if (synchronizing) return;
+                    let update = null;
+                    if (changes['xaxis.range[0]'] !== undefined && changes['xaxis.range[1]'] !== undefined) {
+                        update = { 'xaxis.range[0]': changes['xaxis.range[0]'], 'xaxis.range[1]': changes['xaxis.range[1]'], 'xaxis.autorange': false };
+                    } else if (changes['xaxis.autorange'] === true) {
+                        update = { 'xaxis.autorange': true };
+                    }
+                    if (!update) return;
+                    synchronizing = true;
+                    Promise.resolve(Plotly.relayout(target, update)).finally(() => { synchronizing = false; });
+                });
+            };
+            synchronize(memoryTarget, gcTarget);
+            synchronize(gcTarget, memoryTarget);
+        }
+
+        function openFocusedChart() {
+            const modal = document.querySelector('#profiling-chart-focus-modal');
+            if (!modal || !state.chartSpecs?.memory || !state.chartSpecs?.gc) {
+                showOutcome('No chart data is available to focus.', 'warning');
+                return;
+            }
+            window.bootstrap.Modal.getOrCreateInstance(modal).show();
+        }
+
+        function renderAnalysis(targetSelector, result) {
+            const target = document.querySelector(targetSelector);
+            if (!target || !result) return;
+            const quality = result.dataQuality || {};
+            const signals = result.signals || [];
+            const kpis = result.kpIs || result.kpis || [];
+            const limitations = result.limitations || [];
+            const sufficiency = enumName(quality.sufficiency, ['Collecting', 'Sufficient', 'Limited']);
+            const headline = signals.length ? `${signals.length} evidence-backed signal${signals.length === 1 ? '' : 's'}` : (sufficiency === 'Collecting' ? 'Collecting enough data for analysis.' : 'No notable behavior detected.');
+            const signalsHtml = signals.map(signal => {
+                const signalName = humanizeIdentifier(signal.identifier);
+                const signalDescription = signal.explanation || descriptionFor(signal.identifier);
+                const confidence = enumName(signal.confidence, ['Low', 'Medium', 'High']);
+                const confidenceDescription = `${confidence} confidence describes how complete and independently supported the required evidence is. It is not a probability or severity score.`;
+                const evidenceHtml = (signal.evidence || []).map(item => `<span class="profiling-evidence"><span>${escapeHtml(humanizeIdentifier(item.identifier))}: <strong>${formatNumber(item.value)} ${escapeHtml(item.unit)}</strong></span>${infoHtml(descriptionFor(item.identifier), humanizeIdentifier(item.identifier))}</span>`).join('');
+                return `<article class="profiling-signal"><div class="d-flex justify-content-between gap-2"><div class="profiling-signal-title"><strong>${escapeHtml(enumName(signal.label, ['Notable', 'Investigate']))} · ${escapeHtml(signalName)}</strong>${infoHtml(signalDescription, signalName)}<code class="profiling-technical-name">${escapeHtml(signal.identifier)}</code></div><span class="badge text-bg-secondary">${escapeHtml(confidence)} confidence ${infoHtml(confidenceDescription, `${confidence} confidence`)}</span></div><p class="mb-1 mt-2">${escapeHtml(signalDescription)}</p><div class="small text-muted"><strong>Suggested next step:</strong> ${escapeHtml(signal.suggestedAction)}</div><div class="small mt-1" aria-label="Signal evidence">${evidenceHtml}</div></article>`;
+            }).join('');
+            const kpiHtml = kpis.map(item => {
+                const label = humanizeIdentifier(item.identifier);
+                return `<div class="profiling-kpi"><span class="profiling-kpi-label">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span><strong>${formatNumber(item.value)} ${escapeHtml(item.unit)}</strong><code class="profiling-technical-name">${escapeHtml(item.identifier)}</code></div>`;
+            }).join('');
+            target.innerHTML = `<div class="profiling-analysis-inner"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>${escapeHtml(headline)} ${infoHtml('A signal is emitted only when a fixed rule is supported by the available measurements. Signals remain independent and are never combined.', 'Evidence-backed signals')}</strong><span class="small text-muted">${result.scope?.snapshotCount ?? 0} snapshots · ${result.scope?.provisional ? 'provisional' : 'terminal'} · ${escapeHtml(sufficiency)}</span></div>${signalsHtml}<div class="profiling-kpi-grid" aria-label="Evaluation key performance indicators">${kpiHtml}</div>${limitations.length ? `<div class="small text-muted mt-2"><strong>Limitations:</strong> ${limitations.map(escapeHtml).join(' · ')}</div>` : ''}</div>`;
+        }
+
+        function renderComparison(result) {
+            const body = document.querySelector('#profiling-delta-table tbody');
+            if (!body || !result) return;
+            const metrics = result.metrics || [];
+            body.innerHTML = metrics.map(item => {
+                const label = humanizeIdentifier(item.identifier);
+                return `<tr><td><span class="profiling-metric-name">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span><code class="profiling-technical-name">${escapeHtml(item.identifier)}</code></td><td>${escapeHtml(item.unit)}</td><td class="text-end">${formatNumber(item.earlierValue)}</td><td class="text-end">${formatNumber(item.laterValue)}</td><td class="text-end">${formatNumber(item.difference)}</td><td class="text-end">${item.percentageDifference === null || item.percentageDifference === undefined ? 'unavailable' : `${formatNumber(item.percentageDifference)}%`}</td></tr>`;
+            }).join('') || '<tr><td colspan="6" class="text-muted">No comparable raw metrics were returned.</td></tr>';
+        }
+
+        async function analyzeTimeline(isAutomatic = false) {
+            if (state.analysisInFlight || !state.root?.dataset.sessionKey || !state.root?.dataset.nodeKey) return;
+            state.analysisInFlight = true;
+            const button = document.querySelector('#profiling-analyze-now');
+            if (button) button.disabled = true;
+            try {
+                state.sessionAnalysis = await request(state.root.dataset.analyzePath, 'POST', { sessionKey: state.root.dataset.sessionKey, nodeKey: state.root.dataset.nodeKey });
+                renderAnalysis('#profiling-session-analysis-result', state.sessionAnalysis);
+            } catch (error) { showOutcome(error.message, 'danger'); }
+            finally { state.analysisInFlight = false; if (button) button.disabled = false; }
+        }
+
+        async function analyzePair() {
+            const a = document.querySelector('#profiling-snapshot-a');
+            const b = document.querySelector('#profiling-snapshot-b');
+            const validation = document.querySelector('#profiling-pair-validation');
+            const sequenceA = Number(a?.selectedOptions[0]?.dataset.sequence);
+            const sequenceB = Number(b?.selectedOptions[0]?.dataset.sequence);
+            if (!a?.value || !b?.value || !(sequenceA < sequenceB)) {
+                if (validation) validation.textContent = 'Select exactly two snapshots with A earlier than B.';
+                return;
+            }
+            validation.textContent = '';
+            const selection = { sessionKey: state.root.dataset.sessionKey, nodeKey: state.root.dataset.nodeKey, snapshotAKey: a.value, snapshotBKey: b.value };
+            try {
+                [state.pairAnalysis, state.comparison] = await Promise.all([
+                    request(state.root.dataset.analyzePath, 'POST', selection),
+                    request(state.root.dataset.comparePath, 'POST', selection)
+                ]);
+                renderAnalysis('#profiling-pair-analysis', state.pairAnalysis);
+                renderComparison(state.comparison);
+            } catch (error) { validation.textContent = error.message; }
+        }
+
+        async function runAction(url, method, body, label, confirmation, selectResultSession = false) {
+            if (confirmation && !window.confirm(confirmation)) return false;
+            try {
+                const result = await request(url, method, body);
+                showOutcome(summarizeControl(result, label), 'success');
+                const resultSession = result?.session?.identity?.key;
+                if (selectResultSession && resultSession && resultSession !== state.root?.dataset.sessionKey) {
+                    await selectContext(resultSession, null);
+                    return true;
+                }
+                await state.refresher?.refresh(true);
+                return true;
+            } catch (error) {
+                showOutcome(error.message, 'danger');
+                return false;
+            }
+        }
+
+        const wait = milliseconds => new Promise(resolve => window.setTimeout(resolve, milliseconds));
+
+        async function waitForNewSnapshot(sessionKey, previousLatestSnapshotKey) {
+            for (let attempt = 0; attempt < 15; attempt++) {
+                const currentSessionKey = state.root?.dataset.sessionKey;
+                const latestSnapshotKey = state.root?.dataset.latestSnapshotKey;
+                if (currentSessionKey === sessionKey && latestSnapshotKey && latestSnapshotKey !== previousLatestSnapshotKey) {
+                    return latestSnapshotKey;
+                }
+
+                await wait(200);
+                await state.refresher?.refresh(true);
+            }
+
+            return null;
+        }
+
+        async function takeSnapshot() {
+            const previousSessionKey = state.root?.dataset.sessionKey || null;
+            const previousLatestSnapshotKey = state.root?.dataset.latestSnapshotKey || null;
+            try {
+                const result = await request(state.root.dataset.snapshotPath, 'POST', { name: null });
+                showOutcome(summarizeControl(result, 'Snapshot requested.'), 'success');
+                const resultSessionKey = result?.session?.identity?.key || previousSessionKey;
+                if (!resultSessionKey) {
+                    await state.refresher?.refresh(true);
+                    return true;
+                }
+
+                if (resultSessionKey !== previousSessionKey) {
+                    await selectContext(resultSessionKey, null);
+                } else {
+                    await selectSnapshot(null);
+                }
+
+                const baselineSnapshotKey = resultSessionKey === previousSessionKey
+                    ? previousLatestSnapshotKey
+                    : null;
+                const latestSnapshotKey = await waitForNewSnapshot(resultSessionKey, baselineSnapshotKey);
+                if (latestSnapshotKey) {
+                    await selectSnapshot(latestSnapshotKey);
+                    return true;
+                }
+
+                showOutcome('Snapshot was accepted but is not visible yet. Use Refresh to check again.', 'warning');
+                return true;
+            } catch (error) {
+                showOutcome(error.message, 'danger');
+                return false;
+            }
+        }
+
+        function resetStressButton(button) {
+            button.disabled = false;
+            button.classList.remove('is-running');
+            button.removeAttribute('aria-busy');
+            button.title = 'Stress this process for 30 seconds with high CPU, managed allocations, and retained memory';
+        }
+
+        async function startStress(button) {
+            button.disabled = true;
+            button.classList.add('is-running');
+            button.setAttribute('aria-busy', 'true');
+            try {
+                const result = await request(state.root?.dataset.stressPath, 'POST');
+                const durationSeconds = Number(result?.durationSeconds) || 30;
+                const retainedMiB = Math.round((Number(result?.retainedMemoryBytes) || 0) / 1048576);
+                button.title = `Profiling stress workload running for ${durationSeconds} seconds`;
+                showOutcome(`Stress workload started for ${durationSeconds} seconds with ${result?.workerCount || 1} CPU workers and ${retainedMiB} MiB retained memory.`, 'success');
+                window.clearTimeout(state.stressTimeout);
+                state.stressTimeout = window.setTimeout(() => resetStressButton(button), durationSeconds * 1000);
+            } catch (error) {
+                resetStressButton(button);
+                showOutcome(error.message, 'danger');
+            }
+        }
+
+        function activateTab(requestedTab, focus = false) {
+            const tabs = Array.from(document.querySelectorAll('[data-profiling-tab]'));
+            const panels = Array.from(document.querySelectorAll('[data-profiling-tab-panel]'));
+            if (!tabs.length || !panels.length) return;
+            const tab = tabs.some(item => item.dataset.profilingTab === requestedTab) ? requestedTab : 'overview';
+            tabs.forEach(item => {
+                const active = item.dataset.profilingTab === tab;
+                item.classList.toggle('is-active', active);
+                item.setAttribute('aria-selected', active ? 'true' : 'false');
+                item.tabIndex = active ? 0 : -1;
+                if (active && focus) item.focus();
+            });
+            panels.forEach(item => { item.hidden = item.dataset.profilingTabPanel !== tab; });
+            localStorage.setItem(storage.tab, tab);
+            if (tab === 'overview') scheduleChartRender();
+        }
+
+        function synchronizeCollectionControls() {
+            const running = state.root?.dataset.sessionRunning === 'true';
+            const sessionToggle = document.querySelector('#profiling-session-toggle');
+            const markerInput = document.querySelector('#profiling-marker-name');
+            const markerButton = document.querySelector('#profiling-add-marker');
+            const metadataButton = document.querySelector('#profiling-edit-metadata');
+
+            if (sessionToggle) {
+                sessionToggle.dataset.sessionAction = running ? 'stop' : 'start';
+                sessionToggle.title = running ? 'Stop the active profiling session' : 'Start a profiling session';
+                sessionToggle.setAttribute('aria-label', running ? 'Stop profiling session' : 'Start profiling session');
+                sessionToggle.classList.toggle('btn-danger', running);
+                sessionToggle.classList.toggle('is-running', running);
+                sessionToggle.classList.toggle('btn-success', !running);
+                sessionToggle.classList.toggle('is-stopped', !running);
+                const icon = sessionToggle.querySelector('i');
+                if (icon) icon.className = `bi ${running ? 'bi-stop-fill' : 'bi-play-fill'}`;
+            }
+
+            if (markerInput) {
+                markerInput.disabled = !running;
+                markerInput.title = running
+                    ? 'Name a marker for the active session'
+                    : 'Start a session before adding a marker';
+            }
+
+            if (markerButton) {
+                markerButton.disabled = !running;
+                markerButton.title = running
+                    ? 'Add phase marker'
+                    : 'Start a session before adding a marker';
+            }
+
+            if (metadataButton) {
+                const hasSession = Boolean(state.root?.dataset.sessionKey);
+                metadataButton.disabled = !hasSession;
+                metadataButton.title = hasSession
+                    ? 'View or edit session metadata'
+                    : 'Select a profiling session to view or edit metadata';
+            }
+        }
+
+        function initializeContent() {
+            state.root = document.querySelector('#profiling-dashboard-data');
+            if (!state.root) return;
+            state.data = decodePayload(state.root.dataset.profilingPayload);
+            synchronizeCollectionControls();
+            if (state.lastOutcome) showOutcome(state.lastOutcome.message, state.lastOutcome.kind);
+            const scope = `${state.root.dataset.sessionKey || ''}/${state.root.dataset.nodeKey || ''}`;
+            const latest = state.root.dataset.latestSnapshotKey || null;
+            const isNew = state.observationScope === scope && state.lastObservedSnapshot !== null && latest !== null && latest !== state.lastObservedSnapshot;
+            state.observationScope = scope;
+            state.lastObservedSnapshot = latest;
+
+            const live = localStorage.getItem(storage.live) === 'true';
+            const liveSwitch = document.querySelector('#profiling-live-analysis');
+            if (liveSwitch) liveSwitch.checked = live;
+            const filters = getFilters();
+            ['phases', 'actions', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
+            setSessionsExpanded(localStorage.getItem(storage.sessions) !== 'false');
+            setSnapshotDetailsExpanded(localStorage.getItem(storage.snapshotDetails) !== 'false');
+            localizeSnapshotOptions();
+            activateTab(localStorage.getItem(storage.tab) || 'overview');
+            if (state.sessionAnalysis) renderAnalysis('#profiling-session-analysis-result', state.sessionAnalysis);
+            if (state.pairAnalysis) renderAnalysis('#profiling-pair-analysis', state.pairAnalysis);
+            if (state.comparison) renderComparison(state.comparison);
+            synchronizeSnapshotCopyFeedback();
+            if (document.querySelector('#profiling-snapshot-focus-modal.show')) renderSnapshotFocus();
+            if (live && isNew && !state.analysisInFlight) analyzeTimeline(true);
+        }
+
+        function bindEvents() {
+            document.addEventListener('change', event => {
+                if (event.target.matches('#profiling-session-select')) selectContext(event.target.value, null);
+                if (event.target.matches('#profiling-node-select')) selectContext(state.root?.dataset.sessionKey, event.target.value);
+                if (event.target.matches('#profiling-snapshot-select')) selectSnapshot(event.target.value);
+                if (event.target.matches('#profiling-live-analysis')) localStorage.setItem(storage.live, event.target.checked ? 'true' : 'false');
+                if (event.target.matches('.profiling-chart-filter')) {
+                    const filters = { phases: document.querySelector('#profiling-filter-phases')?.checked !== false, actions: document.querySelector('#profiling-filter-actions')?.checked !== false, segments: document.querySelector('#profiling-filter-segments')?.checked !== false };
+                    localStorage.setItem(storage.filters, JSON.stringify(filters));
+                    scheduleChartRender();
+                }
+            });
+            document.addEventListener('submit', event => {
+                if (event.target.matches('#profiling-start-form')) {
+                    event.preventDefault();
+                    if (state.root?.dataset.sessionRunning === 'true') {
+                        showOutcome('Stop the active session before starting another one.', 'warning');
+                        return;
+                    }
+                    const name = document.querySelector('#profiling-start-name')?.value.trim() || null;
+                    const interval = Number(document.querySelector('#profiling-start-interval')?.value);
+                    const duration = Number(document.querySelector('#profiling-start-duration')?.value);
+                    runAction(state.root.dataset.startPath, 'POST', { name, samplingInterval: toTimeSpan(interval), duration: toTimeSpan(duration * 1000), tags: [] }, 'Collection started.', undefined, true);
+                }
+                if (event.target.matches('#profiling-metadata-form')) {
+                    event.preventDefault();
+                    runAction(state.root.dataset.metadataPath, 'PUT', { name: document.querySelector('#profiling-metadata-name')?.value.trim() || null, tags: (document.querySelector('#profiling-metadata-tags')?.value || '').split(',').map(item => item.trim()).filter(Boolean), note: document.querySelector('#profiling-metadata-note')?.value.trim() || null, isPinned: document.querySelector('#profiling-metadata-pinned')?.checked === true }, 'Metadata saved.')
+                        .then(succeeded => {
+                            if (succeeded) window.bootstrap.Modal.getOrCreateInstance(document.querySelector('#profiling-metadata-modal')).hide();
+                        });
+                }
+                if (event.target.matches('#profiling-archive-import-form')) {
+                    event.preventDefault();
+                    importArchive(event.target)
+                        .then(result => {
+                            showOutcome(`Session imported as ${result.sessionKey}.`, 'success');
+                            selectContext(result.sessionKey, null);
+                        })
+                        .catch(error => showOutcome(error.message, 'danger'));
+                }
+            });
+            document.addEventListener('click', event => {
+                const tab = event.target.closest('[data-profiling-tab]');
+                if (tab) {
+                    activateTab(tab.dataset.profilingTab);
+                    return;
+                }
+                const button = event.target.closest('button');
+                if (!button) return;
+                if (button.dataset.profilingChartFocus) {
+                    openFocusedChart(button.dataset.profilingChartFocus);
+                    return;
+                }
+                if (button.id === 'profiling-toggle-sessions') {
+                    setSessionsExpanded(button.getAttribute('aria-expanded') !== 'true', true);
+                    return;
+                }
+                if (button.id === 'profiling-session-toggle') {
+                    if (state.root?.dataset.sessionRunning === 'true') {
+                        runAction(state.root.dataset.stopPath, 'POST', undefined, 'Stop requested.');
+                    } else {
+                        document.querySelector('#profiling-start-form')?.requestSubmit();
+                    }
+                    return;
+                }
+                if (button.dataset.requiresRunning === 'true' && state.root?.dataset.sessionRunning !== 'true') { showOutcome('Start an active session before using this action.', 'warning'); return; }
+                if (button.id === 'profiling-snapshot') takeSnapshot();
+                if (button.id === 'profiling-gc') runAction(state.root.dataset.gcPath, 'POST', undefined, 'GC requested.');
+                if (button.id === 'profiling-stress') startStress(button);
+                if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Phase marker added.');
+                if (button.id === 'profiling-delete-session') runAction(state.root.dataset.deletePath, 'DELETE', undefined, 'Session deleted.', 'Delete the selected terminal profiling session and all of its data?');
+                if (button.id === 'profiling-delete-unpinned') runAction(state.root.dataset.deleteUnpinnedPath, 'DELETE', undefined, 'Unpinned sessions deleted.', 'Delete every unpinned terminal profiling session?');
+                if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Profiling store cleared.', 'Clear ALL profiling data? This includes pinned sessions, snapshots, markers, segments, custom metrics, node records, and invalidated identities. This cannot be undone.');
+                if (button.id === 'profiling-analyze-now') analyzeTimeline(false);
+                if (button.id === 'profiling-compare') analyzePair();
+                if (button.id === 'profiling-toggle-snapshot-details') {
+                    setSnapshotDetailsExpanded(button.getAttribute('aria-expanded') !== 'true', true);
+                    return;
+                }
+                if (button.id === 'profiling-reset-snapshot') {
+                    const select = document.querySelector('#profiling-snapshot-select');
+                    if (select) select.value = '';
+                    selectSnapshot(null);
+                }
+                if (button.id === 'profiling-focus-snapshot') {
+                    openSnapshotFocus();
+                    return;
+                }
+                if (button.id === 'profiling-copy-snapshot') {
+                    const inspected = inspectedSnapshot();
+                    if (!inspected) { showOutcome('No snapshot is available to copy.', 'warning'); return; }
+                    copyText(JSON.stringify(inspected, null, 2)).then(copied => {
+                        if (copied) {
+                            showSnapshotCopiedFeedback();
+                        }
+                        showOutcome(copied ? 'Snapshot copied as JSON.' : 'Clipboard access was denied.', copied ? 'success' : 'danger');
+                    });
+                }
+            });
+            const focusModal = document.querySelector('#profiling-chart-focus-modal');
+            focusModal?.addEventListener('shown.bs.modal', renderFocusedChart);
+            focusModal?.addEventListener('hidden.bs.modal', () => {
+                const targets = [document.querySelector('#profiling-focused-memory-chart'), document.querySelector('#profiling-focused-gc-chart')].filter(Boolean);
+                if (!targets.length) return;
+                window.bdkDashboard.loadPlotly()
+                    .then(Plotly => targets.forEach(target => Plotly.purge(target)))
+                    .catch(() => targets.forEach(target => target.replaceChildren()));
+            });
+            document.addEventListener('keydown', event => {
+                const tab = event.target.closest?.('[data-profiling-tab]');
+                if (!tab || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+                const tabs = Array.from(document.querySelectorAll('[data-profiling-tab]'));
+                const current = tabs.indexOf(tab);
+                const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+                event.preventDefault();
+                activateTab(tabs[next].dataset.profilingTab, true);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeContent();
+            bindEvents();
+            const refreshSelect = document.querySelector('#profiling-refresh-interval');
+            if (refreshSelect && localStorage.getItem(storage.refresh) === null && state.root?.dataset.refreshInterval) refreshSelect.value = state.root.dataset.refreshInterval;
+            state.refresher = window.bdkDashboard.createRefresher({
+                buildUrl: buildContentUrl,
+                contentSelector: '#dashboard-profiling-content',
+                statusSelector: '#profiling-refresh-status',
+                intervalSelector: '#profiling-refresh-interval',
+                refreshButtonSelector: '#profiling-refresh-now',
+                storageKey: storage.refresh,
+                applyResponse: applyContentRefresh,
+                onSuccess: initializeContent
+            });
+
+            const current = new URL(window.location.href);
+            if (!current.searchParams.has('session')) {
+                const savedSession = localStorage.getItem(storage.session);
+                const savedNode = localStorage.getItem(storage.node);
+                if (savedSession) selectContext(savedSession, savedNode);
+            }
+            document.addEventListener('bdk-dashboard-theme-changed', scheduleChartRender);
+        });
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Profiling" };
+}

@@ -34,6 +34,7 @@ nav:
           - Common Mapping: reference/common-mapping.md
           - Common Caching: reference/common-caching.md
           - Common Observability Tracing: reference/common-observability-tracing.md
+          - Profiling: reference/features-profiling.md
           - Utilities: reference/features-utilities.md
       - Core Domain and Application:
           - Domain: reference/features-domain.md

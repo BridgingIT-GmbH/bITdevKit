@@ -31,14 +31,15 @@ public static class MessagingAliveExtensions
         var options = EnsureOptions(context.Services);
         options.Enabled = enabled;
 
-        ServiceCollectionMessagingExtensions.Subscriptions.RemoveAll(item =>
-            item.message == typeof(AliveMessage) && item.handler == typeof(AliveMessageHandler));
-
         if (enabled)
         {
             context.Services.TryAddTransient<AliveMessageHandler>();
-            ServiceCollectionMessagingExtensions.Subscriptions.Add((typeof(AliveMessage), typeof(AliveMessageHandler)));
         }
+
+        ServiceCollectionMessagingExtensions.SetSubscription(
+            typeof(AliveMessage),
+            typeof(AliveMessageHandler),
+            enabled);
 
         return context;
     }

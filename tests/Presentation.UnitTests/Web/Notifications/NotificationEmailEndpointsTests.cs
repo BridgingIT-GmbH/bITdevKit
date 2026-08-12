@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Notifications;
-using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Notifications;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

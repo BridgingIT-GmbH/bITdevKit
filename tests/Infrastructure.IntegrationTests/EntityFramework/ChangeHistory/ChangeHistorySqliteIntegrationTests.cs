@@ -61,11 +61,11 @@ public class ChangeHistorySqliteIntegrationTests
     {
         await using var database = await CreateDatabaseAsync();
 
-        var tables = await database.Context.Database.SqlQueryRaw<string>("SELECT name AS Value FROM sqlite_master WHERE type = 'table' AND name = '__ChangeHistory'").ToListAsync();
-        var columns = await database.Context.Database.SqlQueryRaw<string>("SELECT name AS Value FROM pragma_table_info('__ChangeHistory')").ToListAsync();
-        var indexes = await database.Context.Database.SqlQueryRaw<string>("SELECT name AS Value FROM sqlite_master WHERE type = 'index' AND tbl_name = '__ChangeHistory'").ToListAsync();
+        var tables = await database.Context.Database.SqlQueryRaw<string>("SELECT name AS Value FROM sqlite_master WHERE type = 'table' AND name = '__ChangeHistory_Entries'").ToListAsync();
+        var columns = await database.Context.Database.SqlQueryRaw<string>("SELECT name AS Value FROM pragma_table_info('__ChangeHistory_Entries')").ToListAsync();
+        var indexes = await database.Context.Database.SqlQueryRaw<string>("SELECT name AS Value FROM sqlite_master WHERE type = 'index' AND tbl_name = '__ChangeHistory_Entries'").ToListAsync();
 
-        tables.ShouldContain("__ChangeHistory");
+        tables.ShouldContain("__ChangeHistory_Entries");
         columns.ShouldContain(nameof(ChangeHistoryEntry.BulkOperationId));
         columns.ShouldContain(nameof(ChangeHistoryEntry.AffectedEntityCount));
         columns.ShouldContain(nameof(ChangeHistoryEntry.Properties));

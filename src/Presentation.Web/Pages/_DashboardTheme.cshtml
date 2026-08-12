@@ -1,0 +1,604 @@
+@using RazorSlices
+@inherits RazorSlice
+
+<script>
+    (() => {
+        const themes = Object.freeze({
+            light: 'light',
+            dark: 'dark',
+            catppuccin: 'catppuccin',
+            darkforest: 'darkforest',
+            carbon: 'carbon',
+            tokionights: 'tokionights',
+            matrix: 'matrix',
+            system: 'system'
+        });
+        const labels = Object.freeze({
+            light: 'Light',
+            dark: 'Dark',
+            catppuccin: 'Catppuccin',
+            darkforest: 'Darkforest',
+            carbon: 'Carbon',
+            tokionights: 'Tokyo Night',
+            matrix: 'Matrix',
+            system: 'System'
+        });
+        const themeValues = Object.values(themes);
+
+        const readPreference = (key, fallback) => {
+            try {
+                return window.localStorage.getItem(key) ?? fallback;
+            } catch {
+                return fallback;
+            }
+        };
+
+        const writePreference = (key, value) => {
+            try {
+                window.localStorage.setItem(key, value);
+            } catch {
+                // The selected theme still applies for this document when storage is unavailable.
+            }
+        };
+
+        window.bdkTheme = window.bdkTheme || {
+            themes,
+            labels,
+            initialized: false,
+
+            getSystemTheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? themes.dark
+                    : themes.light;
+            },
+
+            normalizeTheme(theme) {
+                return themeValues.includes(theme) ? theme : themes.dark;
+            },
+
+            getCurrentTheme() {
+                return this.normalizeTheme(readPreference('theme', themes.dark));
+            },
+
+            applyTheme(theme, persist = true) {
+                const selectedTheme = this.normalizeTheme(theme);
+                const effectiveTheme = selectedTheme === themes.system
+                    ? this.getSystemTheme()
+                    : selectedTheme;
+
+                document.documentElement.setAttribute('data-bs-theme', effectiveTheme);
+                document.documentElement.setAttribute('data-dashboard-theme', selectedTheme);
+                if (persist) {
+                    writePreference('theme', selectedTheme);
+                }
+
+                this.updateThemePickers(selectedTheme);
+                document.dispatchEvent(new CustomEvent('bdk-dashboard-theme-changed', {
+                    detail: { theme: selectedTheme, effectiveTheme }
+                }));
+            },
+
+            getCurrentTexture() {
+                return readPreference('dashboardTexture', 'false') === 'true';
+            },
+
+            applyTexture(enabled, persist = true) {
+                const isEnabled = enabled === true;
+                document.documentElement.setAttribute('data-dashboard-texture', isEnabled ? 'on' : 'off');
+                if (persist) {
+                    writePreference('dashboardTexture', isEnabled ? 'true' : 'false');
+                }
+
+                document.querySelectorAll('.dashboard-texture-toggle').forEach(toggle => {
+                    toggle.setAttribute('aria-pressed', isEnabled ? 'true' : 'false');
+                });
+            },
+
+            setupThemePickers() {
+                document.querySelectorAll('.dashboard-theme-picker').forEach(picker => {
+                    if (picker.dataset.themePickerReady === 'true') {
+                        return;
+                    }
+
+                    const toggle = picker.querySelector('.theme-toggle');
+                    if (!toggle) {
+                        return;
+                    }
+
+                    picker.dataset.themePickerReady = 'true';
+                    toggle.addEventListener('click', event => {
+                        event.stopPropagation();
+                        const isOpen = picker.classList.toggle('is-open');
+                        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    });
+
+                    picker.querySelectorAll('[data-theme-option]').forEach(option => {
+                        option.addEventListener('click', event => {
+                            event.stopPropagation();
+                            this.applyTheme(option.dataset.themeOption);
+                            picker.classList.remove('is-open');
+                            toggle.setAttribute('aria-expanded', 'false');
+                        });
+                    });
+                });
+
+                this.updateThemePickers(this.getCurrentTheme());
+            },
+
+            updateThemePickers(theme) {
+                document.querySelectorAll('[data-theme-label]').forEach(label => {
+                    label.textContent = labels[theme] || labels.dark;
+                });
+
+                document.querySelectorAll('[data-theme-option]').forEach(option => {
+                    const isActive = option.dataset.themeOption === theme;
+                    option.classList.toggle('active', isActive);
+                    option.setAttribute('aria-current', isActive ? 'true' : 'false');
+                });
+            },
+
+            closeThemePickers() {
+                document.querySelectorAll('.dashboard-theme-picker.is-open').forEach(picker => {
+                    picker.classList.remove('is-open');
+                    picker.querySelector('.theme-toggle')?.setAttribute('aria-expanded', 'false');
+                });
+            },
+
+            initialize() {
+                this.applyTheme(this.getCurrentTheme(), false);
+                this.applyTexture(this.getCurrentTexture(), false);
+                this.setupThemePickers();
+                if (this.initialized) {
+                    return;
+                }
+
+                this.initialized = true;
+                document.addEventListener('click', event => {
+                    if (!event.target.closest('.dashboard-theme-picker')) {
+                        this.closeThemePickers();
+                    }
+                });
+                document.addEventListener('keydown', event => {
+                    if (event.key === 'Escape') {
+                        this.closeThemePickers();
+                    }
+                });
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                    if (this.getCurrentTheme() === themes.system) {
+                        this.applyTheme(themes.system, false);
+                    }
+                });
+                window.addEventListener('storage', event => {
+                    if (event.key === 'theme' || event.key === null) {
+                        this.applyTheme(event.newValue || themes.dark, false);
+                    }
+
+                    if (event.key === 'dashboardTexture' || event.key === null) {
+                        this.applyTexture(event.newValue === 'true', false);
+                    }
+                });
+            }
+        };
+
+        window.bdkTheme.applyTheme(window.bdkTheme.getCurrentTheme(), false);
+        window.bdkTheme.applyTexture(window.bdkTheme.getCurrentTexture(), false);
+    })();
+</script>
+
+<style>
+    :root {
+        --bs-primary: #66d9ef;
+        --bs-primary-rgb: 102,217,239;
+        --bs-secondary: #fd971f;
+        --bs-secondary-rgb: 253,151,31;
+        --bs-success: #a6e22e;
+        --bs-success-rgb: 166,226,46;
+        --bs-info: #66d9ef;
+        --bs-info-rgb: 102,217,239;
+        --bs-warning: #fd971f;
+        --bs-warning-rgb: 253,151,31;
+        --bs-danger: #f92672;
+        --bs-danger-rgb: 249,38,114;
+        --bs-body-bg: #151414;
+        --bs-body-color: #f8f8f2;
+        --bs-tertiary-bg: #1d1c1c;
+        --bs-secondary-bg: #242222;
+        --bs-border-color: #302d2d;
+        --bs-emphasis-color: #ffffff;
+        --bs-secondary-color: #a59f99;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .12);
+        --bs-primary-text-emphasis: #a6eaff;
+        --bs-border-radius: .125rem;
+        --bs-border-radius-sm: .1rem;
+        --bs-border-radius-lg: .2rem;
+        --dashboard-surface: #171616;
+        --dashboard-surface-muted: #1d1c1c;
+        --dashboard-border: #302d2d;
+        --dashboard-border-rgb: 248,248,242;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .18);
+        --dashboard-text: #f8f8f2;
+        --dashboard-muted: #a59f99;
+        --dashboard-code-bg: #0f0e0e;
+        --dashboard-navbar-bg: var(--dashboard-surface);
+        --dashboard-sidebar-bg: #111010;
+        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .12);
+        --dashboard-active-fg: var(--bs-secondary);
+        --dashboard-sidebar-width: 13.5rem;
+        --dashboard-sidebar-collapsed-width: 4.25rem;
+    }
+
+    [data-bs-theme="light"] {
+        --bs-primary: #0f62fe;
+        --bs-primary-rgb: 15,98,254;
+        --bs-secondary: #8a3ffc;
+        --bs-secondary-rgb: 138,63,252;
+        --bs-success: #198038;
+        --bs-success-rgb: 25,128,56;
+        --bs-info: #0072c3;
+        --bs-info-rgb: 0,114,195;
+        --bs-warning: #b28600;
+        --bs-warning-rgb: 178,134,0;
+        --bs-danger: #da1e28;
+        --bs-danger-rgb: 218,30,40;
+        --bs-body-bg: #f7f7f2;
+        --bs-body-color: #171717;
+        --bs-tertiary-bg: #efeee7;
+        --bs-secondary-bg: #e5e3db;
+        --bs-border-color: #cbc8bd;
+        --bs-emphasis-color: #000000;
+        --bs-secondary-color: #5f5b50;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .1);
+        --bs-primary-text-emphasis: #003a8c;
+        --dashboard-surface: #fffef8;
+        --dashboard-surface-muted: #efeee7;
+        --dashboard-border: #cbc8bd;
+        --dashboard-border-rgb: 23,23,23;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .16);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .24);
+        --dashboard-text: #171717;
+        --dashboard-muted: #5f5b50;
+        --dashboard-code-bg: #eceae0;
+        --dashboard-navbar-bg: #f7f7f2;
+        --dashboard-sidebar-bg: #efeee7;
+        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .1);
+        --dashboard-active-fg: var(--bs-primary);
+    }
+
+    [data-bs-theme="dark"] {
+        --bs-primary: #66d9ef;
+        --bs-primary-rgb: 102,217,239;
+        --bs-secondary: #fd971f;
+        --bs-secondary-rgb: 253,151,31;
+        --bs-success: #a6e22e;
+        --bs-success-rgb: 166,226,46;
+        --bs-info: #66d9ef;
+        --bs-info-rgb: 102,217,239;
+        --bs-warning: #fd971f;
+        --bs-warning-rgb: 253,151,31;
+        --bs-danger: #f92672;
+        --bs-danger-rgb: 249,38,114;
+        --bs-body-bg: #151414;
+        --bs-body-color: #f8f8f2;
+        --bs-tertiary-bg: #1d1c1c;
+        --bs-secondary-bg: #242222;
+        --bs-border-color: #302d2d;
+        --bs-emphasis-color: #ffffff;
+        --bs-secondary-color: #a59f99;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .12);
+        --bs-primary-text-emphasis: #a6eaff;
+        --dashboard-surface: #171616;
+        --dashboard-surface-muted: #1d1c1c;
+        --dashboard-border: #302d2d;
+        --dashboard-border-rgb: 248,248,242;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .18);
+        --dashboard-text: #f8f8f2;
+        --dashboard-muted: #a59f99;
+        --dashboard-code-bg: #0f0e0e;
+        --dashboard-navbar-bg: #171616;
+        --dashboard-sidebar-bg: #111010;
+        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .12);
+        --dashboard-active-fg: var(--bs-secondary);
+    }
+
+    [data-bs-theme="catppuccin"] {
+        --bs-primary: #89b4fa;
+        --bs-primary-rgb: 137,180,250;
+        --bs-secondary: #f5c2e7;
+        --bs-secondary-rgb: 245,194,231;
+        --bs-success: #a6e3a1;
+        --bs-success-rgb: 166,227,161;
+        --bs-info: #94e2d5;
+        --bs-info-rgb: 148,226,213;
+        --bs-warning: #f9e2af;
+        --bs-warning-rgb: 249,226,175;
+        --bs-danger: #f38ba8;
+        --bs-danger-rgb: 243,139,168;
+        --bs-body-bg: #11111b;
+        --bs-body-color: #cdd6f4;
+        --bs-tertiary-bg: #181825;
+        --bs-secondary-bg: #1e1e2e;
+        --bs-border-color: #313244;
+        --bs-emphasis-color: #f5e0dc;
+        --bs-secondary-color: #a6adc8;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .14);
+        --bs-primary-text-emphasis: #b4befe;
+        --dashboard-surface: #181825;
+        --dashboard-surface-muted: #1e1e2e;
+        --dashboard-border: #313244;
+        --dashboard-border-rgb: 205,214,244;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .2);
+        --dashboard-text: #cdd6f4;
+        --dashboard-muted: #a6adc8;
+        --dashboard-code-bg: #0b0b13;
+        --dashboard-navbar-bg: #11111b;
+        --dashboard-sidebar-bg: #0b0b13;
+        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .12);
+        --dashboard-active-fg: var(--bs-secondary);
+    }
+
+    [data-bs-theme="darkforest"] {
+        --bs-primary: #9ece6a;
+        --bs-primary-rgb: 158,206,106;
+        --bs-secondary: #e0af68;
+        --bs-secondary-rgb: 224,175,104;
+        --bs-success: #73daca;
+        --bs-success-rgb: 115,218,202;
+        --bs-info: #7dcfff;
+        --bs-info-rgb: 125,207,255;
+        --bs-warning: #e0af68;
+        --bs-warning-rgb: 224,175,104;
+        --bs-danger: #f7768e;
+        --bs-danger-rgb: 247,118,142;
+        --bs-body-bg: #07120d;
+        --bs-body-color: #d6e8d1;
+        --bs-tertiary-bg: #0c1d14;
+        --bs-secondary-bg: #102719;
+        --bs-border-color: #244432;
+        --bs-emphasis-color: #f3fff0;
+        --bs-secondary-color: #91aa8a;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .13);
+        --bs-primary-text-emphasis: #c4f0a0;
+        --dashboard-surface: #0c1d14;
+        --dashboard-surface-muted: #102719;
+        --dashboard-border: #244432;
+        --dashboard-border-rgb: 214,232,209;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .11);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .19);
+        --dashboard-text: #d6e8d1;
+        --dashboard-muted: #91aa8a;
+        --dashboard-code-bg: #050d09;
+        --dashboard-navbar-bg: #07120d;
+        --dashboard-sidebar-bg: #050d09;
+        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .12);
+        --dashboard-active-fg: var(--bs-primary);
+    }
+
+    [data-bs-theme="carbon"] {
+        --bs-primary: #78a9ff;
+        --bs-primary-rgb: 120,169,255;
+        --bs-secondary: #ff7eb6;
+        --bs-secondary-rgb: 255,126,182;
+        --bs-success: #42be65;
+        --bs-success-rgb: 66,190,101;
+        --bs-info: #33b1ff;
+        --bs-info-rgb: 51,177,255;
+        --bs-warning: #f1c21b;
+        --bs-warning-rgb: 241,194,27;
+        --bs-danger: #fa4d56;
+        --bs-danger-rgb: 250,77,86;
+        --bs-body-bg: #161616;
+        --bs-body-color: #f4f4f4;
+        --bs-tertiary-bg: #262626;
+        --bs-secondary-bg: #393939;
+        --bs-border-color: #525252;
+        --bs-emphasis-color: #ffffff;
+        --bs-secondary-color: #c6c6c6;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .13);
+        --bs-primary-text-emphasis: #a6c8ff;
+        --dashboard-surface: #262626;
+        --dashboard-surface-muted: #393939;
+        --dashboard-border: #525252;
+        --dashboard-border-rgb: 244,244,244;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .22);
+        --dashboard-text: #f4f4f4;
+        --dashboard-muted: #c6c6c6;
+        --dashboard-code-bg: #0f0f0f;
+        --dashboard-navbar-bg: #161616;
+        --dashboard-sidebar-bg: #0f0f0f;
+        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .12);
+        --dashboard-active-fg: var(--bs-primary);
+    }
+
+    [data-bs-theme="tokionights"] {
+        --bs-primary: #7aa2f7;
+        --bs-primary-rgb: 122,162,247;
+        --bs-secondary: #bb9af7;
+        --bs-secondary-rgb: 187,154,247;
+        --bs-success: #9ece6a;
+        --bs-success-rgb: 158,206,106;
+        --bs-info: #2ac3de;
+        --bs-info-rgb: 42,195,222;
+        --bs-warning: #ff9e64;
+        --bs-warning-rgb: 255,158,100;
+        --bs-danger: #f7768e;
+        --bs-danger-rgb: 247,118,142;
+        --bs-body-bg: #0f1021;
+        --bs-body-color: #c0caf5;
+        --bs-tertiary-bg: #16172d;
+        --bs-secondary-bg: #1f2335;
+        --bs-border-color: #3b4261;
+        --bs-emphasis-color: #ffffff;
+        --bs-secondary-color: #9aa5ce;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .16);
+        --bs-primary-text-emphasis: #a9bdfd;
+        --dashboard-surface: #16172d;
+        --dashboard-surface-muted: #1f2335;
+        --dashboard-border: #3b4261;
+        --dashboard-border-rgb: 192,202,245;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .13);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .24);
+        --dashboard-text: #c0caf5;
+        --dashboard-muted: #9aa5ce;
+        --dashboard-code-bg: #090a16;
+        --dashboard-navbar-bg: #0f1021;
+        --dashboard-sidebar-bg: #090a16;
+        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .14);
+        --dashboard-active-fg: var(--bs-secondary);
+    }
+
+    [data-bs-theme="matrix"] {
+        --bs-primary: #00ff66;
+        --bs-primary-rgb: 0,255,102;
+        --bs-secondary: #39ff14;
+        --bs-secondary-rgb: 57,255,20;
+        --bs-success: #00ff66;
+        --bs-success-rgb: 0,255,102;
+        --bs-info: #8cffb0;
+        --bs-info-rgb: 140,255,176;
+        --bs-warning: #b7ff4a;
+        --bs-warning-rgb: 183,255,74;
+        --bs-danger: #ff4d6d;
+        --bs-danger-rgb: 255,77,109;
+        --bs-body-bg: #020802;
+        --bs-body-color: #b6ffbf;
+        --bs-tertiary-bg: #041204;
+        --bs-secondary-bg: #071d07;
+        --bs-border-color: #124512;
+        --bs-emphasis-color: #e7ffea;
+        --bs-secondary-color: #73c77c;
+        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .12);
+        --bs-primary-text-emphasis: #8cff9e;
+        --dashboard-surface: #041204;
+        --dashboard-surface-muted: #071d07;
+        --dashboard-border: #124512;
+        --dashboard-border-rgb: 0,255,102;
+        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .18);
+        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .34);
+        --dashboard-text: #b6ffbf;
+        --dashboard-muted: #73c77c;
+        --dashboard-code-bg: #000400;
+        --dashboard-navbar-bg: #020802;
+        --dashboard-sidebar-bg: #000400;
+        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .14);
+        --dashboard-active-fg: var(--bs-primary);
+    }
+
+    body {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: .875rem;
+    }
+
+    [data-dashboard-texture="on"] body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1040;
+        pointer-events: none;
+        background:
+            repeating-linear-gradient(
+                to bottom,
+                rgba(var(--dashboard-border-rgb), .055),
+                rgba(var(--dashboard-border-rgb), .055) 1px,
+                transparent 1px,
+                transparent 4px),
+            linear-gradient(
+                90deg,
+                rgba(var(--dashboard-border-rgb), .028) 1px,
+                transparent 1px);
+        background-size: auto, 48px 48px;
+        mix-blend-mode: soft-light;
+        opacity: .55;
+    }
+
+    .dashboard-theme-picker {
+        position: relative;
+    }
+
+    .theme-toggle {
+        min-width: 6.75rem;
+        padding: .22rem .5rem;
+        background: transparent;
+        border: 1px solid var(--bs-border-color);
+        border-radius: .1rem;
+        color: var(--bs-body-color);
+        font-size: .74rem;
+        line-height: 1.2;
+        text-align: left;
+    }
+
+    .theme-toggle:hover,
+    .theme-toggle:focus-visible {
+        border-color: var(--dashboard-panel-border-hover);
+        color: var(--dashboard-active-fg);
+    }
+
+    .theme-toggle i {
+        color: var(--dashboard-active-fg);
+        font-size: .85rem;
+    }
+
+    .dashboard-theme-picker .dropdown-menu {
+        bottom: auto !important;
+        display: none;
+        inset-inline-end: 0;
+        inset-inline-start: auto;
+        min-width: 10rem;
+        padding: .25rem;
+        position: absolute;
+        top: calc(100% + .25rem) !important;
+        transform: none !important;
+        background: var(--dashboard-surface);
+        border-color: var(--dashboard-panel-border-hover);
+        border-radius: .1rem;
+    }
+
+    .dashboard-theme-picker.is-open .dropdown-menu {
+        display: block;
+    }
+
+    .dashboard-theme-picker .dropdown-item {
+        border-radius: .1rem;
+        color: var(--bs-body-color);
+        font-size: .74rem;
+        padding: .28rem .45rem;
+    }
+
+    .dashboard-theme-picker .dropdown-item:hover,
+    .dashboard-theme-picker .dropdown-item:focus,
+    .dashboard-theme-picker .dropdown-item.active {
+        background: var(--dashboard-active-bg);
+        color: var(--dashboard-active-fg);
+    }
+
+    .dashboard-theme-swatch {
+        background:
+            linear-gradient(90deg,
+                var(--theme-bg, var(--bs-body-bg)) 0 34%,
+                var(--theme-swatch, var(--bs-primary)) 34% 67%,
+                var(--theme-accent, var(--bs-secondary)) 67% 100%);
+        border: 1px solid var(--bs-border-color);
+        display: inline-block;
+        height: .78rem;
+        width: 1.3rem;
+    }
+
+    @@media (max-width: 575.98px) {
+        .theme-toggle {
+            min-width: 2.15rem;
+            width: 2.15rem;
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .theme-toggle [data-theme-label] {
+            display: none;
+        }
+    }
+</style>

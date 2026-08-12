@@ -28,7 +28,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitem
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WithEntityItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/core/todoitems/history/{entityId}{?bulkOperationId*,captureSource*,changeSetId*,changedByUserId*,changedDateFrom*,changedDateTo*,operation*,orderAscending*,page*,pageSize*,propertyName*}", pathParameters)
+        public WithEntityItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/core/todoitems/history/{entityId}{?bulkOperationId*,captureSource*,captureStatus*,captureStrategy*,changeSetId*,changedByUserId*,changedDateFrom*,changedDateTo*,operation*,orderAscending*,page*,pageSize*,propertyName*}", pathParameters)
         {
         }
         /// <summary>
@@ -36,7 +36,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitem
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WithEntityItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/core/todoitems/history/{entityId}{?bulkOperationId*,captureSource*,changeSetId*,changedByUserId*,changedDateFrom*,changedDateTo*,operation*,orderAscending*,page*,pageSize*,propertyName*}", rawUrl)
+        public WithEntityItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/core/todoitems/history/{entityId}{?bulkOperationId*,captureSource*,captureStatus*,captureStrategy*,changeSetId*,changedByUserId*,changedDateFrom*,changedDateTo*,operation*,orderAscending*,page*,pageSize*,propertyName*}", rawUrl)
         {
         }
         /// <summary>
@@ -110,6 +110,24 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api.Core.Todoitem
 #else
             [QueryParameter("captureSource")]
             public string CaptureSource { get; set; }
+#endif
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+            [QueryParameter("captureStatus")]
+            public string? CaptureStatus { get; set; }
+#nullable restore
+#else
+            [QueryParameter("captureStatus")]
+            public string CaptureStatus { get; set; }
+#endif
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+            [QueryParameter("captureStrategy")]
+            public string? CaptureStrategy { get; set; }
+#nullable restore
+#else
+            [QueryParameter("captureStrategy")]
+            public string CaptureStrategy { get; set; }
 #endif
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable

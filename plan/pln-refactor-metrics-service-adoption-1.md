@@ -196,7 +196,7 @@ This plan migrates runtime components and behaviors from direct `IMeterFactory` 
 
 ## 8. Related Specifications / Further Reading
 
-- [Performance dashboard specification](../docs/specs/spec-presentation-performance-dashboard.md)
+- [Profiling dashboard specification](../docs/specs/spec-performance-snapshot-dashboard.md)
 - [Blob storage feature documentation](../docs/features-storage-blobs.md)
 - [High-volume blob upload specification](../docs/specs/spec-application-storage-blobs-high-volume-uploads.md)
 - [Existing blob high-volume upload plan](./pln-feature-blob-high-volume-uploads-1.md)

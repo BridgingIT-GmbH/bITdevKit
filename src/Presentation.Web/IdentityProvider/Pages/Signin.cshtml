@@ -1,106 +1,174 @@
 @using BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages
-@using BridgingIT.DevKit.Presentation.Web.Pages
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using RazorSlices
 @inherits RazorSlice<SigninViewModel>
-@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Pages._Layout, LayoutModel>
-
-<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
-    <h4 class="m-0">Sign in</h4>
-    <div class="btn-group btn-group-sm">
-        <button type="button" class="btn btn-outline-secondary" onclick="openConfiguration()" title="OpenID Configuration">
-            <i class="bi bi-gear me-1"></i>Config
-        </button>
-        <button type="button" class="btn btn-outline-secondary" onclick="openDebugInfo()" title="Debug Info">
-            <i class="bi bi-bug me-1"></i>Debug
-        </button>
-    </div>
-</div>
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
     var client = Model.Options?.Clients?.FirstOrDefault(c => c.ClientId == Model.Request.ClientId);
     var isValidRedirectUri = client?.RedirectUris?.Contains(Model.Request.RedirectUri) ?? false;
+    var showUserCards = Model.Options.EnableUserCards && Model.Options?.Users?.Where(u => u.IsEnabled).Any() == true;
+    var showManualLogin = Model.Options.EnableLoginCard;
+    var workspaceClass = showUserCards && showManualLogin ? "identity-workspace" : "identity-workspace identity-workspace-single";
 }
 
-@if (client != null)
-{
-    <div class="card mb-2">
-        <div class="card-body py-2">
-            <div class="d-flex align-items-center">
-                <h6 class="card-title m-0">@client.Name</h6>
-                <span class="badge bg-primary ms-2">@Model.Options.TokenProvider</span>
-            </div>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages._SigninStyles>())
+
+<section class="identity-signin">
+    <header class="identity-page-header">
+        <h1 class="identity-page-title">
+            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+            Sign in
+        </h1>
+        <div class="identity-page-tools">
+            <button type="button"
+                    class="identity-icon-button"
+                    onclick="openConfiguration()"
+                    aria-label="Open OpenID configuration"
+                    title="OpenID configuration"
+                    data-bs-toggle="tooltip">
+                <i class="bi bi-gear" aria-hidden="true"></i>
+            </button>
+            <button type="button"
+                    class="identity-icon-button"
+                    onclick="openDebugInfo()"
+                    aria-label="Open identity provider debug information"
+                    title="Debug information"
+                    data-bs-toggle="tooltip">
+                <i class="bi bi-bug" aria-hidden="true"></i>
+            </button>
+        </div>
+    </header>
+
+    @if (showUserCards || showManualLogin)
+    {
+        <div class="@workspaceClass">
+            @if (showUserCards)
+            {
+                <section class="identity-panel" aria-labelledby="identity-users-heading">
+                    <header class="identity-panel-header">
+                        <h2 id="identity-users-heading" class="identity-panel-title">
+                            <i class="bi bi-people" aria-hidden="true"></i>
+                            Available identities
+                        </h2>
+                    </header>
+                    <div class="identity-panel-body">
+                        <div class="identity-user-grid">
+                            @foreach (var user in Model.Options.Users.Where(u => u.IsEnabled))
+                            {
+                                <button type="button"
+                                        class="identity-user-option"
+                                        data-identity-user
+                                        data-email="@user.Email"
+                                        data-password="@user.Password"
+                                        aria-label="Sign in as @user.Name">
+                                    <span class="identity-user-icon" aria-hidden="true">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <span>
+                                        <strong class="identity-user-name">@user.Name</strong>
+                                        <span class="identity-user-email">@user.Email</span>
+                                        <span class="identity-user-roles">
+                                            @foreach (var role in user.Roles)
+                                            {
+                                                <span class="badge">@role</span>
+                                            }
+                                        </span>
+                                    </span>
+                                    <i class="identity-user-arrow bi bi-arrow-right" aria-hidden="true"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </section>
+            }
+
+            @if (showManualLogin)
+            {
+                <section class="identity-panel" aria-labelledby="identity-login-heading">
+                    <header class="identity-panel-header">
+                        <h2 id="identity-login-heading" class="identity-panel-title">
+                            <i class="bi bi-terminal" aria-hidden="true"></i>
+                            Manual login
+                        </h2>
+                    </header>
+                    <div class="identity-panel-body">
+                        <form class="identity-login-form" onsubmit="submitLogin(event)">
+                            <div>
+                                <label class="identity-form-label" for="username">Email</label>
+                                <input type="email"
+                                       class="identity-form-control"
+                                       id="username"
+                                       name="username"
+                                       autocomplete="username"
+                                       placeholder="developer@example.com"
+                                       required>
+                            </div>
+                            <div>
+                                <label class="identity-form-label" for="password">Password</label>
+                                <input type="password"
+                                       class="identity-form-control"
+                                       id="password"
+                                       name="password"
+                                       autocomplete="current-password"
+                                       placeholder="Optional">
+                            </div>
+                            <button type="submit" class="identity-login-button">
+                                <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
+                                Sign in
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            }
+        </div>
+    }
+
+    <div class="identity-client-context">
+        @if (client != null)
+        {
+            <section class="identity-client-panel" aria-label="Authorization client">
+                <span class="identity-client-icon" aria-hidden="true">
+                    <i class="bi bi-window-stack"></i>
+                </span>
+                <div class="identity-client-copy">
+                    <span class="identity-field-label">Client</span>
+                    <strong class="identity-client-name">@client.Name</strong>
+                    <span class="identity-client-id">@client.ClientId</span>
+                </div>
+                <span class="identity-provider-tag">@Model.Options.TokenProvider</span>
+            </section>
+
             @if (!isValidRedirectUri)
             {
-                <div class="alert alert-danger mt-2 py-2 mb-0">
-                    <div class="small">Invalid redirect_uri: @Model.Request.RedirectUri</div>
-                    <div class="small mt-1">Configured URIs:</div>
-                    <ul class="mb-0 small">
+                <div class="identity-alert" role="alert">
+                    <div class="identity-alert-title">
+                        <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
+                        Invalid redirect URI
+                    </div>
+                    <code>@Model.Request.RedirectUri</code>
+                    <div class="mt-2">Configured URIs:</div>
+                    <ul>
                         @foreach (var uri in client.RedirectUris)
                         {
-                            <li>@uri</li>
+                            <li><code>@uri</code></li>
                         }
                     </ul>
                 </div>
             }
-        </div>
-    </div>
-}
-else
-{
-    <div class="alert alert-danger py-2 mb-2">Invalid client_id: @Model.Request.ClientId</div>
-}
-
-@if (Model.Options.EnableUserCards && Model.Options?.Users?.Where(u => u.IsEnabled).Any() == true)
-{
-    <div class="row g-2 mb-2">
-        @foreach (var user in Model.Options.Users.Where(u => u.IsEnabled))
+        }
+        else
         {
-            <div class="col-12 col-md-6">
-                <div class="card h-100" style="cursor: pointer" onclick="selectUser('@user.Email', '@user.Password')">
-                    <div class="card-body p-2">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-person-circle fs-4 text-secondary"></i>
-                            <div class="ms-2 flex-grow-1">
-                                <div class="fw-medium">@user.Name</div>
-                                <div class="text-muted small">@user.Email</div>
-                                <div class="d-flex flex-wrap gap-1 mt-1">
-                                    @foreach (var role in user.Roles)
-                                    {
-                                        <span class="badge bg-primary small">@role</span>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="identity-alert" role="alert">
+                <div class="identity-alert-title">
+                    <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>
+                    Invalid client
                 </div>
+                <code>@Model.Request.ClientId</code>
             </div>
         }
     </div>
-}
-
-@if (Model.Options.EnableLoginCard)
-{
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-shield-lock fs-4 text-secondary me-2"></i>
-                        <div class="small">
-                            <div class="fw-medium">Manual Login</div>
-                            <div class="text-muted">Enter email address</div>
-                        </div>
-                    </div>
-                    <form onsubmit="submitLogin(event)">
-                        <input type="email" class="form-control form-control-sm mb-2" id="username" placeholder="Email" required>
-                        <input type="password" class="form-control form-control-sm mb-2" id="password" placeholder="Password (optional)">
-                        <button type="submit" class="btn btn-primary btn-sm w-100">Login</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+</section>
 
 <script>
     function openConfiguration() {
@@ -114,7 +182,7 @@ else
     function selectUser(email, password) {
         const params = new URLSearchParams(window.location.search);
         params.append('email', email);
-        params.append('password', password);
+        params.append('password', password || '');
         window.location.href = '/@Model.Options.GroupPath.Trim('/')/@Model.Options.EndpointPaths.AuthorizeCallback?.Trim('/')?' + params.toString();
     }
 
@@ -122,13 +190,19 @@ else
         event.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        const params = new URLSearchParams(window.location.search);
-        params.append('email', username);
-        params.append('password', password);
-        window.location.href = '/@Model.Options.GroupPath.Trim('/')/@Model.Options.EndpointPaths.AuthorizeCallback?.Trim('/')?' + params.toString();
+        selectUser(username, password);
     }
+
+    document.querySelectorAll('[data-identity-user]').forEach(user => {
+        user.addEventListener('click', () => selectUser(user.dataset.email, user.dataset.password));
+    });
 </script>
 
 @functions {
-    public LayoutModel LayoutModel => new() { Title = "Sign in", HideSideBar = true };
+    public DashboardLayoutModel LayoutModel => new()
+    {
+        ProductName = "BDK Identity Provider",
+        Title = "Sign in",
+        HideSideBar = true
+    };
 }

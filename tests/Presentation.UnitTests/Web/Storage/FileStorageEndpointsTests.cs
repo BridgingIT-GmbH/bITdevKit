@@ -9,8 +9,6 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Presentation.Web;
-using BridgingIT.DevKit.Presentation.Web.Storage;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

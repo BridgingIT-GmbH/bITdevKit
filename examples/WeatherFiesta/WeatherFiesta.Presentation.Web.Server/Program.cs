@@ -162,8 +162,11 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
+builder.Services.AddProfiling(o => o
+        .Enabled(builder.Environment.IsDevelopment()))
+    .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
-    .Enabled(true)
+    .Enabled(builder.Environment.IsDevelopment())
     .Authorize(o => o
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
         .RequireRole(Role.Administrators)));

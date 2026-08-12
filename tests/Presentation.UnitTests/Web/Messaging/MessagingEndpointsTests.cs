@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Messaging;
-using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Messaging.Models;
 using Microsoft.AspNetCore.Builder;

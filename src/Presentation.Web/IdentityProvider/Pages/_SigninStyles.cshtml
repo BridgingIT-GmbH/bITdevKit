@@ -1,0 +1,353 @@
+@using RazorSlices
+@inherits RazorSlice
+
+<style>
+    .identity-signin {
+        display: grid;
+        gap: .65rem;
+        margin: 0 auto;
+        max-width: 76rem;
+        padding: clamp(.75rem, 2vw, 1.5rem) 0;
+        width: 100%;
+    }
+
+    .identity-page-header {
+        align-items: center;
+        border-bottom: 1px solid var(--bs-border-color);
+        display: flex;
+        gap: .75rem;
+        justify-content: space-between;
+        min-height: 2.75rem;
+        padding: 0 0 .55rem;
+    }
+
+    .identity-page-title {
+        align-items: center;
+        display: flex;
+        font-size: 1.1rem;
+        font-weight: 700;
+        gap: .55rem;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    .identity-page-title i,
+    .identity-panel-title i {
+        color: var(--dashboard-active-fg);
+    }
+
+    .identity-page-tools {
+        display: flex;
+        gap: .4rem;
+    }
+
+    .identity-icon-button {
+        align-items: center;
+        background: transparent;
+        border: 1px solid var(--dashboard-panel-border-hover);
+        border-radius: .1rem;
+        color: var(--bs-secondary-color);
+        display: inline-flex;
+        height: 2rem;
+        justify-content: center;
+        padding: 0;
+        width: 2rem;
+    }
+
+    .identity-icon-button:hover,
+    .identity-icon-button:focus-visible {
+        background: var(--dashboard-active-bg);
+        border-color: var(--dashboard-active-fg);
+        color: var(--dashboard-active-fg);
+    }
+
+    .identity-client-panel,
+    .identity-panel {
+        background: transparent;
+        border: 1px solid var(--dashboard-panel-border);
+        border-radius: .1rem;
+    }
+
+    [data-bs-theme="light"] .identity-client-panel,
+    [data-bs-theme="light"] .identity-panel {
+        background: var(--dashboard-surface);
+    }
+
+    .identity-client-context {
+        display: grid;
+        gap: .45rem;
+        max-width: 48rem;
+        width: 100%;
+    }
+
+    .identity-client-panel {
+        align-items: center;
+        display: grid;
+        gap: .75rem;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        padding: .65rem;
+    }
+
+    .identity-client-icon {
+        align-items: center;
+        border: 1px solid var(--dashboard-panel-border-hover);
+        color: var(--bs-primary);
+        display: inline-flex;
+        height: 2.4rem;
+        justify-content: center;
+        width: 2.4rem;
+    }
+
+    .identity-client-copy {
+        min-width: 0;
+    }
+
+    .identity-field-label,
+    .identity-form-label {
+        color: var(--bs-secondary-color);
+        display: block;
+        font-size: .68rem;
+        letter-spacing: .06em;
+        margin-bottom: .2rem;
+        text-transform: uppercase;
+    }
+
+    .identity-client-name {
+        display: block;
+        font-size: .86rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .identity-client-id {
+        color: var(--bs-secondary-color);
+        display: block;
+        font-size: .72rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .identity-provider-tag {
+        color: var(--bs-primary);
+        font-size: .68rem;
+        white-space: nowrap;
+    }
+
+    .identity-provider-tag::before {
+        content: "[";
+    }
+
+    .identity-provider-tag::after {
+        content: "]";
+    }
+
+    .identity-workspace {
+        display: grid;
+        gap: .65rem;
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+    }
+
+    .identity-workspace-single {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .identity-workspace-single .identity-panel {
+        max-width: 48rem;
+        width: 100%;
+    }
+
+    .identity-panel-header {
+        align-items: center;
+        border-bottom: 1px solid var(--dashboard-panel-border);
+        display: flex;
+        min-height: 2.45rem;
+        padding: .45rem .6rem;
+    }
+
+    .identity-panel-title {
+        align-items: center;
+        display: flex;
+        font-size: .8rem;
+        font-weight: 700;
+        gap: .45rem;
+        margin: 0;
+    }
+
+    .identity-panel-body {
+        padding: .55rem;
+    }
+
+    .identity-user-grid {
+        display: grid;
+        gap: .45rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .identity-user-option {
+        align-items: center;
+        background: transparent;
+        border: 1px solid var(--dashboard-panel-border);
+        border-radius: .1rem;
+        color: var(--bs-body-color);
+        display: grid;
+        gap: .6rem;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        min-height: 4.25rem;
+        padding: .65rem;
+        text-align: left;
+        width: 100%;
+    }
+
+    .identity-user-option:hover,
+    .identity-user-option:focus-visible {
+        background: var(--dashboard-active-bg);
+        border-color: var(--dashboard-active-fg);
+        color: var(--bs-body-color);
+        outline: none;
+    }
+
+    .identity-user-icon {
+        align-items: center;
+        border: 1px solid var(--dashboard-panel-border-hover);
+        color: var(--bs-primary);
+        display: inline-flex;
+        height: 2.25rem;
+        justify-content: center;
+        width: 2.25rem;
+    }
+
+    .identity-user-name,
+    .identity-user-email {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .identity-user-name {
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .identity-user-email {
+        color: var(--bs-secondary-color);
+        font-size: .7rem;
+        margin-top: .15rem;
+    }
+
+    .identity-user-roles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .25rem;
+        margin-top: .3rem;
+    }
+
+    .identity-user-arrow {
+        color: var(--bs-secondary-color);
+    }
+
+    .identity-user-option:hover .identity-user-arrow,
+    .identity-user-option:focus-visible .identity-user-arrow {
+        color: var(--dashboard-active-fg);
+    }
+
+    .identity-login-form {
+        display: grid;
+        gap: .6rem;
+    }
+
+    .identity-form-control {
+        background: var(--bs-body-bg);
+        border: 1px solid var(--dashboard-panel-border-hover);
+        border-radius: .1rem;
+        color: var(--bs-body-color);
+        font: inherit;
+        min-height: 2.25rem;
+        padding: .4rem .5rem;
+        width: 100%;
+    }
+
+    .identity-form-control::placeholder {
+        color: var(--bs-secondary-color);
+        opacity: .7;
+    }
+
+    .identity-form-control:focus {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), .15);
+        outline: none;
+    }
+
+    .identity-login-button {
+        background: var(--bs-primary);
+        border: 1px solid var(--bs-primary);
+        border-radius: .1rem;
+        color: #111;
+        font-size: .78rem;
+        font-weight: 700;
+        min-height: 2.3rem;
+        padding: .4rem .65rem;
+        width: 100%;
+    }
+
+    .identity-login-button:hover,
+    .identity-login-button:focus-visible {
+        background: var(--bs-secondary);
+        border-color: var(--bs-secondary);
+        color: #111;
+    }
+
+    .identity-alert {
+        background: rgba(var(--bs-danger-rgb), .08);
+        border: 1px solid rgba(var(--bs-danger-rgb), .5);
+        border-radius: .1rem;
+        color: var(--bs-body-color);
+        font-size: .74rem;
+        margin: 0;
+        padding: .55rem .65rem;
+    }
+
+    .identity-alert-title {
+        color: var(--bs-danger);
+        font-weight: 700;
+        margin-bottom: .25rem;
+    }
+
+    .identity-alert code {
+        color: inherit;
+        overflow-wrap: anywhere;
+    }
+
+    .identity-alert ul {
+        margin-bottom: 0;
+        margin-top: .35rem;
+        padding-left: 1.15rem;
+    }
+
+    @@media (max-width: 767.98px) {
+        .identity-signin {
+            padding: .65rem 0;
+        }
+
+        .identity-workspace,
+        .identity-user-grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @@media (max-width: 479.98px) {
+        .identity-page-header {
+            align-items: flex-start;
+        }
+
+        .identity-client-panel {
+            grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .identity-provider-tag {
+            grid-column: 2;
+        }
+    }
+</style>

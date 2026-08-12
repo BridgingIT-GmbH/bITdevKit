@@ -142,7 +142,7 @@ public static partial class ServiceCollectionExtensions
             serviceProvider,
             serviceProvider.GetRequiredService<EntityFrameworkMessageBrokerOptions>());
 
-        foreach (var subscription in ServiceCollectionMessagingExtensions.Subscriptions)
+        foreach (var subscription in ServiceCollectionMessagingExtensions.GetSubscriptions())
         {
             broker.Subscribe(subscription.message, subscription.handler).AnyContext();
         }

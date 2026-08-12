@@ -11,6 +11,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Common Mapping](./common-mapping.md): Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
 - [Common Caching](./common-caching.md): Provide a small, shared in-process caching abstraction with a default memory-cache implementation.
 - [Common Observability Tracing](./common-observability-tracing.md): Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.
+- [Profiling](./features-profiling.md): Collect bounded runtime snapshots and compute deterministic CPU, memory, allocation, and GC evidence for local development.
 - [Utilities](./features-utilities.md): Group shared application-layer utility services for startup tasks, log-entry contracts and time-provider registration.
 
 ## Core Domain and Application

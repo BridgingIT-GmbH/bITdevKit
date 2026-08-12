@@ -336,7 +336,15 @@ public class FileMonitoringRealTimeTests
             File.WriteAllText(filePath, $"Initial content {i}");
             sourceFiles[$"test_{i}.txt"] = [("Created", FileEventType.Added)];
         }
-        await Task.Delay(500); // Wait for initial creation events
+
+        (await WaitUntilAsync(async () =>
+        {
+            var events = await store.GetFileEventsForLocationAsync("Docs");
+
+            return sourceFiles.All(file =>
+                file.Value.All(action => events.Any(e =>
+                    e.FilePath == file.Key && e.EventType == action.ExpectedEvent)));
+        }, TimeSpan.FromSeconds(10))).ShouldBeTrue("Initial file creation events were not processed in time");
 
         // Mixed actions
         File.WriteAllText(Path.Combine(tempFolder, "test_0.txt"), "Modified content 0"); // Modify file 0
@@ -352,13 +360,21 @@ public class FileMonitoringRealTimeTests
         File.Delete(Path.Combine(tempFolder, "test_4.txt")); // Delete file 4
         //await Task.Delay(500); // Wait for all events to process (debounce issue)
         sourceFiles["test_4.txt"].Add(("Deleted", FileEventType.Deleted));
-        await Task.Delay(500); // Wait for all events to process
-        //
+
         File.WriteAllText(Path.Combine(tempFolder, "ignore_0.tmp"), "Ignored content 0"); // not part of filter (*.txt)
         File.WriteAllText(Path.Combine(tempFolder, "ignore_1.tmp"), "Ignored content 0"); // not part of filter (*.txt)
         // blacklisted files
         File.WriteAllText(Path.Combine(tempFolder, "ignore_0.log"), "Ignored content 0"); // Ignored file (blacklist)
         File.WriteAllText(Path.Combine(tempFolder, "ignore_1.log"), "Ignored content 0"); // Ignored file (blacklist)
+
+        (await WaitUntilAsync(async () =>
+        {
+            var events = await store.GetFileEventsForLocationAsync("Docs");
+
+            return sourceFiles.All(file =>
+                file.Value.All(action => events.Any(e =>
+                    e.FilePath == file.Key && e.EventType == action.ExpectedEvent)));
+        }, TimeSpan.FromSeconds(10))).ShouldBeTrue("Mixed file events were not processed in time");
 
         // Assert
         var allStoredEvents = await store.GetFileEventsForLocationAsync("Docs");
@@ -380,6 +396,22 @@ public class FileMonitoringRealTimeTests
 
         //// Cleanup
         //await sut.StopAsync(CancellationToken.None);
+    }
+
+    private static async Task<bool> WaitUntilAsync(Func<Task<bool>> condition, TimeSpan timeout)
+    {
+        var deadline = DateTimeOffset.UtcNow + timeout;
+        while (DateTimeOffset.UtcNow < deadline)
+        {
+            if (await condition())
+            {
+                return true;
+            }
+
+            await Task.Delay(50);
+        }
+
+        return await condition();
     }
 }
 

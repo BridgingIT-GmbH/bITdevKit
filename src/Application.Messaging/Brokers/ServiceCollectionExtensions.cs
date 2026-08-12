@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
                 .ProcessDelay(configuration.ProcessDelay)
                 .MessageExpiration(configuration.MessageExpiration));
 
-            foreach (var subscription in ServiceCollectionMessagingExtensions.Subscriptions)
+            foreach (var subscription in ServiceCollectionMessagingExtensions.GetSubscriptions())
             {
                 broker.Subscribe(subscription.message, subscription.handler).AnyContext();
             }

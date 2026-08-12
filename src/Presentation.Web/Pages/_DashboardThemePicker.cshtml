@@ -1,0 +1,19 @@
+@using RazorSlices
+@inherits RazorSlice
+
+<div class="dropdown dashboard-theme-picker">
+    <button class="btn theme-toggle d-inline-flex align-items-center gap-2" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Select global theme">
+        <i class="bi bi-terminal" aria-hidden="true"></i>
+        <span data-theme-label>Dark</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="dark"><span class="dashboard-theme-swatch" style="--theme-bg:#151414;--theme-swatch:#66d9ef;--theme-accent:#fd971f"></span>Dark</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="catppuccin"><span class="dashboard-theme-swatch" style="--theme-bg:#11111b;--theme-swatch:#89b4fa;--theme-accent:#f5c2e7"></span>Catppuccin</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="darkforest"><span class="dashboard-theme-swatch" style="--theme-bg:#07120d;--theme-swatch:#9ece6a;--theme-accent:#e0af68"></span>Darkforest</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="carbon"><span class="dashboard-theme-swatch" style="--theme-bg:#161616;--theme-swatch:#78a9ff;--theme-accent:#ff7eb6"></span>Carbon</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="tokionights"><span class="dashboard-theme-swatch" style="--theme-bg:#0f1021;--theme-swatch:#7aa2f7;--theme-accent:#bb9af7"></span>Tokyo Night</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="matrix"><span class="dashboard-theme-swatch" style="--theme-bg:#020802;--theme-swatch:#00ff66;--theme-accent:#39ff14"></span>Matrix</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="light"><span class="dashboard-theme-swatch" style="--theme-bg:#f7f7f2;--theme-swatch:#0f62fe;--theme-accent:#8a3ffc"></span>Light</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="system"><span class="dashboard-theme-swatch" style="--theme-bg:#151414;--theme-swatch:#a59f99;--theme-accent:#f7f7f2"></span>System</button></li>
+    </ul>
+</div>

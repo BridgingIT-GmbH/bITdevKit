@@ -23,16 +23,6 @@
     <title>@dashboardTitle - @pageTitle</title>
     <base href="/" />
     <script>
-        (function() { // prevents screen flashing on navigation
-            const theme = localStorage.getItem('theme') || 'dark';
-            const dashboardThemes = ['light', 'dark', 'catppuccin', 'darkforest', 'carbon', 'tokionights', 'matrix', 'system'];
-            const selectedTheme = dashboardThemes.includes(theme) ? theme : 'dark';
-            const effectiveTheme = selectedTheme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : selectedTheme;
-            document.documentElement.setAttribute('data-bs-theme', effectiveTheme);
-            document.documentElement.setAttribute('data-dashboard-theme', selectedTheme);
-            document.documentElement.setAttribute('data-dashboard-texture', localStorage.getItem('dashboardTexture') === 'true' ? 'on' : 'off');
-        })();
-
         window.bdkDashboard = window.bdkDashboard || {};
         window.bdkDashboard.refreshErrors = window.bdkDashboard.refreshErrors || new Set();
         window.bdkDashboard.updateConnectionIndicator = function() {
@@ -281,7 +271,12 @@
                         throw new Error(`HTTP ${response.status}`);
                     }
 
-                    contentElement.innerHTML = await response.text();
+                    const responseText = await response.text();
+                    if (typeof settings.applyResponse === 'function') {
+                        await settings.applyResponse(contentElement, responseText);
+                    } else {
+                        contentElement.innerHTML = responseText;
+                    }
                     restoreActiveTab(contentElement, activeTabTarget);
 
                     if (typeof settings.onSuccess === 'function') {
@@ -377,6 +372,7 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect fill='%231a4151' width='16' height='16'/><path fill='%23d35a24' d='M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z'/><path fill='%23d35a24' d='M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z'/></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme>())
     @* <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/cosmo/bootstrap.min.css" rel="stylesheet"> *@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <style>
@@ -1748,22 +1744,7 @@
                 <button class="btn dashboard-window-toggle" type="button" aria-label="Open current dashboard page in a new window" title="Open in new window">
                     <i class="bi bi-box-arrow-up-right"></i>
                 </button>
-                <div class="dropdown dashboard-theme-picker">
-                    <button class="btn theme-toggle d-inline-flex align-items-center gap-2" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Select dashboard theme">
-                        <i class="bi bi-terminal"></i>
-                        <span data-theme-label>Dark</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="dark"><span class="dashboard-theme-swatch" style="--theme-bg:#151414;--theme-swatch:#66d9ef;--theme-accent:#fd971f"></span>Dark</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="catppuccin"><span class="dashboard-theme-swatch" style="--theme-bg:#11111b;--theme-swatch:#89b4fa;--theme-accent:#f5c2e7"></span>Catppuccin</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="darkforest"><span class="dashboard-theme-swatch" style="--theme-bg:#07120d;--theme-swatch:#9ece6a;--theme-accent:#e0af68"></span>Darkforest</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="carbon"><span class="dashboard-theme-swatch" style="--theme-bg:#161616;--theme-swatch:#78a9ff;--theme-accent:#ff7eb6"></span>Carbon</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="tokionights"><span class="dashboard-theme-swatch" style="--theme-bg:#0f1021;--theme-swatch:#7aa2f7;--theme-accent:#bb9af7"></span>Tokyo Night</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="matrix"><span class="dashboard-theme-swatch" style="--theme-bg:#020802;--theme-swatch:#00ff66;--theme-accent:#39ff14"></span>Matrix</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="light"><span class="dashboard-theme-swatch" style="--theme-bg:#f7f7f2;--theme-swatch:#0f62fe;--theme-accent:#8a3ffc"></span>Light</button></li>
-                        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" data-theme-option="system"><span class="dashboard-theme-swatch" style="--theme-bg:#151414;--theme-swatch:#a59f99;--theme-accent:#f7f7f2"></span>System</button></li>
-                    </ul>
-                </div>
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker>())
                 <button class="btn dashboard-texture-toggle" type="button" aria-label="Toggle terminal texture" aria-pressed="false" title="Toggle terminal texture">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
@@ -1822,113 +1803,6 @@
     </div>
 
     <script>
-        const themeManager = {
-            themes: {
-                light: 'light',
-                dark: 'dark',
-                catppuccin: 'catppuccin',
-                darkforest: 'darkforest',
-                carbon: 'carbon',
-                tokionights: 'tokionights',
-                matrix: 'matrix',
-                system: 'system'
-            },
-            labels: {
-                light: 'Light',
-                dark: 'Dark',
-                catppuccin: 'Catppuccin',
-                darkforest: 'Darkforest',
-                carbon: 'Carbon',
-                tokionights: 'Tokyo Night',
-                matrix: 'Matrix',
-                system: 'System'
-            },
-
-            initialize() {
-                this.applyTheme(this.getCurrentTheme());
-                this.setupSystemThemeListener();
-                this.setupThemePicker();
-            },
-
-            getSystemTheme() {
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? this.themes.dark : this.themes.light;
-            },
-
-            getCurrentTheme() {
-                const theme = localStorage.getItem('theme') || this.themes.dark;
-                return Object.values(this.themes).includes(theme) ? theme : this.themes.dark;
-            },
-
-            applyTheme(theme) {
-                const effectiveTheme = theme === this.themes.system ? this.getSystemTheme() : theme;
-                document.documentElement.setAttribute('data-bs-theme', effectiveTheme);
-                document.documentElement.setAttribute('data-dashboard-theme', theme);
-                localStorage.setItem('theme', theme);
-                this.updateThemePicker(theme);
-                document.dispatchEvent(new CustomEvent('bdk-dashboard-theme-changed', {
-                    detail: { theme, effectiveTheme }
-                }));
-            },
-
-            setupSystemThemeListener() {
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                    if (this.getCurrentTheme() === this.themes.system) {
-                        this.applyTheme(this.themes.system);
-                    }
-                });
-            },
-
-            setupThemePicker() {
-                const picker = document.querySelector('.dashboard-theme-picker');
-                const toggle = picker?.querySelector('.theme-toggle');
-                if (!picker || !toggle) {
-                    return;
-                }
-
-                toggle.addEventListener('click', event => {
-                    event.stopPropagation();
-                    const isOpen = picker.classList.toggle('is-open');
-                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                });
-
-                document.querySelectorAll('[data-theme-option]').forEach(option => {
-                    option.addEventListener('click', event => {
-                        event.stopPropagation();
-                        this.applyTheme(option.dataset.themeOption);
-                        picker.classList.remove('is-open');
-                        toggle.setAttribute('aria-expanded', 'false');
-                    });
-                });
-
-                document.addEventListener('click', event => {
-                    if (!picker.contains(event.target)) {
-                        picker.classList.remove('is-open');
-                        toggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-
-                document.addEventListener('keydown', event => {
-                    if (event.key === 'Escape') {
-                        picker.classList.remove('is-open');
-                        toggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-            },
-
-            updateThemePicker(theme) {
-                const label = document.querySelector('[data-theme-label]');
-                if (label) {
-                    label.textContent = this.labels[theme] || this.labels.dark;
-                }
-
-                document.querySelectorAll('[data-theme-option]').forEach(option => {
-                    const isActive = option.dataset.themeOption === theme;
-                    option.classList.toggle('active', isActive);
-                    option.setAttribute('aria-current', isActive ? 'true' : 'false');
-                });
-            }
-        };
-
         function setupSidebarToggle() {
             const toggle = document.querySelector('.sidebar-toggle');
             const sidebar = document.querySelector('.sidebar');
@@ -2047,15 +1921,9 @@
                 return;
             }
 
-            const applyTexture = enabled => {
-                document.documentElement.setAttribute('data-dashboard-texture', enabled ? 'on' : 'off');
-                localStorage.setItem('dashboardTexture', enabled ? 'true' : 'false');
-                toggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-            };
-
-            applyTexture(localStorage.getItem('dashboardTexture') === 'true');
+            window.bdkTheme.applyTexture(window.bdkTheme.getCurrentTexture(), false);
             toggle.addEventListener('click', () => {
-                applyTexture(document.documentElement.getAttribute('data-dashboard-texture') !== 'on');
+                window.bdkTheme.applyTexture(document.documentElement.getAttribute('data-dashboard-texture') !== 'on');
             });
         }
 
@@ -2123,7 +1991,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            themeManager.initialize();
+            window.bdkTheme.initialize();
             setupTextureToggle();
             setupDashboardWindowToggle();
             setupDashboardDatePickers();

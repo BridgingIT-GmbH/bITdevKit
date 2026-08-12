@@ -287,7 +287,7 @@ public class EntityFrameworkMessageBrokerStoreService<TContext>(IServiceProvider
     /// <inheritdoc />
     public Task<IEnumerable<BrokerMessageSubscriptionInfo>> GetSubscriptionsAsync(CancellationToken cancellationToken = default)
     {
-        var subscriptions = ServiceCollectionMessagingExtensions.Subscriptions
+        var subscriptions = ServiceCollectionMessagingExtensions.GetSubscriptions()
             .Select(s => new BrokerMessageSubscriptionInfo
             {
                 MessageType = s.message.PrettyName(false),

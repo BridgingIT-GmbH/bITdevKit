@@ -64,6 +64,13 @@ public class CoreModule : WebModuleBase
                 .UseLifetime(ServiceLifetime.Scoped)
                 .WithConcurrency(1)
                 .AddTrigger("manual", trigger => trigger.Manual()))
+            .WithJob<WeatherProfilingStressJob>("core_profiling_stress", job => job
+                .Description("Generates bounded CPU, allocation, heap, and GC pressure for local Profiling validation.")
+                .Enabled(environment?.IsDevelopment() == true)
+                .UseLifetime(ServiceLifetime.Scoped)
+                .WithConcurrency(1)
+                .WithTimeout(TimeSpan.FromSeconds(30))
+                .AddTrigger("manual", trigger => trigger.Manual()))
             .WithOrchestrationExecuteJob<Unit, WeatherHelloWorldOrchestration, WeatherHelloWorldOrchestrationData>("core_hello_world_orchestration", job => job
                 .WithDescription("Starts the WeatherFiesta hello-world orchestration.")
                 .WithConcurrency(1)

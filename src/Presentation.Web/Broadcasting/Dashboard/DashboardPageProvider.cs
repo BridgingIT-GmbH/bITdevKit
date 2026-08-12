@@ -39,7 +39,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options)
         {
             Group = "bdk",
             GroupOrder = 0,
-            Order = 30,
+            Order = 47,
             Description = "Inspect live nodes and test delivery",
             Card = GetCardAsync,
         };
@@ -110,6 +110,6 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options)
             Url = DashboardEndpoints.BuildBroadcastingPath(options),
             Group = "bdk",
             GroupOrder = 0,
-            Order = 30,
+            Order = 47,
         };
 }

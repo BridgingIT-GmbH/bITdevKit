@@ -13,8 +13,53 @@ using Microsoft.Extensions.Hosting;
 
 public static class ServiceCollectionMessagingExtensions
 {
+    private static readonly object subscriptionsLock = new();
+
     public static readonly List<(Type message, Type handler)> Subscriptions = [];
     private static MessagingOptions contextOptions;
+
+    /// <summary>
+    /// Adds a message-handler subscription to the process-wide registration set.
+    /// </summary>
+    /// <param name="message">The message type.</param>
+    /// <param name="handler">The handler type.</param>
+    public static void AddSubscription(Type message, Type handler)
+    {
+        lock (subscriptionsLock)
+        {
+            Subscriptions.Add((message, handler));
+        }
+    }
+
+    /// <summary>
+    /// Enables or disables a specific message-handler subscription atomically.
+    /// </summary>
+    /// <param name="message">The message type.</param>
+    /// <param name="handler">The handler type.</param>
+    /// <param name="enabled">Whether the subscription should be present.</param>
+    public static void SetSubscription(Type message, Type handler, bool enabled)
+    {
+        lock (subscriptionsLock)
+        {
+            Subscriptions.RemoveAll(item => item.message == message && item.handler == handler);
+            if (enabled)
+            {
+                Subscriptions.Add((message, handler));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a stable snapshot of the currently registered message-handler subscriptions.
+    /// </summary>
+    /// <returns>A snapshot that is safe to enumerate while other registrations change.</returns>
+    public static (Type message, Type handler)[] GetSubscriptions()
+    {
+        lock (subscriptionsLock)
+        {
+            return [.. Subscriptions];
+        }
+    }
 
     public static MessagingBuilderContext AddMessaging(
         this IServiceCollection services,
@@ -104,7 +149,7 @@ public static class ServiceCollectionMessagingExtensions
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
     {
-        Subscriptions.Add((typeof(TMessage), typeof(THandler)));
+        AddSubscription(typeof(TMessage), typeof(THandler));
 
         return context;
     }

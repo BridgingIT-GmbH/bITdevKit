@@ -944,7 +944,7 @@ public static class FileStorageProviderCompressionExtensions
         var compressionType = GetCompressionType(archiveType);
         var archiveEncoding = new ArchiveEncoding { Default = options.Encoding };
 
-        WriterOptions writerOptions = archiveType switch
+        var writerOptions = archiveType switch
         {
             ArchiveType.Zip => new ZipWriterOptions(
                 compressionType,

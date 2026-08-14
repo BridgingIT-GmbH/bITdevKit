@@ -39,6 +39,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Set(cacheKey, true, this.options.CacheDuration);
         }
+
         return result;
     }
 
@@ -62,6 +63,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
             return Result<Stream>.Success(memoryStream)
                 .WithMessage($"Read and cached file at '{path}'");
         }
+
         return result;
     }
 
@@ -74,6 +76,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.InvalidatePathCache(path);
         }
+
         return result;
     }
 
@@ -95,6 +98,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.InvalidatePathCache(path);
         }
+
         return result;
     }
 
@@ -112,6 +116,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Set(cacheKey, result.Value, this.options.CacheDuration);
         }
+
         return result;
     }
 
@@ -129,6 +134,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Set(cacheKey, result.Value, this.options.CacheDuration);
         }
+
         return result;
     }
 
@@ -141,6 +147,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Remove($"info_{path}");
         }
+
         return result;
     }
 
@@ -151,6 +158,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Remove($"info_{path}");
         }
+
         return result;
     }
 
@@ -169,6 +177,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Set(cacheKey, result.Value, this.options.CacheDuration);
         }
+
         return result;
     }
 
@@ -180,6 +189,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
             this.InvalidatePathCache(sourcePath);
             this.InvalidatePathCache(destinationPath);
         }
+
         return result;
     }
 
@@ -191,6 +201,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
             this.InvalidatePathCache(oldPath);
             this.InvalidatePathCache(newPath);
         }
+
         return result;
     }
 
@@ -202,6 +213,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
             this.InvalidatePathCache(path);
             this.InvalidatePathCache(destinationPath);
         }
+
         return result;
     }
 
@@ -213,6 +225,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
             this.InvalidatePathCache(sourcePath);
             this.InvalidatePathCache(destinationPath);
         }
+
         return result;
     }
 
@@ -227,6 +240,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
                 this.InvalidatePathCache(dest);
             }
         }
+
         return result;
     }
 
@@ -241,6 +255,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
                 this.InvalidatePathCache(dest);
             }
         }
+
         return result;
     }
 
@@ -254,6 +269,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
                 this.InvalidatePathCache(path);
             }
         }
+
         return result;
     }
 
@@ -271,6 +287,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Set(cacheKey, true, this.options.CacheDuration);
         }
+
         return result;
     }
 
@@ -281,6 +298,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Remove($"isdir_{path}");
         }
+
         return result;
     }
 
@@ -291,6 +309,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Remove($"isdir_{path}");
         }
+
         return result;
     }
 
@@ -309,6 +328,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             this.cache.Set(cacheKey, result.Value, this.options.CacheDuration);
         }
+
         return result;
     }
 

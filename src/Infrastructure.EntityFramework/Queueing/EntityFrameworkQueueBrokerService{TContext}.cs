@@ -66,7 +66,7 @@ public class EntityFrameworkQueueBrokerService<TContext> : IQueueBrokerService
     {
         using var lease = this.CreateContextLease(out var context);
 
-        IQueryable<QueueMessage> query = context.QueueMessages.AsNoTracking();
+        var query = context.QueueMessages.AsNoTracking();
 
         if (status.HasValue)
         {
@@ -157,7 +157,7 @@ public class EntityFrameworkQueueBrokerService<TContext> : IQueueBrokerService
     {
         using var lease = this.CreateContextLease(out var context);
 
-        IQueryable<QueueMessage> query = context.QueueMessages.AsNoTracking();
+        var query = context.QueueMessages.AsNoTracking();
 
         if (isArchived.HasValue)
         {

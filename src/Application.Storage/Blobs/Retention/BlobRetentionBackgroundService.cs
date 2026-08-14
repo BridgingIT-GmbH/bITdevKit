@@ -133,6 +133,7 @@ public sealed partial class BlobRetentionBackgroundService(
                     await permalinkQueue.EnqueueAsync(new(StorageResourceChangeKind.Deleted, StorageResourceLocation.ForBlob(registration.Name, key), occurredAt: started), cancellationToken).ConfigureAwait(false);
                 }
             }
+
             LogStoreSweepCompleted(
                 this.logger,
                 Constants.LogKey,

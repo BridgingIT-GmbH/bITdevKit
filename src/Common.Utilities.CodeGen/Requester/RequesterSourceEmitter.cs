@@ -248,6 +248,7 @@ public static class RequesterSourceEmitter
             builder.Append("                ").Append(requestTypeName).Append('.').Append(model.ValidateMethod.Name).AppendLine("(validator);");
             builder.AppendLine("                this.Include(validator);");
         }
+
         builder.AppendLine("            }");
         builder.AppendLine("        }");
     }

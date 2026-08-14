@@ -100,6 +100,7 @@ public static class FileStorageProviderCompressionExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Compressed and wrote file at '{path}'");
                 }, cancellationToken);
         }
@@ -368,6 +369,7 @@ public static class FileStorageProviderCompressionExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Compressed '{inputPath}' to '{path}'");
                 }, cancellationToken);
         }
@@ -431,6 +433,7 @@ public static class FileStorageProviderCompressionExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Compressed '{inputPath}' to '{path}'");
                 }, cancellationToken);
         }
@@ -564,6 +567,7 @@ public static class FileStorageProviderCompressionExtensions
                     {
                         await entryStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
                     }
+
                     memoryStream.Position = 0;
 
                     var length = entry.Size;
@@ -732,6 +736,7 @@ public static class FileStorageProviderCompressionExtensions
                     {
                         await entryStream.CopyToAsync(memoryStream, options.BufferSize, cancellationToken);
                     }
+
                     memoryStream.Position = 0;
                     dict[entryPath] = memoryStream;
 
@@ -934,6 +939,7 @@ public static class FileStorageProviderCompressionExtensions
 
     private static IWriter CreateWriter(Stream stream, FileCompressionOptions options)
     {
+
         var archiveType = MapArchiveType(options.ArchiveType);
         // only allow write support for the following zip/tar/bzip2/gzip/lzip are implemented.
         if (archiveType != ArchiveType.Zip && archiveType != ArchiveType.Tar && archiveType != ArchiveType.GZip)
@@ -1176,6 +1182,7 @@ public class FileCompressionOptionsBuilder
         {
             throw new ArgumentOutOfRangeException(nameof(level), "Compression level must be between 0 and 9.");
         }
+
         this.options.CompressionLevel = level;
         return this;
     }

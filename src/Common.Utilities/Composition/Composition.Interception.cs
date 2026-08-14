@@ -277,7 +277,6 @@ internal sealed class InterceptionBuilder<TService>(
     }
 }
 
-
 internal static class RuntimeInterceptionHostFactory
 {
     public static TService Create<TService>(

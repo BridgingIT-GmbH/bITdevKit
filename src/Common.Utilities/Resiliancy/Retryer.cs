@@ -110,6 +110,7 @@ public class Retryer
                         progress?.Report(new RetryProgress(attempt, this.maxRetries, TimeSpan.Zero, "All retry attempts failed."));
                         return;
                     }
+
                     throw new AggregateException($"Operation failed after {this.maxRetries} attempts.", ex);
                 }
 
@@ -172,6 +173,7 @@ public class Retryer
                         progress?.Report(new RetryProgress(attempt, this.maxRetries, TimeSpan.Zero, "All retry attempts failed."));
                         return default;
                     }
+
                     throw new AggregateException($"Operation failed after {this.maxRetries} attempts.", ex);
                 }
 

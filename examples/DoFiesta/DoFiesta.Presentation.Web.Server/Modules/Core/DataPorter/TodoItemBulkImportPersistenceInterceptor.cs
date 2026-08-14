@@ -45,6 +45,7 @@ public sealed class TodoItemBulkImportPersistenceInterceptor(
                 {
                     model.UserId = currentUserAccessor.UserId;
                 }
+
                 model.ConcurrencyVersion = Guid.TryParse(model.ConcurrencyVersion, out _)
                     ? model.ConcurrencyVersion
                     : null;
@@ -54,6 +55,7 @@ public sealed class TodoItemBulkImportPersistenceInterceptor(
                 {
                     entity.UserId = currentUserAccessor.UserId;
                 }
+
                 entity.Steps.Clear();
 
                 return entity;

@@ -101,6 +101,7 @@ public sealed class DocumentRetentionBackgroundService(
                     await permalinkQueue.EnqueueAsync(new(StorageResourceChangeKind.Deleted, StorageResourceLocation.ForDocument(descriptor.ClientId, documentKey), occurredAt: sweepStartedAt), cancellationToken);
                 }
             }
+
             this.outcomes[descriptor.ClientId] = new()
             {
                 CompletedAt = this.TimeProvider.GetUtcNow(),

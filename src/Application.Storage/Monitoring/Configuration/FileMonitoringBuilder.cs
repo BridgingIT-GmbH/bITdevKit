@@ -101,6 +101,7 @@ public class FileMonitoringBuilder
                 this.services.TryAddScoped(behaviorType);
             }
         }
+
         foreach (var behaviorType in options.LocationProcessorBehaviors)
         {
             this.services.TryAddScoped(behaviorType);

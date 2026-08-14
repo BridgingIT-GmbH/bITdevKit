@@ -94,8 +94,10 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
             {
                 return true;
             }
+
             currentType = currentType.BaseType;
         }
+
         return false;
     }
 

@@ -614,6 +614,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                 {
                     File.SetLastWriteTimeUtc(fullPath, metadata.LastModified.Value);
                 }
+
                 return Result.Success()
                     .WithMessage($"Set metadata for file at '{path}'");
             }
@@ -1380,6 +1381,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
             {
                 semaphore.Dispose();
             }
+
             this.fileLocks.Clear();
         }
 

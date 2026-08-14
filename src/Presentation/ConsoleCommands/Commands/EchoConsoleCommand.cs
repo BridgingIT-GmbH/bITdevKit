@@ -40,6 +40,7 @@ public class EchoConsoleCommand : ConsoleCommandBase
         {
             console.MarkupLine($"[{this.Color}]{i}. {Markup.Escape(output)}[/]");
         }
+
         return Task.CompletedTask;
     }
 }

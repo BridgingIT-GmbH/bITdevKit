@@ -80,6 +80,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
         {
             this.data[key] = value; // Overwrites if key exists, adds if new
         }
+
         return this;
     }
 
@@ -105,6 +106,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
                 this.data[kvp.Key] = kvp.Value; // Merges, overwriting duplicates
             }
         }
+
         return this;
     }
 

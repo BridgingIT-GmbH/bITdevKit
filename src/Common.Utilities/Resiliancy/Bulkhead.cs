@@ -93,6 +93,7 @@ public class Bulkhead
                 {
                     this.queuedTasks.Dequeue();
                 }
+
                 progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, "Operation completed, semaphore released"));
             }
         }, cancellationToken);
@@ -156,6 +157,7 @@ public class Bulkhead
                 {
                     this.queuedTasks.Dequeue();
                 }
+
                 progress?.Report(new BulkheadProgress(this.maxConcurrency - this.semaphore.CurrentCount, this.maxConcurrency, this.queuedTasks.Count, "Operation completed, semaphore released"));
             }
         }, cancellationToken);

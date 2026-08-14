@@ -153,6 +153,7 @@ public class InMemoryLocationHandler(
                             {
                                 await Task.Delay(options.DelayPerFile, cancellationToken);
                             }
+
                             batchCount = 0;
                         }
 
@@ -168,6 +169,7 @@ public class InMemoryLocationHandler(
                     break;
                 }
             }
+
             continuationToken = result.Value.NextContinuationToken;
         } while (continuationToken != null && !cancellationToken.IsCancellationRequested);
 
@@ -216,6 +218,7 @@ public class InMemoryLocationHandler(
                         {
                             await Task.Delay(options.DelayPerFile, cancellationToken);
                         }
+
                         batchCount = 0;
                     }
 

@@ -1174,6 +1174,7 @@ public sealed class EntityFrameworkProfilingStore<TContext>(IServiceScopeFactory
                                 }
                             }
                         }
+
                         if (collision)
                         {
                             return Failure<ProfilingSession>(

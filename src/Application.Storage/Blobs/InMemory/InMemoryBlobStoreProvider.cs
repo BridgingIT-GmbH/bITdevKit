@@ -46,7 +46,6 @@ public sealed class InMemoryBlobStoreProvider(
 
     private readonly BlobStoreOptions options = options ?? new BlobStoreOptions();
 
-
     /// <summary>
     /// Gets the in-memory context backing this provider.
     /// </summary>

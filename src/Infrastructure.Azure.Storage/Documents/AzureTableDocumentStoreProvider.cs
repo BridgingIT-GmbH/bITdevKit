@@ -113,6 +113,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
                 next = page.ContinuationToken;
                 if (items.Count >= take || string.IsNullOrWhiteSpace(next)) break;
             }
+
             return Result<StoredDocumentPage>.Success(new() { Items = items.Take(take).ToArray(), ContinuationToken = string.IsNullOrWhiteSpace(next) ? null : CreateToken("find", type, query, visibilityCutoff, next) });
         }
         catch (OperationCanceledException) { throw; }
@@ -139,6 +140,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             if (string.IsNullOrWhiteSpace(result.Value.ContinuationToken)) break;
             pageQuery = new DocumentQuery { DocumentKey = query?.DocumentKey, Filter = query?.Filter ?? DocumentKeyFilter.FullMatch, AllowFullScan = query?.AllowFullScan ?? false, Take = this.options.MaxTake, ContinuationToken = result.Value.ContinuationToken };
         }
+
         return Result<long>.Success(count);
     }
 
@@ -165,6 +167,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             {
                 return Result<DocumentInfo>.Failure(new DocumentStoreSizeLimitError("The complete Azure Table entity exceeds the 1 MiB service limit."));
             }
+
             if (current is null)
             {
                 await table.AddEntityAsync(entity, cancellationToken);
@@ -174,6 +177,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
                 var etag = string.IsNullOrWhiteSpace(write.Options.IfMatchETag) ? ETag.All : new ETag(write.Options.IfMatchETag);
                 await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
             }
+
             var saved = await table.GetEntityAsync<TableEntity>(entity.PartitionKey, entity.RowKey, cancellationToken: cancellationToken);
             return Result<DocumentInfo>.Success(ToInfo(Map(saved.Value)));
         }
@@ -198,6 +202,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             {
                 return Result<DocumentInfo>.Failure(new DocumentStoreSizeLimitError("The complete Azure Table entity exceeds the 1 MiB service limit."));
             }
+
             var etag = string.IsNullOrWhiteSpace(update.IfMatchETag) ? response.Value.ETag : new ETag(update.IfMatchETag);
             await table.UpdateEntityAsync(entity, etag, TableUpdateMode.Replace, cancellationToken);
             return Result<DocumentInfo>.Success(ToInfo(Map(entity)));
@@ -242,6 +247,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
                     candidates.Add(entity);
                     if (candidates.Count == request.BatchSize) break;
                 }
+
                 foreach (var entity in candidates)
                 {
                     try
@@ -252,10 +258,13 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
                     }
                     catch (RequestFailedException ex) when (ex.Status is 404 or 412) { }
                 }
+
                 hasMore = candidates.Count == request.BatchSize;
                 if (!hasMore) { batches++; break; }
+
                 if (request.BatchDelay > TimeSpan.Zero) await Task.Delay(request.BatchDelay, cancellationToken);
             }
+
             return Result<DocumentRetentionSweepResult>.Success(new() { DocumentType = request.DocumentType, DeletedCount = deleted, DeletedKeys = deletedKeys, BatchCount = batches, HasMore = hasMore });
         }
         catch (OperationCanceledException) { throw; }
@@ -294,6 +303,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
             var length = Math.Min(ChunkSize, write.Content.Length - offset);
             entity[$"bdk_content_{offset / ChunkSize:0000}"] = write.Content.AsSpan(offset, length).ToArray();
         }
+
         return entity;
     }
 
@@ -302,6 +312,7 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
         var chunks = Convert.ToInt32(entity.GetValueOrDefault("bdk_content_chunk_count") ?? 0, CultureInfo.InvariantCulture);
         using var stream = new MemoryStream();
         for (var index = 0; index < chunks; index++) { var bytes = (byte[])entity[$"bdk_content_{index:0000}"]; stream.Write(bytes); }
+
         return new() { Key = new((string)entity["bdk_partition_key"], (string)entity["bdk_row_key"]), Content = stream.ToArray(), ETag = entity.ETag.ToString(), ContentHash = entity.GetValueOrDefault("bdk_content_hash") as string, StoredContentHash = entity.GetValueOrDefault("bdk_stored_content_hash") as string, CreatedAt = (DateTimeOffset)entity["bdk_created_at"], LastModifiedAt = (DateTimeOffset)entity["bdk_modified_at"], ExpiresAt = entity.GetValueOrDefault("bdk_expires_at") as DateTimeOffset?, Properties = DecodeBag(entity.GetValueOrDefault("bdk_properties") as string), TransformMetadata = DecodeBag(entity.GetValueOrDefault("bdk_transforms") as string) };
     }
     private static DocumentInfo ToInfo(StoredDocument x) => new() { Key = x.Key, ETag = x.ETag, ContentHash = x.ContentHash, CreatedAt = x.CreatedAt, LastModifiedAt = x.LastModifiedAt, ExpiresAt = x.ExpiresAt, Properties = x.Properties.Clone() };

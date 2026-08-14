@@ -224,6 +224,7 @@ public class FakeAssembly : Assembly
         {
             return new[] { new AssemblyInformationalVersionAttribute(this._informationalVersion) };
         }
+
         return Array.Empty<object>();
     }
 }

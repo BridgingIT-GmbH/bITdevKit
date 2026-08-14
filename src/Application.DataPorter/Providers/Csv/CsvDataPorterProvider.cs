@@ -589,6 +589,7 @@ public sealed class CsvDataPorterProvider(
                 {
                     await executor.AfterAsync(interception, cancellationToken);
                 }
+
                 yield return Result<TTarget>.Success(interception?.Item ?? result.Item);
             }
             else if (result.Errors.Count > 0)

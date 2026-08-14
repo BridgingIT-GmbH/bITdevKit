@@ -41,6 +41,7 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.log", $"State saving to custom storage for {stateId}", state);
             }
+
             this.stateStore[key] = state;
         }
         catch (InvalidOperationException)
@@ -53,6 +54,7 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to save state to custom storage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -80,8 +82,10 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
                 {
                     await this.jsRuntime.InvokeVoidAsync("console.log", $"State loaded from custom storage for {stateId}", typedState);
                 }
+
                 return typedState;
             }
+
             return default;
         }
         catch (Exception ex)
@@ -90,6 +94,7 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to load state from custom storage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -126,6 +131,7 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear state from custom storage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -148,6 +154,7 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
                     await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from custom storage for {stateId}");
                 }
             }
+
             this.stateStore.Clear();
             if (this.debugger.IsEnabled)
             {
@@ -164,6 +171,7 @@ public class CustomStorageStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear all state from custom storage: {ex.Message}");
             }
+
             throw;
         }
     }

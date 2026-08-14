@@ -110,6 +110,7 @@ internal class EntityChangeOrderedExecutionContext<TEntity>
         {
             return (T)value;
         }
+
         return default;
     }
 

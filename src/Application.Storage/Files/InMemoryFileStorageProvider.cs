@@ -185,6 +185,7 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Add(parentPath);
                     }
+
                     parentPath = this.GetParentPath(parentPath);
                 }
 
@@ -346,8 +347,10 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Remove(parentPath);
                     }
+
                     parentPath = this.GetParentPath(parentPath);
                 } // Report minimal progress for deletion
+
                 return Result.Success()
                     .WithMessage($"Deleted file at '{path}'");
             }
@@ -404,6 +407,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         .WithError(new FileSystemError("File not found", path))
                         .WithMessage($"Failed to get checksum for '{path}'");
                 }
+
                 var hash = SHA256.HashData(content);
                 var checksum = Convert.ToBase64String(hash);
                 return Result<string>.Success(checksum)
@@ -755,6 +759,7 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Add(destParentPath);
                     }
+
                     destParentPath = this.GetParentPath(destParentPath);
                 }
 
@@ -839,6 +844,7 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Add(newParentPath);
                     }
+
                     newParentPath = this.GetParentPath(newParentPath);
                 }
 
@@ -933,6 +939,7 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Add(destParentPath);
                     }
+
                     destParentPath = this.GetParentPath(destParentPath);
                 }
 
@@ -1029,6 +1036,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         {
                             this.directories.Add(destParentPath);
                         }
+
                         destParentPath = this.GetParentPath(destParentPath);
                     }
 
@@ -1118,6 +1126,7 @@ public class InMemoryFileStorageProvider(string locationName)
                         {
                             this.directories.Add(destParentPath);
                         }
+
                         destParentPath = this.GetParentPath(destParentPath);
                     }
 
@@ -1208,6 +1217,7 @@ public class InMemoryFileStorageProvider(string locationName)
                             {
                                 this.directories.Remove(parentPath);
                             }
+
                             parentPath = this.GetParentPath(parentPath);
                         }
                     }
@@ -1345,6 +1355,7 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Add(parentPath);
                     }
+
                     parentPath = this.GetParentPath(parentPath);
                 }
 
@@ -1441,6 +1452,7 @@ public class InMemoryFileStorageProvider(string locationName)
                     {
                         this.directories.Remove(parentPath);
                     }
+
                     parentPath = this.GetParentPath(parentPath);
                 }
 

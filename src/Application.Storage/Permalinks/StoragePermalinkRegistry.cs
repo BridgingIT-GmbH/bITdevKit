@@ -23,6 +23,7 @@ public sealed class StoragePermalinkRegistry(IStoragePermalinkRegistryProvider p
         {
             result = Result<StoragePermalinkEntry>.Failure(new StoragePermalinkNotFoundError());
         }
+
         metrics?.RecordOperation("resolve", started, result, result.IsSuccess ? result.Value.Location.Kind : null, provider.Name);
         return result;
     }

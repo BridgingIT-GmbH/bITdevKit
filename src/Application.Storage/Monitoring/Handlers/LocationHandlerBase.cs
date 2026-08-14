@@ -213,6 +213,7 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
             {
                 throw new TimeoutException($"Queue did not empty within {timeout.TotalSeconds} seconds.");
             }
+
             await Task.Delay(100); // Poll every 100ms
         }
     }
@@ -291,9 +292,11 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
                         processor = new BehaviorDecorator(processor, behavior);
                     }
                 }
+
                 chain.Add(processor);
             }
         }
+
         return chain;
     }
 

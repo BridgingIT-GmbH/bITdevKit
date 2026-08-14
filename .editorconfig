@@ -129,6 +129,8 @@ csharp_style_prefer_top_level_statements = true:silent
 csharp_style_prefer_primary_constructors = true:suggestion
 
 # New line preferences
+dotnet_style_allow_multiple_blank_lines_experimental = false
+dotnet_style_allow_statement_immediately_after_block_experimental = false
 csharp_new_line_before_catch = true
 csharp_new_line_before_else = true
 csharp_new_line_before_finally = true
@@ -196,6 +198,10 @@ dotnet_diagnostic.sa1408.severity = none
 
 # Microsoft .NET properties
 dotnet_diagnostic.IDE0161.severity = error
+# IDE2000: Avoid multiple blank lines (experimental)
+dotnet_diagnostic.IDE2000.severity = error
+# IDE2003: Require a blank line between a block and a subsequent statement (experimental)
+dotnet_diagnostic.IDE2003.severity = error
 dotnet_naming_rule.private_constants_rule.severity = warning
 dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols

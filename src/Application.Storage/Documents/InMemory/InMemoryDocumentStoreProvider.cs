@@ -234,6 +234,7 @@ public class InMemoryDocumentStoreProvider(ILoggerFactory loggerFactory = null) 
                     this.documents.Remove(key);
                     deletedKeys.Add(new(key.Partition, key.Row));
                 }
+
                 removed = keys.Length;
                 hasMore = removed == request.BatchSize;
             }

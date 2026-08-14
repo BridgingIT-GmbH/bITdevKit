@@ -29,12 +29,15 @@ public class RestartConsoleCommand : ConsoleCommandBase
     {
         var env = services.GetRequiredService<IWebHostEnvironment>();
         if (!env.IsDevelopment()) { console.MarkupLine("[red]Restart denied: not a development environment.[/]"); return Task.CompletedTask; }
+
         const string markerVar = "BITDEVKIT_RESTARTING";
         var alreadyRestarting = Environment.GetEnvironmentVariable(markerVar) == "1";
         if (alreadyRestarting) { console.MarkupLine("[yellow]Restart already in progress.[/]"); return Task.CompletedTask; }
+
         Environment.SetEnvironmentVariable(markerVar, "1");
         var exe = Environment.ProcessPath;
         if (string.IsNullOrWhiteSpace(exe)) { console.MarkupLine("[red]Cannot determine executable path.[/]"); return Task.CompletedTask; }
+
         var argList = Environment.GetCommandLineArgs().Skip(1).Select(a => a.Contains(' ') ? $"\"{a}\"" : a);
         var argsLine = string.Join(' ', argList);
         try
@@ -49,6 +52,7 @@ public class RestartConsoleCommand : ConsoleCommandBase
             Environment.SetEnvironmentVariable(markerVar, null);
             return Task.CompletedTask;
         }
+
         console.MarkupLine("[grey]Stopping current instance...[/]");
         services.GetRequiredService<IHostApplicationLifetime>().StopApplication();
 

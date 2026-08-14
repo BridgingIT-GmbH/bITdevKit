@@ -57,6 +57,7 @@ public class SimpleRequester(
             {
                 throw new InvalidOperationException($"A handler for request type {requestType.Name} is already registered.");
             }
+
             this.handlers[requestType] = (handler, typeof(TResponse));
         }
         finally
@@ -168,6 +169,7 @@ public class SimpleRequester(
                 var currentNext = next;
                 next = () => behavior.HandleAsync(request, currentNext, cancellationToken);
             }
+
             return await next();
         }
         catch (OperationCanceledException)

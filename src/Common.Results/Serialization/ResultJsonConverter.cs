@@ -68,6 +68,7 @@ public sealed class ResultJsonConverter : JsonConverter<Result>
         {
             writer.WriteStringValue(message);
         }
+
         writer.WriteEndArray();
     }
 
@@ -88,9 +89,9 @@ public sealed class ResultJsonConverter : JsonConverter<Result>
     /// <para>
     /// Output shape for ExceptionError:
     /// {
-    ///   "message": "…",
+    ///   "message": "ï¿½",
     ///   "exceptionType": "Namespace.ExceptionType",
-    ///   "stackTrace": "…" // optional, omitted if null/empty
+    ///   "stackTrace": "ï¿½" // optional, omitted if null/empty
     /// }
     /// </para>
     /// </remarks>

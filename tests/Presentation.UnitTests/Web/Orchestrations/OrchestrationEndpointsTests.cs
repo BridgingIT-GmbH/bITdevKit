@@ -1,3 +1,4 @@
+namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using System.Net;
 using System.Net.Http.Json;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 internal sealed class TestDefinitionData : IOrchestrationData
 {
 }

@@ -29,6 +29,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProviderTests
         {
             (await verificationScope.ServiceProvider.GetRequiredService<TestContext>().StoragePermalinks.CountAsync()).ShouldBe(1);
         }
+
         var loaded = await sut.GetByIdAsync(created.Value.Id);
 
         created.IsSuccess.ShouldBeTrue();
@@ -89,6 +90,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProviderTests
             rows[0].IsSynchronizationTombstone.ShouldBeTrue();
             rows[0].UpdatedAt.ShouldBe(deletedAt);
         }
+
         var result = await sut.GetOrCreateAsync(location, occurredAt: deletedAt.AddMinutes(-1));
 
         result.Errors.ShouldContain(x => x is StoragePermalinkConflictError, string.Join(" | ", result.Errors.Select(x => $"{x.GetType().Name}: {x.Message} {(x as StoragePermalinkProviderError)?.InnerException}")));

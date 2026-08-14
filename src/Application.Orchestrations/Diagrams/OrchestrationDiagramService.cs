@@ -3,12 +3,12 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Application.Orchestrations;
 
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BridgingIT.DevKit.Application.Orchestrations;
 /// <summary>
 /// Builds orchestration definition and instance diagrams using the reusable diagram infrastructure.
 /// </summary>

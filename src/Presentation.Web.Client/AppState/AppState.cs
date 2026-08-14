@@ -200,6 +200,7 @@ public abstract class AppState<TState> : IAppState, IDisposable
                     await this.SetCurrentState(state, "Loaded from storage");
                 }
             }
+
             this.isLoaded = true;
             //this.logger.LogInformation("Successfully loaded state for {StateId}", this.StateId);
         }
@@ -270,6 +271,7 @@ public abstract class AppState<TState> : IAppState, IDisposable
             //this.logger.LogInformation("State changed for {StateId}. Old: {OldState}, New: {NewState}", this.StateId, JsonSerializer.Serialize(oldState), JsonSerializer.Serialize(newState));
             //this.debugger.ConsoleLogAsync($"State undo for {this.StateId}", current).Wait();
         }
+
         this.redoStack.Push(current);
         if (this.redoStack.Count > this.options.MaxHistoryItems)
         {
@@ -297,6 +299,7 @@ public abstract class AppState<TState> : IAppState, IDisposable
             //this.logger.LogInformation("State changed for {StateId}. Old: {OldState}, New: {NewState}", this.StateId, JsonSerializer.Serialize(oldState), JsonSerializer.Serialize(newState));
             //this.debugger.ConsoleLogAsync($"State redo for {this.StateId}", current).Wait();
         }
+
         this.undoStack.Push(current);
         if (this.undoStack.Count > this.options.MaxHistoryItems)
         {

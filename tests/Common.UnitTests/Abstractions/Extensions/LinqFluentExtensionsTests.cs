@@ -1543,8 +1543,6 @@ public class LinqFluentExtensionsTests
         result.ShouldBeNull();
     }
 
-
-
     [Fact]
     public async Task WhenNullAsync_WithNullReferenceType_ExecutesAsyncAction()
     {

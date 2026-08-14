@@ -308,10 +308,12 @@ public class AddressEntityStub : Entity<Guid>
         {
             return Result.Failure().WithError(new ValidationError("Street is required"));
         }
+
         if (string.IsNullOrEmpty(this.City))
         {
             return Result.Failure().WithError(new ValidationError("City is required"));
         }
+
         return Result.Success();
     }
 }

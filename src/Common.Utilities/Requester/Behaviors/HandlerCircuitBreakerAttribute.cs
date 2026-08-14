@@ -28,10 +28,12 @@ public class HandlerCircuitBreakerAttribute : Attribute
         {
             throw new ArgumentOutOfRangeException(nameof(attempts), "Attempts must be greater than 0.");
         }
+
         if (breakDurationSeconds < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(breakDurationSeconds), "Break duration must be non-negative.");
         }
+
         if (backoffMilliseconds < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(backoffMilliseconds), "Backoff milliseconds must be non-negative.");

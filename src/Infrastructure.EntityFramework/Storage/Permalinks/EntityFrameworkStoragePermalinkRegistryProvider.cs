@@ -107,6 +107,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProvider<TContext>(
                     ? Result<StoragePermalinkEntry>.Failure(new StoragePermalinkConflictError("The move predates the current source location state."))
                     : await this.GetOrCreateAsync(target, occurredAt: occurredAt, cancellationToken: cancellationToken);
             }
+
             if (sourceRow.StorageChangedAt > occurredAt) return Result<StoragePermalinkEntry>.Failure(new StoragePermalinkConflictError("The move predates the current source mapping."));
 
             var targetRow = await FindActiveAsync(context, target, false, cancellationToken);
@@ -148,6 +149,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProvider<TContext>(
                     Tombstone(collision, occurredAt);
                 }
             }
+
             if (rows.Any(x => x.DeletedAt is not null)) await context.SaveChangesAsync(cancellationToken);
             foreach (var row in candidates)
             {
@@ -156,6 +158,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProvider<TContext>(
                 context.StoragePermalinks.Add(CreateTombstone(new() { Kind = StorageResourceKind.File, RegistrationName = row.RegistrationName, Scope = row.Scope, Path = row.Path }, occurredAt));
                 ApplyLocation(row, target, occurredAt);
             }
+
             context.StoragePermalinks.Add(CreateTombstone(sourcePrefix, occurredAt, isPrefix: true));
             await context.SaveChangesAsync(cancellationToken);
             if (transaction is not null) await transaction.CommitAsync(cancellationToken);
@@ -182,6 +185,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProvider<TContext>(
             {
                 context.Entry(CreateTombstone(location, occurredAt)).State = EntityState.Added;
             }
+
             var changes = await context.SaveChangesAsync(cancellationToken);
             if (changes == 0) return Result.Failure(new StoragePermalinkProviderError("The permalink deletion synchronization state was not persisted."));
             return Result.Success();
@@ -259,11 +263,13 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProvider<TContext>(
             await using var scope = scopeFactory.CreateAsyncScope();
             var context = Context(scope);
             var now = this.timeProvider.GetUtcNow();
-            IQueryable<StoragePermalink> rows = context.StoragePermalinks.AsNoTracking().Where(x => !x.IsSynchronizationTombstone);
+            var rows = context.StoragePermalinks.AsNoTracking().Where(x => !x.IsSynchronizationTombstone);
             if (query.Id.HasValue) rows = rows.Where(x => x.Id == query.Id.Value.Value);
             if (query.Kind.HasValue) rows = rows.Where(x => x.StorageKind == (int)query.Kind.Value);
             if (!string.IsNullOrWhiteSpace(query.RegistrationName)) { var name = query.RegistrationName.Trim().ToLowerInvariant(); rows = rows.Where(x => x.RegistrationName == name); }
+
             if (!string.IsNullOrWhiteSpace(query.LocationContains)) { var value = query.LocationContains.Trim(); rows = rows.Where(x => x.RegistrationName.Contains(value) || x.Scope.Contains(value) || x.Path.Contains(value)); }
+
             rows = query.Status switch
             {
                 StoragePermalinkStatus.Deleted => rows.Where(x => x.DeletedAt != null),

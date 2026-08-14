@@ -2346,7 +2346,6 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         return this.GetRetryState(context, stateName, activityName)?.RetryCount + 1 ?? 1;
     }
 
-
     private async Task<RegistrationResolution> ResolveRegistrationAsync(Guid instanceId, CancellationToken cancellationToken)
     {
         var snapshot = await this.persistenceProvider.Instances.GetAsync(instanceId, cancellationToken).ConfigureAwait(false);

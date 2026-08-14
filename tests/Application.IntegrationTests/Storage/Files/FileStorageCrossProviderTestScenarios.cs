@@ -25,7 +25,7 @@ public static class FileStorageCrossProviderTestScenarios
     {
         const string sourcePath = "file.txt";
         const string destinationPath = "copied_file.txt";
-        byte[] content = "Hello, World!"u8.ToArray();
+        var content = "Hello, World!"u8.ToArray();
         await sourceProvider.WriteFileAsync(sourcePath, new MemoryStream(content), null, CancellationToken.None);
 
         var result = await sourceProvider.CopyFileAsync(destinationProvider, sourcePath, destinationPath, null, CancellationToken.None);
@@ -45,7 +45,7 @@ public static class FileStorageCrossProviderTestScenarios
     {
         const string sourcePath = "file.txt";
         const string destinationPath = "moved_file.txt";
-        byte[] content = "Hello, World!"u8.ToArray();
+        var content = "Hello, World!"u8.ToArray();
         await sourceProvider.WriteFileAsync(sourcePath, new MemoryStream(content), null, CancellationToken.None);
 
         var result = await sourceProvider.MoveFileAsync(destinationProvider, sourcePath, destinationPath, null, CancellationToken.None);

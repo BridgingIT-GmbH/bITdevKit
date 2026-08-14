@@ -52,6 +52,7 @@ public class DatabaseReadyService : IDatabaseReadyService
             return !this.states.IsEmpty &&
                    this.states.All(x => x.Value.IsReady && !x.Value.IsFaulted);
         }
+
         return this.states.TryGetValue(this.GetName(name), out var state) && state.IsReady;
     }
 
@@ -63,6 +64,7 @@ public class DatabaseReadyService : IDatabaseReadyService
             // If any state is faulted, report faulted (if any exist)
             return this.states.Any(x => x.Value.IsFaulted);
         }
+
         return this.states.TryGetValue(this.GetName(name), out var state) && state.IsFaulted;
     }
 
@@ -78,6 +80,7 @@ public class DatabaseReadyService : IDatabaseReadyService
                 .FirstOrDefault(v => v.IsFaulted);
             return firstFaulted?.FaultMessage;
         }
+
         return this.states.TryGetValue(this.GetName(name), out var state) ? state.FaultMessage : null;
     }
 
@@ -133,6 +136,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
                         throw new InvalidOperationException($"Database '{faulted.Key}' is faulted: {faulted.Value.FaultMessage ?? "Unknown error"}");
                     }
+
                     if (this.states.All(x => x.Value.IsReady && !x.Value.IsFaulted))
                     {
                         var readyNames = string.Join(", ", this.states.Keys.OrderBy(k => k, StringComparer.Ordinal));
@@ -313,6 +317,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
                     return;
                 }
+
                 if (state.IsReady)
                 {
                     this.logger.LogDebug("[{LogKey}] database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);

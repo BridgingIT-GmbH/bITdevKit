@@ -1992,7 +1992,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             {
                 var timestamp = DateTimeOffset.UtcNow;
                 var rootDirectory = await this.EnsureRootDirectoryAsync(context, cancellationToken);
-                MutationLeaseHandle leaseHandle = MutationLeaseHandle.Empty;
+                var leaseHandle = MutationLeaseHandle.Empty;
 
                 if (transaction is not null)
                 {
@@ -2302,7 +2302,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
         CancellationToken cancellationToken)
     {
         var pathHash = this.ComputePathHash(normalizedPath);
-        IQueryable<FileStorageFileEntity> query = context.StorageFiles
+        var query = context.StorageFiles
             .Where(f => f.LocationName == this.LocationName && f.NormalizedPathHash == pathHash);
 
         if (includeContent)

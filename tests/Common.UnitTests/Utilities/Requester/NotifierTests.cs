@@ -653,6 +653,7 @@ public class ContextCapturingNotificationHandler : NotificationHandlerBase<Conte
         {
             this.capturedValues.Add($"{userId}-Handler");
         }
+
         return Task.FromResult(Result.Success());
     }
 }
@@ -681,6 +682,7 @@ public class RetryTestNotificationHandler : NotificationHandlerBase<RetryTestNot
             RetryAttempts++;
             throw new Exception("Simulated failure");
         }
+
         attempts = 0; // Reset for next test
         return Result.Success();
     }

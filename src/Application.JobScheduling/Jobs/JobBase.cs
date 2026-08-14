@@ -143,6 +143,7 @@ public abstract partial class JobBase : IJob
             {
                 this.RunSuccessDate = DateTimeOffset.UtcNow;
             }
+
             this.ElapsedMilliseconds = elapsedMilliseconds;
 
 #pragma warning disable CS0618 // Type or member is obsolete

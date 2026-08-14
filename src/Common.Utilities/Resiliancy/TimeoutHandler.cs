@@ -93,6 +93,7 @@ public class TimeoutHandler
                     this.logger?.LogWarning("Operation timed out.");
                     return;
                 }
+
                 throw new TimeoutException($"Operation exceeded timeout of {this.timeout.TotalSeconds} seconds.");
             }
 
@@ -164,6 +165,7 @@ public class TimeoutHandler
                     this.logger?.LogWarning("Operation timed out.");
                     return default;
                 }
+
                 throw new TimeoutException($"Operation exceeded timeout of {this.timeout.TotalSeconds} seconds.");
             }
 

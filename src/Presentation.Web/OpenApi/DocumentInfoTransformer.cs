@@ -64,6 +64,7 @@ public class DocumentInfoTransformer(DocumentInfoOptions options = null) : IOpen
         {
             document.Info.Version = this.options.Version;
         }
+
         if (this.options.UseAssemblyVersion)
         {
             document.Info.Version = this.GetAssemblyVersion();

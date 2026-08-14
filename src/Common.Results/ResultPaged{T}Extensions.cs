@@ -1010,6 +1010,7 @@ public static class ResultPagedExtensions
             {
                 await operation(newValues, cancellationToken);
             }
+
             return ResultPaged<TNew>.Success(
                     newValues,
                     result.TotalCount,
@@ -1248,6 +1249,7 @@ public static class ResultPagedExtensions
                 {
                     errors.AddRange(newResult.Errors);
                 }
+
                 messages.AddRange(newResult.Messages);
             }
             catch (Exception ex)
@@ -1307,6 +1309,7 @@ public static class ResultPagedExtensions
                 {
                     errors.AddRange(newResult.Errors);
                 }
+
                 messages.AddRange(newResult.Messages);
             }
             catch (OperationCanceledException)

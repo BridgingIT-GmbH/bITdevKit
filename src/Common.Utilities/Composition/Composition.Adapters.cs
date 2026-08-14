@@ -3,6 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Common.Utilities.Composition;
 
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -11,7 +12,6 @@ using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace BridgingIT.DevKit.Common.Utilities.Composition;
 public interface IAdapterSourceBuilder<TSource>
     where TSource : class
 {

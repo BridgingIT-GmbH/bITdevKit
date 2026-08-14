@@ -105,6 +105,7 @@ public static class ServiceCollectionExtensions
                             {
                                 schema = schema.Replace("module", string.Empty, StringComparison.OrdinalIgnoreCase);
                             }
+
                             npgBuilder.MigrationsHistoryTable("__MigrationsHistory", schema);
                         }
                     }

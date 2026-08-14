@@ -140,6 +140,7 @@ public class RateLimiter(int eventsPerSecond, int maxBurstSize)
                 this.currentTokens -= 1;
                 return;
             }
+
             await Task.Delay(100, token);
         }
     }

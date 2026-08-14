@@ -102,6 +102,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             if (string.IsNullOrWhiteSpace(result.Value.ContinuationToken)) break;
             pageQuery = new DocumentQuery { DocumentKey = query?.DocumentKey, Filter = query?.Filter ?? DocumentKeyFilter.FullMatch, AllowFullScan = query?.AllowFullScan ?? false, Take = this.options.MaxTake, ContinuationToken = result.Value.ContinuationToken };
         }
+
         return Result<long>.Success(count);
     }
 

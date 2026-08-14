@@ -1,6 +1,7 @@
+namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Diagrams;
+
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Diagrams;
 public class DiagramRendererFactoryTests
 {
     [Fact]

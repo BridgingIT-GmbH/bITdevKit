@@ -29,6 +29,7 @@ public class BrowseConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     {
         var server = services.GetService<IServer>(); var feature = server?.Features.Get<IServerAddressesFeature>(); var addresses = feature?.Addresses?.ToList() ?? [];
         if (addresses.Count == 0) { console.MarkupLine("[yellow]No server addresses available (server not fully started?).[/]"); return Task.CompletedTask; }
+
         var httpAddresses = addresses.Where(a => a.StartsWith("http://", StringComparison.OrdinalIgnoreCase)).ToList();
         var httpsAddresses = addresses.Where(a => a.StartsWith("https://", StringComparison.OrdinalIgnoreCase)).ToList();
         List<string> targets;
@@ -52,6 +53,7 @@ public class BrowseConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
             }
             else { targets = [httpsAddresses.FirstOrDefault() ?? addresses.First()]; }
         }
+
         var pathSegment = NormalizePath(this.Path);
         foreach (var baseAddr in targets)
         {
@@ -59,8 +61,10 @@ public class BrowseConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
             console.MarkupLine($"[grey]Opening:[/] [blue underline]{Markup.Escape(url)}[/]");
             TryOpen(url, console);
         }
+
         return Task.CompletedTask;
         static string NormalizePath(string p) { if (string.IsNullOrWhiteSpace(p)) { return string.Empty; } var trimmed = p.Trim(); if (trimmed.StartsWith('/')) { trimmed = trimmed[1..]; } return trimmed; }
+
         static void TryOpen(string url, IAnsiConsole console)
         {
             try

@@ -272,7 +272,6 @@ public abstract class EndpointsOptionsBuilderBase<TOptions, TBuilder> : OptionsB
     {
         this.Target.RequirePolicy = policy;
 
-
         return (TBuilder)this;
     }
 

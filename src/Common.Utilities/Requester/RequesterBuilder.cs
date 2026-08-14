@@ -211,10 +211,12 @@ public class RequesterBuilder
         {
             throw new ArgumentException("Generic handler type must be an open generic type definition.", nameof(genericHandlerType));
         }
+
         if (genericRequestType?.IsGenericTypeDefinition != true)
         {
             throw new ArgumentException("Generic request type must be an open generic type definition.", nameof(genericRequestType));
         }
+
         if (typeArguments?.Any() != true)
         {
             throw new ArgumentException("At least one type argument must be provided.", nameof(typeArguments));
@@ -258,6 +260,7 @@ public class RequesterBuilder
                 this.services.AddScoped(typeof(IValidator<>).MakeGenericType(closedRequestType), validatorType);
             }
         }
+
         return this;
     }
 
@@ -294,6 +297,7 @@ public class RequesterBuilder
                 {
                     continue;
                 }
+
                 var handlerInterfaces = type.GetInterfaces()
                     .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>)).ToList();
                 if (handlerInterfaces.Count != 0)
@@ -428,6 +432,7 @@ public class RequesterBuilder
         {
             return this;
         }
+
         if (!behaviorType.IsGenericTypeDefinition)
         {
             throw new ArgumentException($"Behavior type '{behaviorType}' must be an open generic type.", nameof(behaviorType));

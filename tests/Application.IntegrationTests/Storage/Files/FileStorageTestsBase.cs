@@ -505,6 +505,7 @@ public abstract class FileStorageTestsBase
             var destExists = await provider.FileExistsAsync(dest, null, CancellationToken.None);
             destExists.ShouldBeSuccess();
         }
+
         foreach (var (source, _) in pairs)
         {
             var sourceExists = await provider.FileExistsAsync(source, null, CancellationToken.None);

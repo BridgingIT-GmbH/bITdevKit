@@ -49,6 +49,7 @@ public sealed class ResultPagedJsonConverter<T> : JsonConverter<ResultPaged<T>>
         {
             writer.WriteStringValue(message);
         }
+
         writer.WriteEndArray();
 
         writer.WriteStartArray("errors");
@@ -56,6 +57,7 @@ public sealed class ResultPagedJsonConverter<T> : JsonConverter<ResultPaged<T>>
         {
             JsonSerializer.Serialize(writer, error, error.GetType(), options);
         }
+
         writer.WriteEndArray();
 
         // ResultPaged specific properties

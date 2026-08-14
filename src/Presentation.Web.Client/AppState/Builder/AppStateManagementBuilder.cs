@@ -113,6 +113,7 @@ public class AppStateManagementBuilder(IServiceCollection services)
         {
             this.services.Remove(defaultDescriptor);
         }
+
         this.services.AddScoped<IAppStateStoreProvider, TProvider>();
         return this;
     }

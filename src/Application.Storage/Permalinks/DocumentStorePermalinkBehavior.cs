@@ -46,6 +46,7 @@ public sealed class DocumentStorePermalinkBehavior<T>(
         {
             await queue.EnqueueAsync(new(StorageResourceChangeKind.Upserted, StorageResourceLocation.ForDocument(this.RegistrationName, key))).ConfigureAwait(false);
         }
+
         return result;
     }
 
@@ -60,6 +61,7 @@ public sealed class DocumentStorePermalinkBehavior<T>(
                 await queue.EnqueueAsync(new(StorageResourceChangeKind.Upserted, StorageResourceLocation.ForDocument(this.RegistrationName, item.Key))).ConfigureAwait(false);
             }
         }
+
         return result;
     }
 
@@ -71,6 +73,7 @@ public sealed class DocumentStorePermalinkBehavior<T>(
         {
             await queue.EnqueueAsync(new(StorageResourceChangeKind.Deleted, StorageResourceLocation.ForDocument(this.RegistrationName, key))).ConfigureAwait(false);
         }
+
         return result;
     }
 
@@ -85,6 +88,7 @@ public sealed class DocumentStorePermalinkBehavior<T>(
                 await queue.EnqueueAsync(new(StorageResourceChangeKind.Deleted, StorageResourceLocation.ForDocument(this.RegistrationName, key))).ConfigureAwait(false);
             }
         }
+
         return result;
     }
 

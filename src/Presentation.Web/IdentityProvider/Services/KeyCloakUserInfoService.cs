@@ -21,6 +21,7 @@ public class KeyCloakUserInfoService(ITokenService tokenService, FakeIdentityPro
         {
             throw new UnauthorizedAccessException("Invalid token");
         }
+
         var claims = validationResult.Claims;
         var user = options.Users.FirstOrDefault(u => u.Id == claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value)
             ?? throw new OAuth2Exception("invalid_grant", "Invalid credentials");

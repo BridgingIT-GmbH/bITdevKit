@@ -54,6 +54,7 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 {
                     throw new InvalidOperationException($"Non-retryable error occurred: {opResult.Errors.LastOrDefault()?.Message}");
                 }
+
                 return opResult.Value;
             });
 
@@ -92,6 +93,7 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 {
                     throw new InvalidOperationException($"Non-retryable error occurred: {opResult.Errors.LastOrDefault()?.Message}");
                 }
+
                 return opResult;
             });
 

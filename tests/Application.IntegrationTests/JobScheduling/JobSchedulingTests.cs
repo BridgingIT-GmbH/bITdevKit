@@ -331,6 +331,7 @@ public class JobSchedulingTests
         {
             executed[i].EndTime.ShouldBeLessThanOrEqualTo(executed[i + 1].StartTime);
         }
+
         executed.All(e => e.Name == "NonConcurrentJob").ShouldBeTrue();
     }
 

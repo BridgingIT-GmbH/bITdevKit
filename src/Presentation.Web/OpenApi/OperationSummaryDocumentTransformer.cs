@@ -86,6 +86,7 @@ public class OperationSummaryDocumentTransformer : IOpenApiOperationTransformer
             {
                 operation.Summary = this.GenerateSummaryFromOperationId(operation.OperationId);
             }
+
             return Task.CompletedTask;
         }
 

@@ -124,6 +124,7 @@ public class NotifierBuilder
                             {
                                 this.validatorTypes.Add(validatorType);
                             }
+
                             this.services.AddScoped(typeof(IValidator<>).MakeGenericType(notificationType), validatorType);
                         }
                     }
@@ -182,6 +183,7 @@ public class NotifierBuilder
             {
                 this.validatorTypes.Add(validatorType);
             }
+
             this.services.AddScoped(typeof(IValidator<>).MakeGenericType(notificationType), validatorType);
         }
 
@@ -213,10 +215,12 @@ public class NotifierBuilder
         {
             throw new ArgumentException("Generic handler type must be an open generic type definition.", nameof(genericHandlerType));
         }
+
         if (genericNotificationType?.IsGenericTypeDefinition != true)
         {
             throw new ArgumentException("Generic notification type must be an open generic type definition.", nameof(genericNotificationType));
         }
+
         if (typeArguments?.Any() != true)
         {
             throw new ArgumentException("At least one type argument must be provided.", nameof(typeArguments));
@@ -301,6 +305,7 @@ public class NotifierBuilder
                 {
                     continue;
                 }
+
                 var handlerInterfaces = type.GetInterfaces()
                     .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)).ToList();
                 if (handlerInterfaces.Count != 0)

@@ -35,6 +35,7 @@ public class AppStateBuilder(IServiceCollection services, AppStateOptions option
         {
             this.services.AddScoped<IAppStateStoreProvider, ComponentScopedStateStoreProvider>();
         }
+
         this.options.StorageProvider = typeof(ComponentScopedStateStoreProvider);
         return this;
     }
@@ -51,6 +52,7 @@ public class AppStateBuilder(IServiceCollection services, AppStateOptions option
         {
             this.services.AddScoped<IAppStateStoreProvider, SessionScopedStateStoreProvider>();
         }
+
         this.options.StorageProvider = typeof(SessionScopedStateStoreProvider);
         return this;
     }
@@ -68,6 +70,7 @@ public class AppStateBuilder(IServiceCollection services, AppStateOptions option
             this.services.AddScoped<IAppStateStoreProvider, LocalStorageStateStoreProvider>();
             this.services.AddScoped<LocalStorageStateStoreProvider>();
         }
+
         this.options.StorageProvider = typeof(LocalStorageStateStoreProvider);
         return this;
     }

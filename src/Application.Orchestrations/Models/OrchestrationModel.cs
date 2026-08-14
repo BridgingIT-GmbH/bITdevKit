@@ -3,11 +3,11 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Application.Orchestrations;
 
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BridgingIT.DevKit.Application.Orchestrations;
 /// <summary>
 /// Stores orchestration types registered for dependency injection.
 /// </summary>

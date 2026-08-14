@@ -168,6 +168,7 @@ public static class DictionaryExtensions
         {
             dictionary.Add(key, value);
         }
+
         return dictionary;
     }
 
@@ -209,6 +210,7 @@ public static class DictionaryExtensions
         {
             dictionary.Add(key, value);
         }
+
         return dictionary;
     }
 
@@ -244,6 +246,7 @@ public static class DictionaryExtensions
         {
             dictionary.Add(key, value);
         }
+
         return dictionary;
     }
 
@@ -287,6 +290,7 @@ public static class DictionaryExtensions
                 dictionary.Add(item.Key, item.Value);
             }
         }
+
         return dictionary;
     }
 
@@ -321,6 +325,7 @@ public static class DictionaryExtensions
         {
             dictionary.Add(key, value);
         }
+
         return dictionary;
     }
 
@@ -356,6 +361,7 @@ public static class DictionaryExtensions
         {
             dictionary.Add(key, value);
         }
+
         return dictionary;
     }
 
@@ -392,6 +398,7 @@ public static class DictionaryExtensions
         {
             dictionary.Add(key, value);
         }
+
         return dictionary;
     }
 

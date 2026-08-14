@@ -97,6 +97,7 @@ public class Throttler(
                 this.cts.Dispose();
                 this.cts = new CancellationTokenSource();
             }
+
             token = this.cts.Token;
         }
 

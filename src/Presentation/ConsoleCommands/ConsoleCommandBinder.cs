@@ -55,12 +55,14 @@ public static class ConsoleCommandBinder
                         errors.Add($"Option --{o.Name} requires a value.");
                         continue;
                     }
+
                     if (!TryConvert(valToken, o.Property.PropertyType, out value))
                     {
                         errors.Add($"Invalid value '{valToken}' for --{o.Name} (expected {FriendlyType(o.Property.PropertyType)}). ");
                         continue;
                     }
                 }
+
                 o.Property.SetValue(cmd, value);
             }
             else
@@ -87,6 +89,7 @@ public static class ConsoleCommandBinder
                     errors.Add($"Invalid value '{raw}' for argument #{a.Order} ({a.Property.Name}) expected {FriendlyType(a.Property.PropertyType)}.");
                     continue;
                 }
+
                 a.Property.SetValue(cmd, value);
             }
             else if (a.Required)
@@ -117,15 +120,18 @@ public static class ConsoleCommandBinder
                 var optText = string.Join("\n", meta.Options.Select(o => $"--{o.Name}{(o.Alias != null ? "/-" + o.Alias : "")}: {o.Description} {(o.Required ? "(required)" : "")} {(o.Default != null ? "(default=" + o.Default + ")" : "")} ({FriendlyType(o.Property.PropertyType)})")).Replace("[]", " array");
                 table.AddRow("Options", optText);
             }
+
             if (meta.Arguments.Any())
             {
                 var argText = string.Join("\n", meta.Arguments.OrderBy(a => a.Order).Select(a => $"{a.Order}: {a.Property.Name} {a.Description ?? ""} {(a.Required ? "(required)" : "")} ({FriendlyType(a.Property.PropertyType)})"));
                 table.AddRow("Arguments", argText);
             }
+
             if (detailed && meta.Options.Any())
             {
                 table.AddRow("Example", $"{cmd.Name} " + string.Join(' ', meta.Options.Take(2).Select(o => $"--{o.Name}{(o.Property.PropertyType != typeof(bool) ? "=value" : "")}")));
             }
+
             console.Write(table);
         }
         catch (Exception ex)
@@ -164,6 +170,7 @@ public static class ConsoleCommandBinder
                         });
                         continue;
                     }
+
                     var arg = p.GetCustomAttribute<ConsoleCommandArgumentAttribute>();
                     if (arg is not null)
                     {
@@ -176,9 +183,11 @@ public static class ConsoleCommandBinder
                         });
                     }
                 }
+
                 meta = new ConsoleCommandMeta(options, args);
                 cache[t] = meta;
             }
+
             return meta;
         }
     }
@@ -198,12 +207,19 @@ public static class ConsoleCommandBinder
     {
         value = null;
         if (type == typeof(string)) { value = raw; return true; }
+
         if (type == typeof(int) || type == typeof(int?)) { if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i)) { value = i; return true; } return false; }
+
         if (type == typeof(long) || type == typeof(long?)) { if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var l)) { value = l; return true; } return false; }
+
         if (type == typeof(bool) || type == typeof(bool?)) { if (bool.TryParse(raw, out var b)) { value = b; return true; } if (raw == "1") { value = true; return true; } if (raw == "0") { value = false; return true; } return false; }
+
         if (type == typeof(Guid) || type == typeof(Guid?)) { if (Guid.TryParse(raw, out var g)) { value = g; return true; } return false; }
+
         if (type == typeof(DateTime) || type == typeof(DateTime?)) { if (DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt)) { value = dt; return true; } return false; }
+
         if (type == typeof(TimeSpan) || type == typeof(TimeSpan?)) { if (TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var ts)) { value = ts; return true; } return false; }
+
         if (type.IsEnum) { if (Enum.TryParse(type, raw, true, out var ev)) { value = ev; return true; } return false; }
         // fallback
         try
@@ -242,6 +258,7 @@ public static class ConsoleCommandBinder
                         continue;
                     }
                 }
+
                 dict[name] = new ParsedOption(val, [i]);
             }
             else if (t.StartsWith('-') && t.Length > 1 && !t.StartsWith("--"))
@@ -260,6 +277,7 @@ public static class ConsoleCommandBinder
                 }
             }
         }
+
         return dict;
     }
 

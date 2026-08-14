@@ -95,6 +95,7 @@ public class FakeAuthenticationOptionsBuilder
         {
             this.claims.Add(new Claim(type, value));
         }
+
         return this;
     }
 

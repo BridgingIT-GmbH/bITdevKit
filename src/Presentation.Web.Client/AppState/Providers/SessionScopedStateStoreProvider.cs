@@ -32,6 +32,7 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.log", $"State saving to session storage for {stateId}", state);
             }
+
             var key = $"{stateId}_{userContextId}";
             this.stateStore[key] = state;
         }
@@ -45,6 +46,7 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to save state to session storage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -67,8 +69,10 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
                 {
                     await this.jsRuntime.InvokeVoidAsync("console.log", $"State loaded from session storage for {stateId}", typedState);
                 }
+
                 return typedState;
             }
+
             return default;
         }
         catch (Exception ex)
@@ -77,6 +81,7 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to load state from session storage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -108,6 +113,7 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear state from session storage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -128,6 +134,7 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
                     await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from session storage for {key}");
                 }
             }
+
             this.stateStore.Clear();
             if (this.debugger.IsEnabled)
             {
@@ -144,6 +151,7 @@ public class SessionScopedStateStoreProvider(AppStateDebugger debugger, IJSRunti
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear all state from session storage: {ex.Message}");
             }
+
             throw;
         }
     }

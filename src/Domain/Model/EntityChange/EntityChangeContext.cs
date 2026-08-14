@@ -65,6 +65,7 @@ public class EntityChangeContext
         {
             return (T)record.OldValue;
         }
+
         return default;
     }
 
@@ -77,6 +78,7 @@ public class EntityChangeContext
         {
             return (T)record.NewValue;
         }
+
         return default;
     }
 }

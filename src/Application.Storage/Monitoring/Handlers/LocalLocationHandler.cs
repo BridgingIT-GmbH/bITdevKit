@@ -74,6 +74,7 @@ public class LocalLocationHandler : LocationHandlerBase
             this.fileSystemWatcher = null;
             this.isPaused = false;
         }
+
         await base.StopAsync(cancellationToken);
     }
 
@@ -107,6 +108,7 @@ public class LocalLocationHandler : LocationHandlerBase
                 ? Directory.GetFiles(localProvider.RootPath, this.options.FileFilter, SearchOption.AllDirectories).Length
                 : 0;
         }
+
         if (options.MaxFilesToScan < estimatedTotalFiles)
         {
             estimatedTotalFiles = options.MaxFilesToScan.Value;
@@ -175,6 +177,7 @@ public class LocalLocationHandler : LocationHandlerBase
                             {
                                 await Task.Delay(options.DelayPerFile, cancellationToken);
                             }
+
                             batchCount = 0;
                         }
 
@@ -190,6 +193,7 @@ public class LocalLocationHandler : LocationHandlerBase
                     break;
                 }
             }
+
             continuationToken = result.Value.NextContinuationToken;
         } while (continuationToken != null && !cancellationToken.IsCancellationRequested);
 
@@ -239,6 +243,7 @@ public class LocalLocationHandler : LocationHandlerBase
                         {
                             await Task.Delay(options.DelayPerFile, cancellationToken);
                         }
+
                         batchCount = 0;
                     }
 
@@ -350,6 +355,7 @@ public class LocalLocationHandler : LocationHandlerBase
                 // Otherwise, enqueue the buffered event and update with the new one
                 this.eventQueue.Add(buffered.Event);
             }
+
             this.eventBuffer[relativePath] = (fileEvent, DateTimeOffset.UtcNow);
         }
     }

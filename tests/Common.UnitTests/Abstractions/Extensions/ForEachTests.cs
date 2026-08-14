@@ -126,6 +126,7 @@ public class ForEachTests
                 {
                     processedItems.Add(item);
                 }
+
                 return Task.CompletedTask;
             },
             maxDegreeOfParallelism: 2,

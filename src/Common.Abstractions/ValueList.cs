@@ -130,6 +130,7 @@ public readonly struct ValueList<T>
         {
             result = result.Add(item);
         }
+
         return result;
     }
 

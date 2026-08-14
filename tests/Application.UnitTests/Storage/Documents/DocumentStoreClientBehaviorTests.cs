@@ -112,6 +112,7 @@ public sealed class DocumentStoreClientBehaviorTests
             try { await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken); }
             catch (OperationCanceledException) { this.WasCanceled = true; await Task.Delay(10); throw; }
             finally { this.HasCompleted = true; }
+
             return Result<DocumentEntry<TestDocument>>.Failure(new DocumentStoreProviderError());
         }
     }
@@ -131,6 +132,7 @@ public sealed class DocumentStoreClientBehaviorTests
             try { await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken); }
             catch (OperationCanceledException) { this.WasCanceled = true; await Task.Delay(10); throw; }
             finally { this.HasCompleted = true; }
+
             return Result.Failure(new DocumentStoreProviderError());
         }
     }

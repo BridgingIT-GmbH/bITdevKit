@@ -44,6 +44,7 @@ public class SimpleDebouncer : IDisposable
         {
             this.timer.Stop();
         }
+
         this.isPending = true;
         this.timer.Start();
     }

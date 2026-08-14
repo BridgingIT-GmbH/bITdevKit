@@ -63,6 +63,7 @@ public static class MediatorInspector
                     var implementationType = registration.ImplementationType;
                     Console.WriteLine($"  - {implementationType?.PrettyName()} ({registration.Lifetime})");
                 }
+
                 Console.WriteLine();
             }
 

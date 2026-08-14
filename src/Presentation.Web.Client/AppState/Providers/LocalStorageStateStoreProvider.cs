@@ -36,6 +36,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.log", $"State saving to localStorage for {stateId}", state);
             }
+
             await this.jsRuntime.InvokeVoidAsync("localStorage.setItem", key, json);
             this.stateIds.Add(key); // Track the state ID
         }
@@ -49,6 +50,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to save state to localStorage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -71,10 +73,12 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.log", $"State loaded from localStorage for {stateId}", data);
             }
+
             if (json != null)
             {
                 this.stateIds.Add(key); // Track the state ID if it exists
             }
+
             return data;
         }
         catch (Exception ex)
@@ -83,6 +87,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to load state from localStorage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -103,6 +108,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from localStorage for {stateId}");
             }
+
             this.stateIds.Remove(key);
         }
         catch (InvalidOperationException)
@@ -115,6 +121,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear state from localStorage for {stateId}: {ex.Message}");
             }
+
             throw;
         }
     }
@@ -135,6 +142,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
                     await this.jsRuntime.InvokeVoidAsync("console.log", $"Cleared state from localStorage for {stateId}");
                 }
             }
+
             this.stateIds.Clear();
             if (this.debugger.IsEnabled)
             {
@@ -151,6 +159,7 @@ public class LocalStorageStateStoreProvider(IJSRuntime jsRuntime, AppStateDebugg
             {
                 await this.jsRuntime.InvokeVoidAsync("console.error", $"Failed to clear all state from localStorage: {ex.Message}");
             }
+
             throw;
         }
     }

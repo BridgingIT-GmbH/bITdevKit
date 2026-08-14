@@ -47,6 +47,7 @@ public static partial class ApplicationBuilderExtensions
                 {
                     await Task.Delay(startupDelay.Value);
                 }
+
                 var console = app.Services.GetRequiredService<IAnsiConsole>();
                 var executor = app.Services.GetRequiredService<ConsoleCommandExecutor>();
 
@@ -90,6 +91,7 @@ public static partial class ApplicationBuilderExtensions
         {
             var line = ReadTerminalLine(console);
             if (line is null) { break; }
+
             if (string.IsNullOrWhiteSpace(line)) { continue; }
 
             await executor.ExecuteAsync(
@@ -253,6 +255,7 @@ public static partial class ApplicationBuilderExtensions
                         historyIndex = history.Count;
                         RedrawInput(session, buffer, cursor);
                     }
+
                     break;
             }
         }

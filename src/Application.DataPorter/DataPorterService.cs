@@ -978,6 +978,7 @@ public sealed class DataPorterService(
             {
                 result = await importProvider.ValidateAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken);
             }
+
             stopwatch.Stop();
             this.logger.LogInformation("[{LogKey}] validation finished (type={Type}, format={Format}, provider={Provider}, isValid={IsValid}, rowCount={RowCount}, validRows={ValidRows}, invalidRows={InvalidRows}, errorCount={ErrorCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.IsValid, result.TotalRows, result.ValidRows, result.InvalidRows, result.Errors.Count, stopwatch.Elapsed.TotalMilliseconds);
 

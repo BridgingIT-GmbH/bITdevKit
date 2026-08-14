@@ -271,6 +271,7 @@ public class NotificationEmailService(
                 mimePart.ContentId = attachment.ContentId;
                 mimePart.ContentDisposition.Disposition = ContentDisposition.Inline;
             }
+
             builder.Attachments.Add(mimePart);
         }
 

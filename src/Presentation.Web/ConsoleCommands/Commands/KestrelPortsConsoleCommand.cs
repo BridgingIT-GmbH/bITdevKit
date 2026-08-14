@@ -31,6 +31,7 @@ public class KestrelPortsConsoleCommand : ConsoleCommandBase
 
             return Task.CompletedTask;
         }
+
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Address");
         foreach (var a in addresses)

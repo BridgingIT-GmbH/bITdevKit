@@ -456,7 +456,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     {
         var provider = this.CreateIsolatedProvider("mixed-case-file");
         const string storedPath = "Docs/MixedCase/ReadMe.TXT";
-        byte[] payload = "payload"u8.ToArray();
+        var payload = "payload"u8.ToArray();
 
         var writeResult = await provider.WriteFileAsync(storedPath, new MemoryStream(payload), null, CancellationToken.None);
         var readResult = await provider.ReadBytesAsync("docs/mixedcase/readme.txt", cancellationToken: CancellationToken.None);
@@ -616,7 +616,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
         var provider = this.CreateIsolatedProvider(
             "leased-root-write",
             new EntityFrameworkFileStorageOptionsBuilder().PageSize(2).Build());
-        byte[] payload = "leased-root-write"u8.ToArray();
+        var payload = "leased-root-write"u8.ToArray();
 
         var writeResult = await provider.WriteFileAsync("top-level.txt", new MemoryStream(payload), null, CancellationToken.None);
 
@@ -659,8 +659,8 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     public virtual async Task OpenWriteFileAsync_WithholdAndCommit_KeepsPreviousContentUntilDispose(bool useTemporaryWrite)
     {
         var provider = this.CreateIsolatedProvider("open-write-commit");
-        byte[] original = "before"u8.ToArray();
-        byte[] updated = new UTF8Encoding(true).GetBytes("after");
+        var original = "before"u8.ToArray();
+        var updated = new UTF8Encoding(true).GetBytes("after");
         const string path = "open-write/file.txt";
 
         await provider.WriteFileAsync(path, new MemoryStream(original), null, CancellationToken.None);
@@ -706,8 +706,8 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
         var provider2 = this.CreateProvider(locationName, this.DefaultOptions);
         var startSignal = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         const string parentPath = "shared/new-parent";
-        byte[] firstPayload = "first-payload"u8.ToArray();
-        byte[] secondPayload = "second-payload"u8.ToArray();
+        var firstPayload = "first-payload"u8.ToArray();
+        var secondPayload = "second-payload"u8.ToArray();
 
         (await provider1.CreateDirectoryAsync(parentPath, CancellationToken.None)).ShouldBeSuccess();
 
@@ -753,7 +753,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     public virtual async Task RenameFileAsync_SameNormalizedPathWithDifferentPathSyntax_ReturnsConflict()
     {
         var provider = this.CreateIsolatedProvider("same-normalized-file");
-        byte[] payload = "payload"u8.ToArray();
+        var payload = "payload"u8.ToArray();
         await provider.WriteFileAsync("conflicts/source/file.txt", new MemoryStream(payload), null, CancellationToken.None);
 
         var result = await provider.RenameFileAsync(
@@ -880,7 +880,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     public virtual async Task MoveFileAsync_TouchesSourceAndDestinationParentLastModified()
     {
         var provider = this.CreateIsolatedProvider("move-last-modified");
-        byte[] payload = "payload"u8.ToArray();
+        var payload = "payload"u8.ToArray();
         await provider.CreateDirectoryAsync("timeline/source", CancellationToken.None);
         await provider.CreateDirectoryAsync("timeline/destination", CancellationToken.None);
         await provider.WriteFileAsync("timeline/source/file.txt", new MemoryStream(payload), null, CancellationToken.None);
@@ -906,7 +906,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     public virtual async Task MoveFileAsync_CreatingAndPruningIntermediateDirectories_TouchesSurvivingParents()
     {
         var provider = this.CreateIsolatedProvider("move-intermediate-last-modified");
-        byte[] payload = "payload"u8.ToArray();
+        var payload = "payload"u8.ToArray();
         await provider.CreateDirectoryAsync("timeline/source", CancellationToken.None);
         await provider.CreateDirectoryAsync("timeline/destination", CancellationToken.None);
         await provider.WriteFileAsync("timeline/source/branch/file.txt", new MemoryStream(payload), null, CancellationToken.None);
@@ -1111,7 +1111,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     private async Task AssertFileMutationSamePathConflictAsync(FileMutationOperation operation, string path)
     {
         var provider = this.CreateIsolatedProvider("same-path");
-        byte[] payload = "payload"u8.ToArray();
+        var payload = "payload"u8.ToArray();
         await provider.WriteFileAsync(path, new MemoryStream(payload), null, CancellationToken.None);
 
         var result = await operation(provider, path, path);
@@ -1127,7 +1127,7 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
         string destinationPath)
     {
         var provider = this.CreateIsolatedProvider("directory-collision");
-        byte[] payload = "payload"u8.ToArray();
+        var payload = "payload"u8.ToArray();
         await provider.WriteFileAsync(sourcePath, new MemoryStream(payload), null, CancellationToken.None);
         await provider.CreateDirectoryAsync(destinationPath, CancellationToken.None);
 

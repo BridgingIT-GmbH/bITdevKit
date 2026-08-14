@@ -171,6 +171,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                 storedContent = await transform.WriteAsync(storedContent, metadata, cancellationToken);
                 transformDescriptors.Add(new() { Id = transform.Identifier, Properties = metadata.Clone() });
             }
+
             var storedHash = ContentHashHelper.ComputeSha256(storedContent);
             var transformMetadata = new PropertyBag();
             transformMetadata.Set("bdk_transform_envelope", ContentTransformEnvelopeCodec.Encode(new()
@@ -302,11 +303,13 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             {
                 return Result<DocumentEntry<T>>.Failure(new DocumentStoreIntegrityError());
             }
+
             var encodedEnvelope = stored.TransformMetadata?.Get<string>("bdk_transform_envelope");
             if (string.IsNullOrWhiteSpace(encodedEnvelope))
             {
                 return Result<DocumentEntry<T>>.Failure(new DocumentStoreSerializationError("Document transform envelope is missing."));
             }
+
             var envelope = ContentTransformEnvelopeCodec.Decode(encodedEnvelope);
             if (envelope.StoredLength != stored.Content.LongLength ||
                 !string.Equals(envelope.StoredContentHash, stored.StoredContentHash, StringComparison.OrdinalIgnoreCase) ||
@@ -314,6 +317,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
             {
                 return Result<DocumentEntry<T>>.Failure(new DocumentStoreIntegrityError());
             }
+
             var logicalContent = stored.Content.ToArray();
             for (var index = envelope.Transforms.Count - 1; index >= 0; index--)
             {
@@ -322,13 +326,16 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
                 {
                     return Result<DocumentEntry<T>>.Failure(new DocumentStoreSerializationError($"Document transform '{descriptor.Id}' is not registered."));
                 }
+
                 logicalContent = await transform.ReadAsync(logicalContent, descriptor.Properties.Clone(), cancellationToken);
             }
+
             if (envelope.LogicalLength != logicalContent.LongLength ||
                 !string.Equals(ContentHashHelper.ComputeSha256(logicalContent), stored.ContentHash, StringComparison.OrdinalIgnoreCase))
             {
                 return Result<DocumentEntry<T>>.Failure(new DocumentStoreIntegrityError());
             }
+
             using var stream = new MemoryStream(logicalContent, writable: false);
             var value = this.serializer.Deserialize<T>(stream);
             return value is null

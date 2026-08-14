@@ -74,6 +74,7 @@ public abstract class ActiveEntityQueryBase<TEntity, TId>
         {
             this.specifications.AddRange(specifications);
         }
+
         return this;
     }
 
@@ -277,6 +278,7 @@ public abstract class ActiveEntityQueryBase<TEntity, TId>
         {
             return Result<TEntity>.Failure(new NotFoundError(typeof(TEntity).Name));
         }
+
         return result;
     }
 

@@ -40,6 +40,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to check existence of file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -55,6 +56,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to read file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -70,6 +72,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to write file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -85,6 +88,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to open file for writing at '{Path}' (temporary={UseTemporaryWrite}): {Errors}", Constants.LogKey, path, useTemporaryWrite, result.Errors);
         }
+
         return result;
     }
 
@@ -100,6 +104,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to delete file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -115,6 +120,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to compute checksum for file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -130,6 +136,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to retrieve metadata for file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -145,6 +152,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to set metadata for file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -160,6 +168,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to update metadata for file at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -176,6 +185,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to list files in '{Path}' with pattern '{Pattern}': {Errors}", Constants.LogKey, path, searchPattern, result.Errors);
         }
+
         return result;
     }
 
@@ -191,6 +201,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to copy file from '{Source}' to '{Destination}': {Errors}", Constants.LogKey, sourcePath, destinationPath, result.Errors);
         }
+
         return result;
     }
 
@@ -206,6 +217,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to rename file from '{OldPath}' to '{NewPath}': {Errors}", Constants.LogKey, oldPath, newPath, result.Errors);
         }
+
         return result;
     }
 
@@ -221,6 +233,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to rename directory from '{OldPath}' to '{NewPath}': {Errors}", Constants.LogKey, oldPath, newPath, result.Errors);
         }
+
         return result;
     }
 
@@ -236,6 +249,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to move file from '{Source}' to '{Destination}': {Errors}", Constants.LogKey, sourcePath, destinationPath, result.Errors);
         }
+
         return result;
     }
 
@@ -252,6 +266,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to copy multiple files: {Errors}", Constants.LogKey, result.Errors);
         }
+
         return result;
     }
 
@@ -268,6 +283,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to move multiple files: {Errors}", Constants.LogKey, result.Errors);
         }
+
         return result;
     }
 
@@ -284,6 +300,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to delete multiple files: {Errors}", Constants.LogKey, result.Errors);
         }
+
         return result;
     }
 
@@ -299,6 +316,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to check if '{Path}' is a directory: {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -314,6 +332,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to create directory at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -329,6 +348,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to delete directory at '{Path}': {Errors}", Constants.LogKey, path, result.Errors);
         }
+
         return result;
     }
 
@@ -345,6 +365,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to list directories in '{Path}' with pattern '{Pattern}': {Errors}", Constants.LogKey, path, searchPattern, result.Errors);
         }
+
         return result;
     }
 
@@ -360,6 +381,7 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         {
             this.logger.LogWarning("[{LogKey}] file storage: failed to check health of storage at '{Location}': {Errors}", Constants.LogKey, this.innerProvider.LocationName, result.Errors);
         }
+
         return result;
     }
 

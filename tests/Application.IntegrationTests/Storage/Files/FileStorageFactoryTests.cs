@@ -569,6 +569,7 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
             tasks.Add(Task.Run(() => factory.CreateProvider("inMemory")));
             tasks.Add(Task.Run(() => factory.CreateProvider("transient")));
         }
+
         var providers = await Task.WhenAll(tasks); // 10 providers each for Singleton and Transient
 
         // Assert - Singleton providers should be the same instance

@@ -193,6 +193,7 @@ public sealed class ConsoleCommandExecutor
                         list.Add(current.ToString());
                         current.Clear();
                     }
+
                     break;
                 default:
                     current.Append(ch);

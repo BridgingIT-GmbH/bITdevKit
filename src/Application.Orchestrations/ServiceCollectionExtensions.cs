@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
                 nameof(OrchestrationRecoveryService),
                 tags: ["background", "orchestrations"]);
         }
+
         services.TryAddSingleton<IOrchestrationQueryService>(serviceProvider =>
             new OrchestrationQueryService(serviceProvider.GetRequiredService<IOrchestrationQueryStore>()));
         services.TryAddSingleton<IOrchestrationAdministrationService>(serviceProvider =>

@@ -46,6 +46,7 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
                 this.AddOrder(o);
             }
         }
+
         this.Include = includeExpression is not null ? new IncludeOption<TEntity>(includeExpression) : include;
         if (includes != null)
         {
@@ -54,6 +55,7 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
                 this.AddInclude(i);
             }
         }
+
         this.Distinct = distinctExpression is not null ? new DistinctOption<TEntity>(distinctExpression) : distinct;
     }
 

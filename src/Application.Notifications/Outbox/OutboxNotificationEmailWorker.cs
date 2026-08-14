@@ -133,6 +133,7 @@ public class OutboxNotificationEmailWorker(
             {
                 this.logger.LogWarning("[{LogKey}] failed to update message with ID {MessageId} after max retries: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
             }
+
             return;
         }
 

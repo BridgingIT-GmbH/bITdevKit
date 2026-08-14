@@ -183,6 +183,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                         concurrencyItem.ConcurrencyVersion = version; // sync Version with ETag
                     }
                 }
+
                 result.Add(item);
             }
         }

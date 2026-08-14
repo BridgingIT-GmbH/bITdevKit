@@ -3,11 +3,11 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Common;
 
 using System.Globalization;
 using System.Text;
 
-namespace BridgingIT.DevKit.Common;
 internal static class SvgDiagramRendererSupport
 {
     internal const string ContentType = "image/svg+xml; charset=utf-8";

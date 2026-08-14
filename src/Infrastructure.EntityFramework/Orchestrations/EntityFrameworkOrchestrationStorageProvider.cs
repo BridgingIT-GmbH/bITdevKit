@@ -681,6 +681,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             throw new KeyNotFoundException($"Signal '{signalId}' was not found.");
         }
+
         using var logScope = this.BeginOrchestrationScope(row.InstanceId, stateName: row.CurrentState);
 
         var now = this.clock.UtcNow;
@@ -850,6 +851,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             throw new KeyNotFoundException($"Timer '{timerId}' was not found.");
         }
+
         using var logScope = this.BeginOrchestrationScope(row.InstanceId, stateName: row.TargetState);
 
         var now = this.clock.UtcNow;

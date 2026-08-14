@@ -34,6 +34,7 @@ public static class ConditionalCollectionExtensions
         {
             collection.Add(item);
         }
+
         return collection;
     }
 
@@ -65,6 +66,7 @@ public static class ConditionalCollectionExtensions
         {
             collection.Add(item);
         }
+
         return collection;
     }
 
@@ -96,6 +98,7 @@ public static class ConditionalCollectionExtensions
         {
             collection.Add(item);
         }
+
         return collection;
     }
 
@@ -130,6 +133,7 @@ public static class ConditionalCollectionExtensions
                 collection.Add(item);
             }
         }
+
         return collection;
     }
 
@@ -161,6 +165,7 @@ public static class ConditionalCollectionExtensions
         {
             collection.Add(item);
         }
+
         return collection;
     }
 
@@ -192,6 +197,7 @@ public static class ConditionalCollectionExtensions
         {
             collection.Add(item);
         }
+
         return collection;
     }
 
@@ -223,6 +229,7 @@ public static class ConditionalCollectionExtensions
         {
             collection.Add(item);
         }
+
         return collection;
     }
 }

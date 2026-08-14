@@ -122,9 +122,11 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
                     var content = await container.GetBlobClient(item.Name).DownloadContentAsync(cancellationToken);
                     items.Add(Map(key, content.Value.Content.ToArray(), item.Metadata, item.Properties.ETag?.ToString(), item.Properties.LastModified ?? DateTimeOffset.UtcNow));
                 }
+
                 next = page.ContinuationToken;
                 if (items.Count >= take || string.IsNullOrWhiteSpace(next)) break;
             }
+
             return Result<StoredDocumentPage>.Success(new()
             {
                 Items = items.Take(take).ToArray(),
@@ -176,6 +178,7 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
                 var read = await this.GetPhysicalAsync(blob, write.Key, cancellationToken);
                 if (read.IsSuccess) current = read.Value;
             }
+
             var now = DateTimeOffset.UtcNow;
             var metadata = Metadata(write, current, now);
             var conditions = new BlobRequestConditions();
@@ -250,6 +253,7 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
                         if (candidates.Count == request.BatchSize) break;
                     }
                 }
+
                 foreach (var item in candidates)
                 {
                     try
@@ -263,10 +267,13 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
                     }
                     catch (RequestFailedException ex) when (ex.Status is 404 or 412) { }
                 }
+
                 hasMore = candidates.Count == request.BatchSize;
                 if (!hasMore) { batches++; break; }
+
                 if (request.BatchDelay > TimeSpan.Zero) await Task.Delay(request.BatchDelay, cancellationToken);
             }
+
             return Result<DocumentRetentionSweepResult>.Success(new() { DocumentType = request.DocumentType, DeletedCount = deleted, DeletedKeys = deletedKeys, BatchCount = batches, HasMore = hasMore });
         }
         catch (OperationCanceledException) { throw; }

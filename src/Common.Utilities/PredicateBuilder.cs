@@ -86,6 +86,7 @@ public class PredicateBuilder<T>
         {
             this.current = Combine(this.current, expr, Expression.AndAlso);
         }
+
         return this;
     }
 
@@ -106,6 +107,7 @@ public class PredicateBuilder<T>
         {
             this.current = Combine(this.current, expr, Expression.OrElse);
         }
+
         return this;
     }
 
@@ -158,6 +160,7 @@ public class PredicateBuilder<T>
                 this.current = Combine(this.current, expr, op);
             }
         }
+
         return this;
     }
 
@@ -180,6 +183,7 @@ public class PredicateBuilder<T>
                 Expression.Not(expr.Body), expr.Parameters);
             this.current = Combine(this.current, notExpr, Expression.AndAlso);
         }
+
         return this;
     }
 
@@ -204,6 +208,7 @@ public class PredicateBuilder<T>
         {
             this.current = Combine(this.current, expr, combinator);
         }
+
         return this;
     }
 
@@ -249,6 +254,7 @@ public class PredicateBuilder<T>
             var op = this.groupOperators.Pop();
             this.current = Combine(this.current, groupExpr, op);
         }
+
         return this;
     }
 

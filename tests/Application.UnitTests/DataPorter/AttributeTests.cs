@@ -213,5 +213,3 @@ public class DataPorterValidationAttributeTests
         sut.Type.ShouldBe(type);
     }
 }
-
-

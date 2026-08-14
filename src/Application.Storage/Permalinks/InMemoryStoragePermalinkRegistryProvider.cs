@@ -112,6 +112,7 @@ public sealed class InMemoryStoragePermalinkRegistryProvider(TimeProvider timePr
 
                 return this.GetOrCreateAsync(target, occurredAt: occurredAt, cancellationToken: cancellationToken);
             }
+
             if (sourceEntry.StorageChangedAt > occurredAt)
             {
                 return Task.FromResult(Result<StoragePermalinkEntry>.Failure(new StoragePermalinkConflictError("The move predates the current source mapping.")));

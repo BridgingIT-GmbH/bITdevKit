@@ -46,6 +46,7 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
             var factor = this.options.BackoffExponential ? Math.Pow(2, attempt - 1) : 1;
             await Task.Delay(TimeSpan.FromMilliseconds(this.options.Backoff.TotalMilliseconds * factor), cancellationToken);
         }
+
         return result;
     }
 
@@ -64,6 +65,7 @@ public class RetryDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
             var factor = this.options.BackoffExponential ? Math.Pow(2, attempt - 1) : 1;
             await Task.Delay(TimeSpan.FromMilliseconds(this.options.Backoff.TotalMilliseconds * factor), cancellationToken);
         }
+
         return result;
     }
 }

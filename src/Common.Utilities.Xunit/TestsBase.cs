@@ -84,6 +84,7 @@ public abstract class TestsBase : IDisposable
         {
             await services(this.Services).ConfigureAwait(false);
         }
+
         this.EnsureRequiredServices();
         this.RebuildServiceProvider();
     }
@@ -197,6 +198,7 @@ public abstract class TestsBase : IDisposable
         {
             action();
         }
+
         sw.Stop();
 
         this.LogBenchmarkResults("Action", iterations, sw.Elapsed);
@@ -231,6 +233,7 @@ public abstract class TestsBase : IDisposable
         {
             await action().ConfigureAwait(false);
         }
+
         sw.Stop();
 
         this.LogBenchmarkResults("Async Action", iterations, sw.Elapsed);

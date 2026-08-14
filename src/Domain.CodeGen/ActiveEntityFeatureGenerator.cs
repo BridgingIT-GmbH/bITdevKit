@@ -349,6 +349,7 @@ namespace {ns}
 
             current = current.BaseType;
         }
+
         return false;
     }
 
@@ -358,6 +359,7 @@ namespace {ns}
         {
             return named.TypeArguments[0];
         }
+
         return type;
     }
 
@@ -521,6 +523,7 @@ namespace {ns}
         {
             return named.TypeArguments[0];
         }
+
         return type;
     }
 

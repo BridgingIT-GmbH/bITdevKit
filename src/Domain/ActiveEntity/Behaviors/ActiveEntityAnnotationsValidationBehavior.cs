@@ -132,6 +132,7 @@ public class ActiveEntityAnnotationsValidationBehavior<TEntity, TId>(object opti
                                 .NotNull()
                                 .WithMessage(/*errorMessage ?? */$"{prop.Name} is required.");
                         }
+
                         break;
                     case StringLengthAttribute stringLength:
                         validator.RuleFor(x => prop.GetValue(x) as string)
@@ -165,6 +166,7 @@ public class ActiveEntityAnnotationsValidationBehavior<TEntity, TId>(object opti
                             }
 #pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception
                         }
+
                         break;
                     case RegularExpressionAttribute regex:
                         validator.RuleFor(x => prop.GetValue(x) as string)

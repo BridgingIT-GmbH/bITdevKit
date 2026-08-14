@@ -41,6 +41,7 @@ public class InMemoryNotificationStorageProvider(
                 return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to save message: {ex.Message}")));
             }
         }
+
         return await Task.FromResult(Result.Failure()
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
@@ -69,6 +70,7 @@ public class InMemoryNotificationStorageProvider(
                     .WithError(new Error($"Failed to update message: {ex.Message}")));
             }
         }
+
         return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
@@ -94,6 +96,7 @@ public class InMemoryNotificationStorageProvider(
                 return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to delete message: {ex.Message}")));
             }
         }
+
         return await Task.FromResult(Result.Failure()
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
@@ -122,6 +125,7 @@ public class InMemoryNotificationStorageProvider(
                     .WithError(new Error($"Failed to retrieve pending messages: {ex.Message}")));
             }
         }
+
         return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure()
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }

@@ -86,6 +86,7 @@ public class RateLimiter
                 this.logger?.LogWarning("Rate limit exceeded, operation skipped.");
                 return;
             }
+
             throw new RateLimitExceededException("Rate limit exceeded.");
         }
 
@@ -138,6 +139,7 @@ public class RateLimiter
                 this.logger?.LogWarning("Rate limit exceeded, operation skipped.");
                 return default;
             }
+
             throw new RateLimitExceededException("Rate limit exceeded.");
         }
 

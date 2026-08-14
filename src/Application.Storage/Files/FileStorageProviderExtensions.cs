@@ -73,6 +73,7 @@ public static class FileStorageProviderExtensions
                 await using var cryptoStream = new CryptoStream(encryptedStream, encryptor, CryptoStreamMode.Write, true);
                 await content.CopyToAsync(cryptoStream, 8192, cancellationToken);
             }
+
             encryptedStream.Position = 0; // Reset position for writing
             var length = encryptedStream.Length;
             ReportProgress(progress, path, length, 1); // Report encrypted size
@@ -86,6 +87,7 @@ public static class FileStorageProviderExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Encrypted and wrote file at '{path}'");
                 }, cancellationToken);
         }
@@ -157,6 +159,7 @@ public static class FileStorageProviderExtensions
                 await using var cryptoStream = new CryptoStream(encryptedStream, decryptor, CryptoStreamMode.Read, true);
                 await cryptoStream.CopyToAsync(decryptedStream, 8192, cancellationToken);
             }
+
             decryptedStream.Position = 0; // Reset position for reading
             var length = decryptedStream.Length;
             ReportProgress(progress, path, length, 1); // Report decrypted size
@@ -228,6 +231,7 @@ public static class FileStorageProviderExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Wrote bytes to file at '{path}'");
                 }, cancellationToken);
         }
@@ -359,6 +363,7 @@ public static class FileStorageProviderExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Wrote object to file at '{path}'");
                 }, cancellationToken);
         }
@@ -496,6 +501,7 @@ public static class FileStorageProviderExtensions
                             .WithErrors(task.Result.Errors)
                             .WithMessages(task.Result.Messages);
                     }
+
                     return task.Result.WithMessage($"Wrote text file at '{path}'");
                 }, cancellationToken);
         }

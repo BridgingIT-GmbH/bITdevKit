@@ -94,6 +94,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -139,6 +140,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -152,6 +154,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -164,10 +167,12 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
+
         if (projection != null)
         {
             this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -180,6 +185,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -264,6 +270,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -301,6 +308,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         {
             this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
+
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());

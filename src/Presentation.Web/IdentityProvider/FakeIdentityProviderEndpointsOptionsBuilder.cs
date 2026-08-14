@@ -83,6 +83,7 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
                 usersList.Add(user);
             }
         }
+
         this.options.Users = usersList.AsReadOnly();
 
         return this;

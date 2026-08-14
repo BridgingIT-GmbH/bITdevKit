@@ -67,6 +67,7 @@ public abstract class DefaultEntityPermissionProviderBase<TEntity> : IDefaultEnt
             {
                 this.permissions.Add(permission);
             }
+
             return this;
         }
     }

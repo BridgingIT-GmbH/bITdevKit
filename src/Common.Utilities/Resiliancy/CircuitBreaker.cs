@@ -75,6 +75,7 @@ public class CircuitBreaker
                     this.state = CircuitBreakerState.HalfOpen;
                     this.progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit transitioned to Half-Open"));
                 }
+
                 return this.state;
             }
         }
@@ -115,6 +116,7 @@ public class CircuitBreaker
                 this.logger?.LogWarning("Circuit breaker is open, operation skipped.");
                 return;
             }
+
             throw new CircuitBreakerOpenException("Circuit breaker is open.");
         }
     }
@@ -155,6 +157,7 @@ public class CircuitBreaker
                 this.logger?.LogWarning("Circuit breaker is open, operation skipped.");
                 return default; // Return default value instead of throwing
             }
+
             throw new CircuitBreakerOpenException("Circuit breaker is open.");
         }
         // Cast result only if it’s not null, otherwise return default
@@ -172,6 +175,7 @@ public class CircuitBreaker
                     progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit is open, operation blocked"));
                     return (false, null); // Circuit is still open
                 }
+
                 this.state = CircuitBreakerState.HalfOpen;
                 progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit transitioned to Half-Open"));
             }
@@ -186,6 +190,7 @@ public class CircuitBreaker
                 this.failureCount = 0;
                 progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
             }
+
             return (true, null);
         }
         catch (OperationCanceledException)
@@ -206,11 +211,13 @@ public class CircuitBreaker
                     this.logger?.LogWarning(ex, "Circuit breaker opened due to repeated failures.");
                 }
             }
+
             if (this.handleErrors)
             {
                 this.logger?.LogError(ex, "Operation failed.");
                 return (false, null); // Return false for handled failures, not true
             }
+
             throw;
         }
     }
@@ -226,6 +233,7 @@ public class CircuitBreaker
                     progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit is open, operation blocked"));
                     return (false, null); // Circuit is still open
                 }
+
                 this.state = CircuitBreakerState.HalfOpen;
                 progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit transitioned to Half-Open"));
             }
@@ -240,6 +248,7 @@ public class CircuitBreaker
                 this.failureCount = 0;
                 progress?.Report(new CircuitBreakerProgress(this.state, this.failureCount, this.resetTimeout, "Circuit closed, operation succeeded"));
             }
+
             return (true, result);
         }
         catch (OperationCanceledException)
@@ -260,11 +269,13 @@ public class CircuitBreaker
                     this.logger?.LogWarning(ex, "Circuit breaker opened due to repeated failures.");
                 }
             }
+
             if (this.handleErrors)
             {
                 this.logger?.LogError(ex, "Operation failed.");
                 return (false, null); // Return false for handled failures
             }
+
             throw;
         }
     }

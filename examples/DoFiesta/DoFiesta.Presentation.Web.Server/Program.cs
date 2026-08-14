@@ -112,6 +112,7 @@ if (!BridgingIT.DevKit.Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration
 {
     builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
 }
+
 builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || BridgingIT.DevKit.Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
 
 // logging services and endpoints

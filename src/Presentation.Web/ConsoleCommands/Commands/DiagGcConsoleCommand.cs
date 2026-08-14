@@ -79,6 +79,7 @@ static class DiagnosticTablesBuilder
         {
             GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
         }
+
         var info = GC.GetGCMemoryInfo();
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Metric"); table.AddColumn("Value");

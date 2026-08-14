@@ -47,6 +47,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             if (!DateTimeOffset.TryParse(form["expiresAt"], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var parsed)) return Results.BadRequest();
             expiresAt = parsed;
         }
+
         var result = await context.RequestServices.GetRequiredService<IStoragePermalinkMaintenanceService>().UpdateExpirationAsync(id, new() { ExpiresAt = expiresAt, IfMatchETag = form["etag"] }, cancellationToken);
         return result.IsSuccess ? RedirectToDashboard(context) : Results.Conflict();
     }

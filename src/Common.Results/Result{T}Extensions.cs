@@ -1121,6 +1121,7 @@ public static class ResultTExtensions
             {
                 await operation(newValue, cancellationToken);
             }
+
             return Result<TNew>.Success(newValue)
                 .WithErrors(result.Errors)
                 .WithMessages(result.Messages);
@@ -1930,6 +1931,7 @@ public static class ResultTExtensions
                 {
                     errors.AddRange(newResult.Errors);
                 }
+
                 messages.AddRange(newResult.Messages);
             }
             catch (Exception ex)
@@ -2003,6 +2005,7 @@ public static class ResultTExtensions
                 {
                     errors.AddRange(newResult.Errors);
                 }
+
                 messages.AddRange(newResult.Messages);
             }
             catch (OperationCanceledException)
@@ -2056,6 +2059,7 @@ public static class ResultTExtensions
             {
                 action(result.Value);
             }
+
             return result;
         }
         catch (Exception ex)
@@ -2103,6 +2107,7 @@ public static class ResultTExtensions
             {
                 await action(result.Value, cancellationToken);
             }
+
             return result;
         }
         catch (OperationCanceledException)

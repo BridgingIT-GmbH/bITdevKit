@@ -80,6 +80,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
             this.logger.LogWarning("[{LogKey}] PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return runs; // empty list
         }
+
         return runs;
     }
 
@@ -133,6 +134,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
             this.logger.LogWarning("[{LogKey}] PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return new JobRunStats();
         }
+
         return new JobRunStats();
     }
 

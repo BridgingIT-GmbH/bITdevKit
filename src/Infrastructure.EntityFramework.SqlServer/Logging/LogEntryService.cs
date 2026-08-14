@@ -515,6 +515,7 @@ public class LogEntryService<TContext>(
                         {
                             await writer.WriteLineAsync("Id,TimeStamp,Level,Message,Exception,TraceId,SpanId,CorrelationId,LogKey,Module,ThreadId,Type");
                         }
+
                         foreach (var log in logs)
                         {
                             buffer.Clear(); // Reuse the same StringBuilder
@@ -545,6 +546,7 @@ public class LogEntryService<TContext>(
 
                             await writer.WriteLineAsync(buffer.ToString());
                         }
+
                         break;
                     case LogEntryExportFormat.Json:
                         if (stream.Position == 0)
@@ -585,6 +587,7 @@ public class LogEntryService<TContext>(
                                     await writer.WriteAsync(newlineIndent);
                                     needsNewlineIndent = false;
                                 }
+
                                 await writer.WriteAsync(" exception: ");
                                 await writer.WriteAsync(log.Exception);
                             }
@@ -596,6 +599,7 @@ public class LogEntryService<TContext>(
                                     await writer.WriteAsync(newlineIndent);
                                     needsNewlineIndent = false;
                                 }
+
                                 await writer.WriteAsync(" correlationId: ");
                                 await writer.WriteAsync(log.CorrelationId);
                             }
@@ -607,6 +611,7 @@ public class LogEntryService<TContext>(
                                     await writer.WriteAsync(newlineIndent);
                                     needsNewlineIndent = false;
                                 }
+
                                 await writer.WriteAsync(" logKey: ");
                                 await writer.WriteAsync(log.LogKey);
                             }
@@ -618,6 +623,7 @@ public class LogEntryService<TContext>(
                                     await writer.WriteAsync(newlineIndent);
                                     needsNewlineIndent = false;
                                 }
+
                                 await writer.WriteAsync(" module: ");
                                 await writer.WriteAsync(log.ModuleName);
                             }
@@ -629,12 +635,14 @@ public class LogEntryService<TContext>(
                                     await writer.WriteAsync(indentSpaces);
                                     needsNewlineIndent = false;
                                 }
+
                                 await writer.WriteAsync(" type: ");
                                 await writer.WriteAsync(log.ShortTypeName);
                             }
 
                             await writer.WriteAsync('\n');
                         }
+
                         break;
                     default:
                         throw new ArgumentException("Unsupported export format", nameof(format));
@@ -677,6 +685,7 @@ public class LogEntryService<TContext>(
                 {
                     sb.Append(field);
                 }
+
                 sb.Append('"');
             }
             else

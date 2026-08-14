@@ -27,6 +27,7 @@ public class CacheDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory, I
         {
             await this.cache.SetAsync(this.Key(key), result.Value, this.options.SlidingExpiration, this.options.AbsoluteExpiration, cancellationToken);
         }
+
         return result;
     }
 

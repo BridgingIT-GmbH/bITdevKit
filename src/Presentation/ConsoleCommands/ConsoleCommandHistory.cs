@@ -184,6 +184,7 @@ public static class ConsoleCommandHistory
                 {
                     RecordError(ex);
                 }
+
                 return;
             }
 

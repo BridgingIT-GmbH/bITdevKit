@@ -274,5 +274,3 @@ public class AttributeConfigurationReaderTests
         column.Converter.ShouldBeOfType<BooleanYesNoConverter>();
     }
 }
-
-

@@ -44,6 +44,7 @@ public class TimeoutDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory,
         linked.Cancel();
         this.logger.LogWarning("{LogKey} document operation timed out (type={DocumentType}, timeout={Timeout})", Constants.LogKey, typeof(T).Name, this.options.Timeout);
         try { await task; } catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) { }
+
         cancellationToken.ThrowIfCancellationRequested();
         return Result<TResult>.Failure(new DocumentStoreTimeoutError($"Operation exceeded {this.options.Timeout}."));
     }
@@ -58,6 +59,7 @@ public class TimeoutDocumentStoreClientBehavior<T>(ILoggerFactory loggerFactory,
         linked.Cancel();
         this.logger.LogWarning("{LogKey} document operation timed out (type={DocumentType}, timeout={Timeout})", Constants.LogKey, typeof(T).Name, this.options.Timeout);
         try { await task; } catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) { }
+
         cancellationToken.ThrowIfCancellationRequested();
         return Result.Failure(new DocumentStoreTimeoutError($"Operation exceeded {this.options.Timeout}."));
     }

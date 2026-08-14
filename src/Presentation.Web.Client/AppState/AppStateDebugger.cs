@@ -53,6 +53,7 @@ public class AppStateDebugger(ILogger<AppStateDebugger> logger, IJSRuntime jsRun
                 // do nothing, jsruntime not available
             }
         }
+
         if (this.options.StateChangesTracked)
         {
             this.stateChanges.Add(change);

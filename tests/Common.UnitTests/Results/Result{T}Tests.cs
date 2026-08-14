@@ -825,6 +825,7 @@ public class ResultValueTests
                             return false;
                         }
                     }
+
                     return true;
                 },
                 new Error("One or more persons have emails from banned domains"))

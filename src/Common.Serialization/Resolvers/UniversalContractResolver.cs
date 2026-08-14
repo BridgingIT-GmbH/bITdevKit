@@ -122,6 +122,7 @@ public class UniversalContractResolver : DefaultJsonTypeInfoResolver
                 }
             }
         }
+
         return jsonTypeInfo;
     }
 }

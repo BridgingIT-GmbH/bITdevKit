@@ -48,6 +48,7 @@ public sealed class ResultValueJsonConverter<T> : JsonConverter<Result<T>>
         {
             writer.WriteStringValue(message);
         }
+
         writer.WriteEndArray();
 
         writer.WriteStartArray("errors");
@@ -55,6 +56,7 @@ public sealed class ResultValueJsonConverter<T> : JsonConverter<Result<T>>
         {
             JsonSerializer.Serialize(writer, error, error.GetType(), options);
         }
+
         writer.WriteEndArray();
 
         writer.WriteEndObject();

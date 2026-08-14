@@ -3,10 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace BridgingIT.DevKit.Common;
 
 using System.Text;
 
-namespace BridgingIT.DevKit.Common;
 internal static class SvgFlowchartDiagramRenderer
 {
     private const string ArrowMarkerId = "arrow";
@@ -274,6 +274,7 @@ internal static class SvgFlowchartDiagramRenderer
                     builder.Append($"<line x1=\"{SvgDiagramRendererSupport.FormatNumber(tabX)}\" y1=\"{SvgDiagramRendererSupport.FormatNumber(y + 10)}\" x2=\"{SvgDiagramRendererSupport.FormatNumber(tabX)}\" y2=\"{SvgDiagramRendererSupport.FormatNumber(y + options.NodeHeight - 10)}\" />");
                     builder.Append($"<line x1=\"{SvgDiagramRendererSupport.FormatNumber(tabX + 10)}\" y1=\"{SvgDiagramRendererSupport.FormatNumber(y + 10)}\" x2=\"{SvgDiagramRendererSupport.FormatNumber(tabX + 10)}\" y2=\"{SvgDiagramRendererSupport.FormatNumber(y + options.NodeHeight - 10)}\" />");
                 }
+
                 break;
         }
 

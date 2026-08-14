@@ -232,6 +232,7 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
             writer.WritePropertyName(nameof(FilterCriteria.Value));
             JsonSerializer.Serialize(writer, value.Value, options);
         }
+
         writer.WritePropertyName(nameof(FilterCriteria.Logic));
         JsonSerializer.Serialize(writer, value.Logic, options);
 

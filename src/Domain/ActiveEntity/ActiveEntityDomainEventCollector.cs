@@ -238,6 +238,7 @@ public class ActiveEntityDomainEventCollector // TODO: or publisher?
             {
                 return true;
             }
+
             baseType = baseType.BaseType;
         }
 

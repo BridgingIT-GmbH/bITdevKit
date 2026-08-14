@@ -111,6 +111,7 @@ public class FileScanOptions
         {
             this.EventFilter = [.. eventFilter];
         }
+
         this.BatchSize = batchSize;
         this.ProgressIntervalPercentage = progressIntervalPercentage;
         this.FileFilter = filePathFilter;

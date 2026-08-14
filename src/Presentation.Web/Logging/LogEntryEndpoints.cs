@@ -172,6 +172,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                         Detail = "AgeDays cannot be negative."
                     });
                 }
+
                 age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
             }
 
@@ -280,6 +281,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                         Detail = "AgeDays cannot be negative."
                     });
                 }
+
                 age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
                 parsedStartTime = DateTimeOffset.UtcNow - age.Value;
             }
@@ -579,6 +581,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                         Detail = "AgeDays cannot be negative."
                     });
                 }
+
                 age = ageDays.Value == 0 ? TimeSpan.Zero : TimeSpan.FromDays(ageDays.Value);
             }
 

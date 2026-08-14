@@ -257,7 +257,6 @@ public sealed class BlobStoreTransferError(
     BlobInfo target = null) : ResultErrorBase(message)
 {
 
-
     /// <summary>
     /// Gets the source blob key when known.
     /// </summary>
@@ -485,7 +484,6 @@ public sealed class BlobStoreUploadAdmissionTimeoutError(
 /// </example>
 public sealed class BlobStoreTimeoutError(string operation, TimeSpan timeout) : ResultErrorBase($"Blob storage operation '{operation}' timed out after {timeout}.")
 {
-
 
     /// <summary>
     /// Gets the timed-out blob operation name.

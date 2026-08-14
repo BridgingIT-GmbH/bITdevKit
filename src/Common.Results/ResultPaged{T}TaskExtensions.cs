@@ -2197,6 +2197,7 @@ public static partial class ResultPagedFunctionTaskExtensions
             {
                 onFailure(result.Errors);
             }
+
             return result;
         }
         catch (Exception ex)
@@ -2250,6 +2251,7 @@ public static partial class ResultPagedFunctionTaskExtensions
             {
                 await onFailure(result.Errors, cancellationToken);
             }
+
             return result;
         }
         catch (Exception ex)
@@ -2303,6 +2305,7 @@ public static partial class ResultPagedFunctionTaskExtensions
             {
                 onFailure(result.Errors);
             }
+
             return result;
         }
         catch (Exception ex)
@@ -2356,6 +2359,7 @@ public static partial class ResultPagedFunctionTaskExtensions
             {
                 await onFailure(result.Errors, cancellationToken);
             }
+
             return result;
         }
         catch (Exception ex)

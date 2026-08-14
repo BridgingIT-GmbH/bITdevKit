@@ -770,8 +770,10 @@ public class ModifyingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
             {
                 return (TResponse)(object)Result<string>.Success($"{stringResult.Value}:Modified");
             }
+
             throw new InvalidOperationException("Result type is not compatible with expected TValue.");
         }
+
         return result;
     }
 
@@ -836,6 +838,7 @@ public class ContextCapturingBehavior<TRequest, TResponse> : IPipelineBehavior<T
         {
             this.capturedValues.Add(userId2);
         }
+
         return await next();
     }
 
@@ -867,6 +870,7 @@ public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRe
         {
             this.capturedValues.Add($"{userId}-Handler");
         }
+
         return Task.FromResult(Result<string>.Success("Test"));
     }
 }
@@ -895,6 +899,7 @@ public class RetryTestRequestHandler : IRequestHandler<RetryTestRequest, string>
             RetryAttempts++;
             throw new Exception("Simulated failure");
         }
+
         attempts = 0; // Reset for next test
         return Result<string>.Success("Success");
     }
@@ -957,6 +962,7 @@ public class SendNotificationCommandHandler : RequestHandlerBase<SendNotificatio
             RetryAttempts++;
             throw new Exception("Simulated failure");
         }
+
         attempts = 0; // Reset for next test
         await Task.Delay(50, cancellationToken); // Simulate async operation
         return Result<Unit>.Success(Unit.Value);

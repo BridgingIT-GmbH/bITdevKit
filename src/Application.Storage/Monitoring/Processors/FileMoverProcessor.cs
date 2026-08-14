@@ -34,6 +34,7 @@ public class FileMoverProcessor(ILogger<FileMoverProcessor> logger) : IFileEvent
         {
             throw new InvalidOperationException("DestinationRoot must be configured for FileMoverProcessor.");
         }
+
         token.ThrowIfCancellationRequested();
 
         var fileEvent = context.FileEvent;

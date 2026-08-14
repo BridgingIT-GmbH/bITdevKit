@@ -39,6 +39,7 @@ public class DictionaryConverter : JsonConverter<IDictionary<string, object>>
                 dictionary[key] = value ?? new object(); // Default to new object if null
             }
         }
+
         throw new JsonException("Unexpected end of JSON");
     }
 
@@ -80,6 +81,7 @@ public class DictionaryConverter : JsonConverter<IDictionary<string, object>>
             writer.WritePropertyName(kvp.Key);
             JsonSerializer.Serialize(writer, kvp.Value, kvp.Value?.GetType() ?? typeof(object), options);
         }
+
         writer.WriteEndObject();
     }
 }

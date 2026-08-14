@@ -673,6 +673,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
                             files.AddRange(subResult.Value.Files);
                         }
                     }
+
                     continue;
                 }
 
@@ -1197,6 +1198,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         {
             await shareClient.CreateIfNotExistsAsync(cancellationToken: CancellationToken.None);
         }
+
         return shareClient;
     }
 

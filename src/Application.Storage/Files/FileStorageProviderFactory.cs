@@ -147,6 +147,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
             var decoratedProvider = this.ApplyBehaviors(provider, config.Behaviors);
             this.singletonProviders.TryAdd(name, new Lazy<IFileStorageProvider>(() => decoratedProvider, LazyThreadSafetyMode.ExecutionAndPublication));
         }
+
         return this.singletonProviders[name].Value;
     }
 
@@ -170,6 +171,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
         {
             decoratedProvider = behavior(decoratedProvider, this.serviceProvider) ?? throw new InvalidOperationException("Behavior returned null provider.");
         }
+
         return decoratedProvider;
     }
 
@@ -317,6 +319,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
             {
                 decoratedProvider = behavior(decoratedProvider, this.factory.serviceProvider) ?? throw new InvalidOperationException("Behavior returned null provider.");
             }
+
             return decoratedProvider;
         }
     }

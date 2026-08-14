@@ -213,6 +213,7 @@ public class InMemoryDocumentStoreProviderTests(ITestOutputHelper output) : Test
             {
                 await this.Inner.UpsertAsync(key, Person("changed"), cancellationToken: cancellationToken);
             }
+
             return await base.DeleteAsync(key, options, cancellationToken);
         }
     }

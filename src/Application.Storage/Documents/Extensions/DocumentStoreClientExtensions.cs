@@ -95,6 +95,7 @@ public static class DocumentStoreClientExtensions
                 if (yielded++ >= options.MaxItems) yield break;
                 yield return item;
             }
+
             if (!page.Value.HasMore || yielded >= options.MaxItems) yield break;
             current = Copy(current, page.Value.ContinuationToken);
         }
@@ -122,6 +123,7 @@ public static class DocumentStoreClientExtensions
                 if (yielded++ >= options.MaxItems) yield break;
                 yield return item;
             }
+
             if (!page.Value.HasMore || yielded >= options.MaxItems) yield break;
             current = Copy(current, page.Value.ContinuationToken);
         }
@@ -144,6 +146,7 @@ public static class DocumentStoreClientExtensions
         {
             var key = entry.Key;
             if (options.DryRun) { completed.Add(key); continue; }
+
             var result = await client.DeleteAsync(key, new() { IfMatchETag = entry.ETag }, cancellationToken);
             if (result.IsFailure)
             {
@@ -153,8 +156,10 @@ public static class DocumentStoreClientExtensions
                     return Result<DocumentBatchResult<DocumentKey>>.Success(new() { Items = completed, FailedKey = key, FailedKeys = failed }).WithMessages(result.Messages);
                 }
             }
+
             if (result.IsSuccess) completed.Add(key);
         }
+
         return Result<DocumentBatchResult<DocumentKey>>.Success(new() { Items = completed, FailedKey = failed.Count > 0 ? failed[0] : null, FailedKeys = failed });
     }
 
@@ -199,6 +204,7 @@ public static class DocumentStoreClientExtensions
             var existing = await source.GetAsync(sourceKey, cancellationToken);
             return existing.IsFailure ? existing.Wrap<DocumentTransferResult>() : Result<DocumentTransferResult>.Success(new() { Source = existing.Value, Target = existing.Value, SourceDeleted = false });
         }
+
         var sourceCoordinator = StoragePermalinkExtensions.FindDocumentMoveCoordinator(source);
         var targetCoordinator = StoragePermalinkExtensions.FindDocumentMoveCoordinator(target);
         var preservePermalink = sourceCoordinator is not null && targetCoordinator is not null && sourceCoordinator.RegistrationName == targetCoordinator.RegistrationName;
@@ -218,6 +224,7 @@ public static class DocumentStoreClientExtensions
                 await sourceCoordinator.TrackMoveAsync(StorageResourceLocation.ForDocument(sourceCoordinator.RegistrationName, sourceKey), StorageResourceLocation.ForDocument(targetCoordinator.RegistrationName, targetKey));
                 moveTracked = true;
             }
+
             return Result<DocumentTransferResult>.Success(copy.Value with { SourceDeleted = true });
         }
         finally

@@ -28,6 +28,7 @@ public class GcCollectConsoleCommand : ConsoleCommandBase
             GC.WaitForPendingFinalizers();
             GC.Collect();
         }
+
         var after = GC.GetTotalMemory(false); // do not force finalizers if skipped
         var freedBytes = this.NoCollect ? 0 : Math.Max(0, before - after);
         var freedMb = ByteSize.ToMegabytes(freedBytes);

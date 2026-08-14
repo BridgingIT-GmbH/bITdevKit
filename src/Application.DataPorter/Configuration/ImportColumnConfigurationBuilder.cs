@@ -91,6 +91,7 @@ public sealed class ImportColumnConfigurationBuilder<TTarget, TProperty>
                 return transformer((TProperty)converted);
             };
         }
+
         return this;
     }
 

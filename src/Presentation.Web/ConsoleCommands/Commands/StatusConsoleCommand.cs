@@ -47,6 +47,7 @@ public class StatusConsoleCommand : ConsoleCommandBase
             }
         }
         catch { table.AddRow("Health", "n/a"); }
+
         console.Write(table);
     }
     private static string Format(TimeSpan ts) => $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";

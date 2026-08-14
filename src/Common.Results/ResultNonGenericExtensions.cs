@@ -921,6 +921,7 @@ public static class ResultNonGenericExtensions
             {
                 onFailure?.Invoke(result.Errors);
             }
+
             return result;
         }
         catch (Exception ex)
@@ -971,6 +972,7 @@ public static class ResultNonGenericExtensions
                     await onFailure(result.Errors, cancellationToken);
                 }
             }
+
             return result;
         }
         catch (OperationCanceledException)
@@ -1423,6 +1425,7 @@ public static class ResultNonGenericExtensions
             {
                 action();
             }
+
             return result;
         }
         catch (Exception ex)
@@ -1468,6 +1471,7 @@ public static class ResultNonGenericExtensions
             {
                 await action(cancellationToken);
             }
+
             return result;
         }
         catch (OperationCanceledException)

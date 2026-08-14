@@ -79,6 +79,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return runs; // empty list
         }
+
         return runs;
     }
 
@@ -132,6 +133,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return new JobRunStats();
         }
+
         return new JobRunStats();
     }
 

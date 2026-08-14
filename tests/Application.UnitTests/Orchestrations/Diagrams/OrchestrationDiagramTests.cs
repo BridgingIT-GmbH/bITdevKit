@@ -1,10 +1,10 @@
+namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 public sealed class OrchestrationDiagramTests : OrchestrationTestBase, IDisposable
 {
     private readonly ServiceProvider provider;

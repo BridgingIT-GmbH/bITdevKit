@@ -41,6 +41,7 @@ public sealed class DocumentStoreOptions
         {
             return Result.Failure(new DocumentStoreSizeLimitError("MaxDocumentSize must be greater than zero."));
         }
+
         if (this.DefaultTake <= 0)
         {
             return Result.Failure(new DocumentStoreInvalidQueryError("DefaultTake must be greater than zero."));

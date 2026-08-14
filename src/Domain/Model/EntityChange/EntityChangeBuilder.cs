@@ -181,6 +181,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 // Convert Result<T> failure to non-generic Result failure
                 this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
             }
+
             return this;
         }
 
@@ -256,6 +257,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 // Convert Result<T> failure to non-generic Result failure
                 this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
             }
+
             return this;
         }
 
@@ -339,6 +341,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
             }
+
             return this;
         }
 
@@ -438,6 +441,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
             }
+
             return this;
         }
 
@@ -885,6 +889,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         {
             this.orderedOperations.Add(new OnChangedOperationOrdered(action));
         }
+
         return this;
     }
 
@@ -1340,6 +1345,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1384,6 +1390,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1438,6 +1445,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1498,6 +1506,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1566,6 +1575,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1615,6 +1625,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1664,6 +1675,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1697,6 +1709,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1734,6 +1747,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1776,6 +1790,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1820,6 +1835,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1873,6 +1889,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 
@@ -1922,6 +1939,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 return memberExpr.Member.Name;
             }
+
             return "Collection";
         }
 

@@ -42,6 +42,7 @@ public class FileProcessingContext(FileEvent fileEvent = null)
         {
             return typedValue;
         }
+
         return default;
     }
 
@@ -59,10 +60,12 @@ public class FileProcessingContext(FileEvent fileEvent = null)
         {
             throw new KeyNotFoundException($"Item with key '{key}' not found in ProcessingContext.");
         }
+
         if (value is not T typedValue)
         {
             throw new InvalidCastException($"Item with key '{key}' cannot be cast to type '{typeof(T).Name}'.");
         }
+
         return typedValue;
     }
 
@@ -80,6 +83,7 @@ public class FileProcessingContext(FileEvent fileEvent = null)
             value = typedValue;
             return true;
         }
+
         value = default;
         return false;
     }

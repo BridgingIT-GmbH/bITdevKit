@@ -333,7 +333,7 @@ public class EntityChangeExtensionsTests
         var person = new PersonStub { Email = "old@mail.com" };
         string oldEmail = null;
         string newEmail = null;
-        int changeCount = 0;
+        var changeCount = 0;
 
         // Act
         var result = person.Change()

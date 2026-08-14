@@ -106,6 +106,7 @@ public sealed class DocumentStorageBuilderContext(
         {
             throw new InvalidOperationException($"Document client '{normalizedName}' is already registered for '{typeof(T).PrettyName()}'.");
         }
+
         if (isDefault && !this.defaults.Add(typeof(T)))
         {
             throw new InvalidOperationException($"A default document client is already registered for '{typeof(T).PrettyName()}'.");
@@ -140,6 +141,7 @@ public sealed class DocumentStorageBuilderContext(
             {
                 decorated = (IDocumentStoreClient<T>)behavior.Create(decorated, serviceProvider);
             }
+
             return new ClientBoundary<T>(
                 normalizedName,
                 resolvedProviderName,
@@ -290,6 +292,7 @@ public sealed class DocumentStorageBuilderContext(
             {
                 return Result<PreparedPage>.Failure(new DocumentStoreInvalidContinuationTokenError("Continuation token does not match this client, type, operation, or query."));
             }
+
             return Result<PreparedPage>.Success(new(Copy(queryWithoutToken, token.NativeToken), validation.Value.QueryHash));
         }
 

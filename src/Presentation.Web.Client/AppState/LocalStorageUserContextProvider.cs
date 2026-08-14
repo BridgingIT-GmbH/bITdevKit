@@ -66,6 +66,7 @@ public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, Authen
             await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserContextKey);
             await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserIdKey);
         }
+
         this.inMemoryContextId = null;
     }
 

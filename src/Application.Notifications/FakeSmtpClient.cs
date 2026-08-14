@@ -267,6 +267,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
             {
                 this.SslProtocols = SslProtocols.Tls12;
             }
+
             this.CipherAlgorithm = CipherAlgorithmType.Aes256;
             this.CipherStrength = 256;
             this.TlsCipherSuite = System.Net.Security.TlsCipherSuite.TLS_AES_256_GCM_SHA384;
@@ -492,6 +493,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
             sb.AppendLine($"  TextBody: {(message.TextBody?.Length > this.options.LogMessageBodyLength ? message.TextBody.Substring(0, this.options.LogMessageBodyLength) + "..." : message.TextBody)}");
             sb.AppendLine($"  HtmlBody: {(message.HtmlBody?.Length > this.options.LogMessageBodyLength ? message.HtmlBody.Substring(0, this.options.LogMessageBodyLength) + "..." : message.HtmlBody)}");
         }
+
         if (message.Attachments.SafeAny())
         {
             sb.AppendLine($"  Attachments ({message.Attachments.Count()}):");
@@ -504,6 +506,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         {
             sb.AppendLine("  Attachments: none");
         }
+
         this.logger.LogInformation(sb.ToString());
     }
 

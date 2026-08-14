@@ -218,6 +218,7 @@ public class SimpleNotifier(
             {
                 return;
             }
+
             handlers = [.. handlers]; // Snapshot copy (allocation, but necessary for safety)
         }
         finally
@@ -264,6 +265,7 @@ public class SimpleNotifier(
                         var currentNext = next;
                         next = () => behavior.HandleAsync(notification, currentNext, cancellationToken);
                     }
+
                     await next();
                     handlersProcessed++;
                     progress?.Report(new SimpleNotifierProgress(handlersProcessed, handlers.Length, $"Processed {handlersProcessed} of {handlers.Length} handlers"));

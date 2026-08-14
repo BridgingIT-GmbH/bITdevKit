@@ -132,6 +132,7 @@ public static class GenericEntityMergeStrategy
                     existing.GetType().GetProperty(nav.Name)?.SetValue(existing, null);
                     options.Logger?.LogDebug("[EntityMergeStrategy] Nullified {Nav} on {EntityType}", nav.Name, entityType.Name);
                 }
+
                 continue;
             }
 
@@ -254,6 +255,7 @@ public static class GenericEntityMergeStrategy
                 return false;
             }
         }
+
         return true;
     }
 

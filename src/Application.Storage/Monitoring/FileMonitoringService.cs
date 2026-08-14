@@ -196,6 +196,7 @@ public class FileMonitoringService(
         {
             statuses[handler.Options.LocationName] = await handler.GetStatusAsync();
         }
+
         return statuses;
     }
 
@@ -251,6 +252,7 @@ public class FileMonitoringService(
                 return false;
             }
         }
+
         return true;
     }
 

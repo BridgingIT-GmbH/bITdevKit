@@ -116,6 +116,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         {
             return raw.TryTo(out value);
         }
+
         value = default;
         return false;
     }

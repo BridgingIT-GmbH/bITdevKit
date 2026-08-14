@@ -130,7 +130,7 @@ public sealed class ProfilingMeasurementScope : IProfilingMeasurementScope
             )
             .ConfigureAwait(false);
 
-        Result stopResult = Result.Success();
+        var stopResult = Result.Success();
         if (
             this.ownsSession
             && sessionResult.IsSuccess

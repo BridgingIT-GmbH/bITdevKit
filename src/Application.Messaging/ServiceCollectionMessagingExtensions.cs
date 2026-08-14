@@ -124,6 +124,7 @@ public static class ServiceCollectionMessagingExtensions
                 nameof(MessagingService),
                 tags: ["background", "messaging"]);
         }
+
         services.TryAddSingleton<ISubscriptionMap, SubscriptionMap>();
         services.TryAddSingleton<MessageBrokerControlState>();
 

@@ -149,6 +149,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
                     entity = Create(type, write.Key, now);
                     context.StorageDocuments.Add(entity);
                 }
+
                 entity.Content = write.Content.ToArray();
                 entity.ContentHash = write.ContentHash;
                 entity.StoredContentHash = write.StoredContentHash;
@@ -156,6 +157,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
                 {
                     entity.Properties = write.Properties.Clone().ToDictionary(x => x.Key, x => x.Value);
                 }
+
                 entity.TransformMetadata = (write.TransformMetadata?.Clone() ?? new PropertyBag()).ToDictionary(x => x.Key, x => x.Value);
                 entity.ExpiresAtUnixMilliseconds = write.PreserveExpiration
                     ? entity.ExpiresAtUnixMilliseconds
@@ -247,6 +249,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
                     batches++;
                     break;
                 }
+
                 if (request.BatchDelay > TimeSpan.Zero)
                 {
                     await Task.Delay(request.BatchDelay, cancellationToken);

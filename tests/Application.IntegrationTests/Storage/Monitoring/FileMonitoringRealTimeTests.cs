@@ -439,6 +439,7 @@ public class TestProcessor : IFileEventProcessor
         {
             throw new ArgumentNullException(nameof(context));
         }
+
         token.ThrowIfCancellationRequested();
 
         Interlocked.Increment(ref this.invocationCount); // Thread-safe increment

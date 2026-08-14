@@ -1169,6 +1169,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         {
             await containerClient.CreateIfNotExistsAsync(cancellationToken: CancellationToken.None);
         }
+
         return containerClient;
     }
 

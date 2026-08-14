@@ -117,6 +117,7 @@ public class OutboxNotificationEmailOptionsBuilder : OptionsBuilderBase<OutboxNo
         {
             this.Target.ProcessingMode = OutboxNotificationEmailProcessingMode.Immediate;
         }
+
         return this;
     }
 

@@ -1,0 +1,520 @@
+---
+created: 2026-08-14
+status: draft
+---
+
+# Specification: Public API XML Documentation Coverage
+
+> This specification defines the repository-wide process for adding accurate XML documentation to undocumented public C# APIs under `src/`. The work is documentation-only, excludes generated code, preserves meaningful existing documentation, and uses compiler diagnostics plus implementation-level review to verify completion.
+
+[TOC]
+
+## Introduction
+
+The DevKit source tree contains a substantial public API surface across Common, Domain, Application, Infrastructure, and Presentation projects. A compiler-backed audit performed on 2026-08-14 found missing XML comments on hand-written public symbols throughout that surface.
+
+The campaign described here will document those symbols in bounded, reviewable batches. It will use the repository-local `document-code` skill as the authoring policy. Documentation must describe verified behavior and public contracts rather than restating signatures or generating generic boilerplate.
+
+This specification plans documentation work only. It does not authorize behavioral changes, refactoring, API redesign, visibility changes, or generated-code edits.
+
+## Status and Baseline
+
+Status: **Draft**
+
+The initial audit used compiler warning `CS1591` with XML documentation generation enabled through command-line MSBuild properties. No project configuration was changed.
+
+Baseline after generated-code filtering:
+
+| Measure | Count |
+| --- | ---: |
+| Hand-written C# files analyzed under `src/` | 2,809 |
+| Files with at least one undocumented public symbol | 996 |
+| Undocumented public symbols | 7,710 |
+| Generated C# files excluded | 23 |
+| Diagnostics removed with generated files | 44 |
+| Public overrides requiring inherited-contract review | 584 |
+
+Missing symbol kinds:
+
+| Symbol kind | Count |
+| --- | ---: |
+| Methods | 2,839 |
+| Properties | 1,858 |
+| Enum members | 1,136 |
+| Classes | 1,000 |
+| Constructors | 400 |
+| Fields | 241 |
+| Interfaces | 113 |
+| Primary-constructor parameters | 30 |
+| Operators and conversion operators | 32 |
+| Structs | 22 |
+| Records | 15 |
+| Enums | 13 |
+| Events | 6 |
+| Delegates | 4 |
+| Indexers | 1 |
+
+The baseline is a planning snapshot, not a permanent allowlist. Counts may change as other work modifies `src/`. Every implementation batch must regenerate diagnostics for its current target rather than relying only on these numbers.
+
+## Goals
+
+### Complete hand-written public API coverage
+
+Every hand-written, publicly visible C# symbol under `src/` must have meaningful XML documentation or valid inherited documentation.
+
+### Accurate, implementation-grounded documentation
+
+Documentation must be based on the implementation, inherited contract, validation behavior, side effects, state changes, persistence behavior, result semantics, cancellation behavior, retry behavior, and other observable behavior relevant to callers.
+
+### Reviewable delivery
+
+Changes must be divided into feature- or project-level batches. Each batch must be independently reviewable and must leave its selected scope with no remaining `CS1591` diagnostics.
+
+### No implementation changes
+
+Only XML documentation comments may change during this campaign. Implementation code, signatures, visibility, formatting, generated output, and public behavior must remain unchanged.
+
+## Non-Goals
+
+The campaign will not:
+
+* redesign or rename public APIs
+* change method bodies, expressions, attributes, modifiers, signatures, defaults, or nullability
+* change project files or enable permanent documentation-file generation as part of a documentation batch
+* rewrite meaningful existing documentation for style or consistency
+* add comments to private or internal symbols unless separately requested
+* document compiler-generated, source-generated, scaffolded, or migration code
+* generate documentation from signatures alone
+* add boilerplate XML elements that provide no useful caller information
+* treat expected `Result` failures as CLR exceptions
+* run documentation batches concurrently in the same worktree
+
+## Scope
+
+### Included
+
+The scope is hand-written C# source under:
+
+```text
+src/**/*.cs
+```
+
+Included symbol categories are:
+
+* public classes, records, structs, interfaces, enums, and delegates
+* public constructors
+* public methods, properties, indexers, fields, constants, events, and operators
+* enum members belonging to public enums
+* public API declarations created through primary constructors
+* public overrides and interface implementations that require `<inheritdoc/>` or implementation-specific documentation
+* hand-written source generators and code-generation utilities
+* hand-written declarations consumed by generators, including public `[LoggerMessage]` partial methods
+
+### Generated-code exclusions
+
+The following are excluded:
+
+* `bin/` and `obj/`
+* `*.g.cs`
+* `*.g.i.cs`
+* `*.generated.cs`
+* `*.designer.cs`
+* files whose actual header declares `<auto-generated>`
+* symbols or files marked with `GeneratedCode` or `CompilerGenerated`
+* EF Core migration files under `**/Migrations/**`
+* EF Core model snapshot files such as `*ModelSnapshot.cs`
+
+An `<auto-generated>` string embedded inside a hand-written source generator does not make the generator file generated. Generated-code detection must distinguish source text from string literals that the generator emits.
+
+### Special bulk catalogue
+
+`src/Common.Utilities/ContentTypes/ContentType.cs` remains in scope because it is checked-in source without a generated-code marker or scaffolded-file convention. Its public enum and members account for 995 baseline findings.
+
+This file must be handled as a dedicated batch. Enum-member documentation should use the existing `ContentTypeMetadate` values as the verified source for MIME type and text/binary semantics. The batch must not change enum names, metadata attributes, ordering, or values.
+
+## Documentation Requirements
+
+### DOC-001: Preserve existing documentation
+
+Meaningful existing XML documentation must remain unchanged. Do not rewrite, normalize, rephrase, or expand it merely for consistency.
+
+### DOC-002: Treat inherited documentation as complete
+
+Existing `<inheritdoc/>` counts as documentation and must not be replaced with copied prose.
+
+### DOC-003: Resolve inherited contracts first
+
+Before writing documentation for an override or interface implementation:
+
+1. resolve the overridden or implemented member
+2. inspect its XML documentation
+3. use `<inheritdoc/>` when the inherited documentation accurately describes the public contract
+4. write explicit documentation only when important implementation-specific behavior is absent from the inherited contract
+
+The 584 baseline overrides are candidates for this review. They are not automatically candidates for duplicated explicit comments.
+
+### DOC-004: Inspect implementations before authoring
+
+Explicit documentation must be based on the complete implementation and relevant surrounding code. Inspect invoked members when their behavior materially affects the public contract.
+
+Relevant behavior includes:
+
+* validation and parameter constraints
+* success and failure outcomes
+* `Result` and `Result<T>` semantics
+* exceptions deliberately exposed to callers
+* state transitions and side effects
+* persistence and transaction behavior
+* asynchronous waiting and background dispatch behavior
+* cancellation propagation and cancellation outcomes
+* retry behavior
+* ordering, concurrency, and lifecycle guarantees
+
+If behavior cannot be verified, document only what can be established from the code.
+
+### DOC-005: Use meaningful summaries
+
+`<summary>` must explain the API's purpose and primary observable behavior. It must not merely repeat the symbol name or signature.
+
+### DOC-006: Document parameters semantically
+
+`<param>` must explain what a value represents, including verified units, limits, defaults, special values, and behavioral consequences where relevant.
+
+When newly documenting a public type with a primary constructor, include `<param>` documentation for every primary-constructor parameter on the type comment.
+
+### DOC-007: Document return and failure semantics
+
+`<returns>` must describe the successful value and expected failure conditions when useful. For `Result` and `Result<T>`, distinguish result failures from thrown exceptions.
+
+### DOC-008: Document exceptions selectively
+
+Use `<exception>` only for explicitly thrown or deliberately propagated exceptions that are part of observable API behavior and that callers are reasonably expected to handle.
+
+### DOC-009: Add remarks only when needed
+
+Use `<remarks>` for non-trivial constraints, side effects, persistence behavior, retries, cancellation, ordering, concurrency, performance, or lifecycle information that does not fit naturally in the summary, parameters, or return description.
+
+### DOC-010: Add examples where they materially help consumers
+
+Use `<example>` and `<code>` for directly consumed, non-obvious APIs such as builders, registration APIs, providers, orchestration APIs, pipelines, configuration APIs, and APIs with significant result or lifecycle handling.
+
+Do not add examples to trivial properties, obvious enum members, inherited implementations, or other APIs where an example would be boilerplate.
+
+### DOC-011: Use valid references
+
+Use `<see cref="..."/>` and `<seealso cref="..."/>` when referring to resolvable C# types or members. All XML must remain valid under compiler documentation generation.
+
+### DOC-012: Replace only meaningless placeholders
+
+Empty or meaningless stubs such as `TODO`, `Method.`, or `Gets the value.` count as undocumented. Replace only the placeholder comment; do not use its presence to rewrite neighboring meaningful documentation.
+
+## Change Constraints
+
+Every implementation batch must obey these constraints:
+
+* modify XML documentation comments only
+* preserve code exactly outside the selected XML comment ranges
+* preserve file encoding and line endings
+* preserve attributes and their ordering
+* preserve public and internal API shape
+* preserve generated-code exclusions
+* keep the batch limited to one project or a smaller cohesive feature slice
+* avoid unrelated formatting changes
+* avoid simultaneous top-level builds or tests in the same worktree
+
+If accurate documentation would require a behavioral assumption, stop and record the ambiguity rather than inventing behavior.
+
+## Audit Baseline by Feature
+
+| Feature/project | Affected files | Missing symbols |
+| --- | ---: | ---: |
+| Common.Utilities | 54 | 1,259 |
+| Domain | 70 | 799 |
+| Infrastructure.EntityFramework | 104 | 643 |
+| Application.Jobs | 16 | 586 |
+| Presentation.Web | 72 | 545 |
+| Common.Abstractions | 45 | 341 |
+| Application.Storage | 28 | 303 |
+| Application.JobScheduling | 44 | 289 |
+| Application.Messaging | 45 | 238 |
+| Common.Results | 62 | 160 |
+| Application.Commands | 30 | 151 |
+| Application.Entities | 24 | 131 |
+| Infrastructure.Azure.Cosmos | 19 | 129 |
+| Presentation.Web.Jobs | 10 | 114 |
+| Common.Utilities.CodeGen | 6 | 110 |
+| Application.Queueing | 13 | 110 |
+| Application.Queries | 22 | 108 |
+| Infrastructure.EventSourcing | 21 | 101 |
+| Presentation.Web.Orchestrations | 12 | 99 |
+| Infrastructure.Azure.Storage | 12 | 87 |
+| Common.Serialization | 22 | 83 |
+| Application.Notifications | 3 | 77 |
+| Presentation.Web.JobScheduling | 12 | 75 |
+| Presentation | 17 | 72 |
+| Common.Utilities.Xunit | 18 | 63 |
+| Application.Identity | 16 | 59 |
+| Domain.EventSourcing | 19 | 57 |
+| Domain.EventSourcing.Mediator | 17 | 55 |
+| Presentation.Web.Storage | 2 | 54 |
+| Common.Caching | 6 | 52 |
+| Common.Modules | 11 | 48 |
+| Infrastructure.LiteDB | 11 | 47 |
+| Application.Orchestrations | 5 | 46 |
+| Presentation.Web.Client | 7 | 41 |
+| Infrastructure.RabbitMQ | 4 | 37 |
+| Domain.CodeGen | 4 | 35 |
+| Application.Storage.Jobs | 3 | 32 |
+| Infrastructure.EntityFramework.SqlServer | 7 | 32 |
+| Infrastructure.EntityFramework.Postgres | 7 | 32 |
+| Infrastructure.Azure.ServiceBus | 4 | 31 |
+| Infrastructure.EntityFramework.EventSourcing | 9 | 31 |
+| Application.Entities.Messaging | 7 | 30 |
+| Common.Rules | 12 | 30 |
+| Domain.Mediator | 2 | 28 |
+| Infrastructure.EntityFramework.Sqlite | 7 | 28 |
+| Common.Mapping | 6 | 27 |
+| Application.DataPorter | 4 | 26 |
+| Infrastructure.Windows | 4 | 25 |
+| Application.Utilities | 5 | 25 |
+| Application.Commands.Outbox | 5 | 21 |
+| Common.Utilities.Tracing | 6 | 18 |
+| Common.Extensions.Web | 4 | 15 |
+| Domain.Outbox | 4 | 15 |
+| Presentation.Web.Queueing | 2 | 11 |
+| Presentation.Web.Messaging | 2 | 11 |
+| Infrastructure.EntityFramework.Outbox | 1 | 10 |
+| Domain.EventSourcing.Outbox | 3 | 7 |
+| Infrastructure.EntityFramework.Cosmos | 2 | 6 |
+| Presentation.Configuration | 2 | 6 |
+| Common.Options | 2 | 4 |
+| Infrastructure.EntityFramework.EventSourcing.SqlServer | 1 | 3 |
+| Application.Commands.EventSourcing | 2 | 2 |
+
+The following projects had no missing public XML documentation in the baseline and require no campaign batch unless later changes introduce new diagnostics:
+
+* `Presentation.Cli`
+* `Presentation.Serilog`
+* `Presentation.Web.EntityFramework`
+* `Presentation.Web.Notifications`
+
+## Delivery Strategy
+
+### Phase 1: Reconfirm inventory and establish batch boundaries
+
+Goal: produce the current list of undocumented hand-written symbols and divide it into reviewable batches.
+
+Tasks:
+
+* rerun compiler documentation diagnostics against the current branch
+* filter generated code using this specification's exclusion rules
+* group findings by project and cohesive feature folder
+* classify overrides and interface implementations before explicit-documentation work
+* process projects sequentially in dependency order
+
+Completion criteria:
+
+* every current diagnostic maps to a hand-written source file or a documented exclusion
+* every selected batch has an exact file and symbol boundary
+* generated files are absent from the implementation queue
+
+### Phase 2: Document Common foundations
+
+Goal: document public APIs in `Common.*` projects before dependent layers.
+
+Recommended order:
+
+1. `Common.Abstractions`
+2. `Common.Results`
+3. `Common.Options`
+4. `Common.Rules`
+5. `Common.Mapping`
+6. `Common.Serialization`
+7. `Common.Caching`
+8. `Common.Modules`
+9. `Common.Extensions.Web`
+10. `Common.Utilities.Tracing`
+11. `Common.Utilities.Xunit`
+12. `Common.Utilities.CodeGen`
+13. `Common.Utilities`, excluding `ContentType.cs`
+14. `Common.Utilities/ContentTypes/ContentType.cs` as its own batch
+
+Completion criteria:
+
+* each completed project produces no `CS1591` findings for included hand-written files
+* the project builds with XML documentation generation enabled
+* diffs contain XML-comment changes only
+
+### Phase 3: Document Domain APIs
+
+Goal: document public APIs in `Domain*` projects.
+
+Recommended order:
+
+1. `Domain`
+2. `Domain.Mediator`
+3. `Domain.Outbox`
+4. `Domain.EventSourcing`
+5. `Domain.EventSourcing.Mediator`
+6. `Domain.EventSourcing.Outbox`
+7. `Domain.CodeGen`
+
+Domain documentation must explain business semantics, aggregate and value-object roles, repository behavior, event lifecycle, and observable state transitions without leaking infrastructure details.
+
+Completion criteria are the same as Phase 2.
+
+### Phase 4: Document Application APIs
+
+Goal: document public APIs in `Application*` projects.
+
+Process foundational command/query/result contracts before feature-specific jobs, scheduling, messaging, queueing, storage, identity, notifications, and orchestrations.
+
+Application documentation must describe request intent, result semantics, validation, cancellation, dispatch versus completion behavior, and feature-level side effects. It must not claim persistence or transport details that are not part of the application contract.
+
+Completion criteria are the same as Phase 2.
+
+### Phase 5: Document Infrastructure APIs
+
+Goal: document public APIs in `Infrastructure*` projects while preserving provider-specific behavior.
+
+Infrastructure documentation must describe verified provider behavior, persistence effects, transaction boundaries, retry behavior, resource lifetimes, and provider limitations. It must not generalize one provider's behavior to unrelated providers.
+
+EF Core migrations and model snapshots remain excluded.
+
+Completion criteria are the same as Phase 2.
+
+### Phase 6: Document Presentation APIs
+
+Goal: document public APIs in `Presentation*` projects that still produce diagnostics.
+
+Presentation documentation must describe registration, endpoint, dashboard, mapping, configuration, serialization, and host behavior from the caller's perspective. It must distinguish public integration APIs from framework callbacks and generated logging implementations.
+
+Projects with zero findings remain out of scope unless the refreshed audit reports new diagnostics.
+
+Completion criteria are the same as Phase 2.
+
+### Phase 7: Repository-wide verification
+
+Goal: prove that all included hand-written public APIs are documented and that no implementation changes were introduced.
+
+Tasks:
+
+* rerun the complete compiler documentation audit
+* confirm zero `CS1591` diagnostics for included `src/` files
+* confirm all remaining diagnostics belong only to documented exclusions
+* run the repository-wide build sequentially
+* inspect the aggregate diff for non-documentation changes
+* verify the working tree contains no regenerated example artifacts or unrelated changes
+
+Completion criteria:
+
+* zero in-scope `CS1591` diagnostics
+* zero invalid XML documentation diagnostics
+* successful repository-wide build
+* no changes outside XML documentation comments and approved documentation-tracking artifacts
+
+## Batch Workflow
+
+Every implementation batch must follow this sequence:
+
+1. Select one project or cohesive feature folder.
+2. Generate the current missing-symbol list for only that target.
+3. Remove generated-code exclusions.
+4. Resolve inheritance for overrides and interface implementations.
+5. Inspect each remaining symbol's implementation and relevant dependencies.
+6. Add only the required XML documentation using the `document-code` policy.
+7. Build the target project with XML documentation generation enabled.
+8. Confirm no target-scope `CS1591` or invalid XML diagnostics remain.
+9. Review the diff and remove unrelated formatting or implementation changes.
+10. Record the completed batch and its verification command in the change description.
+
+Large projects must be split further by cohesive feature folder. A batch should remain small enough for a reviewer to validate documentation against implementation behavior.
+
+## Verification
+
+### Targeted compiler verification
+
+For each target project, enable XML documentation generation through command-line MSBuild properties. Do not edit the project solely to enable the audit.
+
+The verification must capture compiler diagnostics and fail the batch when an in-scope `CS1591` warning remains.
+
+### Repository build
+
+After all batches are complete, run from the repository root:
+
+```powershell
+dotnet build --nologo /p:UseSharedCompilation=false
+```
+
+Run repository-wide builds and tests sequentially to avoid misleading `obj/ref` and compiler-server locking failures.
+
+### Diff verification
+
+The final review must confirm:
+
+* no implementation statements changed
+* no signatures or modifiers changed
+* no attributes changed
+* no generated files changed
+* no project configuration changed unless separately approved
+* existing meaningful XML documentation was preserved
+* `<inheritdoc/>` was preferred where inherited contracts are sufficient
+
+Unit or integration tests are not required solely for comment additions. If any implementation code changes, the batch violates this specification and must be corrected or moved to separately scoped work with appropriate tests.
+
+## Risks and Mitigations
+
+### Risk: boilerplate documentation
+
+Mitigation: inspect implementations and reject comments that merely restate names or types.
+
+### Risk: inaccurate behavioral claims
+
+Mitigation: document only verified behavior; inspect dependencies when they affect the public contract; record ambiguity instead of guessing.
+
+### Risk: duplicated inherited documentation
+
+Mitigation: resolve base and interface members first and prefer `<inheritdoc/>`.
+
+### Risk: unreviewable changes
+
+Mitigation: use project- or feature-level batches and keep `ContentType.cs` isolated.
+
+### Risk: generated code enters the queue
+
+Mitigation: apply both filename/path exclusions and semantic generated-code markers. Treat EF migrations and model snapshots as generated even when their primary `.cs` file lacks an auto-generated header.
+
+### Risk: stale baseline counts
+
+Mitigation: regenerate diagnostics for every batch and use the final compiler audit as the completion source of truth.
+
+### Risk: documentation build modifies generated example artifacts
+
+Mitigation: check `git status` before and after every build. Revert only artifacts created by the verification command and confirm the content hash before treating a status-only line-ending change as substantive.
+
+## Acceptance Criteria
+
+The campaign is complete when all conditions below are true:
+
+* **AC-001**: Every included hand-written public symbol under `src/` has meaningful XML documentation or valid `<inheritdoc/>`.
+* **AC-002**: Generated files and generated declarations remain unchanged.
+* **AC-003**: The final compiler documentation audit reports zero in-scope `CS1591` diagnostics.
+* **AC-004**: The final compiler documentation audit reports no malformed XML or unresolved documentation-reference diagnostics introduced by the campaign.
+* **AC-005**: The repository-wide build succeeds.
+* **AC-006**: The aggregate source diff contains XML documentation changes only.
+* **AC-007**: Meaningful existing documentation is unchanged unless a directly contradictory statement had to be corrected.
+* **AC-008**: Overrides and interface implementations use `<inheritdoc/>` whenever the inherited contract is sufficient.
+* **AC-009**: `Result` failures, exceptions, cancellation, retries, side effects, and lifecycle behavior are described only where verified and relevant.
+* **AC-010**: No private or internal symbol is documented unless it was separately and explicitly added to scope.
+
+## Related Files
+
+* `.agents/skills/document-code/SKILL.md`
+* `AGENTS.md`
+* `.editorconfig`
+* `Directory.Build.props`
+* `bITdevKit.slnx`
+
+## Summary
+
+This campaign will close XML documentation gaps across the hand-written public API under `src/` through small, dependency-ordered batches. Compiler diagnostics determine coverage; the implementation determines content; inherited contracts prevent duplication; generated code remains excluded; and the final diff must contain documentation changes only.

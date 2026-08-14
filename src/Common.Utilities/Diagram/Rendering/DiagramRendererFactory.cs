@@ -7,30 +7,44 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.DependencyInjection;
 
-internal sealed class DiagramRendererFactory(
+/// <summary>
+/// Provides a factory for creating diagram renderers based on diagram kind and render format.
+/// </summary>
+/// <param name="serviceProvider">
+/// The service provider used to resolve renderer instances.
+/// </param>
+/// <param name="registrations">
+/// The store containing registered diagram renderer types for different kinds and formats.
+/// </param>
+public sealed class DiagramRendererFactory(
     IServiceProvider serviceProvider,
     DiagramRendererRegistrationStore registrations) : IDiagramRendererFactory
 {
+    /// <inheritdoc/>
     public IReadOnlyList<DiagramRenderFormat> GetFormats(DiagramKind kind)
     {
         return registrations.GetFormats(kind);
     }
 
+    /// <inheritdoc/>
     public bool CanRender(DiagramKind kind)
     {
         return this.CanRender(kind, DiagramRenderFormat.Mermaid);
     }
 
+    /// <inheritdoc/>
     public bool CanRender(DiagramKind kind, DiagramRenderFormat format)
     {
         return registrations.TryGetRendererType(kind, format, out _);
     }
 
+    /// <inheritdoc/>
     public IDiagramRenderer GetRenderer(DiagramKind kind)
     {
         return this.GetRenderer(kind, DiagramRenderFormat.Mermaid);
     }
 
+    /// <inheritdoc/>
     public IDiagramRenderer GetRenderer(DiagramKind kind, DiagramRenderFormat format)
     {
         if (!registrations.TryGetRendererType(kind, format, out var rendererType))
@@ -41,11 +55,13 @@ internal sealed class DiagramRendererFactory(
         return (IDiagramRenderer)serviceProvider.GetRequiredService(rendererType);
     }
 
+    /// <inheritdoc/>
     public bool TryGetRenderer(DiagramKind kind, out IDiagramRenderer renderer)
     {
         return this.TryGetRenderer(kind, DiagramRenderFormat.Mermaid, out renderer);
     }
 
+    /// <inheritdoc/>
     public bool TryGetRenderer(DiagramKind kind, DiagramRenderFormat format, out IDiagramRenderer renderer)
     {
         if (registrations.TryGetRendererType(kind, format, out _))
@@ -58,11 +74,13 @@ internal sealed class DiagramRendererFactory(
         return false;
     }
 
+    /// <inheritdoc/>
     public DiagramRenderResult Render(DiagramDocument document, DiagramRenderOptions options = null)
     {
         return this.Render(document, DiagramRenderFormat.Mermaid, options);
     }
 
+    /// <inheritdoc/>
     public DiagramRenderResult Render(DiagramDocument document, DiagramRenderFormat format, DiagramRenderOptions options = null)
     {
         ArgumentNullException.ThrowIfNull(document);

@@ -116,7 +116,7 @@
     <PackageVersion Include="Serilog.Sinks.Seq" Version="9.1.0" />
     <PackageVersion Include="Serilog.Sinks.Trace" Version="4.0.0" />
     <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.19" />
-    <PackageVersion Include="SharpCompress" Version="0.49.1" />
+    <PackageVersion Include="SharpCompress" Version="1.0.0" />
     <PackageVersion Include="Spectre.Console" Version="0.57.2" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.2.3" />

@@ -5,6 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+/// <summary>
+/// Represents entity update command base.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="entity">The entity involved in the operation.</param>
+/// <param name="identity">The identity used by the operation.</param>
 [Obsolete("Use the new Requester from now on")]
 public abstract class EntityUpdateCommandBase<TEntity>(TEntity entity, string identity = null)
     : CommandRequestBase<Result<EntityUpdatedCommandResult>>, IEntityUpdateCommand<TEntity>
@@ -12,12 +18,23 @@ public abstract class EntityUpdateCommandBase<TEntity>(TEntity entity, string id
 {
     private List<AbstractValidator<EntityUpdateCommandBase<TEntity>>> validators;
 
+    /// <summary>
+    /// Gets the entity.
+    /// </summary>
     public TEntity Entity { get; } = entity;
 
     object IEntityUpdateCommand.Entity => this.Entity;
 
+    /// <summary>
+    /// Gets the identity.
+    /// </summary>
     public string Identity { get; } = identity;
 
+    /// <summary>
+    /// Adds validator.
+    /// </summary>
+    /// <param name="validator">The validator used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public EntityUpdateCommandBase<TEntity> AddValidator(AbstractValidator<EntityUpdateCommandBase<TEntity>> validator)
     {
         (this.validators ??= []).AddOrUpdate(validator);
@@ -25,19 +42,31 @@ public abstract class EntityUpdateCommandBase<TEntity>(TEntity entity, string id
         return this;
     }
 
+    /// <summary>
+    /// Represents add validator.
+    /// </summary>
+    /// <typeparam name="TValidator">The validator type.</typeparam>
     public EntityUpdateCommandBase<TEntity> AddValidator<TValidator>()
         where TValidator : class
     {
         return this.AddValidator(Factory<TValidator>.Create() as AbstractValidator<EntityUpdateCommandBase<TEntity>>);
     }
 
+    /// <inheritdoc/>
     public override ValidationResult Validate()
     {
         return new Validator(this.validators).Validate(this);
     }
 
+    /// <summary>
+    /// Represents validator.
+    /// </summary>
     public class Validator : AbstractValidator<EntityUpdateCommandBase<TEntity>>
     {
+        /// <summary>
+        /// Initializes a new instance of the <c>Validator</c> class.
+        /// </summary>
+        /// <param name="validators">The validators used by the operation.</param>
         public Validator(IEnumerable<AbstractValidator<EntityUpdateCommandBase<TEntity>>> validators = null)
         {
             foreach (var validator in validators.SafeNull())

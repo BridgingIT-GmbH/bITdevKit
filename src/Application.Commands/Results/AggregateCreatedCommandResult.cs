@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Represents aggregate created command result.
+/// </summary>
+/// <param name="entityId">The entity identifier.</param>
 public class AggregateCreatedCommandResult(string entityId)
 {
     /// <summary>
@@ -13,6 +17,11 @@ public class AggregateCreatedCommandResult(string entityId)
     public string EntityId { get; } = entityId;
 }
 
+/// <summary>
+/// Represents aggregate created command result.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
+/// <param name="entityId">The entity identifier.</param>
 public class AggregateCreatedCommandResult<TId>(TId entityId)
 {
     /// <summary>

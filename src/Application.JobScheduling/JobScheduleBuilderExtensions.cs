@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Application;
 
 using BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Represents job schedule builder extensions.
+/// </summary>
 public static class JobScheduleBuilderExtensions
 {
     /// <summary>

@@ -13,6 +13,14 @@ using Domain.EventSourcing.Repositories;
 using Domain.EventSourcing.Store;
 using MediatR;
 
+/// <summary>
+/// Represents event store.
+/// </summary>
+/// <typeparam name="TAggregate">The aggregate type.</typeparam>
+/// <param name="mediator">The mediator used by the operation.</param>
+/// <param name="eventStoreRepository">The event store repository used by the operation.</param>
+/// <param name="eventSender">The event sender used by the operation.</param>
+/// <param name="eventStoreOptions">The event store options used by the operation.</param>
 public class EventStore<TAggregate>(
     IMediator mediator,
     IEventStoreRepository eventStoreRepository,
@@ -25,11 +33,24 @@ public class EventStore<TAggregate>(
     private readonly IPublishAggregateEventSender eventSender = eventSender;
     private readonly IEventStoreOptions<TAggregate> eventStoreOptions = eventStoreOptions;
 
+    /// <summary>
+    /// Gets .
+    /// </summary>
+    /// <param name="aggregateId">The aggregate id used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TAggregate> GetAsync(Guid aggregateId, CancellationToken cancellationToken)
     {
         return await this.GetAsync(aggregateId, false, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Gets .
+    /// </summary>
+    /// <param name="aggregateId">The aggregate id used by the operation.</param>
+    /// <param name="forceReplay">The force replay used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TAggregate> GetAsync(Guid aggregateId, bool forceReplay, CancellationToken cancellationToken)
     {
         var snapshot = this.eventStoreOptions.IsSnapshotEnabled
@@ -68,11 +89,22 @@ public class EventStore<TAggregate>(
         return snapshot;
     }
 
+    /// <summary>
+    /// Gets aggregate ids.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<Guid>> GetAggregateIdsAsync(CancellationToken cancellationToken)
     {
         return await this.eventStoreRepository.GetAggregateIdsAsync<TAggregate>(cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Saves events.
+    /// </summary>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SaveEventsAsync(TAggregate aggregate, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(aggregate, nameof(aggregate));
@@ -80,6 +112,13 @@ public class EventStore<TAggregate>(
         await this.SaveEventsAsync(aggregate, true, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Saves events.
+    /// </summary>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <param name="sendProjectionRequestForEveryEvent">The send projection request for every event used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SaveEventsAsync(
         TAggregate aggregate,
         bool sendProjectionRequestForEveryEvent,
@@ -148,12 +187,23 @@ public class EventStore<TAggregate>(
         }
     }
 
+    /// <summary>
+    /// Gets events.
+    /// </summary>
+    /// <param name="aggregateId">The aggregate id used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IAggregateEvent[]> GetEventsAsync(Guid aggregateId, CancellationToken cancellationToken)
     {
         return await this.eventStoreRepository.GetEventsAsync<TAggregate>(aggregateId, CancellationToken.None)
             .AnyContext();
     }
 
+    /// <summary>
+    /// Gets events.
+    /// </summary>
+    /// <param name="aggregateId">The aggregate id used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IAggregateEvent[]> GetEventsAsync(Guid aggregateId)
     {
         return await this.GetEventsAsync(aggregateId, CancellationToken.None).AnyContext();

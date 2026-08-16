@@ -12,6 +12,12 @@ namespace BridgingIT.DevKit.Application.Jobs;
 /// <param name="DueUtc">The persisted due instant for one-time and delay-based triggers.</param>
 /// <param name="LastMaterializedScheduledUtc">The last scheduled instant materialized for recurring triggers.</param>
 /// <param name="HasMaterializedOccurrence">Indicates whether a single-fire trigger already materialized its occurrence.</param>
+/// <param name="Enabled">An optional value indicating whether the trigger is enabled.</param>
+/// <param name="Paused">A value indicating whether the trigger is paused.</param>
+/// <param name="CreatedDate">The runtime-state creation timestamp.</param>
+/// <param name="UpdatedDate">The runtime-state update timestamp.</param>
+/// <param name="LastAcceptedEventUtc">The timestamp of the last accepted event.</param>
+/// <param name="LastAcceptedEventId">The identifier of the last accepted event.</param>
 public sealed record JobTriggerRuntimeState(
     DateTimeOffset? ActivatedUtc,
     DateTimeOffset? DueUtc,

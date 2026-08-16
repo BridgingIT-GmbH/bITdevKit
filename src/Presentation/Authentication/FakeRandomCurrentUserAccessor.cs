@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Presentation;
 using Common;
 using System.Security.Claims;
 
+/// <summary>
+/// Represents fake random current user accessor.
+/// </summary>
 public class FakeRandomCurrentUserAccessor : ICurrentUserAccessor
 {
     private static readonly Dictionary<string, FakeUser> UserStore = [];
@@ -21,6 +24,9 @@ public class FakeRandomCurrentUserAccessor : ICurrentUserAccessor
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>FakeRandomCurrentUserAccessor</c> class.
+    /// </summary>
     public FakeRandomCurrentUserAccessor()
     {
         var user = GetRandomUser();
@@ -31,16 +37,34 @@ public class FakeRandomCurrentUserAccessor : ICurrentUserAccessor
         this.Principal = CreatePrincipal(user.Value);
     }
 
+    /// <summary>
+    /// Gets the principal.
+    /// </summary>
     public ClaimsPrincipal Principal { get; }
 
+    /// <summary>
+    /// Gets the is authenticated.
+    /// </summary>
     public bool IsAuthenticated => !string.IsNullOrEmpty(this.UserId);
 
+    /// <summary>
+    /// Gets the user id.
+    /// </summary>
     public string UserId { get; }
 
+    /// <summary>
+    /// Gets the user name.
+    /// </summary>
     public string UserName { get; }
 
+    /// <summary>
+    /// Gets the email.
+    /// </summary>
     public string Email { get; }
 
+    /// <summary>
+    /// Gets the roles.
+    /// </summary>
     public string[] Roles { get; }
 
     private static KeyValuePair<string, FakeUser> GetRandomUser()

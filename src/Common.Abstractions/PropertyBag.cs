@@ -19,10 +19,21 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
 {
     private readonly Dictionary<string, object> items = new(StringComparer.OrdinalIgnoreCase);
     private readonly ReaderWriterLockSlim @lock = new();
+
+    /// <summary>
+    /// Occurs after <see cref="Set(string, object)"/> adds or replaces an entry.
+    /// </summary>
     public event Action<string, object> ItemChanged;
 
+    /// <summary>
+    /// Initializes an empty property bag that compares string keys without regard to case.
+    /// </summary>
     public PropertyBag() { }
 
+    /// <summary>
+    /// Initializes a property bag with a shallow copy of the supplied entries, using case-insensitive string keys.
+    /// </summary>
+    /// <param name="items">The entries to copy, or <see langword="null"/> to create an empty bag.</param>
     public PropertyBag(IDictionary<string, object> items)
     {
         if (items != null)
@@ -291,6 +302,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         }
     }
 
+    /// <inheritdoc/>
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
     {
         this.@lock.EnterReadLock();
@@ -307,14 +319,36 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
+    /// <summary>Associates a value with a strongly typed key and raises <see cref="ItemChanged"/>.</summary>
+    /// <typeparam name="T">The value type represented by the key.</typeparam>
+    /// <param name="key">The strongly typed key whose name identifies the entry.</param>
+    /// <param name="value">The value to store.</param>
     public void Set<T>(PropertyBagKey<T> key, T value) => this.Set(key.Name, value);
 
+    /// <summary>Gets and converts the value associated with a strongly typed key.</summary>
+    /// <typeparam name="T">The requested value type.</typeparam>
+    /// <param name="key">The strongly typed key whose name identifies the entry.</param>
+    /// <param name="defaultValue">The value returned when the entry is absent or cannot be converted.</param>
+    /// <returns>The converted entry value, or <paramref name="defaultValue"/> when retrieval fails.</returns>
     public T Get<T>(PropertyBagKey<T> key, T defaultValue = default) => this.Get(key.Name, defaultValue);
 
+    /// <summary>Attempts to get and convert the value associated with a strongly typed key.</summary>
+    /// <typeparam name="T">The requested value type.</typeparam>
+    /// <param name="key">The strongly typed key whose name identifies the entry.</param>
+    /// <param name="value">Receives the converted value on success; otherwise, the default value of <typeparamref name="T"/>.</param>
+    /// <returns><see langword="true"/> when the entry exists and conversion succeeds; otherwise, <see langword="false"/>.</returns>
     public bool TryGet<T>(PropertyBagKey<T> key, out T value) => this.TryGet(key.Name, out value);
 
+    /// <summary>Determines whether an entry exists for a strongly typed key.</summary>
+    /// <typeparam name="T">The value type represented by the key.</typeparam>
+    /// <param name="key">The strongly typed key whose name identifies the entry.</param>
+    /// <returns><see langword="true"/> when the key exists; otherwise, <see langword="false"/>.</returns>
     public bool Contains<T>(PropertyBagKey<T> key) => this.Contains(key.Name);
 
+    /// <summary>Removes the entry associated with a strongly typed key.</summary>
+    /// <typeparam name="T">The value type represented by the key.</typeparam>
+    /// <param name="key">The strongly typed key whose name identifies the entry.</param>
+    /// <returns><see langword="true"/> when an entry was removed; otherwise, <see langword="false"/>.</returns>
     public bool Remove<T>(PropertyBagKey<T> key) => this.Remove(key.Name);
 }
 
@@ -323,7 +357,9 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
 /// </summary>
 public sealed class PropertyBagKey<T>(string name)
 {
+    /// <summary>Gets the string name used to address the property-bag entry.</summary>
     public string Name { get; } = name ?? throw new ArgumentNullException(nameof(name));
 
+    /// <inheritdoc/>
     public override string ToString() => this.Name;
 }

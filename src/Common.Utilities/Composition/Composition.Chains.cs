@@ -12,6 +12,10 @@ using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Defines one handler in an ordered chain of responsibility.
+/// </summary>
+/// <typeparam name="TContext">The context passed through the chain.</typeparam>
 public interface IChainHandler<TContext>
 {
     /// <summary>

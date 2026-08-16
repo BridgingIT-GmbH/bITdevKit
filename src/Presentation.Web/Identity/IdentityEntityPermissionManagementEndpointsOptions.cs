@@ -5,8 +5,14 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+/// <summary>
+/// Configures identity entity permission management endpoints.
+/// </summary>
 public class IdentityEntityPermissionManagementEndpointsOptions : EndpointsOptionsBase
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>IdentityEntityPermissionManagementEndpointsOptions</c> class.
+    /// </summary>
     public IdentityEntityPermissionManagementEndpointsOptions()
     {
         this.GroupPath = "/_bdk/api/identity/management/entities/permissions";

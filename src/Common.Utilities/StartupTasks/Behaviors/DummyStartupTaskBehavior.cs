@@ -7,8 +7,13 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Logs before and after a startup task without changing its execution.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
 public class DummyStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

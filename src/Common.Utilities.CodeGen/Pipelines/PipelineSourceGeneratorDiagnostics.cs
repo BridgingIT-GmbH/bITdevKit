@@ -14,6 +14,7 @@ public static class PipelineSourceGeneratorDiagnostics
 {
 #pragma warning disable RS1032
 #pragma warning disable RS2008
+    /// <summary>Gets the diagnostic reported when a generated pipeline is not partial.</summary>
     public static readonly DiagnosticDescriptor PipelineMustBePartial = new(
         "PLNGEN001",
         "Pipeline must be partial",
@@ -22,6 +23,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when a generated pipeline declares an explicit base type.</summary>
     public static readonly DiagnosticDescriptor PipelineMustNotDeclareBaseType = new(
         "PLNGEN002",
         "Pipeline must not declare an explicit base type",
@@ -30,6 +32,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when a pipeline context does not derive from the required base type.</summary>
     public static readonly DiagnosticDescriptor InvalidPipelineContextType = new(
         "PLNGEN003",
         "Pipeline context type is invalid",
@@ -38,6 +41,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when declared and inherited pipeline contexts differ.</summary>
     public static readonly DiagnosticDescriptor PipelineContextMismatch = new(
         "PLNGEN004",
         "Pipeline context mismatch",
@@ -46,6 +50,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when a generated pipeline implements configuration manually.</summary>
     public static readonly DiagnosticDescriptor ManualConfigureNotAllowed = new(
         "PLNGEN005",
         "Generated pipelines must not implement Configure manually",
@@ -54,6 +59,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when a pipeline step method is generic.</summary>
     public static readonly DiagnosticDescriptor StepMethodMustNotBeGeneric = new(
         "PLNGEN006",
         "Pipeline step method must not be generic",
@@ -62,6 +68,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported for an unsupported pipeline-step signature.</summary>
     public static readonly DiagnosticDescriptor StepMethodSignatureNotSupported = new(
         "PLNGEN007",
         "Unsupported pipeline step method signature",
@@ -70,6 +77,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when a pipeline step returns asynchronous void.</summary>
     public static readonly DiagnosticDescriptor AsyncVoidNotAllowed = new(
         "PLNGEN008",
         "async void pipeline steps are not supported",
@@ -78,6 +86,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported for duplicate generated step order values.</summary>
     public static readonly DiagnosticDescriptor DuplicateStepOrder = new(
         "PLNGEN009",
         "Duplicate pipeline step order",
@@ -86,6 +95,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported for duplicate generated step names.</summary>
     public static readonly DiagnosticDescriptor DuplicateStepName = new(
         "PLNGEN010",
         "Duplicate pipeline step name",
@@ -94,6 +104,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported for an incompatible pipeline hook type.</summary>
     public static readonly DiagnosticDescriptor InvalidHookType = new(
         "PLNGEN011",
         "Invalid pipeline hook type",
@@ -102,6 +113,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported for an incompatible pipeline behavior type.</summary>
     public static readonly DiagnosticDescriptor InvalidBehaviorType = new(
         "PLNGEN012",
         "Invalid pipeline behavior type",
@@ -110,6 +122,7 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
+    /// <summary>Gets the diagnostic reported when a no-context pipeline step declares a context parameter.</summary>
     public static readonly DiagnosticDescriptor ContextParameterNotAllowed = new(
         "PLNGEN013",
         "No-context pipeline step must not declare a context parameter",

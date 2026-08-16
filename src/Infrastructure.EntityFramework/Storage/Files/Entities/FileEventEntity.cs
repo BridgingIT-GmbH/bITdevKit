@@ -83,12 +83,15 @@ public class FileEventEntity
     public DateTimeOffset? LastModifiedDate { get; set; }
     //public DateTimeOffset? UpdatedDate { get; set; }
 
-    [NotMapped]
     /// <summary>
     /// Gets or sets additional properties associated with the file event.
     /// </summary>
+    [NotMapped]
     public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
+    /// <summary>
+    /// Stores the properties json.
+    /// </summary>
     [Column("Properties")]
     public string
         PropertiesJson // TODO: .NET8 use new ef core primitive collections here (store as json) https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-8.0/whatsnew#primitive-collections

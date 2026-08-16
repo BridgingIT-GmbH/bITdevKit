@@ -11,11 +11,14 @@ namespace BridgingIT.DevKit.Common;
 /// <param name="message"></param>
 public class ConcurrencyError(string message = null) : ResultErrorBase(message ?? "Concurrency error")
 {
+    /// <summary>Initializes a concurrency error with the default message.</summary>
     public ConcurrencyError() : this(null)
     {
     }
 
+    /// <summary>Gets the type name of the entity involved in the conflict, when supplied.</summary>
     public string EntityType { get; init; }
 
+    /// <summary>Gets the identifier of the entity involved in the conflict, when supplied.</summary>
     public string EntityId { get; init; }
 }

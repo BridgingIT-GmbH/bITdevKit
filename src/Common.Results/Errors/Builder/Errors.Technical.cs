@@ -29,6 +29,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the technical conflict. If null, a default message of "Conflict" is used.</param>
 public class TechnicalError(string message = null) : ResultErrorBase(message ?? "Conflict")
 {
+    /// <summary>Initializes a technical error with the default conflict message.</summary>
     public TechnicalError() : this(null)
     {
     }

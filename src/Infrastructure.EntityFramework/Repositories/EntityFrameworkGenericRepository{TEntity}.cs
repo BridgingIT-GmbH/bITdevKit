@@ -419,14 +419,47 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         return query;
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the upsert operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityUpsertType">The entity upsert type used by the operation.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
+        /// <param name="dbContextId">The db context id used by the operation.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="entityTracked">The entity tracked used by the operation.</param>
+        /// <param name="transactionId">The transaction id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] repository: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked}, trxId={TransactionId})")]
         public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string dbContextType, string dbContextId, string entityType, object entityId, bool entityTracked, Guid? transactionId);
 
+        /// <summary>
+        /// Writes a log entry for the delete operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
+        /// <param name="dbContextId">The db context id used by the operation.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="transactionId">The transaction id used by the operation.</param>
         [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] repository: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, trxId={TransactionId})")]
         public static partial void LogDelete(ILogger logger, string logKey, string dbContextType, string dbContextId, string entityType, object entityId, Guid? transactionId);
 
+        /// <summary>
+        /// Writes a log entry for the entity state operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityKeySet">The entity key set used by the operation.</param>
+        /// <param name="entityEntryState">The entity entry state used by the operation.</param>
         [LoggerMessage(2, LogLevel.Trace, "[{LogKey}] dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }

@@ -14,9 +14,18 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 /// <param name="blob">The byte buffer which holds the content of the event.</param>
 public class EventBlob(Type eventType, byte[] blob)
 {
+    /// <summary>
+    /// Gets or sets the event type.
+    /// </summary>
     public Type EventType { get; private set; } = eventType;
 
+    /// <summary>
+    /// Gets or sets the blob.
+    /// </summary>
     public byte[] Blob { get; private set; } = blob;
 
+    /// <summary>
+    /// Gets the infinity immutable type identifier.
+    /// </summary>
     public string InfinityImmutableTypeIdentifier { get; }
 }

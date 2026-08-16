@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Presentation;
 
 using Spectre.Console;
 
+/// <summary>
+/// Represents clear console command.
+/// </summary>
 public class ClearConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

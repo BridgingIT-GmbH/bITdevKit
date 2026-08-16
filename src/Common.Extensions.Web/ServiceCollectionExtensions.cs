@@ -9,6 +9,9 @@ using System;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Authentication;
 
+/// <summary>
+///     Provides dependency-injection registration for fake authentication.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>

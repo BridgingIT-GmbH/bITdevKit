@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using Microsoft.Extensions.Hosting;
 
 // HostedService > *Worker* > Broker
+/// <summary>
+/// Represents outbox message service.
+/// </summary>
 public class OutboxMessageService : BackgroundService // OutboxMessageHostedService > Publisher?
 {
     private readonly ILogger<OutboxMessageService> logger;
@@ -18,6 +21,13 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
     private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>OutboxMessageService</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="worker">The worker used by the operation.</param>
+    /// <param name="applicationLifetime">The application lifetime used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public OutboxMessageService(
         ILoggerFactory loggerFactory,
         IOutboxMessageWorker worker,
@@ -33,6 +43,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
 
+    /// <inheritdoc/>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("[{LogKey}] outbox message service stopped", Constants.LogKey);
@@ -44,6 +55,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         await base.StopAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.processTimer?.Dispose();
@@ -52,6 +64,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         base.Dispose();
     }
 
+    /// <inheritdoc/>
     protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)

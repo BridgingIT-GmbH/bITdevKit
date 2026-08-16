@@ -10,8 +10,13 @@ using Humanizer;
 using Polly;
 using Polly.Retry;
 
+/// <summary>
+/// Provides retry message handler behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class RetryMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

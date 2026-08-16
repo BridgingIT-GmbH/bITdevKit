@@ -7,8 +7,16 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Microsoft.EntityFrameworkCore.Migrations;
 
+/// <summary>
+/// Represents postgres job store migration helper.
+/// </summary>
 public static class PostgresJobStoreMigrationHelper
 {
+    /// <summary>
+    /// Creates quartz tables.
+    /// </summary>
+    /// <param name="migrationBuilder">The migration builder used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public static void CreateQuartzTables(MigrationBuilder migrationBuilder, PostgresJobStoreMigrationOptions options = null)
     {
         options ??= new PostgresJobStoreMigrationOptions();
@@ -440,6 +448,11 @@ public static class PostgresJobStoreMigrationHelper
         }
     }
 
+    /// <summary>
+    /// Executes the drop quartz tables operation.
+    /// </summary>
+    /// <param name="migrationBuilder">The migration builder used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public static void DropQuartzTables(MigrationBuilder migrationBuilder, PostgresJobStoreMigrationOptions options = null)
     {
         options ??= new PostgresJobStoreMigrationOptions();
@@ -462,10 +475,25 @@ public static class PostgresJobStoreMigrationHelper
     }
 }
 
+/// <summary>
+/// Configures postgres job store migration.
+/// </summary>
 public class PostgresJobStoreMigrationOptions
 {
+    /// <summary>
+    /// Gets or sets the schema.
+    /// </summary>
     public string Schema { get; set; } = "public";
+    /// <summary>
+    /// Gets or sets the table prefix.
+    /// </summary>
     public string TablePrefix { get; set; } = "QRTZ_";
+    /// <summary>
+    /// Gets or sets the create indexes.
+    /// </summary>
     public bool CreateIndexes { get; set; } = true;
+    /// <summary>
+    /// Gets or sets the column type overrides.
+    /// </summary>
     public Dictionary<string, string> ColumnTypeOverrides { get; set; } = [];
 }

@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common.Options;
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>Defines logger creation for option objects that may be configured with an <see cref="ILoggerFactory"/>.</summary>
 public interface ILoggerOptions
 {
     /// <summary>

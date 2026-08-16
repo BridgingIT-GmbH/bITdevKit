@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Provides fluent collection mutation helpers that add items only when caller-supplied conditions are satisfied.
+/// </summary>
 public static class ConditionalCollectionExtensions
 {
     /// <summary>
@@ -16,13 +19,13 @@ public static class ConditionalCollectionExtensions
     /// <param name="item">The item to add.</param>
     /// <param name="condition">The condition that must be true to add the item.</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item>();
     /// var item = new Item { Price = 10.0m };
     /// orderItems.AddIf(item, item.Price > 5.0m); // Adds item if its price is greater than 5
     /// orderItems = null;
     /// orderItems.AddIf(item, true); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddIf<T>(this ICollection<T> collection, T item, bool condition)
     {
         if (collection == null)
@@ -48,13 +51,13 @@ public static class ConditionalCollectionExtensions
     /// <param name="predicate">The predicate that determines if the item should be added.</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="predicate"/> is null and the collection is not null.</exception>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item>();
     /// var item = new Item { Quantity = 3 };
     /// orderItems.AddIf(item, x => x.Quantity > 0); // Adds item if its quantity is positive
     /// orderItems = null;
     /// orderItems.AddIf(item, x => x.Quantity > 0); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddIf<T>(this ICollection<T> collection, T item, Func<T, bool> predicate)
     {
         if (collection == null)
@@ -78,7 +81,7 @@ public static class ConditionalCollectionExtensions
     /// <param name="collection">The collection to add to, or null.</param>
     /// <param name="item">The item to add.</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item>();
     /// Item filteredItem = null; // Could be result of some operation
     /// orderItems.AddIfNotNull(filteredItem); // Won’t add because it’s null
@@ -86,7 +89,7 @@ public static class ConditionalCollectionExtensions
     /// orderItems.AddIfNotNull(filteredItem); // Adds because it’s not null
     /// orderItems = null;
     /// orderItems.AddIfNotNull(filteredItem); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddIfNotNull<T>(this ICollection<T> collection, T item)
     {
         if (collection == null)
@@ -112,13 +115,13 @@ public static class ConditionalCollectionExtensions
     /// <param name="condition">The condition that must be true to add the items.</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null and the collection is not null.</exception>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item>();
     /// var items = new[] { new Item { Price = 20.0m }, new Item { Price = 5.0m } };
     /// orderItems.AddRangeIf(items, items.Any(i => i.Price > 10.0m)); // Adds all if any price > 10
     /// orderItems = null;
     /// orderItems.AddRangeIf(items, true); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddRangeIf<T>(this ICollection<T> collection, IEnumerable<T> items, bool condition)
     {
         if (collection == null)
@@ -144,15 +147,15 @@ public static class ConditionalCollectionExtensions
     /// <typeparam name="T">The type of items in the collection.</typeparam>
     /// <param name="collection">The collection to add to, or null.</param>
     /// <param name="item">The item to add.</param>
-    /// <param name="comparer">The comparer to determine uniqueness (defaults to EqualityComparer<T>.Default).</param>
+    /// <param name="comparer">The comparer to determine uniqueness, or <see langword="null"/> to use the default equality comparer.</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item> { new Item { Id = 1 } };
     /// var newItem = new Item { Id = 1 };
     /// orderItems.AddIfUnique(newItem, Comparer<Item>.Create((a, b) => a.Id.CompareTo(b.Id))); // Won’t add if Id matches
     /// orderItems = null;
     /// orderItems.AddIfUnique(newItem); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddIfUnique<T>(this ICollection<T> collection, T item, IEqualityComparer<T> comparer = null)
     {
         if (collection == null)
@@ -179,13 +182,13 @@ public static class ConditionalCollectionExtensions
     /// <param name="predicates">The predicates that must all return true. Add if empty</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="predicates"/> is null or empty and the collection is not null.</exception>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item>();
     /// var item = new Item { Price = 25.0m, Quantity = 1 };
     /// orderItems.AddIfAllConditions(item, x => x.Price > 20.0m, x => x.Quantity > 0); // Adds if both true
     /// orderItems = null;
     /// orderItems.AddIfAllConditions(item, x => x.Price > 20.0m); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddIfAll<T>(this ICollection<T> collection, T item, params Func<T, bool>[] predicates)
     {
         if (collection == null)
@@ -211,13 +214,13 @@ public static class ConditionalCollectionExtensions
     /// <param name="predicates">The predicates, at least one of which must return true.</param>
     /// <returns>The collection (for chaining if desired), or null if the collection was null.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="predicates"/> is null or empty and the collection is not null.</exception>
-    /// <example>
+    /// <example><code><![CDATA[
     /// var orderItems = new List<Item>();
     /// var item = new Item { Price = 30.0m };
     /// orderItems.AddIfAnyCondition(item, x => x.Price > 25.0m, x => x.Quantity > 5); // Adds if either true
     /// orderItems = null;
     /// orderItems.AddIfAnyCondition(item, x => x.Price > 25.0m); // Does nothing and returns null silently
-    /// </example>
+    /// ]]></code></example>
     public static ICollection<T> AddIfAny<T>(this ICollection<T> collection, T item, params Func<T, bool>[] predicates)
     {
         if (collection == null)

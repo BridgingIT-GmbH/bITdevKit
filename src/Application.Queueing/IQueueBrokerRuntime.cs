@@ -17,14 +17,36 @@ public interface IQueueBrokerRuntime : IQueueBroker
         where TMessage : IQueueMessage
         where THandler : IQueueMessageHandler<TMessage>;
 
+    /// <summary>
+    /// Executes the subscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task Subscribe(Type messageType, Type handlerType);
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task Unsubscribe<TMessage, THandler>()
         where TMessage : IQueueMessage
         where THandler : IQueueMessageHandler<TMessage>;
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task Unsubscribe(Type messageType, Type handlerType);
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task Unsubscribe();
 
     /// <summary>

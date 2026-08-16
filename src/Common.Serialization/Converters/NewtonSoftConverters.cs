@@ -10,13 +10,18 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 
+/// <summary>
+///     Converts Newtonsoft JSON enum values using their <see cref="System.Runtime.Serialization.EnumMemberAttribute.Value"/> values.
+/// </summary>
 public class EnumConverter : JsonConverter
 {
+    /// <inheritdoc/>
     public override bool CanConvert(Type objectType)
     {
         return objectType.IsEnum;
     }
 
+    /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
@@ -37,6 +42,7 @@ public class EnumConverter : JsonConverter
         throw new JsonSerializationException($"Unable to parse {value} to {objectType}");
     }
 
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         var field = value.GetType().GetField(value.ToString());
@@ -45,8 +51,12 @@ public class EnumConverter : JsonConverter
     }
 }
 
+/// <summary>
+///     Converts <see cref="FilterCriteria"/> instances by mapping their public properties to JSON properties.
+/// </summary>
 public class FilterCriteriaConverter : JsonConverter<FilterCriteria>
 {
+    /// <inheritdoc/>
     public override FilterCriteria ReadJson(JsonReader reader, Type objectType, FilterCriteria existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         var jObject = JObject.Load(reader);
@@ -64,6 +74,7 @@ public class FilterCriteriaConverter : JsonConverter<FilterCriteria>
         return filterCriteria;
     }
 
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, FilterCriteria value, JsonSerializer serializer)
     {
         writer.WriteStartObject();

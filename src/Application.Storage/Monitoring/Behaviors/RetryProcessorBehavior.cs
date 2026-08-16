@@ -23,12 +23,25 @@ public class RetryProcessorBehavior(
     private readonly int maxAttempts = maxAttempts > 0 ? maxAttempts : 3;
     private readonly TimeSpan initialDelay = initialDelay ?? TimeSpan.FromSeconds(1);
 
+    /// <summary>
+    /// Runs before the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="token">The token used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task BeforeProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         // No-op before processing; retry logic is in AfterProcessAsync
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Runs after the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="token">The token used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task AfterProcessAsync(FileProcessingContext context, Result<bool> result, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));

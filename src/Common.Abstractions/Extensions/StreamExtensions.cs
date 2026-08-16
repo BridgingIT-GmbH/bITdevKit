@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Text.Json;
 
+/// <summary>
+/// Provides complete-buffer reads and conversions between streams, memory, text, bytes, and JSON values.
+/// </summary>
 public static class StreamExtensions
 {
     /// <summary>
@@ -18,6 +21,10 @@ public static class StreamExtensions
         return TryReadAll(source, buffer.AsSpan(offset, count));
     }
 
+    /// <summary>Reads repeatedly until a span is full or the stream reaches its end.</summary>
+    /// <param name="stream">The stream to read from its current position.</param>
+    /// <param name="buffer">The destination span to fill.</param>
+    /// <returns>The number of bytes read, which may be smaller than the span length at end of stream.</returns>
     public static int TryReadAll(this Stream stream, Span<byte> buffer)
     {
         var total = 0;
@@ -125,6 +132,11 @@ public static class StreamExtensions
         return memoryStream.ToArray();
     }
 
+    /// <summary>Copies the remaining source content into a new memory stream and rewinds the result.</summary>
+    /// <param name="source">The stream to copy from its current position.</param>
+    /// <param name="cancellationToken">A token that cancels the copy operation.</param>
+    /// <returns>A readable memory stream positioned at the beginning.</returns>
+    /// <remarks>The partially populated result is disposed when copying fails.</remarks>
     public static async Task<MemoryStream> ToMemoryStreamAsync(this Stream source, CancellationToken cancellationToken = default)
     {
         var result = new MemoryStream();

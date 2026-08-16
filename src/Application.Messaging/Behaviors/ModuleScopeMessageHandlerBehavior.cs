@@ -7,11 +7,18 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics;
 
+/// <summary>
+/// Provides module scope message handler behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
+/// <param name="activitySources">The activity sources used by the operation.</param>
 public class ModuleScopeMessageHandlerBehavior(
     ILoggerFactory loggerFactory,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,
     IEnumerable<ActivitySource> activitySources = null) : MessageHandlerBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

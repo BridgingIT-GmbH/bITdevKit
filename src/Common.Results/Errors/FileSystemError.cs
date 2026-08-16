@@ -11,6 +11,9 @@ namespace BridgingIT.DevKit.Common;
 public class FileSystemError(string message, string path = null, Exception innerException = null)
     : ResultErrorBase(message ?? "File system operation failed")
 {
+    /// <summary>Gets the file-system path associated with the failed operation, when supplied.</summary>
     public string Path { get; } = path;
+
+    /// <summary>Gets the exception that caused or describes the file-system failure, when available.</summary>
     public Exception InnerException { get; } = innerException;
 }

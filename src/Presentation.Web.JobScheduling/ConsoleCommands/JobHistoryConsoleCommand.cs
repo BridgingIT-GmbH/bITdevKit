@@ -8,25 +8,47 @@ namespace BridgingIT.DevKit.Presentation;
 using Spectre.Console;
 using System;
 
+/// <summary>
+/// Represents job history console command.
+/// </summary>
 public class JobHistoryConsoleCommand : JobGroupConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Job name", Required = true)]
     public string JobName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the job group.
+    /// </summary>
     [ConsoleCommandArgument(1, Description = "Job group", Required = false)]
     public string JobGroup { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status.
+    /// </summary>
     [ConsoleCommandOption("status", Alias = "s", Description = "Filter by status (Completed/Failed/Started)")]
     public string Status { get; set; }
 
+    /// <summary>
+    /// Gets or sets the from.
+    /// </summary>
     [ConsoleCommandOption("from", Description = "Start date (yyyy-MM-dd)")]
     public string From { get; set; }
 
+    /// <summary>
+    /// Gets or sets the to.
+    /// </summary>
     [ConsoleCommandOption("to", Description = "End date (yyyy-MM-dd)")]
     public string To { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobHistoryConsoleCommand</c> class.
+    /// </summary>
     public JobHistoryConsoleCommand() : base("history", "Show job execution history") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(this.JobName))

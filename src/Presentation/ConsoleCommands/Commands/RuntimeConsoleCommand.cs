@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using System.Diagnostics;
 
+/// <summary>
+/// Represents runtime console command.
+/// </summary>
 public class RuntimeConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

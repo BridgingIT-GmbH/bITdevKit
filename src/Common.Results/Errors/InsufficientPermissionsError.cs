@@ -11,12 +11,16 @@ namespace BridgingIT.DevKit.Common;
 public class InsufficientPermissionsError(string message = null, string requiredPermission = null)
     : ResultErrorBase(message ?? "Insufficient permissions")
 {
+    /// <summary>Gets the permission required to perform the operation, when supplied.</summary>
     public string RequiredPermission { get; } = requiredPermission;
 
+    /// <summary>Initializes an insufficient-permissions error with the default message and no permission name.</summary>
     public InsufficientPermissionsError() : this(null, null)
     {
     }
 
+    /// <summary>Initializes an insufficient-permissions error for a required permission.</summary>
+    /// <param name="requiredPermission">The permission required to perform the operation.</param>
     public InsufficientPermissionsError(string requiredPermission) : this(null, requiredPermission)
     {
     }

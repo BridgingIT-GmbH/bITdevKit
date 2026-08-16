@@ -8,9 +8,13 @@ namespace BridgingIT.DevKit.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Serializes <see cref="Type"/> values by their assembly-qualified name while rejecting deserialization.
+/// </summary>
 public class JsonTypeConverter
     : JsonConverter<Type> // source: https://stackoverflow.com/questions/66919668/net-core-graphql-graphql-systemtextjson-serialization-and-deserialization-of
 {
+    /// <inheritdoc/>
     public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         // Caution: Deserialization of type instances like this
@@ -23,6 +27,7 @@ public class JsonTypeConverter
         throw new NotSupportedException();
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options)
     {
         var assemblyQualifiedName = value.AssemblyQualifiedName;

@@ -571,18 +571,67 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the permission cache hit operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
+        /// <param name="permissionSource">The permission source used by the operation.</param>
         [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "[{LogKey}] permission evaluator - granted from cache: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionCacheHit(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
+        /// <summary>
+        /// Writes a log entry for the permission granted operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
+        /// <param name="permissionSource">The permission source used by the operation.</param>
         [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "[{LogKey}] permission evaluator - granted: {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGranted(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
+        /// <summary>
+        /// Writes a log entry for the permission granted default operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
+        /// <param name="permissionSource">The permission source used by the operation.</param>
         [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "[{LogKey}] permission evaluator - granted (default): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedDefault(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
 
+        /// <summary>
+        /// Writes a log entry for the permission denied operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "[{LogKey}] permission evaluator - denied: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogPermissionDenied(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the permission granted from parent operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
+        /// <param name="permissionSource">The permission source used by the operation.</param>
         [LoggerMessage(EventId = 6, Level = LogLevel.Debug, Message = "[{LogKey}] permission evaluator - granted (parent): {EntityType}/{EntityId}, permission={Permission}, user={UserId}, source={PermissionSource}")]
         public static partial void LogPermissionGrantedFromParent(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId, string permissionSource);
     }

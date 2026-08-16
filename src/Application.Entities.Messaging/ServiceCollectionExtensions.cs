@@ -10,8 +10,17 @@ using BridgingIT.DevKit.Application.Entities;
 using BridgingIT.DevKit.Common;
 using Extensions;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with entity command messaging behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CommandBuilderContext WithEntityCommandMessagingBehavior(
         this CommandBuilderContext context,
         EntityCommandMessagingBehaviorOptions options = null)
@@ -33,6 +42,12 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with entity command messaging behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CommandBuilderContext WithEntityCommandMessagingBehavior(
         this CommandBuilderContext context,
         Builder<EntityCommandMessagingBehaviorOptionsBuilder, EntityCommandMessagingBehaviorOptions> optionsBuilder)

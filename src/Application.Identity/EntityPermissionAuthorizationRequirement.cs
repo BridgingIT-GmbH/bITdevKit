@@ -45,7 +45,13 @@ public class EntityPermissionAuthorizationRequirement : IAuthorizationRequiremen
     /// </value>
     public string[] Permissions { get; init; }
 
+    /// <summary>
+    /// Gets the permission.
+    /// </summary>
     public string Permission { get; }
 
+    /// <summary>
+    /// Gets the entity type.
+    /// </summary>
     public Type EntityType { get; }
 }

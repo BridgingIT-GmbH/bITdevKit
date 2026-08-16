@@ -11,8 +11,15 @@ using Newtonsoft.Json.Serialization;
 
 // TODO: get rid of Newtonsoft dependency
 
+/// <summary>
+///     Creates the standard Newtonsoft.Json settings used by DevKit serializers.
+/// </summary>
 public static class DefaultNewtonsoftSerializerSettings
 {
+    /// <summary>
+    ///     Creates serializer settings with camel-case member names, UTC date handling, and DevKit converters.
+    /// </summary>
+    /// <returns>A new configured serializer-settings instance.</returns>
     public static JsonSerializerSettings Create()
     {
         return new JsonSerializerSettings

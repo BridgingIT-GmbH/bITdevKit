@@ -11,12 +11,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents local location handler.
+/// </summary>
 public class LocalLocationHandler : LocationHandlerBase
 {
     private FileSystemWatcher fileSystemWatcher;
     private readonly Dictionary<string, (FileEvent Event, DateTimeOffset Timestamp)> eventBuffer = [];
     private readonly TimeSpan debounceInterval = TimeSpan.FromMilliseconds(200);
 
+    /// <summary>
+    /// Initializes a new instance of the <c>LocalLocationHandler</c> class.
+    /// </summary>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="provider">The provider used by the operation.</param>
+    /// <param name="store">The store used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="serviceProvider">The service provider used by the operation.</param>
+    /// <param name="behaviors">The behaviors used by the operation.</param>
     public LocalLocationHandler(
         ILogger logger,
         IFileStorageProvider provider,
@@ -32,6 +44,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
+    /// <inheritdoc/>
     public override async Task StartAsync(CancellationToken cancellationToken = default)
     {
         await base.StartAsync(cancellationToken);
@@ -47,6 +60,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
+    /// <inheritdoc/>
     public override async Task PauseAsync(CancellationToken cancellationToken = default)
     {
         if (this.fileSystemWatcher != null && !this.isPaused)
@@ -56,6 +70,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
+    /// <inheritdoc/>
     public override async Task ResumeAsync(CancellationToken cancellationToken = default)
     {
         if (this.fileSystemWatcher != null && this.isPaused)
@@ -65,6 +80,7 @@ public class LocalLocationHandler : LocationHandlerBase
         }
     }
 
+    /// <inheritdoc/>
     public override async Task StopAsync(CancellationToken cancellationToken = default)
     {
         if (this.fileSystemWatcher != null)
@@ -78,6 +94,7 @@ public class LocalLocationHandler : LocationHandlerBase
         await base.StopAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<FileScanContext> ScanAsync(
         FileScanOptions options = null,
         IProgress<FileScanProgress> progress = null,

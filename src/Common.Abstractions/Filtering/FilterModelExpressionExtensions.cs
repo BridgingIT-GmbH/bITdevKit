@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Linq.Expressions;
 
+/// <summary>
+/// Extracts dotted property paths from member-access expressions used by filter-model builders.
+/// </summary>
 public static class FilterModelExpressionExtensions
 {
     /// <summary>

@@ -9,6 +9,9 @@ namespace BridgingIT.DevKit.Application.Identity;
 /// </summary>
 public static class EntityPermissionCacheKeys
 {
+    /// <summary>
+    /// Stores the prefix.
+    /// </summary>
     public static string Prefix = "perm";
 
     /// <summary>

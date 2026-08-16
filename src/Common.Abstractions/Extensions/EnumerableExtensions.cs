@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Runtime.CompilerServices;
 
+/// <summary>
+/// Provides immutable-style insertion helpers and cancellation-aware conversion to asynchronous sequences.
+/// </summary>
 public static class EnumerableExtensions
 {
     /// <summary>

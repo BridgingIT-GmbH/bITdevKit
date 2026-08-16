@@ -10,25 +10,47 @@ using Spectre.Console;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Represents job trigger console command.
+/// </summary>
 public class JobTriggerConsoleCommand : JobGroupConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Job name", Required = true)]
     public string JobName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the job group.
+    /// </summary>
     [ConsoleCommandArgument(1, Description = "Job group", Required = false)]
     public string JobGroup { get; set; }
 
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
     [ConsoleCommandOption("data", Alias = "d", Description = "Job data as key=value pairs")]
     public string[] Data { get; set; }
 
+    /// <summary>
+    /// Gets or sets the wait.
+    /// </summary>
     [ConsoleCommandOption("wait", Alias = "w", Description = "Wait for job completion")]
     public bool Wait { get; set; }
 
+    /// <summary>
+    /// Gets or sets the timeout.
+    /// </summary>
     [ConsoleCommandOption("timeout", Alias = "t", Description = "Timeout in milliseconds (default 600000)")]
     public int Timeout { get; set; } = 600000;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobTriggerConsoleCommand</c> class.
+    /// </summary>
     public JobTriggerConsoleCommand() : base("trigger", "Trigger job execution") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(this.JobName))

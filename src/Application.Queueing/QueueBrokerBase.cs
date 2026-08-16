@@ -5,8 +5,19 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Represents queue broker base.
+/// </summary>
 public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>QueueBrokerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="handlerFactory">The handler factory used by the operation.</param>
+    /// <param name="serializer">The serializer used by the operation.</param>
+    /// <param name="enqueuerBehaviors">The enqueuer behaviors used by the operation.</param>
+    /// <param name="handlerBehaviors">The handler behaviors used by the operation.</param>
     protected QueueBrokerBase(
         ILoggerFactory loggerFactory,
         IQueueMessageHandlerFactory handlerFactory,
@@ -23,18 +34,42 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         this.HandlerBehaviors = handlerBehaviors ?? [];
     }
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     protected ILogger Logger { get; }
 
+    /// <summary>
+    /// Gets the subscriptions.
+    /// </summary>
     protected IQueueSubscriptionMap Subscriptions { get; } = new QueueSubscriptionMap();
 
+    /// <summary>
+    /// Gets the handler factory.
+    /// </summary>
     protected IQueueMessageHandlerFactory HandlerFactory { get; }
 
+    /// <summary>
+    /// Gets the serializer.
+    /// </summary>
     protected ISerializer Serializer { get; }
 
+    /// <summary>
+    /// Gets the enqueuer behaviors.
+    /// </summary>
     protected IEnumerable<IQueueEnqueuerBehavior> EnqueuerBehaviors { get; }
 
+    /// <summary>
+    /// Gets the handler behaviors.
+    /// </summary>
     protected IEnumerable<IQueueHandlerBehavior> HandlerBehaviors { get; }
 
+    /// <summary>
+    /// Executes the subscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Subscribe<TMessage, THandler>()
         where TMessage : IQueueMessage
         where THandler : IQueueMessageHandler<TMessage>
@@ -46,6 +81,12 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         await this.OnSubscribe<TMessage, THandler>();
     }
 
+    /// <summary>
+    /// Executes the subscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Subscribe(Type messageType, Type handlerType)
     {
         ArgumentNullException.ThrowIfNull(messageType);
@@ -58,6 +99,12 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         await this.OnSubscribe(messageType, handlerType);
     }
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Unsubscribe<TMessage, THandler>()
         where TMessage : IQueueMessage
         where THandler : IQueueMessageHandler<TMessage>
@@ -67,6 +114,12 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         await this.OnUnsubscribe<TMessage, THandler>();
     }
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Unsubscribe(Type messageType, Type handlerType)
     {
         ArgumentNullException.ThrowIfNull(messageType);
@@ -77,6 +130,10 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         await this.OnUnsubscribe(messageType, handlerType);
     }
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Unsubscribe()
     {
         var subscriptions = this.Subscriptions.GetAll()
@@ -91,6 +148,12 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         }
     }
 
+    /// <summary>
+    /// Executes the enqueue operation.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Enqueue(IQueueMessage message, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(message);
@@ -119,11 +182,22 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
                 })();
     }
 
+    /// <summary>
+    /// Executes the enqueue and wait operation.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task EnqueueAndWait(IQueueMessage message, CancellationToken cancellationToken = default)
     {
         await this.Enqueue(message, cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="messageRequest">The message request used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Process(QueueMessageRequest messageRequest)
     {
         ArgumentNullException.ThrowIfNull(messageRequest);
@@ -159,6 +233,13 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         messageRequest.OnProcessComplete(result ? QueueProcessingResult.Succeeded : QueueProcessingResult.Failed);
     }
 
+    /// <summary>
+    /// Executes the process subscription operation.
+    /// </summary>
+    /// <param name="messageRequest">The message request used by the operation.</param>
+    /// <param name="subscription">The subscription used by the operation.</param>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual async Task<bool> ProcessSubscription(
         QueueMessageRequest messageRequest,
         QueueSubscriptionDetails subscription,
@@ -227,6 +308,14 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         }
     }
 
+    /// <summary>
+    /// Executes the process subscription handler operation.
+    /// </summary>
+    /// <param name="messageRequest">The message request used by the operation.</param>
+    /// <param name="handlerInstance">The handler instance used by the operation.</param>
+    /// <param name="handlerMethod">The handler method used by the operation.</param>
+    /// <param name="handledMessage">The handled message used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task ProcessSubscriptionHandler(
         QueueMessageRequest messageRequest,
         object handlerInstance,
@@ -254,6 +343,11 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
                 })();
     }
 
+    /// <summary>
+    /// Gets subscription.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected QueueSubscriptionDetails GetSubscription(Type messageType)
     {
         ArgumentNullException.ThrowIfNull(messageType);
@@ -261,6 +355,11 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         return this.Subscriptions.Get(messageType.PrettyName(false));
     }
 
+    /// <summary>
+    /// Gets subscription.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected QueueSubscriptionDetails GetSubscription(string messageType)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(messageType);
@@ -268,11 +367,21 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         return this.Subscriptions.Get(messageType);
     }
 
+    /// <summary>
+    /// Gets subscriptions.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     protected IReadOnlyDictionary<string, QueueSubscriptionDetails> GetSubscriptions()
     {
         return this.Subscriptions.GetAll();
     }
 
+    /// <summary>
+    /// Executes the on subscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnSubscribe<TMessage, THandler>()
         where TMessage : IQueueMessage
         where THandler : IQueueMessageHandler<TMessage>
@@ -280,11 +389,23 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the on subscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnSubscribe(Type messageType, Type handlerType)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the on unsubscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnUnsubscribe<TMessage, THandler>()
         where TMessage : IQueueMessage
         where THandler : IQueueMessageHandler<TMessage>
@@ -292,21 +413,45 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the on unsubscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnUnsubscribe(Type messageType, Type handlerType)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the on unsubscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnUnsubscribe(string messageType, Type handlerType)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the on enqueue operation.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnEnqueue(IQueueMessage message, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the on process operation.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected virtual Task OnProcess(IQueueMessage message, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;

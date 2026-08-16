@@ -5,4 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
+/// <summary>
+/// Defines operations for i domain event propagator root.
+/// </summary>
 public interface IDomainEventPropagatorRoot;

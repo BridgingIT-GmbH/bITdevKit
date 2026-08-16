@@ -9,12 +9,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BridgingIT.DevKit.Application.Orchestrations;
 
-[Table("__Orchestration_Timers")]
-[Index(nameof(Status), nameof(DueTimeUtc))]
-[Index(nameof(InstanceId), nameof(Status), nameof(DueTimeUtc))]
 /// <summary>
 /// Represents a durable orchestration timer row stored in Entity Framework persistence.
 /// </summary>
+[Table("__Orchestration_Timers")]
+[Index(nameof(Status), nameof(DueTimeUtc))]
+[Index(nameof(InstanceId), nameof(Status), nameof(DueTimeUtc))]
 public class OrchestrationTimer
 {
     /// <summary>

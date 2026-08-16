@@ -8,6 +8,11 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents in memory job store provider.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="retentionPeriod">The retention period used by the operation.</param>
 public class InMemoryJobStoreProvider(ILoggerFactory loggerFactory, TimeSpan? retentionPeriod = null) : IJobStoreProvider
 {
     private readonly ILogger<InMemoryJobStoreProvider> logger = loggerFactory?.CreateLogger<InMemoryJobStoreProvider>() ?? NullLogger<InMemoryJobStoreProvider>.Instance;

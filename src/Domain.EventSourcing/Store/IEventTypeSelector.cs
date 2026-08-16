@@ -5,7 +5,15 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
+/// <summary>
+/// Defines operations for i event type selector.
+/// </summary>
 public interface IEventTypeSelector
 {
+    /// <summary>
+    /// Finds type.
+    /// </summary>
+    /// <param name="typename">The typename used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     Type FindType(string typename);
 }

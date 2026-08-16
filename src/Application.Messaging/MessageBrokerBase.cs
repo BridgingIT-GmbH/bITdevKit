@@ -7,8 +7,19 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 using FluentValidation;
 
+/// <summary>
+/// Represents message broker base.
+/// </summary>
 public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>MessageBrokerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="handlerFactory">The handler factory used by the operation.</param>
+    /// <param name="serializer">The serializer used by the operation.</param>
+    /// <param name="publisherBehaviors">The publisher behaviors used by the operation.</param>
+    /// <param name="handlerBehaviors">The handler behaviors used by the operation.</param>
     protected MessageBrokerBase(
         ILoggerFactory loggerFactory,
         IMessageHandlerFactory handlerFactory,
@@ -28,18 +39,42 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
     private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     protected ILogger Logger { get; }
 
+    /// <summary>
+    /// Gets the subscriptions.
+    /// </summary>
     protected ISubscriptionMap Subscriptions { get; } = new SubscriptionMap();
 
+    /// <summary>
+    /// Gets the handler factory.
+    /// </summary>
     protected IMessageHandlerFactory HandlerFactory { get; }
 
+    /// <summary>
+    /// Gets the serializer.
+    /// </summary>
     protected ISerializer Serializer { get; }
 
+    /// <summary>
+    /// Gets the publisher behaviors.
+    /// </summary>
     protected IEnumerable<IMessagePublisherBehavior> PublisherBehaviors { get; }
 
+    /// <summary>
+    /// Gets the handler behaviors.
+    /// </summary>
     protected IEnumerable<IMessageHandlerBehavior> HandlerBehaviors { get; }
 
+    /// <summary>
+    /// Executes the subscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Subscribe<TMessage, THandler>()
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
@@ -51,6 +86,12 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         await this.OnSubscribe<TMessage, THandler>();
     }
 
+    /// <summary>
+    /// Executes the subscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Subscribe(Type messageType, Type handlerType)
     {
         EnsureArg.IsNotNull(messageType, nameof(messageType));
@@ -63,6 +104,12 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         await this.OnSubscribe(messageType, handlerType);
     }
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Unsubscribe<TMessage, THandler>()
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
@@ -72,6 +119,12 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         await this.OnUnsubscribe<TMessage, THandler>();
     }
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <param name="messageType">The message type used by the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Unsubscribe(Type messageType, Type handlerType)
     {
         EnsureArg.IsNotNull(messageType, nameof(messageType));
@@ -82,6 +135,10 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         await this.OnUnsubscribe(messageType, handlerType);
     }
 
+    /// <summary>
+    /// Executes the unsubscribe operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Unsubscribe()
     {
         List<(string messageType, Type handler)> subscriptions = [];
@@ -103,6 +160,12 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         }
     }
 
+    /// <summary>
+    /// Publishes .
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Publish(IMessage message, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(message, nameof(message));
@@ -133,6 +196,11 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
                 })();
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="messageRequest">The message request used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Process(MessageRequest messageRequest)
     {
         EnsureArg.IsNotNull(messageRequest, nameof(messageRequest));
@@ -392,6 +460,10 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Validates publish.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
     protected virtual void ValidatePublish(IMessage message)
     {
         var validationResult = message.Validate();
@@ -401,8 +473,18 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the subscribe operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
+        /// <param name="messageHandler">The message handler used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] subscribe (type={MessageType}, handler={MessageHandler})")]
         public static partial void LogSubscribe(
             ILogger logger,
@@ -410,6 +492,13 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             string messageType,
             string messageHandler);
 
+        /// <summary>
+        /// Writes a log entry for the unsubscribe operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
+        /// <param name="messageHandler">The message handler used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] unsubscribe (type={MessageType}, handler={MessageHandler})")]
         public static partial void LogUnsubscribe(
             ILogger logger,
@@ -417,9 +506,25 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             string messageType,
             string messageHandler);
 
+        /// <summary>
+        /// Writes a log entry for the publish operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
+        /// <param name="messageId">The message id used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] publish (type={MessageType}, id={MessageId})")]
         public static partial void LogPublish(ILogger logger, string logKey, string messageType, string messageId);
 
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
+        /// <param name="messageHandler">The message handler used by the operation.</param>
+        /// <param name="messageId">The message id used by the operation.</param>
+        /// <param name="messageBroker">The message broker used by the operation.</param>
         [LoggerMessage(3,
             LogLevel.Information,
             "[{LogKey}] processing (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker})")]
@@ -431,6 +536,16 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             string messageId,
             string messageBroker);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
+        /// <param name="messageHandler">The message handler used by the operation.</param>
+        /// <param name="messageId">The message id used by the operation.</param>
+        /// <param name="messageBroker">The message broker used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(4,
             LogLevel.Information,
             "[{LogKey}] processed (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker}) -> took {TimeElapsed:0.0000} ms")]

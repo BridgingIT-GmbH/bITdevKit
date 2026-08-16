@@ -196,6 +196,11 @@ public static class GenericRepositoryResultExtensions
         }
     }
 
+    /// <summary>
+    /// Determines whether is concurrency exception.
+    /// </summary>
+    /// <param name="ex">The ex used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool IsConcurrencyException(this Exception ex) =>
         ex is DBConcurrencyException || ex is ConcurrencyException ||
         ex.GetType().Name == "DbUpdateConcurrencyException" || ex.GetType().Name == "OptimisticConcurrencyException"; // check for EF Core by string

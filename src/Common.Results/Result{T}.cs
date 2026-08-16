@@ -293,6 +293,10 @@ public readonly partial struct Result<T> : IResult<T>
         }
     }
 
+    /// <summary>Executes a synchronous operation and represents its returned value or thrown exception as a result.</summary>
+    /// <typeparam name="TNew">The type returned by the operation.</typeparam>
+    /// <param name="operation">The operation to execute.</param>
+    /// <returns>A successful result containing the returned value; a failed result when the operation is <see langword="null"/> or throws.</returns>
     public static Result<TNew> Bind<TNew>(Func<TNew> operation)
     {
         if (operation is null)
@@ -359,6 +363,11 @@ public readonly partial struct Result<T> : IResult<T>
         }
     }
 
+    /// <summary>Executes an asynchronous operation and represents its returned value, cancellation, or thrown exception as a result.</summary>
+    /// <typeparam name="TNew">The type returned by the operation.</typeparam>
+    /// <param name="operation">The asynchronous operation to execute.</param>
+    /// <param name="cancellationToken">The token passed to the operation.</param>
+    /// <returns>A task containing a successful value result, or a failed result for a missing operation, cancellation, or exception.</returns>
     public static async Task<Result<TNew>> BindAsync<TNew>(
         Func<CancellationToken, Task<TNew>> operation,
         CancellationToken cancellationToken = default)
@@ -842,6 +851,9 @@ public readonly partial struct Result<T> : IResult<T>
         return new Result<T>(false, this.value, this.messages, this.errors.Add(error));
     }
 
+    /// <summary>Adds an error with the supplied message and marks the result as failed.</summary>
+    /// <param name="errorMessage">The message stored in the appended <see cref="Error"/>.</param>
+    /// <returns>A failed result that preserves the current value, messages, and existing errors.</returns>
     public Result<T> WithError(string errorMessage)
     {
         return new Result<T>(false, this.value, this.messages, this.errors.Add(new Error(errorMessage)));

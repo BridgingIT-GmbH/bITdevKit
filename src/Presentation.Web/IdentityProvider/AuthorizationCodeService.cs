@@ -9,17 +9,40 @@ using System;
 using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Defines operations for i authorization code service.
+/// </summary>
 public interface IAuthorizationCodeService
 {
+    /// <summary>
+    /// Executes the generate code operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     string GenerateCode(FakeUser user, AuthorizeRequest request);
 
+    /// <summary>
+    /// Validates code.
+    /// </summary>
+    /// <param name="code">The code used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     AuthorizationCodeModel ValidateCode(string code);
 }
 
+/// <summary>
+/// Represents authorization code service.
+/// </summary>
 public class AuthorizationCodeService : IAuthorizationCodeService
 {
     private readonly Dictionary<string, AuthorizationCodeModel> authCodes = [];
 
+    /// <summary>
+    /// Executes the generate code operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public string GenerateCode(FakeUser user, AuthorizeRequest request)
     {
         //var code = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
@@ -38,6 +61,11 @@ public class AuthorizationCodeService : IAuthorizationCodeService
         return code;
     }
 
+    /// <summary>
+    /// Validates code.
+    /// </summary>
+    /// <param name="code">The code used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public AuthorizationCodeModel ValidateCode(string code)
     {
         if (!this.authCodes.TryGetValue(code, out var data))

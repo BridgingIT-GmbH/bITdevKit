@@ -10,10 +10,18 @@ using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ISerializer = Common.ISerializer;
 
+/// <summary>
+/// Represents from query filter model binder.
+/// </summary>
 public class FromQueryFilterModelBinder : IModelBinder
 {
     private static readonly ISerializer Serializer = new SystemTextJsonSerializer();
 
+    /// <summary>
+    /// Executes the bind model operation.
+    /// </summary>
+    /// <param name="bindingContext">The binding context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         var json = bindingContext.ValueProvider.GetValue(bindingContext.ModelName).FirstValue;

@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+///     Provides dependency-injection registration for Requester and Notifier services and behaviors.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>

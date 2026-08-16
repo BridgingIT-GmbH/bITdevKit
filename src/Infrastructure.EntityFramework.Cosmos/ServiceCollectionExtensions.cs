@@ -15,8 +15,20 @@ using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds cosmos db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="cosmosOptionsBuilder">The cosmos options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CosmosDbContextBuilderContext<TContext> AddCosmosDbContext<TContext>(
         this IServiceCollection services,
         Builder<CosmosOptionsBuilder, CosmosOptions> optionsBuilder,
@@ -29,6 +41,15 @@ public static class ServiceCollectionExtensions
             lifetime);
     }
 
+    /// <summary>
+    /// Adds cosmos db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cosmosOptionsBuilder">The cosmos options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CosmosDbContextBuilderContext<TContext> AddCosmosDbContext<TContext>(
         this IServiceCollection services,
         CosmosOptions options,
@@ -86,6 +107,16 @@ public static class ServiceCollectionExtensions
             provider: Provider.SqlServer);
     }
 
+    /// <summary>
+    /// Adds cosmos db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="database">The database used by the operation.</param>
+    /// <param name="cosmosOptionsBuilder">The cosmos options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CosmosDbContextBuilderContext<TContext> AddCosmosDbContext<TContext>(
         this IServiceCollection services,
         string connectionString,

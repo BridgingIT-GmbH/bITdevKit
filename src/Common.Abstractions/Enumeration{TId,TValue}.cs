@@ -21,6 +21,9 @@ using System.Reflection;
 public abstract class Enumeration<TId, TValue>(TId id, TValue value) : IEnumeration<TId, TValue>
     where TId : IComparable
 {
+    /// <summary>
+    /// Creates an enumeration with default identifier and value data for deserialization frameworks.
+    /// </summary>
     protected Enumeration() : this(default, default) // for json deserialization
     {
     }

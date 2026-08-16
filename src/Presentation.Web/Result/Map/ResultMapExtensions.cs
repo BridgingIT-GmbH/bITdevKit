@@ -29,6 +29,13 @@ public static class ResultMapExtensions
         return ResultMapHttpExtensions.MapNoContent(result, logger);
     }
 
+    /// <summary>
+    /// Executes the map http no content operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <returns>The result of the operation.</returns>
     public static Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpNoContent<T>(
         this Result<T> result,
         ILogger logger = null)

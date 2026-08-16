@@ -256,8 +256,10 @@ public sealed class BroadcastRegistrationLeaseService(
 {
     private bool databaseReady;
 
+    /// <inheritdoc />
     protected override bool IsEnabled => options.Enabled && options.RegistrationLeaseEnabled;
 
+    /// <inheritdoc />
     protected override async Task ExecuteIterationAsync(CancellationToken cancellationToken)
     {
         if (

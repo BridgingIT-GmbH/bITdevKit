@@ -11,5 +11,6 @@ namespace BridgingIT.DevKit.Common;
 public class CollectionValidationError(string message, int index, string propertyName = null, object attemptedValue = null)
     : ValidationError(message, propertyName, attemptedValue)
 {
+    /// <summary>Gets the zero-based position of the collection item that failed validation.</summary>
     public int Index { get; } = index;
 }

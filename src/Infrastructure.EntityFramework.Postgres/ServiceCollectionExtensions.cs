@@ -20,8 +20,20 @@ using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Quartz;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds postgres db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="postgresOptionsBuilder">The postgres options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static PostgresDbContextBuilderContext<TContext> AddPostgresDbContext<TContext>(
         this IServiceCollection services,
         Builder<PostgresOptionsBuilder, PostgresOptions> optionsBuilder,
@@ -35,6 +47,15 @@ public static class ServiceCollectionExtensions
             optionsBuilder(new PostgresOptionsBuilder()).Build(), postgresOptionsBuilder, lifetime);
     }
 
+    /// <summary>
+    /// Adds postgres db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="postgresOptionsBuilder">The postgres options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static PostgresDbContextBuilderContext<TContext> AddPostgresDbContext<TContext>(
         this IServiceCollection services,
         PostgresOptions options,
@@ -147,6 +168,15 @@ public static class ServiceCollectionExtensions
         }
     }
 
+    /// <summary>
+    /// Adds postgres db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="postgresOptionsBuilder">The postgres options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static PostgresDbContextBuilderContext<TContext> AddPostgresDbContext<TContext>(
         this IServiceCollection services,
         string connectionString,
@@ -166,6 +196,14 @@ public static class ServiceCollectionExtensions
             provider: Provider.Postgres);
     }
 
+    /// <summary>
+    /// Executes the with sequence number generator operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static PostgresDbContextBuilderContext<TContext> WithSequenceNumberGenerator<TContext>(
         this PostgresDbContextBuilderContext<TContext> context,
         SequenceNumberGeneratorOptions options = null,

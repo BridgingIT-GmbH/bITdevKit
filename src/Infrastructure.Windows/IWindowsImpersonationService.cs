@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Infrastructure.Windows;
 
 using System;
 
+/// <summary>
+/// Defines operations for i windows impersonation service.
+/// </summary>
 public interface IWindowsImpersonationService : IDisposable
 {
     /// <summary>

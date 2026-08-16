@@ -29,8 +29,15 @@ public partial class FakeAuthenticationHandler(
 {
     private readonly FakeAuthenticationOptions options = options ?? new FakeAuthenticationOptions();
 
+    /// <summary>
+    ///     Gets the authentication scheme name registered for the fake handler.
+    /// </summary>
     public static string SchemeName => "Fake";
 
+    /// <summary>
+    ///     Authenticates the user named by a <c>FakeUser email</c> authorization header, or the configured default user.
+    /// </summary>
+    /// <returns>A successful ticket for an enabled configured user; otherwise, a failed authentication result.</returns>
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         TypedLogger.LogStartingAuthentication(this.Logger, "IDN");
@@ -124,20 +131,41 @@ public partial class FakeAuthenticationHandler(
         return AuthenticateResult.Success(ticket);
     }
 
+    /// <summary>
+    ///     Provides source-generated messages for fake authentication decisions.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>Logs the start of fake authentication.</summary>
+        /// <param name="logger">The logger to write to.</param>
+        /// <param name="logKey">The structured log key.</param>
         [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "[{LogKey}] authentication - start fake authentication")]
         public static partial void LogStartingAuthentication(ILogger logger, string logKey);
 
+        /// <summary>Logs an authorization header that does not use the expected fake-user format.</summary>
+        /// <param name="logger">The logger to write to.</param>
+        /// <param name="logKey">The structured log key.</param>
         [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "[{LogKey}] authentication - invalid authorization header format. Expected: 'FakeUser [email]'")]
         public static partial void LogInvalidAuthorizationHeader(ILogger logger, string logKey);
 
+        /// <summary>Logs successful fake-user authentication.</summary>
+        /// <param name="logger">The logger to write to.</param>
+        /// <param name="logKey">The structured log key.</param>
+        /// <param name="Email">The authenticated user's email address.</param>
         [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "[{LogKey}] authentication - fake user authenticated: {Email}")]
         public static partial void LogFakeUserAuthenticated(ILogger logger, string logKey, string Email);
 
+        /// <summary>Logs that the requested fake user was not configured.</summary>
+        /// <param name="logger">The logger to write to.</param>
+        /// <param name="logKey">The structured log key.</param>
+        /// <param name="Email">The requested email address.</param>
         [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "[{LogKey}] authentication - fake user not found: {Email}")]
         public static partial void LogFakeUserNotFound(ILogger logger, string logKey, string Email);
 
+        /// <summary>Logs that a configured fake user is disabled.</summary>
+        /// <param name="logger">The logger to write to.</param>
+        /// <param name="logKey">The structured log key.</param>
+        /// <param name="Email">The disabled user's email address.</param>
         [LoggerMessage(EventId = 6, Level = LogLevel.Warning, Message = "[{LogKey}] authentication - fake user disabled: {Email}")]
         public static partial void LogFakeUserDisabled(ILogger logger, string logKey, string Email);
     }

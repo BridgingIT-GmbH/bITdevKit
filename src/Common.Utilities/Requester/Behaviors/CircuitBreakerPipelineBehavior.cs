@@ -10,6 +10,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 
+/// <summary>
+///     Applies retry and circuit-breaker policies configured for a request handler.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
+/// <param name="policyCache">The handler policy cache.</param>
+/// <param name="options">Default circuit-breaker settings used when an attribute omits values.</param>
 public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ConcurrentDictionary<Type, PolicyConfig> policyCache,
@@ -20,11 +28,13 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly CircuitBreakerOptions circuitBreakerOptions = options?.Value ?? new CircuitBreakerOptions();
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.CircuitBreaker != null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

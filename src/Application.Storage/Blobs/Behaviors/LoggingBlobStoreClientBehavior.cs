@@ -34,6 +34,7 @@ public sealed class LoggingBlobStoreClientBehavior(
     private readonly ILogger<LoggingBlobStoreClientBehavior> logger = loggerFactory?.CreateLogger<LoggingBlobStoreClientBehavior>() ??
             NullLoggerFactory.Instance.CreateLogger<LoggingBlobStoreClientBehavior>();
 
+    /// <inheritdoc/>
     protected override async Task<Result<T>> ExecuteAsync<T>(
         string operation,
         BlobStoreOperationContext context,
@@ -47,6 +48,7 @@ public sealed class LoggingBlobStoreClientBehavior(
         return result;
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result> ExecuteAsync(
         string operation,
         BlobStoreOperationContext context,

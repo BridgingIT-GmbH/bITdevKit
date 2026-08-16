@@ -8,8 +8,16 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+/// <summary>
+/// Represents entity type builder extensions.
+/// </summary>
 public static class EntityTypeBuilderExtensions
 {
+    /// <summary>
+    /// Represents owns one audit state.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
     public static EntityTypeBuilder<TEntity> OwnsOneAuditState<TEntity>(this EntityTypeBuilder<TEntity> builder)
         where TEntity : class, IEntity, IAuditable
     {
@@ -62,6 +70,10 @@ public static class EntityTypeBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Represents where.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
     public static OwnedNavigationBuilder<TOwnerEntity, TEntity> OwnsOneAuditState<TOwnerEntity, TEntity>(
         this OwnedNavigationBuilder<TOwnerEntity, TEntity> builder) // TODO: also provide a ToJson variant
         where TOwnerEntity : class
@@ -116,6 +128,11 @@ public static class EntityTypeBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Represents owns one audit state to json.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
     public static EntityTypeBuilder<TEntity> OwnsOneAuditStateToJson<TEntity>(this EntityTypeBuilder<TEntity> builder)
         where TEntity : class, IEntity, IAuditable
     {
@@ -124,6 +141,10 @@ public static class EntityTypeBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Represents where.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
     public static OwnedNavigationBuilder<TOwnerEntity, TEntity> OwnsOneAuditStateToJson<TOwnerEntity, TEntity>(
         this OwnedNavigationBuilder<TOwnerEntity, TEntity> builder)
         where TOwnerEntity : class

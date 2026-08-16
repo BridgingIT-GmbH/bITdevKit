@@ -10,8 +10,12 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Converts JSON objects to and from dictionaries whose values retain their JSON-compatible runtime types.
+/// </summary>
 public class DictionaryConverter : JsonConverter<IDictionary<string, object>>
 {
+    /// <inheritdoc/>
     public override IDictionary<string, object> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -67,6 +71,7 @@ public class DictionaryConverter : JsonConverter<IDictionary<string, object>>
         }
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, IDictionary<string, object> value, JsonSerializerOptions options)
     {
         if (value == null)

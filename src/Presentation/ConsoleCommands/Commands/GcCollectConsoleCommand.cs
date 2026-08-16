@@ -8,8 +8,14 @@ namespace BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
+/// <summary>
+/// Represents gc collect console command.
+/// </summary>
 public class GcCollectConsoleCommand : ConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the no collect.
+    /// </summary>
     [ConsoleCommandOption("no-collect", Description = "Skip forcing GC; only show current memory stats")] public bool NoCollect { get; set; }
     /// <summary>
     /// Forces a full garbage collection and reports memory freed and collection counts (unless --no-collect specified).

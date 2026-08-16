@@ -32,5 +32,10 @@ public interface IEventStoreAggregateRegistration
     string GetImmutableName<TAggregate>()
         where TAggregate : EventSourcingAggregateRoot;
 
+    /// <summary>
+    /// Gets type on immutable name.
+    /// </summary>
+    /// <param name="immutableName">The immutable name used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     string GetTypeOnImmutableName(string immutableName);
 }

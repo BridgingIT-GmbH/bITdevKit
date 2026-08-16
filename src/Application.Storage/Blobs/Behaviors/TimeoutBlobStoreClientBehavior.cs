@@ -64,6 +64,7 @@ public sealed class TimeoutBlobStoreClientBehavior : BlobStoreClientBehaviorBase
     /// </example>
     public TimeoutBlobStoreClientBehaviorOptions Options { get; }
 
+    /// <inheritdoc/>
     protected override Task<Result<T>> ExecuteAsync<T>(
         string operation,
         BlobStoreOperationContext context,
@@ -71,6 +72,7 @@ public sealed class TimeoutBlobStoreClientBehavior : BlobStoreClientBehaviorBase
         CancellationToken cancellationToken) =>
         this.ExecuteWithTimeoutAsync(operation, next, cancellationToken);
 
+    /// <inheritdoc/>
     protected override Task<Result> ExecuteAsync(
         string operation,
         BlobStoreOperationContext context,

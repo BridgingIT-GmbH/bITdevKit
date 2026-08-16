@@ -12,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>

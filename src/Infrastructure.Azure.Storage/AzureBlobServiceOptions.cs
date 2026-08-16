@@ -5,11 +5,23 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
+/// <summary>
+/// Configures azure blob service.
+/// </summary>
 public class AzureBlobServiceOptions : OptionsBase
 {
+    /// <summary>
+    /// Gets or sets the connection string.
+    /// </summary>
     public virtual string ConnectionString { get; set; }
 
+    /// <summary>
+    /// Gets or sets the ignore server certificate validation.
+    /// </summary>
     public bool IgnoreServerCertificateValidation { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the client options.
+    /// </summary>
     public virtual BlobClientOptions ClientOptions { get; set; }
 }

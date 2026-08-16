@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+/// <summary>
+/// Configures repository audit state behavior.
+/// </summary>
 public class RepositoryAuditStateBehaviorOptions
 {
+    /// <summary>
+    /// Gets or sets the by type.
+    /// </summary>
     public AuditStateByType ByType { get; set; } = AuditStateByType.ByUserName;
 
+    /// <summary>
+    /// Gets or sets the soft delete enabled.
+    /// </summary>
     public bool SoftDeleteEnabled { get; set; } = true;
 }

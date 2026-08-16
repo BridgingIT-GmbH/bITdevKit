@@ -9,6 +9,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents in memory location handler.
+/// </summary>
+/// <param name="logger">The logger that receives diagnostic events.</param>
+/// <param name="provider">The provider used by the operation.</param>
+/// <param name="store">The store used by the operation.</param>
+/// <param name="options">The options controlling the operation.</param>
+/// <param name="serviceProvider">The service provider used by the operation.</param>
+/// <param name="behaviors">The behaviors used by the operation.</param>
 public class InMemoryLocationHandler(
     ILogger logger,
     IFileStorageProvider provider,
@@ -19,6 +28,7 @@ public class InMemoryLocationHandler(
 {
     private readonly InMemoryFileStorageProvider inMemoryProvider = provider as InMemoryFileStorageProvider ?? throw new ArgumentException("InMemoryLocationHandler requires InMemoryFileStorageProvider.");
 
+    /// <inheritdoc/>
     public override async Task StartAsync(CancellationToken cancellationToken = default)
     {
         await base.StartAsync(cancellationToken);
@@ -37,6 +47,7 @@ public class InMemoryLocationHandler(
         }
     }
 
+    /// <inheritdoc/>
     public override async Task PauseAsync(CancellationToken cancellationToken = default)
     {
         await base.PauseAsync(cancellationToken);
@@ -49,6 +60,7 @@ public class InMemoryLocationHandler(
         }
     }
 
+    /// <inheritdoc/>
     public override async Task ResumeAsync(CancellationToken cancellationToken = default)
     {
         await base.ResumeAsync(cancellationToken);
@@ -60,6 +72,7 @@ public class InMemoryLocationHandler(
         }
     }
 
+    /// <inheritdoc/>
     public override async Task StopAsync(CancellationToken token = default)
     {
         this.inMemoryProvider.OnFileEvent -= this.OnInMemoryFileEvent;
@@ -68,6 +81,7 @@ public class InMemoryLocationHandler(
         await base.StopAsync(token);
     }
 
+    /// <inheritdoc/>
     public override async Task<FileScanContext> ScanAsync(
         FileScanOptions options = null,
         IProgress<FileScanProgress> progress = null,

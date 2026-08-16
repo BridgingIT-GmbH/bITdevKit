@@ -78,14 +78,42 @@ public partial class BlobDeletePrefixMaintenanceJob(
         return Result.Success().WithMessages(result.Messages);
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the start operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="storeName">The store name used by the operation.</param>
+        /// <param name="container">The container used by the operation.</param>
+        /// <param name="prefix">The prefix used by the operation.</param>
+        /// <param name="dryRun">The dry run used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] blob maintenance: delete prefix started (store={StoreName}, container={Container}, prefix={Prefix}, dryRun={DryRun})")]
         public static partial void LogStart(ILogger logger, string logKey, string storeName, string container, string prefix, bool dryRun);
 
+        /// <summary>
+        /// Writes a log entry for the completed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="storeName">The store name used by the operation.</param>
+        /// <param name="candidateCount">The candidate count used by the operation.</param>
+        /// <param name="deletedCount">The deleted count used by the operation.</param>
+        /// <param name="dryRun">The dry run used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] blob maintenance: delete prefix completed (store={StoreName}, candidates={CandidateCount}, deleted={DeletedCount}, dryRun={DryRun})")]
         public static partial void LogCompleted(ILogger logger, string logKey, string storeName, int candidateCount, int deletedCount, bool dryRun);
 
+        /// <summary>
+        /// Writes a log entry for the failure operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="storeName">The store name used by the operation.</param>
+        /// <param name="details">The details used by the operation.</param>
         [LoggerMessage(2, LogLevel.Error, "[{LogKey}] blob maintenance: delete prefix failed (store={StoreName}) {Details}")]
         public static partial void LogFailure(ILogger logger, string logKey, string storeName, string details);
     }

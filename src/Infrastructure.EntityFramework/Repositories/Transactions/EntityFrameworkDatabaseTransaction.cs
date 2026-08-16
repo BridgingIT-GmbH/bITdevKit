@@ -5,10 +5,17 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+/// <summary>
+/// Represents entity framework database transaction.
+/// </summary>
 public class EntityFrameworkDatabaseTransaction : IDatabaseTransaction
 {
     private readonly DbContext context;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityFrameworkDatabaseTransaction</c> class.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
     public EntityFrameworkDatabaseTransaction(DbContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -16,6 +23,12 @@ public class EntityFrameworkDatabaseTransaction : IDatabaseTransaction
         this.context = context;
     }
 
+    /// <summary>
+    /// Executes the execute scoped operation.
+    /// </summary>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(action, nameof(action));
@@ -24,6 +37,13 @@ public class EntityFrameworkDatabaseTransaction : IDatabaseTransaction
             .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the execute scoped operation.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> ExecuteScopedAsync<TEntity>(Func<Task<TEntity>> action, CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {

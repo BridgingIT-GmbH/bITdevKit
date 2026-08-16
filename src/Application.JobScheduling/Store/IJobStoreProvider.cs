@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Defines operations for i job store provider.
+/// </summary>
 public interface IJobStoreProvider
 {
     /// <summary>

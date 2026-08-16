@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Executes a Notifier-backed outbound job registered through <see cref="JobSchedulerIntegrationExtensions.WithNotifierJob{TData, TNotification}(Microsoft.Extensions.DependencyInjection.JobSchedulerBuilderContext, string, Action{JobNotifierDefinitionBuilder{TData, TNotification}})"/>.
+/// Executes a Notifier-backed outbound job registered through <c>WithNotifierJob</c>.
 /// </summary>
 /// <typeparam name="TData">The typed job data contract.</typeparam>
 /// <typeparam name="TNotification">The published notification type.</typeparam>
@@ -27,6 +27,7 @@ public sealed class NotifierJob<TData, TNotification> : JobBase<TData>
         this.registrations = registrations;
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> ExecuteAsync(
         IJobExecutionContext<TData> context,
         CancellationToken cancellationToken = default)

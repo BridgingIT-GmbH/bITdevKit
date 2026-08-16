@@ -5,4 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
+/// <summary>
+/// Defines operations for i domain event with guid.
+/// </summary>
 public interface IDomainEventWithGuid : IDomainEvent<Guid>;

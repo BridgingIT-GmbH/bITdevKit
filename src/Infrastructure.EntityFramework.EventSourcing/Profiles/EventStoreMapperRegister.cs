@@ -9,8 +9,15 @@ using Domain.EventSourcing.Model;
 using Infrastructure.EventSourcing;
 using Mapster;
 
+/// <summary>
+/// Represents event store mapper register.
+/// </summary>
 public class EventStoreMapperRegister : IRegister
 {
+    /// <summary>
+    /// Executes the register operation.
+    /// </summary>
+    /// <param name="config">The config used by the operation.</param>
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<AggregateEvent, EventStoreAggregateEvent>();

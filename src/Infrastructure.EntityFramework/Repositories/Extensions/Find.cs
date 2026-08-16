@@ -9,6 +9,15 @@ using System.Reflection;
 
 public static partial class DbContextExtensions
 {
+    /// <summary>
+    /// Finds .
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async Task<TEntity> FindAsync<TEntity>(
         this DbContext source,
         object id,
@@ -53,6 +62,17 @@ public static partial class DbContextExtensions
         return await source.Set<TEntity>().IncludeIf(options).FirstOrDefaultAsync(filter, cancellationToken);
     }
 
+    /// <summary>
+    /// Finds .
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TDatabaseEntity">The database entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async Task<TDatabaseEntity> FindAsync<TEntity, TDatabaseEntity>(
         this DbContext source,
         object id,
@@ -101,6 +121,12 @@ public static partial class DbContextExtensions
             .FirstOrDefaultAsync(filter, cancellationToken);
     }
 
+    /// <summary>
+    /// Gets key properties.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <returns>The result of the operation.</returns>
     public static PropertyInfo[] GetKeyProperties<T>(this DbContext source)
     {
         return [.. source.Model?.FindEntityType(typeof(T))?

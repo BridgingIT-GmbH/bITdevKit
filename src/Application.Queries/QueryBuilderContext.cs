@@ -7,7 +7,14 @@ namespace BridgingIT.DevKit.Application.Queries;
 
 using Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Represents query builder context.
+/// </summary>
+/// <param name="services">The service collection to configure.</param>
 public class QueryBuilderContext(IServiceCollection services)
 {
+    /// <summary>
+    /// Gets the services.
+    /// </summary>
     public IServiceCollection Services { get; } = services;
 }

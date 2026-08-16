@@ -8,6 +8,14 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Domain.Repositories;
 using Configuration;
 
+/// <summary>
+/// Represents in memory repository builder context.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <typeparam name="TContext">The context type.</typeparam>
+/// <param name="services">The service collection to configure.</param>
+/// <param name="lifetime">The lifetime used by the operation.</param>
+/// <param name="configuration">The configuration to apply.</param>
 public class InMemoryRepositoryBuilderContext<TEntity, TContext>(
     IServiceCollection services,
     ServiceLifetime lifetime = ServiceLifetime.Scoped,

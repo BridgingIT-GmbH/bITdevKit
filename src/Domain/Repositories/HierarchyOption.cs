@@ -49,6 +49,9 @@ public class HierarchyOption<TEntity>
     /// </remarks>
     public Expression<Func<TEntity, object>> Expression { get; }
 
+    /// <summary>
+    /// Gets the max depth.
+    /// </summary>
     public int MaxDepth { get; }
 
     /// <summary>

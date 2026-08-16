@@ -30,12 +30,16 @@ namespace BridgingIT.DevKit.Common;
 /// </example>
 public class Either<T1, T2>
 {
+    /// <summary>Gets the discriminator for derived types: <c>1</c> for the first value and <c>2</c> for the second.</summary>
     protected int Index { get; init; } = 0;
 
+    /// <summary>Gets the stored first value for use by derived either types.</summary>
     protected T1 Value1 { get; init; }
 
+    /// <summary>Gets the stored second value for use by derived either types.</summary>
     protected T2 Value2 { get; init; }
 
+    /// <summary>Initializes an unselected instance for a derived type to populate.</summary>
     protected Either()
     { }
 
@@ -906,19 +910,29 @@ public class Either<T1, T2>
 }
 
 // a few usage examples
+/// <summary>Represents either a string or an integer.</summary>
 public class StringOrNumber : Either<string, int>
 {
+    /// <summary>Initializes the first alternative with a string.</summary>
+    /// <param name="value">The non-null string to store.</param>
     public StringOrNumber(string value)
         : base(value) { }
 
+    /// <summary>Initializes the second alternative with an integer.</summary>
+    /// <param name="value">The integer to store.</param>
     public StringOrNumber(int value)
         : base(value) { }
 }
 
+/// <summary>Represents the absence alternative in an <see cref="Either{T1,T2}"/>.</summary>
 public struct None;
 
+/// <summary>Represents either a supplied instance or the absence of one.</summary>
+/// <typeparam name="T">The type of instance that may be present.</typeparam>
 public class InstanceOrNone<T> : Either<T, None>
 {
+    /// <summary>Initializes the first alternative when a value is present, or <see cref="None"/> when it is <see langword="null"/>.</summary>
+    /// <param name="value">The instance that may be <see langword="null"/>.</param>
     public InstanceOrNone(T value)
     {
         if (value != null)
@@ -934,18 +948,24 @@ public class InstanceOrNone<T> : Either<T, None>
     }
 }
 
+/// <summary>Represents a binary existence outcome with distinct yes and no alternatives.</summary>
 public class Exists : Either<Exists.Yes, Exists.No>
 {
+    /// <summary>Marks the affirmative existence alternative.</summary>
     public class Yes;
 
+    /// <summary>Marks the negative existence alternative.</summary>
     public class No;
 
+    /// <summary>Initializes an affirmative existence outcome.</summary>
     public Exists() : base()
     {
         this.Index = 1;
         this.Value1 = new Yes();
     }
 
+    /// <summary>Initializes an existence outcome from a Boolean value.</summary>
+    /// <param name="exists"><see langword="true"/> to select <see cref="Yes"/>; <see langword="false"/> to select <see cref="No"/>.</param>
     public Exists(bool exists)
     {
         if (exists)

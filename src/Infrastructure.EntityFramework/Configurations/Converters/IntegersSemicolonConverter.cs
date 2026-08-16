@@ -7,8 +7,14 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+/// <summary>
+/// Represents integers semicolon converter.
+/// </summary>
 public class IntegersSemicolonConverter : ValueConverter<IEnumerable<int>, string>
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>IntegersSemicolonConverter</c> class.
+    /// </summary>
     public IntegersSemicolonConverter()
         : base(v => string.Join(";", v),
             v => v.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s)))

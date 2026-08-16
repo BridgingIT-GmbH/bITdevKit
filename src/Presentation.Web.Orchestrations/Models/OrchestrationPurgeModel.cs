@@ -9,6 +9,12 @@ using Microsoft.Extensions.Primitives;
 /// </summary>
 public class OrchestrationPurgeModel
 {
+    /// <summary>
+    /// Executes the bind operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="_">The   used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static ValueTask<OrchestrationPurgeModel> BindAsync(HttpContext context, ParameterInfo _)
     {
         var query = context.Request.Query;

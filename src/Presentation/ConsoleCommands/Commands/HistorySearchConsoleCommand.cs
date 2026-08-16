@@ -9,12 +9,28 @@ using Spectre.Console;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// Represents history search console command.
+/// </summary>
 public class HistorySearchConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "history";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["hist"];
+    /// <summary>
+    /// Gets or sets the text.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Search text", Required = true)] public string Text { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <c>HistorySearchConsoleCommand</c> class.
+    /// </summary>
     public HistorySearchConsoleCommand() : base("search", "Search command history by substring") { }
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.Text ?? string.Empty;

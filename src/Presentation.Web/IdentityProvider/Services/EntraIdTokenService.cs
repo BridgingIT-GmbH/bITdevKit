@@ -14,8 +14,13 @@ using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using Microsoft.IdentityModel.Tokens;
 
+/// <summary>
+/// Represents entra id token service.
+/// </summary>
+/// <param name="options">The options controlling the operation.</param>
 public class EntraIdTokenService(FakeIdentityProviderEndpointsOptions options) : TokenServiceBase(options)
 {
+    /// <inheritdoc/>
     public override string GenerateAccessToken(FakeUser user, string clientId, string scope)
     {
         var now = DateTime.UtcNow;
@@ -50,6 +55,7 @@ public class EntraIdTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, this.options.AccessTokenLifetime);
     }
 
+    /// <inheritdoc/>
     public override string GenerateIdToken(FakeUser user, string clientId, string nonce = null)
     {
         var now = DateTime.UtcNow;
@@ -103,6 +109,7 @@ public class EntraIdTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, this.options.AccessTokenLifetime);
     }
 
+    /// <inheritdoc/>
     public override string GenerateRefreshToken(FakeUser user, string clientId, string scope)
     {
         var claims = new[]
@@ -121,6 +128,7 @@ public class EntraIdTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, this.options.RefreshTokenLifetime);
     }
 
+    /// <inheritdoc/>
     public override string GenerateServiceToken(string clientId, string scope)
     {
         var now = DateTime.UtcNow;
@@ -147,6 +155,7 @@ public class EntraIdTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, TimeSpan.FromHours(1));
     }
 
+    /// <inheritdoc/>
     public override TokenValidationResult ValidateToken(string token)
     {
         try

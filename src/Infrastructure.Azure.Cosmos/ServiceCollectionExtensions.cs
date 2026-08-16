@@ -12,6 +12,13 @@ using CosmosClientOptions = BridgingIT.DevKit.Infrastructure.Azure.CosmosClientO
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds cosmos client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="client">The client used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CosmosClientBuilderContext AddCosmosClient(
         this IServiceCollection services,
         CosmosClient client,
@@ -20,6 +27,13 @@ public static partial class ServiceCollectionExtensions
         return services.AddCosmosClient(null, client, lifetime);
     }
 
+    /// <summary>
+    /// Adds cosmos client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CosmosClientBuilderContext AddCosmosClient(
         this IServiceCollection services,
         Builder<CosmosClientOptionsBuilder, CosmosClientOptions> optionsBuilder,
@@ -28,6 +42,14 @@ public static partial class ServiceCollectionExtensions
         return services.AddCosmosClient(optionsBuilder(new CosmosClientOptionsBuilder()).Build(), null, lifetime);
     }
 
+    /// <summary>
+    /// Adds cosmos client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="client">The client used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CosmosClientBuilderContext AddCosmosClient(
         this IServiceCollection services,
         CosmosClientOptions options,

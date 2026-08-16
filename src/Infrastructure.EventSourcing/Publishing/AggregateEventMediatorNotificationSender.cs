@@ -13,6 +13,10 @@ using Domain.EventSourcing.AggregatePublish;
 using Domain.EventSourcing.Model;
 using MediatR;
 
+/// <summary>
+/// Represents aggregate event mediator notification sender.
+/// </summary>
+/// <param name="mediator">The mediator used by the operation.</param>
 public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAggregateEventMediatorNotificationSender
 {
     private readonly IMediator mediator = mediator;
@@ -42,6 +46,13 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         }
     }
 
+    /// <summary>
+    /// Publishes event occured.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="savedEvent">The saved event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task PublishEventOccuredAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
@@ -60,6 +71,12 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         }
     }
 
+    /// <summary>
+    /// Publishes event occured.
+    /// </summary>
+    /// <param name="savedEvent">The saved event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<bool> PublishEventOccuredAsync(object savedEvent, object aggregate)
     {
         var genericPublishAggregateCommand =

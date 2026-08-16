@@ -10,6 +10,9 @@ using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents active entity provider configurator extensions.
+/// </summary>
 public static class ActiveEntityProviderConfiguratorExtensions
 {
     /// <summary>
@@ -170,6 +173,12 @@ public class ActiveEntityFrameworkProviderBuilder<TEntity, TId>(IServiceCollecti
         return this;
     }
 
+    /// <summary>
+    /// Executes the options operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public ActiveEntityFrameworkProviderBuilder<TEntity, TId> Options<TContext>(Builder<EntityFrameworkActiveEntityProviderOptionsBuilder<TContext, TEntity>, EntityFrameworkActiveEntityProviderOptions<TContext, TEntity>> optionsBuilder)
         where TContext : DbContext
     {

@@ -10,8 +10,13 @@ using Humanizer;
 using Polly;
 using Polly.Retry;
 
+/// <summary>
+/// Provides retry job scheduling behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
         var options = ((context.JobInstance as JobWrapper)?.InnerJob as IRetryJobScheduling)?.Options;

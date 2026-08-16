@@ -9,8 +9,13 @@ using Microsoft.Extensions.Logging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
+/// <summary>
+///     Randomly injects configured exceptions while executing startup tasks that opt into chaos behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
 public class ChaosExceptionStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

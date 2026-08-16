@@ -14,6 +14,15 @@ using Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class JobSchedulerOrchestrationIntegrationExtensions
 {
+    /// <summary>
+    /// Represents with orchestration execute job.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TOrchestration">The orchestration type.</typeparam>
+    /// <typeparam name="TOrchestrationData">The orchestration data type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
     public static JobBuilderContext WithOrchestrationExecuteJob<TData, TOrchestration, TOrchestrationData>(
         this JobBuilderContext context,
         string jobName,
@@ -88,17 +97,31 @@ public sealed class JobOrchestrationExecuteDefinitionBuilder<TData, TOrchestrati
     private Func<IJobExecutionContext<TData>, TOrchestrationData> dataFactory;
     private bool dispatch;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobOrchestrationExecuteDefinitionBuilder</c> class.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
     public JobOrchestrationExecuteDefinitionBuilder(string jobName)
         : base(jobName)
     {
     }
 
+    /// <summary>
+    /// Executes the with input operation.
+    /// </summary>
+    /// <param name="factory">The factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public JobOrchestrationExecuteDefinitionBuilder<TData, TOrchestration, TOrchestrationData> WithInput(Func<IJobExecutionContext<TData>, TOrchestrationData> factory)
     {
         this.dataFactory = factory ?? throw new ArgumentNullException(nameof(factory));
         return this;
     }
 
+    /// <summary>
+    /// Executes the dispatch operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public JobOrchestrationExecuteDefinitionBuilder<TData, TOrchestration, TOrchestrationData> Dispatch(bool value = true)
     {
         this.dispatch = value;

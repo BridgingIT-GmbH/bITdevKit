@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Defines operations for i message handler.
+/// </summary>
+/// <typeparam name="TMessage">The message type.</typeparam>
 public interface IMessageHandler<TMessage>
     where TMessage : IMessage
 {

@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Provides timeout, retry, batching, cancellation, and background-work execution for value results.</summary>
 public static class ResultResilientExtensions
 {
     /// <summary>

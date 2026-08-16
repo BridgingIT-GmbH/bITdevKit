@@ -5,5 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Excludes a decorated method from activity tracing by <see cref="TraceActivityDecorator{TDecorated}"/>.
+/// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class NoTraceActivityAttribute : Attribute;

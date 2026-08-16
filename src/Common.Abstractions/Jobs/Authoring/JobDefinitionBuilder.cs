@@ -49,6 +49,12 @@ public class JobDefinitionBuilder<TJob>
     {
     }
 
+    /// <summary>
+    /// Initializes a builder and controls whether an explicitly configured data contract may replace the contract inferred from the job type.
+    /// </summary>
+    /// <param name="jobName">The stable, non-empty job name; surrounding whitespace is removed.</param>
+    /// <param name="allowExplicitDataContractOverride"><see langword="true"/> to allow <see cref="WithData{TData}"/> to override an inferred data contract; otherwise, the two contracts must match.</param>
+    /// <exception cref="InvalidOperationException">Thrown when <paramref name="jobName"/> is empty or consists only of whitespace.</exception>
     public JobDefinitionBuilder(string jobName, bool allowExplicitDataContractOverride)
     {
         this.JobName = string.IsNullOrWhiteSpace(jobName)

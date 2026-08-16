@@ -7,6 +7,14 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using System.Diagnostics;
 
+/// <summary>
+/// Provides module scope command behavior.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
+/// <param name="activitySources">The activity sources used by the operation.</param>
 public class ModuleScopeCommandBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,
@@ -16,11 +24,13 @@ public class ModuleScopeCommandBehavior<TRequest, TResponse>(
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request)
     {
         return true;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,

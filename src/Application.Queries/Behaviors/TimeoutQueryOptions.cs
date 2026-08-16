@@ -5,12 +5,24 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
+/// <summary>
+/// Defines operations for i timeout query.
+/// </summary>
 public interface ITimeoutQuery
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     TimeoutQueryOptions Options { get; }
 }
 
+/// <summary>
+/// Configures timeout query.
+/// </summary>
 public class TimeoutQueryOptions
 {
+    /// <summary>
+    /// Gets or sets the timeout.
+    /// </summary>
     public TimeSpan Timeout { get; set; } = new(0, 0, 0, 30);
 }

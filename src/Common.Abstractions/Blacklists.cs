@@ -5,8 +5,14 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Provides standard exclusion patterns used when scanning application dependencies.
+/// </summary>
 public readonly struct Blacklists
 {
+    /// <summary>
+    /// Gets assembly-name patterns for framework and third-party dependencies that should be skipped during application assembly scans.
+    /// </summary>
     public static readonly string[] ApplicationDependencies =
     [
         "AspNetcore*",

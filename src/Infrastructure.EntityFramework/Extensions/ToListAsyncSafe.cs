@@ -7,6 +7,13 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 public static partial class Extensions
 {
+    /// <summary>
+    /// Executes the to list async safe operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static Task<List<TSource>> ToListAsyncSafe<TSource>(
         this IQueryable<TSource> source,
         CancellationToken cancellationToken = default)

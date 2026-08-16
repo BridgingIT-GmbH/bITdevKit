@@ -31,6 +31,13 @@ public partial class EntityFrameworkPermissionProvider<TContext>
     private readonly IHierarchyQueryProvider queryProvider;
     private readonly EntityPermissionOptions options;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityFrameworkPermissionProvider</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="serviceProvider">The service provider used by the operation.</param>
+    /// <param name="cacheProvider">The cache provider used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public EntityFrameworkPermissionProvider(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
@@ -717,47 +724,166 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             };
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the checking permission operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - checking permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogCheckingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the checking wildcard permission operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - checking wildcard permission: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogCheckingWildcardPermission(ILogger logger, string logKey, string entityType, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the getting entity ids operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 3, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - getting entity ids with permission: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogGettingEntityIds(ILogger logger, string logKey, string entityType, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the wildcard permission found operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 4, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - wildcard permission found: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogWildcardPermissionFound(ILogger logger, string logKey, string entityType, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the found entity ids operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
+        /// <param name="count">The number of values to process.</param>
         [LoggerMessage(EventId = 5, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - found {Count} entity ids with permission: {EntityType}, permission={Permission}, user={UserId}")]
         public static partial void LogFoundEntityIds(ILogger logger, string logKey, string entityType, string permission, string userId, int count);
 
+        /// <summary>
+        /// Writes a log entry for the getting hierarchy path operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
         [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - getting hierarchy path: {EntityType}/{EntityId}")]
         public static partial void LogGettingHierarchyPath(ILogger logger, string logKey, string entityType, string entityId);
 
+        /// <summary>
+        /// Writes a log entry for the found hierarchy path operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="count">The number of values to process.</param>
         [LoggerMessage(EventId = 2, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - found hierarchy path: {EntityType}/{EntityId}, count={Count}")]
         public static partial void LogFoundHierarchyPath(ILogger logger, string logKey, string entityType, string entityId, int count);
 
+        /// <summary>
+        /// Writes a log entry for the granting permission operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 10, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - granting user permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogGrantingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the revoking permission operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 11, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - revoking user permission: {EntityType}/{EntityId}, permission={Permission}, user={UserId}")]
         public static partial void LogRevokingPermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the granting role permission operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="roleName">The role name used by the operation.</param>
         [LoggerMessage(EventId = 12, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - granting role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]
         public static partial void LogGrantingRolePermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string roleName);
 
+        /// <summary>
+        /// Writes a log entry for the revoking role permission operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="permission">The permission used by the operation.</param>
+        /// <param name="roleName">The role name used by the operation.</param>
         [LoggerMessage(EventId = 13, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - revoking role permission: {EntityType}/{EntityId}, permission={Permission}, role={RoleName}")]
         public static partial void LogRevokingRolePermission(ILogger logger, string logKey, string entityType, string entityId, string permission, string roleName);
 
+        /// <summary>
+        /// Writes a log entry for the invalidating caches operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="userId">The user id used by the operation.</param>
         [LoggerMessage(EventId = 14, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - invalidating permission caches: {EntityType}/{EntityId}, user={UserId}")]
         public static partial void LogInvalidatingCaches(ILogger logger, string logKey, string entityType, string entityId, string userId);
 
+        /// <summary>
+        /// Writes a log entry for the invalidating role caches operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
+        /// <param name="roleName">The role name used by the operation.</param>
         [LoggerMessage(EventId = 15, Level = LogLevel.Debug, Message = "[{LogKey}] permission provider - invalidating role permission caches: {EntityType}/{EntityId}, role={RoleName}")]
         public static partial void LogInvalidatingRoleCaches(ILogger logger, string logKey, string entityType, string entityId, string roleName);
 
+        /// <summary>
+        /// Writes a log entry for the circular hierarchy detected operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityId">The entity identifier.</param>
         [LoggerMessage(EventId = 16, Level = LogLevel.Warning, Message = "[{LogKey}] permission provider - circular hierarchy detected for {EntityType} with id {EntityId}")]
         public static partial void LogCircularHierarchyDetected(ILogger logger, string logKey, string entityType, string entityId);
     }

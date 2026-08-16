@@ -9,8 +9,13 @@ using Humanizer;
 using Polly;
 using Polly.Timeout;
 
+/// <summary>
+/// Provides timeout message handler behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class TimeoutMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

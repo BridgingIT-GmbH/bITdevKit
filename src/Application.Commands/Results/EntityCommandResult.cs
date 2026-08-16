@@ -7,6 +7,11 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using Domain.Model;
 
+/// <summary>
+/// Represents entity command result.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="entity">The entity involved in the operation.</param>
 public class EntityCommandResult<TEntity>(TEntity entity)
     where TEntity : class, IEntity
 {

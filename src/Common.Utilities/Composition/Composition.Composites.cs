@@ -12,6 +12,11 @@ using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Configures registration mode and lifetime for a composite service.
+/// </summary>
+/// <typeparam name="TService">The service contract implemented by the composite and its children.</typeparam>
+/// <typeparam name="TComposite">The composite implementation type.</typeparam>
 public interface ICompositeBuilder<TService, TComposite>
     where TService : class
     where TComposite : class, TService

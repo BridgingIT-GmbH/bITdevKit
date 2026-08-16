@@ -14,11 +14,22 @@ public static partial class ServiceCollectionExtensions
 {
     private static StartupTaskServiceOptions contextOptions;
 
+    /// <summary>
+    /// Adds startup tasks.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext AddStartupTasks(this IServiceCollection services)
     {
         return services.AddStartupTasks(options: null);
     }
 
+    /// <summary>
+    /// Adds startup tasks.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext AddStartupTasks(
         this IServiceCollection services,
         Builder<StartupTaskServiceOptionsBuilder, StartupTaskServiceOptions> optionsBuilder)
@@ -26,6 +37,12 @@ public static partial class ServiceCollectionExtensions
         return services.AddStartupTasks(optionsBuilder(new StartupTaskServiceOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Adds startup tasks.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext AddStartupTasks(
         this IServiceCollection services,
         StartupTaskServiceOptions options)
@@ -44,12 +61,23 @@ public static partial class ServiceCollectionExtensions
         return new StartupTasksBuilderContext(services);
     }
 
+    /// <summary>
+    /// Represents with task.
+    /// </summary>
+    /// <typeparam name="TTask">The task type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
     public static StartupTasksBuilderContext WithTask<TTask>(this StartupTasksBuilderContext context)
         where TTask : class, IStartupTask
     {
         return context.WithTask<TTask>(new StartupTaskOptions());
     }
 
+    /// <summary>
+    /// Represents with task.
+    /// </summary>
+    /// <typeparam name="TTask">The task type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public static StartupTasksBuilderContext WithTask<TTask>(
         this StartupTasksBuilderContext context,
         Builder<StartupTaskOptionsBuilder, StartupTaskOptions> optionsBuilder)
@@ -58,6 +86,12 @@ public static partial class ServiceCollectionExtensions
         return context.WithTask<TTask>(optionsBuilder(new StartupTaskOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Represents with task.
+    /// </summary>
+    /// <typeparam name="TTask">The task type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public static StartupTasksBuilderContext WithTask<TTask>(
         this StartupTasksBuilderContext context,
         StartupTaskOptions options)
@@ -70,6 +104,12 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with task operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="implementationFactory">The implementation factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext WithTask(
         this StartupTasksBuilderContext context,
         Func<IServiceProvider, IStartupTask> implementationFactory)
@@ -77,6 +117,13 @@ public static partial class ServiceCollectionExtensions
         return context.WithTask(implementationFactory, new StartupTaskOptions());
     }
 
+    /// <summary>
+    /// Executes the with task operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="implementationFactory">The implementation factory used by the operation.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext WithTask(
         this StartupTasksBuilderContext context,
         Func<IServiceProvider, IStartupTask> implementationFactory,
@@ -85,6 +132,13 @@ public static partial class ServiceCollectionExtensions
         return context.WithTask(implementationFactory, optionsBuilder(new StartupTaskOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Executes the with task operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="implementationFactory">The implementation factory used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext WithTask(
         this StartupTasksBuilderContext context,
         Func<IServiceProvider, IStartupTask> implementationFactory,
@@ -109,6 +163,12 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Provides with behavior.
+    /// </summary>
+    /// <typeparam name="TBehavior">The behavior type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
     public static StartupTasksBuilderContext WithBehavior<TBehavior>(
         this StartupTasksBuilderContext context,
         IStartupTaskBehavior behavior = null)
@@ -126,6 +186,12 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="implementationFactory">The implementation factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext WithBehavior(
         this StartupTasksBuilderContext context,
         Func<IServiceProvider, IStartupTaskBehavior> implementationFactory)
@@ -138,6 +204,12 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static StartupTasksBuilderContext WithBehavior(
         this StartupTasksBuilderContext context,
         IStartupTaskBehavior behavior)

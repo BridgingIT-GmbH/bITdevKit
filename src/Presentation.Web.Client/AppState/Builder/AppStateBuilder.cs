@@ -75,6 +75,11 @@ public class AppStateBuilder(IServiceCollection services, AppStateOptions option
         return this;
     }
 
+    /// <summary>
+    /// Executes the enabled operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public AppStateBuilder Enabled(bool value)
     {
         this.options.Enabled = value;

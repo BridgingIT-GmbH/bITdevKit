@@ -340,6 +340,12 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
 /// </example>
 public interface INotificationBehaviorsProvider
 {
+    /// <summary>
+    ///     Resolves notification pipeline behaviors in registration order.
+    /// </summary>
+    /// <typeparam name="TNotification">The notification type.</typeparam>
+    /// <param name="serviceProvider">The service provider used to construct behaviors.</param>
+    /// <returns>The resolved pipeline behaviors.</returns>
     IReadOnlyList<IPipelineBehavior<TNotification, IResult>> GetBehaviors<TNotification>(IServiceProvider serviceProvider)
         where TNotification : class, INotification;
 }
@@ -774,15 +780,19 @@ public partial class Notifier(
     /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>Logs the start of notification processing.</summary>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] notification processing (type={NotificationType}, id={NotificationId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string notificationType, string notificationId);
 
+        /// <summary>Logs successful notification processing and elapsed time.</summary>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] notification success (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
         public static partial void LogSuccess(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
+        /// <summary>Logs failed notification processing and elapsed time.</summary>
         [LoggerMessage(1, LogLevel.Error, "[{LogKey}] notification failed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
         public static partial void LogFailed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
+        /// <summary>Logs an exception raised while processing a notification.</summary>
         [LoggerMessage(3, LogLevel.Error, "[{LogKey}] notification processing failed for {NotificationType} ({NotificationId})")]
         public static partial void LogError(ILogger logger, string logKey, Exception ex, string notificationType, string notificationId);
     }

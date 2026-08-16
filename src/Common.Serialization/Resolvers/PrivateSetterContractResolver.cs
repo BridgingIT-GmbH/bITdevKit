@@ -11,8 +11,12 @@ using Newtonsoft.Json.Serialization;
 
 // TODO: get rid of Newtonsoft dependency
 
+/// <summary>
+///     Extends Newtonsoft.Json contract resolution so properties with private setters can be deserialized.
+/// </summary>
 public class PrivateSetterContractResolver : DefaultContractResolver
 {
+    /// <inheritdoc/>
     protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
     {
         var property = base.CreateProperty(member, memberSerialization);

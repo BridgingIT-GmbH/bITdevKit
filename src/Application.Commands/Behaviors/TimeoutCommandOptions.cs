@@ -5,12 +5,24 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Defines operations for i timeout command.
+/// </summary>
 public interface ITimeoutCommand
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     TimeoutCommandOptions Options { get; }
 }
 
+/// <summary>
+/// Configures timeout command.
+/// </summary>
 public class TimeoutCommandOptions
 {
+    /// <summary>
+    /// Gets or sets the timeout.
+    /// </summary>
     public TimeSpan Timeout { get; set; } = new(0, 0, 0, 30);
 }

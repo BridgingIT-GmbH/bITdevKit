@@ -35,6 +35,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result<long>> GetNextInternalAsync(
         TContext context,
         string sequenceName,
@@ -76,6 +77,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result<bool>> ExistsInternalAsync(
         TContext context,
         string sequenceName,
@@ -105,6 +107,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result<SequenceInfo>> GetSequenceInfoInternalAsync(
         TContext context,
         string sequenceName,
@@ -146,6 +149,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result<long>> GetCurrentValueInternalAsync(
         TContext context,
         string sequenceName,
@@ -173,6 +177,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result> ResetSequenceInternalAsync(
         TContext context,
         string sequenceName,

@@ -80,6 +80,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
 
     private ShareServiceClient Client => this.lazyShareServiceClient.Value;
 
+    /// <inheritdoc/>
     public override async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -130,6 +131,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -183,6 +185,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -257,6 +260,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -319,6 +323,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -369,6 +374,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -419,6 +425,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -481,6 +488,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -542,6 +550,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -613,6 +622,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)
     {
@@ -703,6 +713,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
@@ -777,6 +788,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
@@ -852,6 +864,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
@@ -927,6 +940,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -973,6 +987,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1013,6 +1028,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1071,6 +1087,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<IEnumerable<string>>> ListDirectoriesAsync(string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1142,6 +1159,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         if (cancellationToken.IsCancellationRequested)
@@ -1207,12 +1225,19 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         return path?.Replace('\\', '/').TrimStart('/');
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
         this.Dispose(true);
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
+    /// <param name="disposing">The disposing used by the operation.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (this.disposed)

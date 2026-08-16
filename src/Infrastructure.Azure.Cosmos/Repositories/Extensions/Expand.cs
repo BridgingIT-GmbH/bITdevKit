@@ -9,6 +9,9 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
+/// <summary>
+/// Represents extensions.
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>

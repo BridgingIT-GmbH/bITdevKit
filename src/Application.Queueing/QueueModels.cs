@@ -13,18 +13,39 @@ namespace BridgingIT.DevKit.Application.Queueing;
 /// </example>
 public class QueueBrokerCapabilities
 {
+    /// <summary>
+    /// Gets or sets the supports durable storage.
+    /// </summary>
     public bool SupportsDurableStorage { get; set; }
 
+    /// <summary>
+    /// Gets or sets the supports retry.
+    /// </summary>
     public bool SupportsRetry { get; set; }
 
+    /// <summary>
+    /// Gets or sets the supports archive.
+    /// </summary>
     public bool SupportsArchive { get; set; }
 
+    /// <summary>
+    /// Gets or sets the supports lease management.
+    /// </summary>
     public bool SupportsLeaseManagement { get; set; }
 
+    /// <summary>
+    /// Gets or sets the supports circuit management.
+    /// </summary>
     public bool SupportsCircuitManagement { get; set; }
 
+    /// <summary>
+    /// Gets or sets the supports pause resume.
+    /// </summary>
     public bool SupportsPauseResume { get; set; }
 
+    /// <summary>
+    /// Gets or sets the supports waiting message inspection.
+    /// </summary>
     public bool SupportsWaitingMessageInspection { get; set; }
 }
 

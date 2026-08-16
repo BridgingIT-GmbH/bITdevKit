@@ -10,11 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Serilog;
 
+/// <summary>
+///     Discovers MVC controllers while excluding controllers that belong to disabled modules.
+/// </summary>
+/// <param name="moduleAccessors">The accessors used to associate controller types with modules.</param>
 public class ModuleControllerFeatureProvider(IEnumerable<IModuleContextAccessor> moduleAccessors)
     : ControllerFeatureProvider
 {
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
 
+    /// <inheritdoc/>
     protected override bool IsController(TypeInfo typeInfo)
     {
         if (!typeInfo.IsClass)

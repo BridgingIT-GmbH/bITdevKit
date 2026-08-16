@@ -20,6 +20,7 @@ public class
 {
     private readonly JsonObjectSerializer serializer = new(jsonSerializerOptions);
 
+    /// <inheritdoc/>
     public override T FromStream<T>(Stream stream)
     {
         using (stream)
@@ -38,6 +39,7 @@ public class
         }
     }
 
+    /// <inheritdoc/>
     public override Stream ToStream<T>(T input)
     {
         var stream = new MemoryStream();

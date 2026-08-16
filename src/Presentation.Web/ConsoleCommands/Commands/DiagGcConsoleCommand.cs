@@ -15,12 +15,28 @@ using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
 
+/// <summary>
+/// Represents diag gc console command.
+/// </summary>
 public class DiagGcConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "diag";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["d"];
+    /// <summary>
+    /// Gets or sets the force.
+    /// </summary>
     [ConsoleCommandOption("force", Alias = "f", Description = "Force full GC before reporting")] public bool Force { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <c>DiagGcConsoleCommand</c> class.
+    /// </summary>
     public DiagGcConsoleCommand() : base("gc", "GC statistics (optionally force collection)") { }
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var env = services.GetRequiredService<IWebHostEnvironment>();
@@ -35,38 +51,90 @@ public class DiagGcConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     }
 }
 
+/// <summary>
+/// Represents diag threads console command.
+/// </summary>
 public class DiagThreadsConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "diag";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["d"];
+    /// <summary>
+    /// Initializes a new instance of the <c>DiagThreadsConsoleCommand</c> class.
+    /// </summary>
     public DiagThreadsConsoleCommand() : base("threads", "Thread pool statistics (diag)") { }
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { console.Write(DiagnosticTablesBuilder.BuildThreads()); return Task.CompletedTask; }
 }
 
+/// <summary>
+/// Represents diag mem console command.
+/// </summary>
 public class DiagMemConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "diag";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["d"];
+    /// <summary>
+    /// Initializes a new instance of the <c>DiagMemConsoleCommand</c> class.
+    /// </summary>
     public DiagMemConsoleCommand() : base("mem", "Detailed memory usage (diag)") { }
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { console.Write(DiagnosticTablesBuilder.BuildMemory()); return Task.CompletedTask; }
 }
 
+/// <summary>
+/// Represents diag perf console command.
+/// </summary>
 public class DiagPerfConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "diag";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["d"];
+    /// <summary>
+    /// Initializes a new instance of the <c>DiagPerfConsoleCommand</c> class.
+    /// </summary>
     public DiagPerfConsoleCommand() : base("perf", "Point-in-time performance snapshot") { }
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { var stats = services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>(); console.Write(DiagnosticTablesBuilder.BuildPerf(stats)); return Task.CompletedTask; }
 }
 
+/// <summary>
+/// Represents diag env console command.
+/// </summary>
 public class DiagEnvConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "diag";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["d"];
+    /// <summary>
+    /// Initializes a new instance of the <c>DiagEnvConsoleCommand</c> class.
+    /// </summary>
     public DiagEnvConsoleCommand() : base("env", "Runtime & environment info (diag)") { }
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { console.Write(DiagnosticTablesBuilder.BuildEnv()); return Task.CompletedTask; }
 }

@@ -94,6 +94,7 @@ public readonly partial struct Result : IResult
         this.errors = errors;
     }
 
+    /// <summary>Gets the global factories and behaviors used when creating results.</summary>
     public static ResultSettings Settings { get; private set; }
 
     static Result()
@@ -226,6 +227,10 @@ public readonly partial struct Result : IResult
         }
     }
 
+    /// <summary>Executes a synchronous value-producing operation and represents its value or thrown exception as a result.</summary>
+    /// <typeparam name="TNew">The value type returned by the operation.</typeparam>
+    /// <param name="operation">The operation to execute.</param>
+    /// <returns>A successful value result, or a failed result when the operation is <see langword="null"/> or throws.</returns>
     public static Result<TNew> Bind<TNew>(Func<TNew> operation)
     {
         if (operation is null)
@@ -292,6 +297,11 @@ public readonly partial struct Result : IResult
         }
     }
 
+    /// <summary>Executes an asynchronous value-producing operation and represents its value, cancellation, or thrown exception as a result.</summary>
+    /// <typeparam name="TNew">The value type returned by the operation.</typeparam>
+    /// <param name="operation">The asynchronous operation to execute.</param>
+    /// <param name="cancellationToken">The token passed to the operation.</param>
+    /// <returns>A task containing a successful value result, or a failed result for a missing operation, cancellation, or exception.</returns>
     public static async Task<Result<TNew>> BindAsync<TNew>(
         Func<CancellationToken, Task<TNew>> operation,
         CancellationToken cancellationToken = default)
@@ -500,6 +510,9 @@ public readonly partial struct Result : IResult
         return new Result(false, this.messages, this.errors.Add(error));
     }
 
+    /// <summary>Adds an error with the supplied message and marks the result as failed.</summary>
+    /// <param name="errorMessage">The message stored in the appended <see cref="Error"/>.</param>
+    /// <returns>A failed result that preserves the current messages and existing errors.</returns>
     public Result WithError(string errorMessage)
     {
         return new Result(false, this.messages, this.errors.Add(new Error(errorMessage)));
@@ -1046,6 +1059,9 @@ public readonly partial struct Result : IResult
             Result<TValue>.Success().WithMessages(this.Messages).WithErrors(this.Errors),
             Result<TValue>.Failure().WithMessages(this.Messages).WithErrors(this.Errors));
 
+    /// <summary>Converts this result to an empty paged result while preserving its state, messages, and errors.</summary>
+    /// <typeparam name="T">The paged item type.</typeparam>
+    /// <returns>An empty paged result with the same success state, messages, and errors.</returns>
     public ResultPaged<T> ToResultPaged<T>() => this.Match(
             ResultPaged<T>.Success([]).WithMessages(this.Messages).WithErrors(this.Errors),
             ResultPaged<T>.Failure().WithMessages(this.Messages).WithErrors(this.Errors));

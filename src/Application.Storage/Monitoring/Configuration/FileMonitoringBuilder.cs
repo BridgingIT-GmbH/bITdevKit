@@ -84,9 +84,23 @@ public class FileMonitoringBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the register location operation.
+    /// </summary>
+    /// <param name="name">The name of the value.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="providerFactory">The provider factory used by the operation.</param>
+    /// <param name="locationHandlerType">The location handler type used by the operation.</param>
     public void RegisterLocation(string name, LocationOptions options, Func<IFileStorageProvider> providerFactory, Type locationHandlerType)
         => this.RegisterLocation(name, options, _ => providerFactory(), locationHandlerType);
 
+    /// <summary>
+    /// Executes the register location operation.
+    /// </summary>
+    /// <param name="name">The name of the value.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="providerFactory">The provider factory used by the operation.</param>
+    /// <param name="locationHandlerType">The location handler type used by the operation.</param>
     public void RegisterLocation(string name, LocationOptions options, Func<IServiceProvider, IFileStorageProvider> providerFactory, Type locationHandlerType)
     {
         EnsureArg.IsNotNullOrEmpty(name, nameof(name));

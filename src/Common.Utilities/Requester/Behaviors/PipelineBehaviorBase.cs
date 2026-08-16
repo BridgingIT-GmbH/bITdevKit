@@ -7,14 +7,23 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Provides conditional execution and lifecycle logging for requester and notifier pipeline behaviors.
+/// </summary>
+/// <typeparam name="TRequest">The request or notification type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
 public abstract class PipelineBehaviorBase<TRequest, TResponse>(ILoggerFactory loggerFactory) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
     where TResponse : IResult
 {
+    /// <summary>Gets the structured log key used by pipeline behaviors.</summary>
     protected const string LogKey = "APP";
 
+    /// <summary>Gets the logger used for pipeline lifecycle messages.</summary>
     protected ILogger<PipelineBehaviorBase<TRequest, TResponse>> Logger { get; } = loggerFactory?.CreateLogger<PipelineBehaviorBase<TRequest, TResponse>>() ?? throw new ArgumentNullException(nameof(loggerFactory));
 
+    /// <inheritdoc/>
     public async Task<TResponse> HandleAsync(
         TRequest request,
         object options,
@@ -34,8 +43,22 @@ public abstract class PipelineBehaviorBase<TRequest, TResponse>(ILoggerFactory l
         return response;
     }
 
+    /// <summary>
+    ///     Determines whether this behavior applies to the current request and handler.
+    /// </summary>
+    /// <param name="request">The request or notification.</param>
+    /// <param name="handlerType">The concrete handler type.</param>
+    /// <returns><see langword="true"/> when the behavior should execute; otherwise, <see langword="false"/>.</returns>
     protected abstract bool CanProcess(TRequest request, Type handlerType);
 
+    /// <summary>
+    ///     Executes behavior logic around the next pipeline delegate.
+    /// </summary>
+    /// <param name="request">The request or notification.</param>
+    /// <param name="handlerType">The concrete handler type.</param>
+    /// <param name="next">The next pipeline delegate.</param>
+    /// <param name="cancellationToken">A token that can cancel the operation.</param>
+    /// <returns>The pipeline response.</returns>
     protected abstract Task<TResponse> Process(
         TRequest request,
         Type handlerType,

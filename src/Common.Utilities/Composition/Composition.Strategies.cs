@@ -12,6 +12,10 @@ using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Resolves registered strategy implementations by case-insensitive key or configured default.
+/// </summary>
+/// <typeparam name="TStrategy">The strategy contract.</typeparam>
 public interface IStrategyResolver<TStrategy>
     where TStrategy : class
 {

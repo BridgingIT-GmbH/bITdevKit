@@ -7,6 +7,10 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Text.Json;
 
+/// <summary>
+///     Serializes values as JSON with System.Text.Json.
+/// </summary>
+/// <param name="options">The serializer options to use, or <see langword="null"/> to use the DevKit defaults.</param>
 public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : ISerializer, ITextSerializer
 {
     private readonly JsonSerializerOptions options = options ?? DefaultJsonSerializerOptions.Create();

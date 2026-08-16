@@ -662,17 +662,47 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         await context.SaveChangesAsync(cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
+        /// <param name="domainEventId">The domain event id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] outbox domain events processing (context={DbContextType}, eventId={DomainEventId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string domainEventId);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
+        /// <param name="outboxDomainEventProcessedCount">The outbox domain event processed count used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] outbox domain events processed (context={DbContextType}, count={outboxDomainEventProcessedCount})")]
         public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxDomainEventProcessedCount);
 
+        /// <summary>
+        /// Writes a log entry for the purging operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] outbox domain events purging (context={DbContextType})")]
         public static partial void LogPurging(ILogger logger, string logKey, string dbContextType);
 
+        /// <summary>
+        /// Writes a log entry for the event type not resolved operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="domainEventId">The domain event id used by the operation.</param>
+        /// <param name="domainEventType">The domain event type used by the operation.</param>
         [LoggerMessage(3, LogLevel.Error, "[{LogKey}] outbox domain event type could not be resolved (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogEventTypeNotResolved(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }

@@ -8,6 +8,15 @@ namespace Microsoft.Extensions.DependencyInjection;
 using Configuration;
 using EntityFrameworkCore;
 
+/// <summary>
+/// Represents cosmos db context builder context.
+/// </summary>
+/// <typeparam name="TContext">The context type.</typeparam>
+/// <param name="services">The service collection to configure.</param>
+/// <param name="lifetime">The lifetime used by the operation.</param>
+/// <param name="configuration">The configuration to apply.</param>
+/// <param name="connectionString">The connection string used by the operation.</param>
+/// <param name="provider">The provider used by the operation.</param>
 public class CosmosDbContextBuilderContext<TContext>(
     IServiceCollection services,
     ServiceLifetime lifetime = ServiceLifetime.Scoped,

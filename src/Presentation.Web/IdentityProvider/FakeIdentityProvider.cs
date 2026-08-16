@@ -6,21 +6,77 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Defines operations for i fake identity provider.
+/// </summary>
 public interface IFakeIdentityProvider
 {
+    /// <summary>
+    /// Executes the generate authorization code operation.
+    /// </summary>
+    /// <param name="email">The email used by the operation.</param>
+    /// <param name="password">The password used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     string GenerateAuthorizationCode(string email, string password, AuthorizeRequest request);
 
+    /// <summary>
+    /// Executes the generate authorization code operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     string GenerateAuthorizationCode(FakeUser user, AuthorizeRequest request);
 
+    /// <summary>
+    /// Handles authorization code grant.
+    /// </summary>
+    /// <param name="code">The code used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="clientSecret">The client secret used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task<TokenResponse> HandleAuthorizationCodeGrantAsync(string code, string clientId, string clientSecret, string scope, HttpContext httpContext);
 
+    /// <summary>
+    /// Handles client credentials grant.
+    /// </summary>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="clientSecret">The client secret used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task<TokenResponse> HandleClientCredentialsGrantAsync(string clientId, string clientSecret, string scope);
 
+    /// <summary>
+    /// Handles password grant.
+    /// </summary>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="username">The username used by the operation.</param>
+    /// <param name="password">The password used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task<TokenResponse> HandlePasswordGrantAsync(string clientId, string username, string password, string scope);
 
+    /// <summary>
+    /// Handles refresh token grant.
+    /// </summary>
+    /// <param name="refreshToken">The refresh token used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task<TokenResponse> HandleRefreshTokenGrantAsync(string refreshToken, string clientId, string scope, HttpContext httpContext);
 }
 
+/// <summary>
+/// Represents fake identity provider.
+/// </summary>
+/// <param name="logger">The logger that receives diagnostic events.</param>
+/// <param name="options">The options controlling the operation.</param>
+/// <param name="tokenService">The token service used by the operation.</param>
+/// <param name="authorizationCodeService">The authorization code service used by the operation.</param>
+/// <param name="passwordValidator">The password validator used by the operation.</param>
 public class FakeIdentityProvider(
     ILogger<FakeIdentityProvider> logger,
     FakeIdentityProviderEndpointsOptions options,
@@ -34,6 +90,13 @@ public class FakeIdentityProvider(
     private readonly IAuthorizationCodeService authorizationCodeService = authorizationCodeService;
     private readonly IPasswordValidator passwordValidator = passwordValidator;
 
+    /// <summary>
+    /// Executes the generate authorization code operation.
+    /// </summary>
+    /// <param name="email">The email used by the operation.</param>
+    /// <param name="password">The password used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public string GenerateAuthorizationCode(string email, string password, AuthorizeRequest request)
     {
         var user = this.options.Users?.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
@@ -52,6 +115,12 @@ public class FakeIdentityProvider(
         return this.authorizationCodeService.GenerateCode(user, request);
     }
 
+    /// <summary>
+    /// Executes the generate authorization code operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public string GenerateAuthorizationCode(FakeUser user, AuthorizeRequest request)
     {
         if (user == null)
@@ -67,6 +136,15 @@ public class FakeIdentityProvider(
         return this.authorizationCodeService.GenerateCode(user, request);
     }
 
+    /// <summary>
+    /// Handles authorization code grant.
+    /// </summary>
+    /// <param name="code">The code used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="clientSecret">The client secret used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TokenResponse> HandleAuthorizationCodeGrantAsync(string code, string clientId, string clientSecret, string scope, HttpContext httpContext)
     {
         if (this.options.Clients.SafeAny() && !clientId.IsNullOrEmpty())
@@ -110,6 +188,14 @@ public class FakeIdentityProvider(
         return tokenResponse;
     }
 
+    /// <summary>
+    /// Handles password grant.
+    /// </summary>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="username">The username used by the operation.</param>
+    /// <param name="password">The password used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<TokenResponse> HandlePasswordGrantAsync(string clientId, string username, string password, string scope)
     {
         if (this.options.Clients.SafeAny() && !clientId.IsNullOrEmpty())
@@ -131,6 +217,13 @@ public class FakeIdentityProvider(
         return Task.FromResult(this.CreateTokenResponse(user, clientId, scope));
     }
 
+    /// <summary>
+    /// Handles client credentials grant.
+    /// </summary>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="clientSecret">The client secret used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<TokenResponse> HandleClientCredentialsGrantAsync(string clientId, string clientSecret, string scope)
     {
         if (this.options.Clients.SafeAny() && !clientId.IsNullOrEmpty())
@@ -154,6 +247,14 @@ public class FakeIdentityProvider(
         });
     }
 
+    /// <summary>
+    /// Handles refresh token grant.
+    /// </summary>
+    /// <param name="refreshToken">The refresh token used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TokenResponse> HandleRefreshTokenGrantAsync(string refreshToken, string clientId, string scope, HttpContext httpContext)
     {
         if (this.options.Clients.SafeAny() && !clientId.IsNullOrEmpty())

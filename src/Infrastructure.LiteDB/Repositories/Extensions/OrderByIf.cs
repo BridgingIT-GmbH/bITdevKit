@@ -9,8 +9,18 @@ using Common;
 using Domain.Model;
 using Domain.Repositories;
 
+/// <summary>
+/// Represents extensions.
+/// </summary>
 public static partial class Extensions
 {
+    /// <summary>
+    /// Executes the order by if operation.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ILiteQueryable<TEntity> OrderByIf<TEntity>(
         this ILiteQueryable<TEntity> source,
         IFindOptions<TEntity> options)

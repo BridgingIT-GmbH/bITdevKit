@@ -23,6 +23,7 @@ public static class NotifierSourceGeneratorDiagnostics
         EachValidationRequiresCollection,
         ConflictingValidationAttributes);
 
+    /// <summary>Gets the diagnostic reported when a generated notifier event is not partial.</summary>
     public static readonly DiagnosticDescriptor EventMustBePartial = new(
         "NTGEN001",
         "Notifier event must be partial",
@@ -32,6 +33,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Source-generated events must be partial so the generator can emit additional members.");
 
+    /// <summary>Gets the diagnostic reported for an incompatible notifier-event base type.</summary>
     public static readonly DiagnosticDescriptor InvalidEventBaseType = new(
         "NTGEN002",
         "Event base type is incompatible with notifier generation",
@@ -41,6 +43,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "The generator can add NotificationBase automatically, but it cannot override an existing incompatible base type.");
 
+    /// <summary>Gets the diagnostic reported for a nested notifier event.</summary>
     public static readonly DiagnosticDescriptor NestedEventsNotSupported = new(
         "NTGEN003",
         "Nested event types are not supported",
@@ -50,6 +53,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Move the source-generated event to a top-level type for v1.");
 
+    /// <summary>Gets the diagnostic reported for a generic notifier event.</summary>
     public static readonly DiagnosticDescriptor GenericEventsNotSupported = new(
         "NTGEN004",
         "Generic event types are not supported",
@@ -59,6 +63,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Source-generated notifier events are intentionally limited to non-generic types in v1.");
 
+    /// <summary>Gets the diagnostic reported when a notifier event has no handle method.</summary>
     public static readonly DiagnosticDescriptor MissingHandleMethod = new(
         "NTGEN005",
         "Missing handle method",
@@ -68,6 +73,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "At least one developer-authored [Handle] method is required for each source-generated event.");
 
+    /// <summary>Gets the diagnostic reported when a notifier handle method is static.</summary>
     public static readonly DiagnosticDescriptor HandleMethodMustBeInstance = new(
         "NTGEN006",
         "Handle method must be an instance method",
@@ -77,6 +83,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "The v1 Notifier generator only supports instance [Handle] methods so event members can be accessed directly.");
 
+    /// <summary>Gets the diagnostic reported when a notifier handle method is generic.</summary>
     public static readonly DiagnosticDescriptor HandleMethodMustNotBeGeneric = new(
         "NTGEN007",
         "Generic handle methods are not supported",
@@ -86,6 +93,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "The v1 Notifier generator only supports non-generic [Handle] methods.");
 
+    /// <summary>Gets the diagnostic reported when a notifier handle method returns asynchronous void.</summary>
     public static readonly DiagnosticDescriptor AsyncVoidHandleNotAllowed = new(
         "NTGEN008",
         "async void handle methods are not supported",
@@ -95,6 +103,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Handle methods must return Result or Task<Result>.");
 
+    /// <summary>Gets the diagnostic reported for an unsupported notifier handle return type.</summary>
     public static readonly DiagnosticDescriptor InvalidHandleReturnType = new(
         "NTGEN009",
         "Unsupported handle return type",
@@ -104,6 +113,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Only synchronous or asynchronous Result returns are supported.");
 
+    /// <summary>Gets the diagnostic reported for unsupported notifier handle parameters.</summary>
     public static readonly DiagnosticDescriptor InvalidHandleParameters = new(
         "NTGEN010",
         "Unsupported handle parameters",
@@ -113,6 +123,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Handle methods must not declare the event type as a parameter, may declare optional PublishOptions and CancellationToken parameters, and any remaining parameters are resolved from DI.");
 
+    /// <summary>Gets the diagnostic reported when a notifier event declares multiple validation methods.</summary>
     public static readonly DiagnosticDescriptor DuplicateValidateMethod = new(
         "NTGEN011",
         "Duplicate validate methods",
@@ -122,6 +133,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Only one [Validate] method is supported per source-generated event.");
 
+    /// <summary>Gets the diagnostic reported when a notifier validation method is not static.</summary>
     public static readonly DiagnosticDescriptor ValidateMethodMustBeStatic = new(
         "NTGEN012",
         "Validate method must be static",
@@ -131,6 +143,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "The v1 Notifier generator only supports static [Validate] methods.");
 
+    /// <summary>Gets the diagnostic reported for an invalid notifier validation return type.</summary>
     public static readonly DiagnosticDescriptor InvalidValidateReturnType = new(
         "NTGEN013",
         "Invalid validate return type",
@@ -140,6 +153,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Validate methods must configure rules on an InlineValidator<TEvent> and not return a value.");
 
+    /// <summary>Gets the diagnostic reported for an invalid notifier validation parameter.</summary>
     public static readonly DiagnosticDescriptor InvalidValidateParameter = new(
         "NTGEN014",
         "Invalid validate parameter type",
@@ -149,6 +163,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "The v1 Notifier generator only supports void Validate(InlineValidator<TEvent> validator).");
 
+    /// <summary>Gets the diagnostic reported when generated notifier members collide with authored members.</summary>
     public static readonly DiagnosticDescriptor GeneratedNameCollision = new(
         "NTGEN015",
         "Generated member name collision",
@@ -158,6 +173,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Rename the authored member, avoid overloaded [Handle] method names, or use a different event type name so the generator can emit its bridge, helper, or handler members.");
 
+    /// <summary>Gets the diagnostic reported when notifier generation targets an unsupported type.</summary>
     public static readonly DiagnosticDescriptor InvalidAttributedType = new(
         "NTGEN016",
         "Invalid source-generated event type",
@@ -167,6 +183,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Source-generated notifier events must be concrete classes.");
 
+    /// <summary>Gets the diagnostic reported for unsupported notifier validation-attribute usage.</summary>
     public static readonly DiagnosticDescriptor UnsupportedValidationAttributeUsage = new(
         "NTGEN017",
         "Validation attribute usage is not supported",
@@ -176,6 +193,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Simple property validation attributes only support a conservative set of property and collection-element validation scenarios.");
 
+    /// <summary>Gets the diagnostic reported for invalid notifier validation-attribute arguments.</summary>
     public static readonly DiagnosticDescriptor InvalidValidationAttributeArguments = new(
         "NTGEN018",
         "Validation attribute arguments are invalid",
@@ -185,6 +203,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "Validation attributes must provide the argument shape expected by the generated FluentValidation mapping.");
 
+    /// <summary>Gets the diagnostic reported when notifier element validation targets a non-collection property.</summary>
     public static readonly DiagnosticDescriptor EachValidationRequiresCollection = new(
         "NTGEN019",
         "Element validation requires a collection property",
@@ -194,6 +213,7 @@ public static class NotifierSourceGeneratorDiagnostics
         true,
         description: "RuleForEach-based validation attributes can only be applied to collection properties.");
 
+    /// <summary>Gets the diagnostic reported for conflicting notifier validation attributes.</summary>
     public static readonly DiagnosticDescriptor ConflictingValidationAttributes = new(
         "NTGEN020",
         "Validation attributes conflict",

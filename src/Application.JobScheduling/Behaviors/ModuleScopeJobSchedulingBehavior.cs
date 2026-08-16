@@ -7,11 +7,17 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using System.Diagnostics;
 
+/// <summary>
+/// Provides module scope job scheduling behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="activitySources">The activity sources used by the operation.</param>
 public class ModuleScopeJobSchedulingBehavior(
     ILoggerFactory loggerFactory,
     IEnumerable<ActivitySource> activitySources = null)
     : JobSchedulingBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
         var moduleAccessors = context.Get("ModuleContextAccessors") as IEnumerable<IModuleContextAccessor>;

@@ -117,6 +117,12 @@ public class IncludeOption<TEntity, TProperty> : IncludeOptionBase<TEntity>, IIn
 /// </summary>
 public class ThenIncludeDescriptor
 {
+    /// <summary>
+    /// Gets or sets the expression.
+    /// </summary>
     public LambdaExpression Expression { get; init; }
+    /// <summary>
+    /// Gets or sets the is collection.
+    /// </summary>
     public bool IsCollection { get; init; }
 }

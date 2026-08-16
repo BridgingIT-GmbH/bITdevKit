@@ -11,6 +11,9 @@ using System.Linq;
 using System.Threading;
 using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Represents file storage provider cross extensions.
+/// </summary>
 public static class FileStorageProviderCrossExtensions
 {
     /// <summary>

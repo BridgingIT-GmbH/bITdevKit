@@ -8,6 +8,10 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Reflection;
 
+/// <summary>
+///     Creates dispatch proxies that trace calls to an interface implementation with diagnostic activities.
+/// </summary>
+/// <typeparam name="TDecorated">The interface type exposed by the proxy.</typeparam>
 public class TraceActivityDecorator<TDecorated> : DispatchProxy
     where TDecorated : class
 {
@@ -34,6 +38,12 @@ public class TraceActivityDecorator<TDecorated> : DispatchProxy
         return (TDecorated)proxy;
     }
 
+    /// <summary>
+    ///     Invokes the decorated method, creating an activity unless tracing is excluded for the method.
+    /// </summary>
+    /// <param name="method">The interface method being invoked.</param>
+    /// <param name="args">The invocation arguments.</param>
+    /// <returns>The decorated method's return value.</returns>
     protected override object Invoke(MethodInfo method, object[] args)
     {
         var noActivityAttribute = method.GetCustomAttribute<NoTraceActivityAttribute>(false);

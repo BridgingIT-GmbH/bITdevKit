@@ -82,6 +82,10 @@ public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, Authen
         return user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
+    /// <summary>
+    /// Creates short hash.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     public static string CreateShortHash()
     {
         var guid = Guid.NewGuid();

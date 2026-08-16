@@ -14,6 +14,9 @@ using global::RabbitMQ.Client.Events;
 using Microsoft.Extensions.Logging;
 using Constants = Application.Messaging.Constants;
 
+/// <summary>
+/// Represents rabbit mq message broker.
+/// </summary>
 public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
 {
     private readonly RabbitMQMessageBrokerOptions options;
@@ -92,6 +95,10 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
             this.GetType().Name);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>RabbitMQMessageBroker</c> class.
+    /// </summary>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public RabbitMQMessageBroker(
         Builder<RabbitMQMessageBrokerOptionsBuilder, RabbitMQMessageBrokerOptions> optionsBuilder)
         : this(optionsBuilder(new RabbitMQMessageBrokerOptionsBuilder()).Build()) { }
@@ -106,6 +113,9 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         }
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
         if (this.factory is not null)
@@ -117,6 +127,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         this.CloseSubscriberConnection();
     }
 
+    /// <inheritdoc/>
     protected override Task OnPublish(IMessage message, CancellationToken cancellationToken)
     {
         this.EnsurePublisherChannel();
@@ -155,16 +166,19 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc/>
     protected override async Task OnProcess(IMessage message, CancellationToken cancellationToken)
     {
         await Task.Delay(this.options.ProcessDelay, cancellationToken);
     }
 
+    /// <inheritdoc/>
     protected override async Task OnSubscribe<TMessage, THandler>()
     {
         await this.OnSubscribe(typeof(TMessage), typeof(THandler));
     }
 
+    /// <inheritdoc/>
     protected override Task OnSubscribe(Type messageType, Type handlerType)
     {
         this.EnsureSubscriberChannel();

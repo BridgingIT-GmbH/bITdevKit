@@ -9,6 +9,17 @@ using System.Linq;
 using System.Text.Json;
 using System.Web;
 
+/// <summary>
+/// Provides mutation, inspection, and serialization operations for <see cref="FilterModel"/> instances.
+/// </summary>
+/// <example>
+/// <code>
+/// var model = new FilterModel()
+///     .AddOrUpdateFilter("Status", FilterOperator.Equal, "Active")
+///     .WithPaging(1, 25);
+/// var queryString = model.ToQueryString();
+/// </code>
+/// </example>
 public static class FilterModelExtensions
 {
     /// <summary>
@@ -132,6 +143,11 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Determines whether the model has no filters, orderings, includes, hierarchy, or paging values.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <returns><see langword="true"/> when <paramref name="source"/> is <see langword="null"/> or contains none of the inspected query criteria; otherwise, <see langword="false"/>.</returns>
     public static bool IsEmpty(this FilterModel source)
     {
         if (source == null)
@@ -147,6 +163,11 @@ public static class FilterModelExtensions
                source.PageSize == 0;
     }
 
+    /// <summary>
+    /// Determines whether the model contains at least one top-level filter.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <returns><see langword="true"/> when a top-level filter exists; otherwise, <see langword="false"/>.</returns>
     public static bool HasFilters(this FilterModel source)
     {
         if (source?.Filters == null)
@@ -157,6 +178,12 @@ public static class FilterModelExtensions
         return source.Filters.Any();
     }
 
+    /// <summary>
+    /// Determines whether a top-level or directly nested filter targets a field.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <param name="field">The case-sensitive field path to find.</param>
+    /// <returns><see langword="true"/> when the field occurs in a top-level or directly nested filter; otherwise, <see langword="false"/>.</returns>
     public static bool HasFilters(this FilterModel source, string field)
     {
         if (source?.Filters == null)
@@ -168,26 +195,56 @@ public static class FilterModelExtensions
                source.Filters.Any(f => f.Filters?.Any(nested => nested.Field == field) == true);
     }
 
+    /// <summary>
+    /// Determines whether the model contains at least one ordering criterion.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <returns><see langword="true"/> when an ordering exists; otherwise, <see langword="false"/>.</returns>
     public static bool HasOrdering(this FilterModel source)
     {
         return source?.Orderings?.Any() == true;
     }
 
+    /// <summary>
+    /// Determines whether the model orders by a specified field.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <param name="field">The case-sensitive field path to find.</param>
+    /// <returns><see langword="true"/> when a matching ordering exists; otherwise, <see langword="false"/>.</returns>
     public static bool HasOrdering(this FilterModel source, string field)
     {
         return source?.Orderings?.Any(o => o.Field == field) == true;
     }
 
+    /// <summary>
+    /// Determines whether the model contains at least one include path.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <returns><see langword="true"/> when an include exists; otherwise, <see langword="false"/>.</returns>
     public static bool HasInclude(this FilterModel source)
     {
         return source?.Includes?.Any() == true;
     }
 
+    /// <summary>
+    /// Determines whether the model contains a specified include path.
+    /// </summary>
+    /// <param name="source">The model to inspect.</param>
+    /// <param name="path">The case-sensitive include path to find.</param>
+    /// <returns><see langword="true"/> when the path is included; otherwise, <see langword="false"/>.</returns>
     public static bool HasInclude(this FilterModel source, string path)
     {
         return source?.Includes?.Contains(path) == true;
     }
 
+    /// <summary>
+    /// Replaces the top-level filter for a field and operator, then appends the supplied criterion.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <param name="field">The field path targeted by the criterion.</param>
+    /// <param name="op">The comparison operation applied to the field.</param>
+    /// <param name="value">The value associated with the comparison.</param>
+    /// <returns>The modified model, or <see langword="null"/> when <paramref name="source"/> is <see langword="null"/>.</returns>
     public static FilterModel AddOrUpdateFilter(this FilterModel source, string field, FilterOperator op, object value)
     {
         if (source == null)
@@ -201,6 +258,13 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Removes matching filters from the top level and from directly nested filter collections.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <param name="field">The case-sensitive field path to remove.</param>
+    /// <param name="op">The comparison operation that must match.</param>
+    /// <returns>The modified model, or the original value when no filter collection is available.</returns>
     public static FilterModel RemoveFilter(this FilterModel source, string field, FilterOperator op)
     {
         if (source?.Filters == null)
@@ -217,6 +281,13 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Sets the hierarchy path and optionally replaces its maximum traversal depth.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <param name="path">The hierarchy path to select.</param>
+    /// <param name="maxDepth">The maximum traversal depth, or <see langword="null"/> to preserve the current value.</param>
+    /// <returns>The modified model, or <see langword="null"/> when <paramref name="source"/> is <see langword="null"/>.</returns>
     public static FilterModel SetHierarchy(this FilterModel source, string path, int? maxDepth = null)
     {
         if (source == null)
@@ -233,6 +304,13 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Replaces any ordering for a field with one ordering in the requested direction.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <param name="field">The case-sensitive field path to order by.</param>
+    /// <param name="direction">The ordering direction.</param>
+    /// <returns>The modified model, or <see langword="null"/> when <paramref name="source"/> is <see langword="null"/>.</returns>
     public static FilterModel ReplaceOrdering(this FilterModel source, string field, OrderDirection direction)
     {
         if (source == null)
@@ -246,6 +324,13 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Finds the first matching top-level filter, falling back to directly nested filters.
+    /// </summary>
+    /// <param name="source">The model to search.</param>
+    /// <param name="field">The case-sensitive field path to find.</param>
+    /// <param name="op">The comparison operation that must match.</param>
+    /// <returns>The first matching criterion, or <see langword="null"/> when none exists.</returns>
     public static FilterCriteria GetFilter(this FilterModel source, string field, FilterOperator op)
     {
         if (source?.Filters == null)
@@ -260,6 +345,12 @@ public static class FilterModelExtensions
                    .FirstOrDefault(f => f.Field == field && f.Operator == op);
     }
 
+    /// <summary>
+    /// Recursively enumerates all filters that target a specified field.
+    /// </summary>
+    /// <param name="source">The model to search.</param>
+    /// <param name="field">The case-sensitive field path to find.</param>
+    /// <returns>A lazy sequence of matching criteria, or an empty sequence when the model has no filters.</returns>
     public static IEnumerable<FilterCriteria> GetFilters(this FilterModel source, string field)
     {
         if (source?.Filters == null)
@@ -294,6 +385,12 @@ public static class FilterModelExtensions
         }
     }
 
+    /// <summary>
+    /// Finds the first ordering criterion for a specified field.
+    /// </summary>
+    /// <param name="source">The model to search.</param>
+    /// <param name="field">The case-sensitive field path to find.</param>
+    /// <returns>The first matching ordering, or <see langword="null"/> when none exists.</returns>
     public static FilterOrderCriteria GetOrdering(this FilterModel source, string field)
     {
         return source?.Orderings?.FirstOrDefault(o => o.Field == field);
@@ -309,6 +406,11 @@ public static class FilterModelExtensions
     //    return JsonSerializer.Deserialize<FilterModel>(JsonSerializer.Serialize(source));
     //}
 
+    /// <summary>
+    /// Marks the model so consumers can execute the query without change tracking.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <returns>The modified model, or <see langword="null"/> when <paramref name="source"/> is <see langword="null"/>.</returns>
     public static FilterModel WithoutTracking(this FilterModel source)
     {
         if (source == null)
@@ -320,6 +422,13 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Sets paging values, substituting page <c>1</c> and page size <c>10</c> for non-positive inputs.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <param name="page">The one-based page number.</param>
+    /// <param name="pageSize">The requested number of items per page.</param>
+    /// <returns>The modified model, or <see langword="null"/> when <paramref name="source"/> is <see langword="null"/>.</returns>
     public static FilterModel WithPaging(this FilterModel source, int page, int pageSize)
     {
         if (source == null)
@@ -332,11 +441,21 @@ public static class FilterModelExtensions
         return source;
     }
 
+    /// <summary>
+    /// Sets paging to the first page with ten items.
+    /// </summary>
+    /// <param name="source">The model to modify.</param>
+    /// <returns>The modified model, or <see langword="null"/> when <paramref name="source"/> is <see langword="null"/>.</returns>
     public static FilterModel WithDefaultPaging(this FilterModel source)
     {
         return source.WithPaging(1, 10);
     }
 
+    /// <summary>
+    /// Serializes the model into URL-encoded query-string key-value pairs.
+    /// </summary>
+    /// <param name="source">The model to serialize.</param>
+    /// <returns>The query string without a leading question mark, or an empty string for a <see langword="null"/> model.</returns>
     public static string ToQueryString(this FilterModel source)
     {
         if (source == null)
@@ -375,6 +494,12 @@ public static class FilterModelExtensions
         return string.Join("&", dict.Select(kvp => $"{HttpUtility.UrlEncode(kvp.Key)}={HttpUtility.UrlEncode(kvp.Value)}"));
     }
 
+    /// <summary>
+    /// Parses paging, tracking, ordering, filtering, include, and hierarchy values from a query string.
+    /// </summary>
+    /// <param name="queryString">The URL query string to parse.</param>
+    /// <returns>A populated model; malformed scalar values are left at their model defaults.</returns>
+    /// <exception cref="JsonException">Thrown when a present JSON-encoded collection value is invalid.</exception>
     public static FilterModel FromQueryString(string queryString)
     {
         if (string.IsNullOrEmpty(queryString))
@@ -427,6 +552,11 @@ public static class FilterModelExtensions
         return result;
     }
 
+    /// <summary>
+    /// Projects all model components into a dictionary keyed by their query-model names.
+    /// </summary>
+    /// <param name="source">The model to project.</param>
+    /// <returns>A dictionary containing every model component, or an empty dictionary for a <see langword="null"/> model.</returns>
     public static IDictionary<string, object> ToDictionary(this FilterModel source)
     {
         if (source == null)

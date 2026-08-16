@@ -5,19 +5,43 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+/// <summary>
+/// Represents fake identity provider endpoint paths.
+/// </summary>
 public class FakeIdentityProviderEndpointPaths
 {
+    /// <summary>
+    /// Gets or sets the authorize.
+    /// </summary>
     public string Authorize { get; set; } = "/authorize";
 
+    /// <summary>
+    /// Gets or sets the token.
+    /// </summary>
     public string Token { get; set; } = "/token";
 
+    /// <summary>
+    /// Gets or sets the user info.
+    /// </summary>
     public string UserInfo { get; set; } = "/userinfo";
 
+    /// <summary>
+    /// Gets or sets the logout.
+    /// </summary>
     public string Logout { get; set; } = "/logout";
 
+    /// <summary>
+    /// Gets or sets the well known configuration.
+    /// </summary>
     public string WellKnownConfiguration { get; set; } = "/.well-known/openid-configuration";
 
+    /// <summary>
+    /// Gets or sets the authorize callback.
+    /// </summary>
     public string AuthorizeCallback { get; set; } = "/authorize/callback";
 
+    /// <summary>
+    /// Gets or sets the debug info.
+    /// </summary>
     public string DebugInfo { get; set; } = "/debuginfo";
 }

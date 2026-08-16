@@ -67,6 +67,11 @@ public class EntityFrameworkRepositoryOptionsBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the enable optimistic concurrency operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public EntityFrameworkRepositoryOptionsBuilder EnableOptimisticConcurrency(bool value = true)
     {
         this.Target.EnableOptimisticConcurrency = value;

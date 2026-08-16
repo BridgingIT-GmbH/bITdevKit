@@ -41,6 +41,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the security error. If null, a default message is used.</param>
 public class SecurityError(string message = null) : ResultErrorBase(message ?? "Security error")
 {
+    /// <summary>Initializes a security error with the default message.</summary>
     public SecurityError() : this(null)
     {
     }

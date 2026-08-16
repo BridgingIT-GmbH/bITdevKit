@@ -5,11 +5,18 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Identifies a startup task that supplies chaos-exception options.
+/// </summary>
 public interface IChaosExceptionStartupTask
 {
+    /// <summary>Gets the chaos-exception options for the task.</summary>
     ChaosExceptionStartupTaskOptions Options { get; }
 }
 
+/// <summary>
+///     Configures random exception injection for a startup task.
+/// </summary>
 public class ChaosExceptionStartupTaskOptions
 {
     /// <summary>
@@ -18,5 +25,6 @@ public class ChaosExceptionStartupTaskOptions
     /// </summary>
     public double InjectionRate { get; set; }
 
+    /// <summary>Gets or sets the exception injected when chaos is triggered.</summary>
     public Exception Fault { get; set; } = new ChaosException();
 }

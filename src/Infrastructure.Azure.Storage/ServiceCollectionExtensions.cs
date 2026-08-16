@@ -9,6 +9,13 @@ using BridgingIT.DevKit.Infrastructure.Azure;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds azure blob service client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="serviceClient">The service client used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static AzureStorageBuilderContext AddAzureBlobServiceClient(
         this IServiceCollection services,
         BlobServiceClient serviceClient,
@@ -17,6 +24,13 @@ public static partial class ServiceCollectionExtensions
         return services.AddAzureBlobServiceClient(null, serviceClient, lifetime);
     }
 
+    /// <summary>
+    /// Adds azure blob service client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static AzureStorageBuilderContext AddAzureBlobServiceClient(
         this IServiceCollection services,
         Builder<AzureBlobServiceOptionsBuilder, AzureBlobServiceOptions> optionsBuilder,
@@ -27,6 +41,14 @@ public static partial class ServiceCollectionExtensions
             lifetime);
     }
 
+    /// <summary>
+    /// Adds azure blob service client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="serviceClient">The service client used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static AzureStorageBuilderContext AddAzureBlobServiceClient(
         this IServiceCollection services,
         AzureBlobServiceOptions options,
@@ -58,6 +80,13 @@ public static partial class ServiceCollectionExtensions
         return new AzureStorageBuilderContext(services, lifetime, null, options.ConnectionString);
     }
 
+    /// <summary>
+    /// Adds azure table service client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="serviceClient">The service client used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static AzureStorageBuilderContext AddAzureTableServiceClient(
         this IServiceCollection services,
         TableServiceClient serviceClient,
@@ -66,6 +95,13 @@ public static partial class ServiceCollectionExtensions
         return services.AddAzureTableServiceClient(null, serviceClient, lifetime);
     }
 
+    /// <summary>
+    /// Adds azure table service client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static AzureStorageBuilderContext AddAzureTableServiceClient(
         this IServiceCollection services,
         Builder<AzureTableServiceOptionsBuilder, AzureTableServiceOptions> optionsBuilder,
@@ -76,6 +112,14 @@ public static partial class ServiceCollectionExtensions
             lifetime);
     }
 
+    /// <summary>
+    /// Adds azure table service client.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="serviceClient">The service client used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static AzureStorageBuilderContext AddAzureTableServiceClient(
         this IServiceCollection services,
         AzureTableServiceOptions options,

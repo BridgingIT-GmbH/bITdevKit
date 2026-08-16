@@ -16,6 +16,15 @@ using Newtonsoft.Json;
 // TODO: get rid of Newtonsoft dependency
 
 // ReSharper disable once ClassNeverInstantiated.Global
+/// <summary>
+/// Represents aggregate event outbox receiver.
+/// </summary>
+/// <param name="eventStoreAggregateEventRegistration">The event store aggregate event registration used by the operation.</param>
+/// <param name="eventStoreAggregateRegistration">The event store aggregate registration used by the operation.</param>
+/// <param name="aggregateEventMediatorRequestSender">The aggregate event mediator request sender used by the operation.</param>
+/// <param name="aggregateEventMediatorNotificationSender">The aggregate event mediator notification sender used by the operation.</param>
+/// <param name="eventTypeSelector">The event type selector used by the operation.</param>
+/// <param name="aggregateTypeSelector">The aggregate type selector used by the operation.</param>
 public class AggregateEventOutboxReceiver(
     IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
     IEventStoreAggregateRegistration eventStoreAggregateRegistration,
@@ -38,6 +47,11 @@ public class AggregateEventOutboxReceiver(
     private readonly IEventTypeSelector eventTypeSelector = eventTypeSelector;
     private readonly IAggregateTypeSelector aggregateTypeSelector = aggregateTypeSelector;
 
+    /// <summary>
+    /// Executes the receive and publish operation.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<(bool projectionSended, bool eventOccuredSended, bool eventOccuredNotified)>
         ReceiveAndPublishAsync(OutboxMessage message)
     {

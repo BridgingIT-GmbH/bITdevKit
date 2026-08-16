@@ -15,6 +15,10 @@ using System.Linq;
 /// </summary>
 public interface IDotNetMetricsSnapshotService
 {
+    /// <summary>
+    /// Gets snapshot.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     DotNetMetricsSnapshotModel GetSnapshot();
 }
 
@@ -23,8 +27,16 @@ public interface IDotNetMetricsSnapshotService
 /// </summary>
 public interface IAspNetMetricsSnapshotService
 {
+    /// <summary>
+    /// Gets snapshot.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     AspNetMetricsSnapshotModel GetSnapshot();
 
+    /// <summary>
+    /// Gets route snapshot.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     AspNetRouteMetricsSnapshotModel GetRouteSnapshot();
 }
 
@@ -39,6 +51,10 @@ public class DotNetMetricsSnapshotService : IDotNetMetricsSnapshotService
     private TimeSpan? lastTotalProcessorTime;
     private double lastCpuUsagePercent;
 
+    /// <summary>
+    /// Gets snapshot.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     public DotNetMetricsSnapshotModel GetSnapshot()
     {
         var capturedAtUtc = DateTimeOffset.UtcNow;
@@ -138,6 +154,9 @@ public sealed class AspNetMetricsTracker
     private long lastRequestUtcTicks;
     private readonly ConcurrentDictionary<string, AspNetRouteMetricsAccumulator> routes = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Executes the begin request operation.
+    /// </summary>
     public void BeginRequest()
     {
         Interlocked.Increment(ref this.totalRequests);
@@ -156,6 +175,14 @@ public sealed class AspNetMetricsTracker
         }
     }
 
+    /// <summary>
+    /// Executes the complete request operation.
+    /// </summary>
+    /// <param name="method">The method used by the operation.</param>
+    /// <param name="route">The route used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="elapsedMilliseconds">The elapsed milliseconds used by the operation.</param>
+    /// <param name="finishedAtUtc">The finished at utc used by the operation.</param>
     public void CompleteRequest(string method, string route, int statusCode, long elapsedMilliseconds, DateTimeOffset finishedAtUtc)
     {
         Interlocked.Decrement(ref this.activeRequests);
@@ -194,6 +221,11 @@ public sealed class AspNetMetricsTracker
         }
     }
 
+    /// <summary>
+    /// Creates snapshot.
+    /// </summary>
+    /// <param name="processStartedAtUtc">The process started at utc used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public AspNetMetricsSnapshotModel CreateSnapshot(DateTimeOffset processStartedAtUtc)
     {
         var capturedAtUtc = DateTimeOffset.UtcNow;
@@ -227,6 +259,11 @@ public sealed class AspNetMetricsTracker
         };
     }
 
+    /// <summary>
+    /// Creates route snapshot.
+    /// </summary>
+    /// <param name="processStartedAtUtc">The process started at utc used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public AspNetRouteMetricsSnapshotModel CreateRouteSnapshot(DateTimeOffset processStartedAtUtc)
     {
         var capturedAtUtc = DateTimeOffset.UtcNow;
@@ -254,11 +291,19 @@ public sealed class AspNetMetricsSnapshotService(AspNetMetricsTracker tracker) :
 {
     private readonly DateTimeOffset processStartedAtUtc = new(Process.GetCurrentProcess().StartTime.ToUniversalTime());
 
+    /// <summary>
+    /// Gets snapshot.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     public AspNetMetricsSnapshotModel GetSnapshot()
     {
         return tracker.CreateSnapshot(this.processStartedAtUtc);
     }
 
+    /// <summary>
+    /// Gets route snapshot.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     public AspNetRouteMetricsSnapshotModel GetRouteSnapshot()
     {
         return tracker.CreateRouteSnapshot(this.processStartedAtUtc);

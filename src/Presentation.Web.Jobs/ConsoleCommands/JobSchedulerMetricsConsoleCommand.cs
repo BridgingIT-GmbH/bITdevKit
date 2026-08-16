@@ -8,17 +8,30 @@ namespace BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Application.Jobs;
 using Spectre.Console;
 
+/// <summary>
+/// Represents job scheduler metrics console command.
+/// </summary>
 public class JobSchedulerMetricsConsoleCommand : JobSchedulerConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     [ConsoleCommandOption("job", Alias = "j", Description = "Filter by job name")]
     public string JobName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the trigger name.
+    /// </summary>
     [ConsoleCommandOption("trigger", Alias = "r", Description = "Filter by trigger name")]
     public string TriggerName { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulerMetricsConsoleCommand</c> class.
+    /// </summary>
     public JobSchedulerMetricsConsoleCommand()
         : base("metrics", "Show aggregate job scheduler metrics", "stats") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.GetRequired<IJobSchedulerQueryService>(console, services);

@@ -8,6 +8,10 @@ namespace BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 
+/// <summary>
+/// Represents has permission rule.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public class HasPermissionRule<TEntity> : AsyncRuleBase
     where TEntity : class, IEntity
 {
@@ -20,6 +24,13 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
     private readonly bool bypassCache;
 
     // Single permission constructors
+    /// <summary>
+    /// Initializes a new instance of the <c>HasPermissionRule</c> class.
+    /// </summary>
+    /// <param name="currentUserAccessor">The current user accessor used by the operation.</param>
+    /// <param name="permissionEvaluator">The permission evaluator used by the operation.</param>
+    /// <param name="permission">The permission used by the operation.</param>
+    /// <param name="bypassCache">The bypass cache used by the operation.</param>
     public HasPermissionRule(
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TEntity> permissionEvaluator,
@@ -34,6 +45,14 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
         this.bypassCache = bypassCache;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>HasPermissionRule</c> class.
+    /// </summary>
+    /// <param name="currentUserAccessor">The current user accessor used by the operation.</param>
+    /// <param name="permissionEvaluator">The permission evaluator used by the operation.</param>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="permission">The permission used by the operation.</param>
+    /// <param name="bypassCache">The bypass cache used by the operation.</param>
     public HasPermissionRule(
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TEntity> permissionEvaluator,
@@ -51,6 +70,14 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
         this.bypassCache = bypassCache;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>HasPermissionRule</c> class.
+    /// </summary>
+    /// <param name="currentUserAccessor">The current user accessor used by the operation.</param>
+    /// <param name="permissionEvaluator">The permission evaluator used by the operation.</param>
+    /// <param name="entityId">The entity identifier.</param>
+    /// <param name="permission">The permission used by the operation.</param>
+    /// <param name="bypassCache">The bypass cache used by the operation.</param>
     public HasPermissionRule(
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TEntity> permissionEvaluator,
@@ -69,6 +96,13 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
     }
 
     // Multiple permissions constructors
+    /// <summary>
+    /// Initializes a new instance of the <c>HasPermissionRule</c> class.
+    /// </summary>
+    /// <param name="currentUserAccessor">The current user accessor used by the operation.</param>
+    /// <param name="permissionEvaluator">The permission evaluator used by the operation.</param>
+    /// <param name="permissions">The permissions used by the operation.</param>
+    /// <param name="bypassCache">The bypass cache used by the operation.</param>
     public HasPermissionRule(
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TEntity> permissionEvaluator,
@@ -84,6 +118,14 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
         this.bypassCache = bypassCache;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>HasPermissionRule</c> class.
+    /// </summary>
+    /// <param name="currentUserAccessor">The current user accessor used by the operation.</param>
+    /// <param name="permissionEvaluator">The permission evaluator used by the operation.</param>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="permissions">The permissions used by the operation.</param>
+    /// <param name="bypassCache">The bypass cache used by the operation.</param>
     public HasPermissionRule(
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TEntity> permissionEvaluator,
@@ -102,6 +144,14 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
         this.bypassCache = bypassCache;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>HasPermissionRule</c> class.
+    /// </summary>
+    /// <param name="currentUserAccessor">The current user accessor used by the operation.</param>
+    /// <param name="permissionEvaluator">The permission evaluator used by the operation.</param>
+    /// <param name="entityId">The entity identifier.</param>
+    /// <param name="permissions">The permissions used by the operation.</param>
+    /// <param name="bypassCache">The bypass cache used by the operation.</param>
     public HasPermissionRule(
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TEntity> permissionEvaluator,
@@ -120,6 +170,7 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
         this.bypassCache = bypassCache;
     }
 
+    /// <inheritdoc/>
     public override string Message
     {
         get
@@ -141,6 +192,7 @@ public class HasPermissionRule<TEntity> : AsyncRuleBase
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         if (this.permissions != null) // Multiple permissions case

@@ -139,9 +139,15 @@ public static partial class Extensions
     }
 }
 
+/// <summary>
+/// Represents an item and its lazily or eagerly supplied child nodes in a hierarchy.
+/// </summary>
+/// <typeparam name="T">The item type stored at each node.</typeparam>
 public class HierarchyNode<T>
 {
+    /// <summary>Gets or sets the item represented by this node.</summary>
     public T Item { get; set; }
 
+    /// <summary>Gets or sets the child nodes; the default is an empty sequence.</summary>
     public IEnumerable<HierarchyNode<T>> Children { get; set; } = [];
 }

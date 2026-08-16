@@ -13,7 +13,13 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 public enum EnumerationConverterMode
 {
+    /// <summary>
+    /// Represents the id value.
+    /// </summary>
     Id,
+    /// <summary>
+    /// Represents the value value.
+    /// </summary>
     Value
 }
 

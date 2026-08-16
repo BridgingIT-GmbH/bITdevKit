@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Defines the log key value.
+    /// </summary>
     public const string LogKey = "NOT";
 }

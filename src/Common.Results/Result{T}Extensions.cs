@@ -10,6 +10,7 @@ using FluentValidation.Internal;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 
+/// <summary>Provides validation, logging, throwing, and value-processing operations for <see cref="Result{T}"/>.</summary>
 public static class ResultTExtensions
 {
     private static readonly EventId ResultLogEvent = new(10001, "Result");

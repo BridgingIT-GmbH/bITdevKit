@@ -67,10 +67,13 @@ public sealed class HandlerDatabaseTransactionAttribute : Attribute
         this.ContextName = contextName;
     }
 
+    /// <summary>Gets the transaction isolation level.</summary>
     public DatabaseTransactionIsolationLevel IsolationLevel { get; }
 
+    /// <summary>Gets whether a failed handler result causes rollback.</summary>
     public bool RollbackOnFailure { get; }
 
+    /// <summary>Gets the logical database-context name, when specified.</summary>
     public string ContextName { get; }
 }
 

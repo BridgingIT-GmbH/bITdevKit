@@ -7,6 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Presentation.Web;
 
+/// <summary>
+/// Represents identity options builder extensions.
+/// </summary>
 public static class IdentityOptionsBuilderExtensions
 {
     /// <summary>

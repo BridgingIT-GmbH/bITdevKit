@@ -45,6 +45,7 @@ public sealed class RetryBlobStoreClientBehavior(
     /// </example>
     public RetryBlobStoreClientBehaviorOptions Options { get; } = Normalize(options);
 
+    /// <inheritdoc/>
     protected override Task<Result<T>> ExecuteAsync<T>(
         string operation,
         BlobStoreOperationContext context,
@@ -52,6 +53,7 @@ public sealed class RetryBlobStoreClientBehavior(
         CancellationToken cancellationToken) =>
         this.ExecuteWithRetryAsync(operation, context, next, cancellationToken);
 
+    /// <inheritdoc/>
     protected override Task<Result> ExecuteAsync(
         string operation,
         BlobStoreOperationContext context,

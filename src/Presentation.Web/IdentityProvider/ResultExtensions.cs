@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
+/// <summary>
+/// Represents results extensions.
+/// </summary>
 public static class ResultsExtensions
 {
     /// <summary>

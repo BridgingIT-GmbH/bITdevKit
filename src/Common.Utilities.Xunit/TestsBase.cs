@@ -279,7 +279,13 @@ public abstract class TestsBase : IDisposable
 /// </summary>
 public class TestContext
 {
+    /// <summary>
+    ///     Gets or sets the current test name.
+    /// </summary>
     public string TestName { get; set; }
 
+    /// <summary>
+    ///     Gets mutable metadata associated with the current test.
+    /// </summary>
     public Dictionary<string, string> Metadata { get; } = [];
 }

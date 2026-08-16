@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Exposes the mutable target configured by an options builder.</summary>
 public interface IOptionsBuilder
 {
     /// <summary>
@@ -16,7 +17,11 @@ public interface IOptionsBuilder
     object Target { get; }
 }
 
+/// <summary>Defines an options builder that produces a configured options instance.</summary>
+/// <typeparam name="T">The options type produced by the builder.</typeparam>
 public interface IOptionsBuilder<out T> : IOptionsBuilder
 {
+    /// <summary>Builds the options from the builder's current target state.</summary>
+    /// <returns>The configured options instance.</returns>
     T Build();
 }

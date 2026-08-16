@@ -9,9 +9,18 @@ using System.Linq.Expressions;
 using Common;
 using Microsoft.Azure.Cosmos;
 
+/// <summary>
+/// Builds cosmos sql provider options configuration.
+/// </summary>
+/// <typeparam name="T">The  type.</typeparam>
 public class CosmosSqlProviderOptionsBuilder<T>
     : OptionsBuilderBase<CosmosSqlProviderOptions<T>, CosmosSqlProviderOptionsBuilder<T>>
 {
+    /// <summary>
+    /// Executes the client operation.
+    /// </summary>
+    /// <param name="client">The client used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> Client(CosmosClient client)
     {
         this.Target.Client = client;
@@ -26,6 +35,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
     //    return this;
     //}
 
+    /// <summary>
+    /// Executes the account operation.
+    /// </summary>
+    /// <param name="endPoint">The end point used by the operation.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> Account(string endPoint, string key)
     {
         this.Target.AccountEndPoint = endPoint;
@@ -35,6 +50,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the database operation.
+    /// </summary>
+    /// <param name="database">The database used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> Database(string database)
     {
         this.Target.Database = database ?? "master";
@@ -42,6 +62,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the database autoscale operation.
+    /// </summary>
+    /// <param name="maxThroughPut">The max through put used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> DatabaseAutoscale(int maxThroughPut = 1000, bool value = true)
     {
         this.Target.DatabaseAutoscale = value;
@@ -55,6 +81,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the database through put operation.
+    /// </summary>
+    /// <param name="throughPut">The through put used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> DatabaseThroughPut(int throughPut = 400)
     {
         if (throughPut < 400)
@@ -72,6 +103,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the container prefix operation.
+    /// </summary>
+    /// <param name="prefix">The prefix used by the operation.</param>
+    /// <param name="seperator">The seperator used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> ContainerPrefix(string prefix, char? seperator = null)
     {
         this.Target.ContainerPrefix = prefix;
@@ -80,6 +117,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the container operation.
+    /// </summary>
+    /// <param name="name">The name of the value.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> Container(string name)
     {
         this.Target.Container = name;
@@ -87,6 +129,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the partition key operation.
+    /// </summary>
+    /// <param name="partitionKey">The partition key used by the operation.</param>
+    /// <param name="partitionKeyCamelCase">The partition key camel case used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> PartitionKey(string partitionKey, bool partitionKeyCamelCase = true)
     {
         if (partitionKeyCamelCase && char.IsUpper(partitionKey[0]))
@@ -99,6 +147,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the partition key operation.
+    /// </summary>
+    /// <param name="partitionKeyExpression">The partition key expression used by the operation.</param>
+    /// <param name="partitionKeyCamelCase">The partition key camel case used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
         Expression<Func<T, string>> partitionKeyExpression,
         bool partitionKeyCamelCase = true)
@@ -115,6 +169,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the partition key operation.
+    /// </summary>
+    /// <param name="partitionKeyExpression">The partition key expression used by the operation.</param>
+    /// <param name="partitionKeyCamelCase">The partition key camel case used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
         Expression<Func<T, bool>> partitionKeyExpression,
         bool partitionKeyCamelCase = true)
@@ -131,6 +191,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the partition key operation.
+    /// </summary>
+    /// <param name="partitionKeyExpression">The partition key expression used by the operation.</param>
+    /// <param name="partitionKeyCamelCase">The partition key camel case used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
         Expression<Func<T, double>> partitionKeyExpression,
         bool partitionKeyCamelCase = true)
@@ -147,6 +213,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the partition key operation.
+    /// </summary>
+    /// <param name="partitionKeyExpression">The partition key expression used by the operation.</param>
+    /// <param name="partitionKeyCamelCase">The partition key camel case used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> PartitionKey(
         Expression<Func<T, Guid>> partitionKeyExpression,
         bool partitionKeyCamelCase = true)
@@ -163,6 +235,12 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the autoscale operation.
+    /// </summary>
+    /// <param name="maxThroughPut">The max through put used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> Autoscale(int maxThroughPut = 1000, bool value = true)
     {
         this.Target.Autoscale = value;
@@ -176,6 +254,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the through put operation.
+    /// </summary>
+    /// <param name="throughPut">The through put used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> ThroughPut(int throughPut = 400)
     {
         if (throughPut < 400)
@@ -193,6 +276,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the time to live operation.
+    /// </summary>
+    /// <param name="seconds">The seconds used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public CosmosSqlProviderOptionsBuilder<T> TimeToLive(int seconds)
     {
         if (seconds < 0)
@@ -205,6 +293,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Writes a log entry for the request charges operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> LogRequestCharges(bool value = true)
     {
         this.Target.LogRequestCharges = value;
@@ -212,6 +305,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the enable optimistic concurrency operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> EnableOptimisticConcurrency(bool value = true)
     {
         this.Target.EnableOptimisticConcurrency = value;
@@ -219,6 +317,11 @@ public class CosmosSqlProviderOptionsBuilder<T>
         return this;
     }
 
+    /// <summary>
+    /// Executes the throw on concurrency conflict operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public CosmosSqlProviderOptionsBuilder<T> ThrowOnConcurrencyConflict(bool value = true)
     {
         this.Target.ThrowOnConcurrencyConflict = value;

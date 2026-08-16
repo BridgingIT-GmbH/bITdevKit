@@ -7,4 +7,7 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
 using Domain.Model;
 
+/// <summary>
+/// Defines operations for i aggregate root with guid.
+/// </summary>
 public interface IAggregateRootWithGuid : IEntity<Guid>, IAggregateRoot;

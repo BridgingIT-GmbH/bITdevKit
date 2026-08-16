@@ -53,101 +53,121 @@ public class NetworkFileStorageProvider : LocalFileStorageProvider
     {
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.ReadFileAsync(path, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.WriteFileAsync(path, content, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DeleteFileAsync(path, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.GetChecksumAsync(path, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.GetFileMetadataAsync(path, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.SetFileMetadataAsync(path, metadata, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.UpdateFileMetadataAsync(path, metadataUpdate, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.ListFilesAsync(path, searchPattern, recursive, continuationToken, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.CopyFileAsync(sourcePath, destinationPath, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.RenameFileAsync(oldPath, newPath, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.MoveFileAsync(sourcePath, destinationPath, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.CopyFilesAsync(filePairs, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.MoveFilesAsync(filePairs, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DeleteFilesAsync(paths, progress, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DirectoryExistsAsync(path, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.CreateDirectoryAsync(path, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DeleteDirectoryAsync(path, recursive, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<IEnumerable<string>>> ListDirectoriesAsync(string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.ListDirectoriesAsync(path, searchPattern, recursive, cancellationToken));
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.CheckHealthAsync(cancellationToken));

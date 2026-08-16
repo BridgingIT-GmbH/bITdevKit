@@ -8,9 +8,14 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
+/// <summary>
+/// Provides chaos exception message handler behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory)
     : MessageHandlerBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

@@ -19,6 +19,9 @@ using Model;
 public class PublishAggregateEvent<TAggregate>(TAggregate aggregate, IAggregateEvent aggregateEvent) : INotification
     where TAggregate : EventSourcingAggregateRoot
 {
+    /// <summary>
+    /// Gets or sets the aggregate.
+    /// </summary>
     public TAggregate Aggregate { get; private set; } = aggregate;
 
     /// <summary>

@@ -37,6 +37,12 @@ public static partial class Extensions
         return source;
     }
 
+    /// <summary>Awaits an action sequentially for each item and returns the original enumerable.</summary>
+    /// <typeparam name="T">The sequence element type.</typeparam>
+    /// <param name="source">The sequence to enumerate; null or empty input is returned unchanged.</param>
+    /// <param name="action">The asynchronous action to await for each item.</param>
+    /// <param name="cancellationToken">A token checked before each action invocation.</param>
+    /// <returns>The original <paramref name="source"/> after all actions complete.</returns>
     public static async Task<IEnumerable<T>> ForEachAsync<T>(
         this IEnumerable<T> source,
         Func<T, Task> action,
@@ -56,6 +62,12 @@ public static partial class Extensions
         return source;
     }
 
+    /// <summary>Applies an action to each collection item and returns a new list containing the enumerated items.</summary>
+    /// <typeparam name="T">The collection element type.</typeparam>
+    /// <param name="source">The collection to enumerate; null or empty input is returned unchanged.</param>
+    /// <param name="action">The action invoked for each item.</param>
+    /// <param name="cancellationToken">A token checked before each action invocation.</param>
+    /// <returns>A list of the source items after processing, or the unchanged source when no work is performed.</returns>
     [DebuggerStepThrough]
     public static ICollection<T> ForEach<T>(
         this ICollection<T> source,
@@ -70,6 +82,12 @@ public static partial class Extensions
         return source.AsEnumerable().ForEach(action, cancellationToken).ToList();
     }
 
+    /// <summary>Awaits an action sequentially for each collection item and returns the original collection.</summary>
+    /// <typeparam name="T">The collection element type.</typeparam>
+    /// <param name="source">The collection to enumerate; null or empty input is returned unchanged.</param>
+    /// <param name="action">The asynchronous action to await for each item.</param>
+    /// <param name="cancellationToken">A token checked before each action invocation.</param>
+    /// <returns>The original <paramref name="source"/> after all actions complete.</returns>
     public static async Task<ICollection<T>> ForEachAsync<T>(
         this ICollection<T> source,
         Func<T, Task> action,
@@ -89,6 +107,13 @@ public static partial class Extensions
         return source;
     }
 
+    /// <summary>Traverses a sequence depth-first, invoking an action on each item before visiting its selected children.</summary>
+    /// <typeparam name="T">The node type.</typeparam>
+    /// <param name="source">The root sequence to traverse.</param>
+    /// <param name="childSelector">The optional function that selects child nodes for recursive traversal.</param>
+    /// <param name="action">The action invoked for every visited node.</param>
+    /// <param name="cancellationToken">A token checked before each node is processed.</param>
+    /// <returns>The original root sequence.</returns>
     [DebuggerStepThrough]
     public static IEnumerable<T> ForEach<T>(
         this IEnumerable<T> source,

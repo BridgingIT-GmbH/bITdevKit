@@ -11,6 +11,14 @@ using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
 
+/// <summary>
+///     Applies a pessimistic timeout policy configured for a request handler.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
+/// <param name="policyCache">The handler policy cache.</param>
+/// <param name="options">Default timeout settings used when an attribute omits a duration.</param>
 public class TimeoutPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ConcurrentDictionary<Type, PolicyConfig> policyCache,
@@ -21,11 +29,13 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly TimeoutOptions timeoutOptions = options?.Value ?? new TimeoutOptions();
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Timeout != null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

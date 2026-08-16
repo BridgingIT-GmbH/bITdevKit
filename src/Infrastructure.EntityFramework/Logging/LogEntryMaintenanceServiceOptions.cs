@@ -7,14 +7,29 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System;
 
+/// <summary>
+/// Configures log entry maintenance service.
+/// </summary>
 public class LogEntryMaintenanceServiceOptions : OptionsBase
 {
+    /// <summary>
+    /// Gets or sets the enabled.
+    /// </summary>
     public bool Enabled { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the startup delay.
+    /// </summary>
     public TimeSpan StartupDelay { get; set; } = new(0, 0, 15);
 
+    /// <summary>
+    /// Gets or sets the processing interval.
+    /// </summary>
     public TimeSpan ProcessingInterval { get; set; } = new(0, 0, 5);
 
+    /// <summary>
+    /// Gets or sets the cleanup interval.
+    /// </summary>
     public TimeSpan CleanupInterval { get; set; } = new(0, 59, 59);
 
     /// <summary>

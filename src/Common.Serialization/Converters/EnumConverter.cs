@@ -10,9 +10,14 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Converts enum values using their <see cref="EnumMemberAttribute.Value"/> values when available.
+/// </summary>
+/// <typeparam name="T">The enum type to convert.</typeparam>
 public class EnumConverter<T> : JsonConverter<T>
     where T : Enum
 {
+    /// <inheritdoc/>
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var value = reader.GetString();
@@ -27,6 +32,7 @@ public class EnumConverter<T> : JsonConverter<T>
         throw new JsonException($"Unable to parse {value} to {typeof(T)}");
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         var field = value.GetType().GetField(value.ToString());

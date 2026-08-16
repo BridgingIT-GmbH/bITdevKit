@@ -5,11 +5,20 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
+/// <summary>
+/// Defines operations for i chaos exception query.
+/// </summary>
 public interface IChaosExceptionQuery
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     ChaosExceptionQueryOptions Options { get; }
 }
 
+/// <summary>
+/// Configures chaos exception query.
+/// </summary>
 public class ChaosExceptionQueryOptions
 {
     /// <summary>
@@ -18,5 +27,8 @@ public class ChaosExceptionQueryOptions
     /// </summary>
     public double InjectionRate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the fault.
+    /// </summary>
     public Exception Fault { get; set; } = new ChaosException();
 }

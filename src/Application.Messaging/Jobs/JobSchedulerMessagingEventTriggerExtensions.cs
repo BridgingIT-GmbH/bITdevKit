@@ -15,6 +15,11 @@ namespace BridgingIT.DevKit.Application.Messaging.Jobs
     {
         private readonly IJobEventIngress ingress;
 
+        /// <summary>
+        /// Initializes a new instance of the <c>JobSchedulerMessagePublisherAcceptedEventBehavior</c> class.
+        /// </summary>
+        /// <param name="ingress">The ingress used by the operation.</param>
+        /// <param name="loggerFactory">The factory used to create loggers.</param>
         public JobSchedulerMessagePublisherAcceptedEventBehavior(
             IJobEventIngress ingress,
             ILoggerFactory loggerFactory = null)
@@ -23,6 +28,7 @@ namespace BridgingIT.DevKit.Application.Messaging.Jobs
             this.ingress = ingress ?? throw new ArgumentNullException(nameof(ingress));
         }
 
+        /// <inheritdoc/>
         public override async Task Publish<TMessage>(TMessage message, CancellationToken cancellationToken, MessagePublisherDelegate next)
         {
             await next().ConfigureAwait(false);

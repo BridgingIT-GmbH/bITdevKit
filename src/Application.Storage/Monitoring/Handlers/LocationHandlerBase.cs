@@ -22,19 +22,55 @@ using Microsoft.Extensions.Logging;
 [DebuggerDisplay("Name={options.Name}")]
 public abstract class LocationHandlerBase : ILocationHandler, IDisposable
 {
+    /// <summary>
+    /// Stores the logger.
+    /// </summary>
     protected readonly ILogger logger;
     private readonly TypedLogger loggerTyped;
+    /// <summary>
+    /// Stores the provider.
+    /// </summary>
     protected readonly IFileStorageProvider provider;
+    /// <summary>
+    /// Stores the store.
+    /// </summary>
     protected readonly IFileEventStore store;
+    /// <summary>
+    /// Stores the options.
+    /// </summary>
     protected readonly LocationOptions options;
+    /// <summary>
+    /// Stores the service provider.
+    /// </summary>
     protected readonly IServiceProvider serviceProvider;
+    /// <summary>
+    /// Stores the behaviors.
+    /// </summary>
     protected readonly IEnumerable<IMonitoringBehavior> behaviors;
+    /// <summary>
+    /// Stores the event queue.
+    /// </summary>
     protected readonly BlockingCollection<FileEvent> eventQueue;
+    /// <summary>
+    /// Stores the processors.
+    /// </summary>
     protected readonly List<IFileEventProcessor> processors;
+    /// <summary>
+    /// Stores the rate limiter.
+    /// </summary>
     protected readonly RateLimiter rateLimiter;
 
+    /// <summary>
+    /// Stores the cts.
+    /// </summary>
     protected CancellationTokenSource cts;
+    /// <summary>
+    /// Stores the processing task.
+    /// </summary>
     protected Task processingTask;
+    /// <summary>
+    /// Stores the is paused.
+    /// </summary>
     protected bool isPaused;
 
     /// <summary>
@@ -124,6 +160,9 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
         this.StopAsync().GetAwaiter().GetResult();
@@ -265,6 +304,10 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Gets processors.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     public IEnumerable<IFileEventProcessor> GetProcessors()
     {
         return this.processors.AsEnumerable();
@@ -275,6 +318,11 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
         return this.BuildProcessorChainWithConfig(options);
     }
 
+    /// <summary>
+    /// Executes the build processor chain with config operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected List<IFileEventProcessor> BuildProcessorChainWithConfig(LocationOptions options)
     {
         var chain = new List<IFileEventProcessor>();
@@ -300,6 +348,11 @@ public abstract class LocationHandlerBase : ILocationHandler, IDisposable
         return chain;
     }
 
+    /// <summary>
+    /// Executes the process events operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected async Task ProcessEventsAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested && !this.eventQueue.IsCompleted)

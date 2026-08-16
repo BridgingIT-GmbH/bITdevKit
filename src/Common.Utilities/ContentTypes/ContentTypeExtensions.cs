@@ -5,8 +5,17 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Provides metadata lookup and parsing helpers for <see cref="ContentType"/> values.
+/// </summary>
 public static class ContentTypeExtensions
 {
+    /// <summary>
+    ///     Resolves a content type from its MIME type without regard to case.
+    /// </summary>
+    /// <param name="mimeType">The MIME type to resolve.</param>
+    /// <param name="default">The value returned when no match exists.</param>
+    /// <returns>The matching content type or the supplied default.</returns>
     public static ContentType FromMimeType(string mimeType, ContentType @default = ContentType.TXT)
     {
         if (string.IsNullOrEmpty(mimeType))
@@ -27,6 +36,12 @@ public static class ContentTypeExtensions
         return @default;
     }
 
+    /// <summary>
+    ///     Resolves a content type from the suffix after the final period in a file name.
+    /// </summary>
+    /// <param name="fileName">The file name to inspect.</param>
+    /// <param name="default">The value returned when no match exists.</param>
+    /// <returns>The matching content type or the supplied default.</returns>
     public static ContentType FromFileName(string fileName, ContentType @default = ContentType.TXT)
     {
         if (string.IsNullOrEmpty(fileName))
@@ -37,6 +52,12 @@ public static class ContentTypeExtensions
         return FromExtension(fileName.SliceFromLast("."), @default);
     }
 
+    /// <summary>
+    ///     Resolves a content type from its configured extension or enum name.
+    /// </summary>
+    /// <param name="extension">The extension to resolve.</param>
+    /// <param name="default">The value returned when no match exists.</param>
+    /// <returns>The matching content type or the supplied default.</returns>
     public static ContentType FromExtension(string extension, ContentType @default = ContentType.TXT)
     {
         if (string.IsNullOrEmpty(extension))
@@ -69,6 +90,9 @@ public static class ContentTypeExtensions
         return @default;
     }
 
+    /// <summary>Gets the configured MIME type for a content type.</summary>
+    /// <param name="contentType">The content type.</param>
+    /// <returns>The configured MIME type, or an empty string when metadata is absent.</returns>
     public static string MimeType(this ContentType contentType)
     {
         var metadata = GetMetadata(contentType);
@@ -76,6 +100,9 @@ public static class ContentTypeExtensions
         return metadata is not null ? ((ContentTypeMetadateAttribute)metadata).MimeType : string.Empty;
     }
 
+    /// <summary>Gets the configured file extension or the lower-case enum name when none is configured.</summary>
+    /// <param name="contentType">The content type.</param>
+    /// <returns>The file extension.</returns>
     public static string FileExtension(this ContentType contentType)
     {
         var metadata = GetMetadata(contentType);
@@ -85,6 +112,9 @@ public static class ContentTypeExtensions
             : contentType.ToString().ToLowerInvariant();
     }
 
+    /// <summary>Determines whether a content type represents text.</summary>
+    /// <param name="contentType">The content type.</param>
+    /// <returns>The configured text flag, or <see langword="true"/> when metadata is absent.</returns>
     public static bool IsText(this ContentType contentType)
     {
         var metadata = GetMetadata(contentType);
@@ -92,6 +122,9 @@ public static class ContentTypeExtensions
         return metadata is not null ? ((ContentTypeMetadateAttribute)metadata).IsText : true;
     }
 
+    /// <summary>Determines whether a content type represents binary data.</summary>
+    /// <param name="contentType">The content type.</param>
+    /// <returns>The configured binary flag, or <see langword="false"/> when metadata is absent.</returns>
     public static bool IsBinary(this ContentType contentType)
     {
         var metadata = GetMetadata(contentType);

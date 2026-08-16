@@ -9,6 +9,11 @@ using System.Diagnostics;
 using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Represents query handler base.
+/// </summary>
+/// <typeparam name="TQuery">The query type.</typeparam>
+/// <typeparam name="TResult">The result type.</typeparam>
 [Obsolete("Use the new Requester from now on")]
 public abstract partial class QueryHandlerBase<TQuery, TResult>
     : MediatR.IRequestHandler<TQuery, QueryResponse<TResult>>, IQueryHandler
@@ -20,6 +25,12 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>QueryHandlerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="moduleAccessors">The module accessors used by the operation.</param>
+    /// <param name="activitySources">The activity sources used by the operation.</param>
     protected QueryHandlerBase(
         ILoggerFactory loggerFactory,
         IEnumerable<IModuleContextAccessor> moduleAccessors = null,
@@ -31,8 +42,17 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
         this.activitySources = activitySources;
     }
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     protected ILogger Logger { get; }
 
+    /// <summary>
+    /// Handles .
+    /// </summary>
+    /// <param name="query">The query used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<QueryResponse<TResult>> Handle(TQuery query, CancellationToken cancellationToken)
     {
         var requestType = query.GetType().PrettyName();
@@ -114,6 +134,12 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
         }
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="query">The query used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public abstract Task<QueryResponse<TResult>> Process(TQuery query, CancellationToken cancellationToken);
 
     private void ValidateRequest(TQuery request)
@@ -132,11 +158,32 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="queryType">The query type used by the operation.</param>
+        /// <param name="queryRequestId">The query request id used by the operation.</param>
+        /// <param name="queryHandler">The query handler used by the operation.</param>
+        /// <param name="moduleName">The module name used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] processing (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, module={ModuleName})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string queryType, string queryRequestId, string queryHandler, string moduleName);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="queryType">The query type used by the operation.</param>
+        /// <param name="queryRequestId">The query request id used by the operation.</param>
+        /// <param name="moduleName">The module name used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(1,
             LogLevel.Information,
             "[{LogKey}] processed (type={QueryType}, id={QueryRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]

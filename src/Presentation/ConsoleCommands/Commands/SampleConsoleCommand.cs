@@ -7,13 +7,32 @@ namespace BridgingIT.DevKit.Presentation;
 
 using Spectre.Console;
 
+/// <summary>
+/// Represents sample console command.
+/// </summary>
 public class SampleConsoleCommand : ConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the user name.
+    /// </summary>
     [ConsoleCommandOption("name", Description = "Name to use", Required = true)] public string UserName { get; set; }
+    /// <summary>
+    /// Gets or sets the count.
+    /// </summary>
     [ConsoleCommandOption("count", Alias = "c", Description = "Base count", Default = 1)] public int Count { get; set; }
+    /// <summary>
+    /// Gets or sets the enable.
+    /// </summary>
     [ConsoleCommandOption("enable", Alias = "e", Description = "Enable extra output")] public bool Enable { get; set; }
+    /// <summary>
+    /// Gets or sets the guid value.
+    /// </summary>
     [ConsoleCommandOption("guid", Description = "Optional guid")] public Guid GuidValue { get; set; }
+    /// <summary>
+    /// Gets or sets the target.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Greeting target", Required = true)] public string Target { get; set; }
+    /// <inheritdoc/>
     [ConsoleCommandArgument(1, Description = "Repeat override", Required = false)] public int Repeat { get; set; }
 
     /// <summary>

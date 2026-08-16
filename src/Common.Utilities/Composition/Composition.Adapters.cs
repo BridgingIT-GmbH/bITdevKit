@@ -12,6 +12,10 @@ using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Represents the source-selection stage of adapter registration.
+/// </summary>
+/// <typeparam name="TSource">The source type supplied to the adapter.</typeparam>
 public interface IAdapterSourceBuilder<TSource>
     where TSource : class
 {

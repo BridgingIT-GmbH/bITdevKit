@@ -10,6 +10,12 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl.Matchers;
 
+/// <summary>
+/// Represents job service.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="schedulerFactory">The scheduler factory used by the operation.</param>
+/// <param name="provider">The provider used by the operation.</param>
 public partial class JobService(
     ILoggerFactory loggerFactory,
     ISchedulerFactory schedulerFactory,
@@ -630,35 +636,108 @@ public partial class JobService(
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the get jobs operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
         [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] jobservice: get jobs")]
         public static partial void LogGetJobs(ILogger logger, string logKey);
 
+        /// <summary>
+        /// Writes a log entry for the get job operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] jobservice: get job (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the get job runs operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(2, LogLevel.Debug, "[{LogKey}] jobservice: get job runs (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJobRuns(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the get job run stats operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(3, LogLevel.Debug, "[{LogKey}] jobservice: get job run stats (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJobRunStats(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the get triggers operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(4, LogLevel.Debug, "[{LogKey}] jobservice: get triggers (name={JobName}, group={JobGroup})")]
         public static partial void LogGetTriggers(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the save job run operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
+        /// <param name="entryId">The entry id used by the operation.</param>
         [LoggerMessage(5, LogLevel.Debug, "[{LogKey}] jobservice: save job run (name={JobName}, group={JobGroup}, id={EntryId})")]
         public static partial void LogSaveJobRun(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
+        /// <summary>
+        /// Writes a log entry for the trigger job operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(6, LogLevel.Debug, "[{LogKey}] jobservice: trigger job (name={JobName}, group={JobGroup})")]
         public static partial void LogTriggerJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the pause job operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(7, LogLevel.Debug, "[{LogKey}] jobservice: pause job (name={JobName}, group={JobGroup})")]
         public static partial void LogPauseJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the resume job operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
         [LoggerMessage(8, LogLevel.Debug, "[{LogKey}] jobservice: resume job (name={JobName}, group={JobGroup})")]
         public static partial void LogResumeJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
+        /// <summary>
+        /// Writes a log entry for the purge job runs operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
+        /// <param name="olderThan">The older than used by the operation.</param>
         [LoggerMessage(9, LogLevel.Debug, "[{LogKey}] jobservice: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})")]
         public static partial void LogPurgeJobRuns(ILogger logger, string logKey, string jobName, string jobGroup, DateTimeOffset olderThan);
     }

@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class ResourceUnavailableError(string message = null) : ResultErrorBase(message ?? "Resource is temporarily unavailable")
 {
+    /// <summary>Initializes a resource-unavailable error with the default message.</summary>
     public ResourceUnavailableError() : this(null)
     {
     }

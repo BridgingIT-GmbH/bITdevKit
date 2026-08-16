@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Provides type-based inspection of result-error collections.</summary>
 public static class ResultErrorExtensions
 {
     /// <summary>

@@ -9,6 +9,14 @@ using System.Linq.Expressions;
 
 public static partial class Extensions
 {
+    /// <summary>
+    /// Executes the where if operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="predicate">The expression used to test each value.</param>
+    /// <param name="condition">The condition used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static IQueryable<T> WhereIf<T>(
         this IQueryable<T> source,
         Expression<Func<T, bool>> predicate,
@@ -22,6 +30,14 @@ public static partial class Extensions
         return source;
     }
 
+    /// <summary>
+    /// Executes the where if operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="predicates">The predicates used by the operation.</param>
+    /// <param name="condition">The condition used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static IQueryable<T> WhereIf<T>(
         this IQueryable<T> source,
         IEnumerable<Expression<Func<T, bool>>> predicates,

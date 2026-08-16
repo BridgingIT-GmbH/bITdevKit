@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+/// <summary>
+/// Provides fire-and-forget, retry, timeout, fallback, failure handling, and context-free await helpers.
+/// </summary>
 public static class TaskExtensions
 {
     /// <summary>
@@ -265,6 +268,10 @@ public static class TaskExtensions
         return await task.Fallback(fallbackValue);
     }
 
+    /// <summary>Configures an awaited result task not to resume on the captured synchronization context.</summary>
+    /// <typeparam name="TResult">The asynchronous result type.</typeparam>
+    /// <param name="task">The task to configure.</param>
+    /// <returns>An awaitable configured with <c>continueOnCapturedContext: false</c>.</returns>
     [DebuggerStepThrough]
     public static ConfiguredTaskAwaitable<TResult> AnyContext<TResult>(this Task<TResult> task)
     {
@@ -273,6 +280,9 @@ public static class TaskExtensions
         return task.ConfigureAwait(false);
     }
 
+    /// <summary>Configures an awaited task not to resume on the captured synchronization context.</summary>
+    /// <param name="task">The task to configure.</param>
+    /// <returns>An awaitable configured with <c>continueOnCapturedContext: false</c>.</returns>
     [DebuggerStepThrough]
     public static ConfiguredTaskAwaitable AnyContext(this Task task)
     {
@@ -281,6 +291,10 @@ public static class TaskExtensions
         return task.ConfigureAwait(false);
     }
 
+    /// <summary>Configures an awaited value task result not to resume on the captured synchronization context.</summary>
+    /// <typeparam name="TResult">The asynchronous result type.</typeparam>
+    /// <param name="task">The value task to configure.</param>
+    /// <returns>An awaitable configured with <c>continueOnCapturedContext: false</c>.</returns>
     [DebuggerStepThrough]
     public static ConfiguredValueTaskAwaitable<TResult> AnyContext<TResult>(this ValueTask<TResult> task)
     {
@@ -292,6 +306,9 @@ public static class TaskExtensions
         return task.ConfigureAwait(false);
     }
 
+    /// <summary>Configures an awaited value task not to resume on the captured synchronization context.</summary>
+    /// <param name="task">The value task to configure.</param>
+    /// <returns>An awaitable configured with <c>continueOnCapturedContext: false</c>.</returns>
     [DebuggerStepThrough]
     public static ConfiguredValueTaskAwaitable AnyContext(this ValueTask task)
     {

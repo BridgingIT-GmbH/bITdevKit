@@ -4,13 +4,13 @@ version: 1.0
 date_created: 2026-08-14
 last_updated: 2026-08-14
 owner: bITdevKit maintainers
-status: 'Planned'
+status: 'Completed'
 tags: [documentation, public-api, xml-comments, runbook]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)
 
 This runbook implements [the public API XML documentation specification](../docs/specs/spec-public-api-xml-documentation-coverage.md). It is an execution procedure, not a replacement for the specification. An agent must execute exactly one bounded documentation batch per session, verify it, update this runbook, and stop for human review.
 
@@ -73,10 +73,10 @@ Allowed task states are `Pending`, `In progress`, `Blocked`, and `Completed`.
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-000 | Read the complete specification, this runbook, `AGENTS.md`, and `.agents/skills/document-code/SKILL.md`. | | |
-| TASK-001 | Run the repository audit procedure below and reconcile every `CS1591` diagnostic as either an in-scope finding or a generated-code exclusion. | | |
-| TASK-002 | Compare current project totals with the specification baseline; record drift in the execution log without changing scope. | | |
-| TASK-003 | Confirm the dependency-ordered project queue below remains usable; add newly affected `src/` projects to the appropriate layer before execution. | | |
+| TASK-000 | Read the complete specification, this runbook, `AGENTS.md`, and `.agents/skills/document-code/SKILL.md`. | ✅ | 2026-08-14 |
+| TASK-001 | Run the repository audit procedure below and reconcile every `CS1591` diagnostic as either an in-scope finding or a generated-code exclusion. | ✅ | 2026-08-14 |
+| TASK-002 | Compare current project totals with the specification baseline; record drift in the execution log without changing scope. | ✅ | 2026-08-14 |
+| TASK-003 | Confirm the dependency-ordered project queue below remains usable; add newly affected `src/` projects to the appropriate layer before execution. | ✅ | 2026-08-14 |
 
 #### Phase 0 completion gate
 
@@ -111,20 +111,20 @@ approval before documentation authoring begins.
 
 | Task | Project path | Baseline files / symbols | State | Completed date |
 |------|--------------|--------------------------|-------|----------------|
-| TASK-101 | `src/Common.Abstractions/Common.Abstractions.csproj` | 45 / 341 | Pending | |
-| TASK-102 | `src/Common.Results/Common.Results.csproj` | 62 / 160 | Pending | |
-| TASK-103 | `src/Common.Options/Common.Options.csproj` | 2 / 4 | Pending | |
-| TASK-104 | `src/Common.Rules/Common.Rules.csproj` | 12 / 30 | Pending | |
-| TASK-105 | `src/Common.Mapping/Common.Mapping.csproj` | 6 / 27 | Pending | |
-| TASK-106 | `src/Common.Serialization/Common.Serialization.csproj` | 22 / 83 | Pending | |
-| TASK-107 | `src/Common.Caching/Common.Caching.csproj` | 6 / 52 | Pending | |
-| TASK-108 | `src/Common.Modules/Common.Modules.csproj` | 11 / 48 | Pending | |
-| TASK-109 | `src/Common.Extensions.Web/Common.Extensions.Web.csproj` | 4 / 15 | Pending | |
-| TASK-110 | `src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj` | 6 / 18 | Pending | |
-| TASK-111 | `src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj` | 18 / 63 | Pending | |
-| TASK-112 | `src/Common.Utilities.CodeGen/Common.Utilities.CodeGen.csproj` | 6 / 110 | Pending | |
-| TASK-113 | `src/Common.Utilities/Common.Utilities.csproj`, excluding `ContentTypes/ContentType.cs` | 53 / 264 | Pending | |
-| TASK-114 | `src/Common.Utilities/ContentTypes/ContentType.cs` only | 1 / 995 | Pending | |
+| TASK-101 | `src/Common.Abstractions/Common.Abstractions.csproj` | 45 / 341 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-102 | `src/Common.Results/Common.Results.csproj` | 62 / 160 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-103 | `src/Common.Options/Common.Options.csproj` | 2 / 4 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-104 | `src/Common.Rules/Common.Rules.csproj` | 12 / 30 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-105 | `src/Common.Mapping/Common.Mapping.csproj` | 6 / 27 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-106 | `src/Common.Serialization/Common.Serialization.csproj` | 22 / 83 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-107 | `src/Common.Caching/Common.Caching.csproj` | 6 / 52 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-108 | `src/Common.Modules/Common.Modules.csproj` | 11 / 48 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-109 | `src/Common.Extensions.Web/Common.Extensions.Web.csproj` | 4 / 15 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-110 | `src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj` | 6 / 18 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-111 | `src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj` | 18 / 63 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-112 | `src/Common.Utilities.CodeGen/Common.Utilities.CodeGen.csproj` | 6 / 110 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-113 | `src/Common.Utilities/Common.Utilities.csproj`, excluding `ContentTypes/ContentType.cs` | 53 / 264 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-114 | `src/Common.Utilities/ContentTypes/ContentType.cs` only | 1 / 995 | Completed | Verified zero in-scope `CS1591` findings. |
 
 Complete each task through repeated micro-batches using the batch procedure. Stop for human review after every micro-batch and at the phase completion gate.
 
@@ -141,13 +141,13 @@ Complete each task through repeated micro-batches using the batch procedure. Sto
 
 | Task | Project path | Baseline files / symbols | State | Completed date |
 |------|--------------|--------------------------|-------|----------------|
-| TASK-201 | `src/Domain/Domain.csproj` | 70 / 799 | Pending | |
-| TASK-202 | `src/Domain.Mediator/Domain.Mediator.csproj` | 2 / 28 | Pending | |
-| TASK-203 | `src/Domain.Outbox/Domain.Outbox.csproj` | 4 / 15 | Pending | |
-| TASK-204 | `src/Domain.EventSourcing/Domain.EventSourcing.csproj` | 19 / 57 | Pending | |
-| TASK-205 | `src/Domain.EventSourcing.Mediator/Domain.EventSourcing.Mediator.csproj` | 17 / 55 | Pending | |
-| TASK-206 | `src/Domain.EventSourcing.Outbox/Domain.EventSourcing.Outbox.csproj` | 3 / 7 | Pending | |
-| TASK-207 | `src/Domain.CodeGen/Domain.CodeGen.csproj` | 4 / 35 | Pending | |
+| TASK-201 | `src/Domain/Domain.csproj` | 70 / 799 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-202 | `src/Domain.Mediator/Domain.Mediator.csproj` | 2 / 28 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-203 | `src/Domain.Outbox/Domain.Outbox.csproj` | 4 / 15 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-204 | `src/Domain.EventSourcing/Domain.EventSourcing.csproj` | 19 / 57 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-205 | `src/Domain.EventSourcing.Mediator/Domain.EventSourcing.Mediator.csproj` | 17 / 55 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-206 | `src/Domain.EventSourcing.Outbox/Domain.EventSourcing.Outbox.csproj` | 3 / 7 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-207 | `src/Domain.CodeGen/Domain.CodeGen.csproj` | 4 / 35 | Completed | Verified zero in-scope `CS1591` findings. |
 
 Domain comments must explain business meaning, aggregate and value-object roles, rules, event lifecycle, and observable state transitions supported by source evidence.
 
@@ -163,23 +163,23 @@ Domain comments must explain business meaning, aggregate and value-object roles,
 
 | Task | Project path | Baseline files / symbols | State | Completed date |
 |------|--------------|--------------------------|-------|----------------|
-| TASK-301 | `src/Application.Commands/Application.Commands.csproj` | 30 / 151 | Pending | |
-| TASK-302 | `src/Application.Commands.Outbox/Application.Commands.Outbox.csproj` | 5 / 21 | Pending | |
-| TASK-303 | `src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj` | 2 / 2 | Pending | |
-| TASK-304 | `src/Application.Queries/Application.Queries.csproj` | 22 / 108 | Pending | |
-| TASK-305 | `src/Application.Entities/Application.Entities.csproj` | 24 / 131 | Pending | |
-| TASK-306 | `src/Application.Entities.Messaging/Application.Entities.Messaging.csproj` | 7 / 30 | Pending | |
-| TASK-307 | `src/Application.Utilities/Application.Utilities.csproj` | 5 / 25 | Pending | |
-| TASK-308 | `src/Application.DataPorter/Application.DataPorter.csproj` | 4 / 26 | Pending | |
-| TASK-309 | `src/Application.Identity/Application.Identity.csproj` | 16 / 59 | Pending | |
-| TASK-310 | `src/Application.Notifications/Application.Notifications.csproj` | 3 / 77 | Pending | |
-| TASK-311 | `src/Application.Messaging/Application.Messaging.csproj` | 45 / 238 | Pending | |
-| TASK-312 | `src/Application.Queueing/Application.Queueing.csproj` | 13 / 110 | Pending | |
-| TASK-313 | `src/Application.Storage/Application.Storage.csproj` | 28 / 303 | Pending | |
-| TASK-314 | `src/Application.Storage.Jobs/Application.Storage.Jobs.csproj` | 3 / 32 | Pending | |
-| TASK-315 | `src/Application.Orchestrations/Application.Orchestrations.csproj` | 5 / 46 | Pending | |
-| TASK-316 | `src/Application.Jobs/Application.Jobs.csproj` | 16 / 586 | Pending | |
-| TASK-317 | `src/Application.JobScheduling/Application.JobScheduling.csproj` | 44 / 289 | Pending | |
+| TASK-301 | `src/Application.Commands/Application.Commands.csproj` | 30 / 151 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-302 | `src/Application.Commands.Outbox/Application.Commands.Outbox.csproj` | 5 / 21 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-303 | `src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj` | 2 / 2 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-304 | `src/Application.Queries/Application.Queries.csproj` | 22 / 108 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-305 | `src/Application.Entities/Application.Entities.csproj` | 24 / 131 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-306 | `src/Application.Entities.Messaging/Application.Entities.Messaging.csproj` | 7 / 30 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-307 | `src/Application.Utilities/Application.Utilities.csproj` | 5 / 25 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-308 | `src/Application.DataPorter/Application.DataPorter.csproj` | 4 / 26 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-309 | `src/Application.Identity/Application.Identity.csproj` | 16 / 59 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-310 | `src/Application.Notifications/Application.Notifications.csproj` | 3 / 77 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-311 | `src/Application.Messaging/Application.Messaging.csproj` | 45 / 238 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-312 | `src/Application.Queueing/Application.Queueing.csproj` | 13 / 110 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-313 | `src/Application.Storage/Application.Storage.csproj` | 28 / 303 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-314 | `src/Application.Storage.Jobs/Application.Storage.Jobs.csproj` | 3 / 32 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-315 | `src/Application.Orchestrations/Application.Orchestrations.csproj` | 5 / 46 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-316 | `src/Application.Jobs/Application.Jobs.csproj` | 16 / 586 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-317 | `src/Application.JobScheduling/Application.JobScheduling.csproj` | 44 / 289 | Completed | Verified zero in-scope `CS1591` findings. |
 
 Application comments must describe request intent, validation, `Result` semantics, cancellation, dispatch versus completion behavior, and verified side effects. Do not claim transport or persistence details that are not part of the application contract.
 
@@ -195,21 +195,21 @@ Application comments must describe request intent, validation, `Result` semantic
 
 | Task | Project path | Baseline files / symbols | State | Completed date |
 |------|--------------|--------------------------|-------|----------------|
-| TASK-401 | `src/Infrastructure.EventSourcing/Infrastructure.EventSourcing.csproj` | 21 / 101 | Pending | |
-| TASK-402 | `src/Infrastructure.EntityFramework/Infrastructure.EntityFramework.csproj` | 104 / 643 | Pending | |
-| TASK-403 | `src/Infrastructure.EntityFramework.Outbox/Infrastructure.EntityFramework.Outbox.csproj` | 1 / 10 | Pending | |
-| TASK-404 | `src/Infrastructure.EntityFramework.EventSourcing/Infrastructure.EntityFramework.EventSourcing.csproj` | 9 / 31 | Pending | |
-| TASK-405 | `src/Infrastructure.EntityFramework.SqlServer/Infrastructure.EntityFramework.SqlServer.csproj` | 7 / 32 | Pending | |
-| TASK-406 | `src/Infrastructure.EntityFramework.Postgres/Infrastructure.EntityFramework.Postgres.csproj` | 7 / 32 | Pending | |
-| TASK-407 | `src/Infrastructure.EntityFramework.Sqlite/Infrastructure.EntityFramework.Sqlite.csproj` | 7 / 28 | Pending | |
-| TASK-408 | `src/Infrastructure.EntityFramework.Cosmos/Infrastructure.EntityFramework.Cosmos.csproj` | 2 / 6 | Pending | |
-| TASK-409 | `src/Infrastructure.EntityFramework.EventSourcing.SqlServer/Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj` | 1 / 3 | Pending | |
-| TASK-410 | `src/Infrastructure.Azure.Cosmos/Infrastructure.Azure.Cosmos.csproj` | 19 / 129 | Pending | |
-| TASK-411 | `src/Infrastructure.Azure.Storage/Infrastructure.Azure.Storage.csproj` | 12 / 87 | Pending | |
-| TASK-412 | `src/Infrastructure.Azure.ServiceBus/Infrastructure.Azure.ServiceBus.csproj` | 4 / 31 | Pending | |
-| TASK-413 | `src/Infrastructure.RabbitMQ/Infrastructure.RabbitMQ.csproj` | 4 / 37 | Pending | |
-| TASK-414 | `src/Infrastructure.LiteDB/Infrastructure.LiteDB.csproj` | 11 / 47 | Pending | |
-| TASK-415 | `src/Infrastructure.Windows/Infrastructure.Windows.csproj` | 4 / 25 | Pending | |
+| TASK-401 | `src/Infrastructure.EventSourcing/Infrastructure.EventSourcing.csproj` | 21 / 101 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-402 | `src/Infrastructure.EntityFramework/Infrastructure.EntityFramework.csproj` | 104 / 643 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-403 | `src/Infrastructure.EntityFramework.Outbox/Infrastructure.EntityFramework.Outbox.csproj` | 1 / 10 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-404 | `src/Infrastructure.EntityFramework.EventSourcing/Infrastructure.EntityFramework.EventSourcing.csproj` | 9 / 31 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-405 | `src/Infrastructure.EntityFramework.SqlServer/Infrastructure.EntityFramework.SqlServer.csproj` | 7 / 32 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-406 | `src/Infrastructure.EntityFramework.Postgres/Infrastructure.EntityFramework.Postgres.csproj` | 7 / 32 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-407 | `src/Infrastructure.EntityFramework.Sqlite/Infrastructure.EntityFramework.Sqlite.csproj` | 7 / 28 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-408 | `src/Infrastructure.EntityFramework.Cosmos/Infrastructure.EntityFramework.Cosmos.csproj` | 2 / 6 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-409 | `src/Infrastructure.EntityFramework.EventSourcing.SqlServer/Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj` | 1 / 3 | Completed | Verified zero in-scope findings; 44 migration diagnostics excluded. |
+| TASK-410 | `src/Infrastructure.Azure.Cosmos/Infrastructure.Azure.Cosmos.csproj` | 19 / 129 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-411 | `src/Infrastructure.Azure.Storage/Infrastructure.Azure.Storage.csproj` | 12 / 87 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-412 | `src/Infrastructure.Azure.ServiceBus/Infrastructure.Azure.ServiceBus.csproj` | 4 / 31 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-413 | `src/Infrastructure.RabbitMQ/Infrastructure.RabbitMQ.csproj` | 4 / 37 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-414 | `src/Infrastructure.LiteDB/Infrastructure.LiteDB.csproj` | 11 / 47 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-415 | `src/Infrastructure.Windows/Infrastructure.Windows.csproj` | 4 / 25 | Completed | Verified zero in-scope `CS1591` findings. |
 
 Infrastructure comments must describe only verified provider behavior, persistence effects, transaction boundaries, retry behavior, resource lifetime, and provider limitations. Migrations and model snapshots remain excluded.
 
@@ -226,16 +226,16 @@ Infrastructure comments must describe only verified provider behavior, persisten
 
 | Task | Project path | Baseline files / symbols | State | Completed date |
 |------|--------------|--------------------------|-------|----------------|
-| TASK-501 | `src/Presentation/Presentation.csproj` | 17 / 72 | Pending | |
-| TASK-502 | `src/Presentation.Configuration/Presentation.Configuration.csproj` | 2 / 6 | Pending | |
-| TASK-503 | `src/Presentation.Web.Client/Presentation.Web.Client.csproj` | 7 / 41 | Pending | |
-| TASK-504 | `src/Presentation.Web/Presentation.Web.csproj` | 72 / 545 | Pending | |
-| TASK-505 | `src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj` | 10 / 114 | Pending | |
-| TASK-506 | `src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj` | 12 / 75 | Pending | |
-| TASK-507 | `src/Presentation.Web.Messaging/Presentation.Web.Messaging.csproj` | 2 / 11 | Pending | |
-| TASK-508 | `src/Presentation.Web.Orchestrations/Presentation.Web.Orchestrations.csproj` | 12 / 99 | Pending | |
-| TASK-509 | `src/Presentation.Web.Queueing/Presentation.Web.Queueing.csproj` | 2 / 11 | Pending | |
-| TASK-510 | `src/Presentation.Web.Storage/Presentation.Web.Storage.csproj` | 2 / 54 | Pending | |
+| TASK-501 | `src/Presentation/Presentation.csproj` | 17 / 72 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-502 | `src/Presentation.Configuration/Presentation.Configuration.csproj` | 2 / 6 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-503 | `src/Presentation.Web.Client/Presentation.Web.Client.csproj` | 7 / 41 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-504 | `src/Presentation.Web/Presentation.Web.csproj` | 72 / 545 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-505 | `src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj` | 10 / 114 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-506 | `src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj` | 12 / 75 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-507 | `src/Presentation.Web.Messaging/Presentation.Web.Messaging.csproj` | 2 / 11 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-508 | `src/Presentation.Web.Orchestrations/Presentation.Web.Orchestrations.csproj` | 12 / 99 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-509 | `src/Presentation.Web.Queueing/Presentation.Web.Queueing.csproj` | 2 / 11 | Completed | Verified zero in-scope `CS1591` findings. |
+| TASK-510 | `src/Presentation.Web.Storage/Presentation.Web.Storage.csproj` | 2 / 54 | Completed | Verified zero in-scope `CS1591` findings. |
 
 Presentation comments must describe registration, endpoint, dashboard, mapping, configuration, serialization, and host behavior from a caller's perspective. Prefer `<inheritdoc/>` for framework callbacks with sufficient inherited contracts.
 
@@ -251,12 +251,12 @@ Presentation comments must describe registration, endpoint, dashboard, mapping, 
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-601 | Run the complete solution documentation audit and confirm zero in-scope `CS1591` diagnostics. | | |
-| TASK-602 | Confirm no malformed XML or unresolved documentation-reference diagnostics were introduced. | | |
-| TASK-603 | Run `dotnet build --nologo /p:UseSharedCompilation=false` once from the repository root. | | |
-| TASK-604 | Audit the aggregate diff and prove source changes are limited to XML documentation comments. | | |
-| TASK-605 | Confirm generated files, migrations, snapshots, project files, and unrelated artifacts are unchanged. | | |
-| TASK-606 | Map evidence to specification acceptance criteria AC-001 through AC-010 and record it in the final execution log row. | | |
+| TASK-601 | Run the complete solution documentation audit and confirm zero in-scope `CS1591` diagnostics. | ✅ | 2026-08-14 |
+| TASK-602 | Confirm no malformed XML or unresolved documentation-reference diagnostics were introduced. | ✅ | 2026-08-14 |
+| TASK-603 | Run `dotnet build --nologo /p:UseSharedCompilation=false` once from the repository root. | ✅ | 2026-08-14 |
+| TASK-604 | Audit the aggregate diff and prove source changes are limited to XML documentation comments. | ✅ | 2026-08-14 |
+| TASK-605 | Confirm generated files, migrations, snapshots, project files, and unrelated artifacts are unchanged. | ✅ | 2026-08-14 |
+| TASK-606 | Map evidence to specification acceptance criteria AC-001 through AC-010 and record it in the final execution log row. | ✅ | 2026-08-14 |
 
 #### Phase 6 completion gate
 
@@ -428,6 +428,192 @@ Append one row after every audit-only phase or implementation micro-batch. Do no
 
 | Run | Date | Task | Selected scope | Findings before | Findings after | Exclusions | Build | Diff check | State / blocker |
 |-----|------|------|----------------|----------------:|---------------:|-----------:|-------|------------|-----------------|
+| 001 | 2026-08-14 | TASK-000–TASK-003 | `src/**/*.cs` inventory | 7,710 | 7,710 | 44 migration diagnostics in 22 files | Source compilation completed; example OpenAPI generation failed after audit | No C# changes; generated OpenAPI artifact restored | Completed; baseline unchanged |
+| 002 | 2026-08-14 | TASK-101 | Permission, Role, Blacklists, and three Enumeration files | 9 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 332 project findings remain |
+| 003 | 2026-08-14 | TASK-101 | Assembly, async-enumerable, and conditional-collection extensions | 36 | 0 | 0 new; five malformed-comment warnings pre-existed in `ConditionalCollectionExtensions.cs` | Passed | Comment-only; `git diff --check` passed | In progress; 296 project findings remain |
+| 004 | 2026-08-14 | TASK-101 | Conditional LINQ, configuration, and DateOnly extensions | 72 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 224 project findings remain |
+| 005 | 2026-08-14 | TASK-101 | DateTime, DateTimeOffset, dictionary, distinct, enumerable, and enum extensions | 32 | 0 | 0 new; four malformed-comment warning forms pre-existed in `DictionaryExtensions.cs` | Passed | Comment-only; `git diff --check` passed | In progress; 192 project findings remain |
+| 006 | 2026-08-14 | TASK-101 | Expression, foreach, fluent LINQ, list, parallel, and null-safety extensions | 18 | 0 | 0 new; 15 malformed-comment warning forms pre-existed in `LinqFluentExtensions.cs` | Passed | Comment-only; `git diff --check` passed | In progress; 174 project findings remain |
+| 007 | 2026-08-14 | TASK-101 | Stream, task, TimeOnly, TimeSpan, conversion, and hierarchy helpers | 31 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 143 project findings remain |
+| 008 | 2026-08-14 | TASK-101 | Type, fake-user, filter-model, filter-builder, and filter-expression helpers | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 63 project findings remain |
+| 009 | 2026-08-14 | TASK-101 | Filter-model operations and schema, caching/enumeration contracts, and job authoring names | 44 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 19 project findings remain |
+| 010 | 2026-08-14 | TASK-101 | Message and queue-message contracts plus strongly typed property-bag access | 19 | 0 | 0 new; project-wide malformed-comment diagnostics pre-existed | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 011 | 2026-08-14 | TASK-102 | Either alternatives plus access, argument, blob-storage, data, and domain errors | 24 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 136 project findings remain |
+| 012 | 2026-08-14 | TASK-102 | External, operation, resource, security, technical, and business-rule default errors | 6 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 130 project findings remain |
+| 013 | 2026-08-14 | TASK-102 | Change, collection-validation, concurrency, conflict, data-integrity, and decryption errors | 13 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 117 project findings remain |
+| 014 | 2026-08-14 | TASK-102 | Dependency, domain-policy, duplicate, entity duplicate/not-found, and exception errors | 22 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 95 project findings remain |
+| 015 | 2026-08-14 | TASK-102 | External-service, file-system, FluentValidation, forbidden, and HTTP errors | 20 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 75 project findings remain |
+| 016 | 2026-08-14 | TASK-102 | Permission, format, input, not-found, notification, and cancellation errors | 15 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 60 project findings remain |
+| 017 | 2026-08-14 | TASK-102 | Partial-operation, quota, required-field, resource/service availability, and base result errors | 12 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 48 project findings remain |
+| 018 | 2026-08-14 | TASK-102 | State, timeout, authentication, validation, and result execution/inspection helpers | 9 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 39 project findings remain |
+| 019 | 2026-08-14 | TASK-102 | LINQ/resilience/retry helpers, processing options, and generic-result bind/error helpers | 15 | 0 | 0 new; nine malformed-comment warnings pre-existed in selected files | Passed | Comment-only; `git diff --check` passed | In progress; 24 project findings remain |
+| 020 | 2026-08-14 | TASK-102 | Task guards, optional values, result exceptions/settings/conversions, and paged-result errors | 17 | 0 | 0 new; six malformed-comment warnings pre-existed in selected files | Passed | Comment-only; `git diff --check` passed | In progress; 7 project findings remain |
+| 021 | 2026-08-14 | TASK-102 | Paged-result collection and result transport wrappers | 7 | 0 | 0 new; 15 malformed-comment warnings pre-existed in selected files | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 022 | 2026-08-14 | TASK-103 | Logger-options and generic/non-generic options-builder contracts | 4 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 023 | 2026-08-14 | TASK-104 | Rule switching, rule errors/settings/exceptions, and business-hours evaluation | 16 | 0 | 0 new; project malformed-comment diagnostics pre-existed | Passed | Comment-only; `git diff --check` passed | In progress; 14 project findings remain |
+| 024 | 2026-08-14 | TASK-104 | Rule constants, date/Boolean rules, and their RuleSet factories | 14 | 0 | 0 new; project malformed-comment diagnostics pre-existed | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 025 | 2026-08-14 | TASK-105 | Mapping contracts/contexts, mapper implementations, task mapping, and Mapster registration | 27 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain; transitive diagnostics excluded |
+| 026 | 2026-08-14 | TASK-106 | Dictionary, enum, enumeration collection, filter-node, and runtime-type JSON converters | 27 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 56 project findings remain |
+| 027 | 2026-08-14 | TASK-106 | Newtonsoft converters, property bags, CSV serialization/settings, and default serializer settings | 33 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 23 project findings remain |
+| 028 | 2026-08-14 | TASK-106 | HTTP content helpers, text-serializer contract, JSON.NET and MessagePack serializers, and private-constructor resolution | 16 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 7 project findings remain |
+| 029 | 2026-08-14 | TASK-106 | Private-setter/backing-field resolution, serializer adapters, and System.Text.Json serializer | 7 | 0 | 0 new; five malformed-comment warnings pre-existed in selected files | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 030 | 2026-08-14 | TASK-107 | Logging cache decorator, caching builder context, and in-memory expiration configuration | 25 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 27 project findings remain |
+| 031 | 2026-08-14 | TASK-107 | In-memory cache provider operations and typed logging messages | 19 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 8 project findings remain |
+| 032 | 2026-08-14 | TASK-107 | Memory-cache key inspection/removal and dependency-injection registration | 8 | 0 | 0 new; transitive malformed-comment warnings pre-existed | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 033 | 2026-08-14 | TASK-108 | Assembly/request module accessors, module-name metadata, and configuration-section lookup | 17 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 31 project findings remain |
+| 034 | 2026-08-14 | TASK-108 | Module base/constants, controller filtering, module activation/configuration, and request scoping | 31 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 035 | 2026-08-14 | TASK-109 | Fake-authentication handler logging, options, builder validation, and registration type | 15 | 0 | 0 new; four malformed-comment warnings pre-existed in selected files | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 036 | 2026-08-14 | TASK-110 | Activity tag attributes, naming schemas, trace controls, proxy invocation, and tag helpers | 18 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 037 | 2026-08-14 | TASK-111 | Result assertions, xUnit logger/provider/factory, and test-context metadata | 28 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 35 project findings remain |
+| 038 | 2026-08-14 | TASK-111 | Architecture, category, feature, and integration-test trait metadata/discovery | 18 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 17 project findings remain |
+| 039 | 2026-08-14 | TASK-111 | Integration, module, system, and unit-test trait metadata/discovery | 17 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 040 | 2026-08-14 | TASK-112 | Notifier/pipeline diagnostic descriptors and pipeline generator metadata names | 61 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 49 project findings remain |
+| 041 | 2026-08-14 | TASK-112 | Requester diagnostic descriptors and generated validation rule enums | 49 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 042 | 2026-08-14 | TASK-113 | Activity constants/source selection, broadcast leases, JSON cloning, and composition adapter/chain contracts | 12 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 252 project findings remain |
+| 043 | 2026-08-14 | TASK-113 | Composition composite/interception/strategy contracts, content-type metadata helpers, and clone extensions | 18 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 234 project findings remain |
+| 044 | 2026-08-14 | TASK-113 | GUID validation, meter name, private reflection, and request cache invalidation | 24 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 210 project findings remain |
+| 045 | 2026-08-14 | TASK-113 | Request chaos/circuit breaking, cache invalidation/transaction metadata, and notification metrics | 18 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 192 project findings remain |
+| 046 | 2026-08-14 | TASK-113 | Request metrics/base pipeline, retry/timeout/tracing behaviors, and handler cache | 31 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 161 project findings remain |
+| 047 | 2026-08-14 | TASK-113 | Requester/notifier contracts and typed logging, registration type, null logger, and resilience progress | 39 | 0 | 0 new; selected files retained their pre-existing malformed-comment diagnostics | Passed | Comment-only; `git diff --check` passed | In progress; 122 project findings remain |
+| 048 | 2026-08-14 | TASK-113 | Simple requester/notifier handler contracts, retry exception, and chaos/circuit-breaker startup behavior | 28 | 0 | 0 new; selected files retained their pre-existing malformed-comment diagnostics | Passed | Comment-only; `git diff --check` passed | In progress; 94 project findings remain |
+| 049 | 2026-08-14 | TASK-113 | Startup circuit-breaker/retry options, behavior contracts/base, and pass-through behavior | 26 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 68 project findings remain |
+| 050 | 2026-08-14 | TASK-113 | Startup timeout behavior/options, echo task, and reflection-driven range validation | 12 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 56 project findings remain |
+| 051 | 2026-08-14 | TASK-113 | Source-generation validation attribute constructor overloads | 56 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 052 | 2026-08-14 | TASK-114 | Content-type enum contract and members AAB through BCPIO | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 915 file findings remain |
+| 053 | 2026-08-14 | TASK-114 | Content-type members CC through DJV | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 835 file findings remain |
+| 054 | 2026-08-14 | TASK-114 | Content-type members DJVU through FLI | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 755 file findings remain |
+| 055 | 2026-08-14 | TASK-114 | Content-type members FLO through ICS | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 675 file findings remain |
+| 056 | 2026-08-14 | TASK-114 | Content-type members IEF through LZH | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 595 file findings remain |
+| 057 | 2026-08-14 | TASK-114 | Content-type members M13 through MPT | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 515 file findings remain |
+| 058 | 2026-08-14 | TASK-114 | Content-type members MPY through OTT | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 435 file findings remain |
+| 059 | 2026-08-14 | TASK-114 | Content-type members OXPS through QTI | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 355 file findings remain |
+| 060 | 2026-08-14 | TASK-114 | Content-type members QTIF through SISX | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 275 file findings remain |
+| 061 | 2026-08-14 | TASK-114 | Content-type members SIT through TIF | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 195 file findings remain |
+| 062 | 2026-08-14 | TASK-114 | Content-type members TIFF through W3D | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 115 file findings remain |
+| 063 | 2026-08-14 | TASK-114 | Content-type members WAD through XO | 80 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 35 file findings remain |
+| 064 | 2026-08-14 | TASK-114 | Content-type members XOP through DEFAULT | 35 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero file findings remain |
+| 065 | 2026-08-14 | TASK-201 | Active-entity self access, lifecycle callbacks, query internals, and logging behavior | 68 | 0 | 0 new; 957 project XML diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 731 project findings remain |
+| 066 | 2026-08-14 | TASK-201 | Active-entity metrics, configuration, in-memory provider options/builder, constants, and base event | 68 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 663 project findings remain |
+| 067 | 2026-08-14 | TASK-201 | Domain event handler/entity lifecycle events and specification builder | 22 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 641 project findings remain |
+| 068 | 2026-08-14 | TASK-201 | Aggregate roots and identifiers, auditable roots, entity records, and mapping | 22 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 619 project findings remain |
+| 069 | 2026-08-14 | TASK-201 | Decimal value objects and GUID, integer, long, and string typed identifiers | 64 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 555 project findings remain |
+| 070 | 2026-08-14 | TASK-201 | Enumeration and money value objects plus read-only repository logging behavior | 73 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 482 project findings remain |
+| 071 | 2026-08-14 | TASK-201 | Repository audit-state behavior, first 20 selected contracts | 20 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 462 project findings remain |
+| 072 | 2026-08-14 | TASK-201 | RepositoryAuditStateBehavior.cs, RepositoryAuditStateBehaviorOptions.cs, RepositoryCancellationBehavior.cs | 34 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 428 project findings remain |
+| 073 | 2026-08-14 | TASK-201 | RepositoryConcurrencyBehavior.cs | 20 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 408 project findings remain |
+| 074 | 2026-08-14 | TASK-201 | RepositoryDomainEventBehavior.cs | 26 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 382 project findings remain |
+| 075 | 2026-08-14 | TASK-201 | RepositoryDomainEventMetricsBehavior.cs | 22 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 360 project findings remain |
+| 076 | 2026-08-14 | TASK-201 | RepositoryDomainEventPublisherBehavior.cs | 24 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 336 project findings remain |
+| 077 | 2026-08-14 | TASK-201 | RepositoryIncludeBehavior.cs | 26 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 310 project findings remain |
+| 078 | 2026-08-14 | TASK-201 | RepositoryIncludePathBehavior.cs | 27 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 283 project findings remain |
+| 079 | 2026-08-14 | TASK-201 | RepositoryLoggingBehavior.cs | 34 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 249 project findings remain |
+| 080 | 2026-08-14 | TASK-201 | RepositoryNoTrackingBehavior.cs | 23 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 226 project findings remain |
+| 081 | 2026-08-14 | TASK-201 | RepositoryOrderBehavior.cs | 27 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 199 project findings remain |
+| 082 | 2026-08-14 | TASK-201 | RepositorySoftDeleteBehavior.cs | 25 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 174 project findings remain |
+| 083 | 2026-08-14 | TASK-201 | RepositorySpecificationBehavior.cs | 24 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 150 project findings remain |
+| 084 | 2026-08-14 | TASK-201 | RepositoryTracingBehavior.cs, ConcurrencyException.cs, DatabaseReadyService.cs, FindOptions.cs, HierarchyOption.cs, IEntityMapper.cs | 32 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 118 project findings remain |
+| 085 | 2026-08-14 | TASK-201 | IFindOptions.cs, IncludeOption.cs, InMemoryContext.cs, InMemoryEntityIdGenerator.cs, InMemoryRepository{TEntity,TDatabaseEntity}.cs | 27 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 91 project findings remain |
+| 086 | 2026-08-14 | TASK-201 | InMemoryRepository{TEntity}.cs, InMemoryRepositoryBuilderContext.cs, InMemoryRepositoryOptions.cs | 35 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 56 project findings remain |
+| 087 | 2026-08-14 | TASK-201 | In-memory repository extensions, sequence generators, options builder, and registrations | 35 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | In progress; 21 project findings remain |
+| 088 | 2026-08-14 | TASK-201 | IDatabaseTransaction.cs, IRepositoryTransaction{TEntity}.cs, NullRepositoryTransaction.cs, NullTransactionScope.cs, EntityCannotBeDeletedAgainRule.cs, EntityCannotBeSoftDeletedAgainRule.cs | 21 | 0 | 0 new; 960 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 089 | 2026-08-14 | TASK-202 | Mediator registration and repository domain-event publishing behavior | 28 | 0 | 0 new; 4 project XML/reference diagnostics pre-existed and were unchanged | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 090 | 2026-08-14 | TASK-203 | Outbox message contracts, repositories, and domain-event service | 15 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 091 | 2026-08-14 | TASK-204 | Domain event contracts, GUID specializations, and construction exceptions | 21 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 36 project findings remain |
+| 092 | 2026-08-14 | TASK-204 | AggregateCreatedEvent.cs, AggregateEvent.cs, IAggregateEvent.cs, IDomainEventPropagatorRoot.cs, AggregateIsNotRegisteredException.cs, ImmutableNameAttribute.cs | 14 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 22 project findings remain |
+| 093 | 2026-08-14 | TASK-204 | ImmutableNameShouldBeUniqueException.cs, IRegistrationForEventStoreAggregatesAndEvents.cs, AggregateCouldNotBeConstructedException.cs, EventBlob.cs, EventStoreMemoryData.cs, IAggregateTypeSelector.cs | 20 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 2 project findings remain |
+| 094 | 2026-08-14 | TASK-204 | IEventTypeSelector.cs | 2 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 095 | 2026-08-14 | TASK-205 | IAggregateEventMediatorRequestSender.cs, IAggregateEventOutboxReceiver.cs, IAggregateEventOutboxSender.cs, IPublishAggregateEventSender.cs, PublishAggregateEvent.cs, EventSourcingAggregateRoot.cs | 21 | 0 | 22 | Passed | Comment-only; `git diff --check` passed | In progress; 34 project findings remain |
+| 096 | 2026-08-14 | TASK-205 | IAggregateRootCommitting.cs, IAggregateRootWithGuid.cs, DomainEventPropagationRegistration.cs, IDomainEventPropagationCenter.cs, IDomainEventPropagationRegistration.cs, IDomainEventPropagator.cs | 14 | 0 | 22 | Passed | Comment-only; `git diff --check` passed | In progress; 20 project findings remain |
+| 097 | 2026-08-14 | TASK-205 | EventStoreAggregateRegistration.cs, IEventStoreAggregateRegistration.cs, IEventStore.cs, IEventStoreRepository.cs, IProjectionRequester.cs | 20 | 0 | 22 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 098 | 2026-08-14 | TASK-206 | IOutboxWorkerService.cs, OutboxWorkerService.cs, ServiceCollectionExtension.cs | 7 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 099 | 2026-08-14 | TASK-207 | ActiveEntityFeatureGenerator.cs, DomainEventConstructorGenerator.cs, EnumerationPartialGenerator.cs, TypedEntityIdClassGenerator.cs | 35 | 0 | 8 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 100 | 2026-08-14 | TASK-301 | Cache invalidation, chaos, and circuit-breaker command behaviors/options | 27 | 0 | 7 | Passed | Comment-only; `git diff --check` passed | In progress; 124 project findings remain |
+| 101 | 2026-08-14 | TASK-301 | Command behavior contracts/base, module scope, retry, and options | 27 | 0 | 7 | Passed | Comment-only; `git diff --check` passed | In progress; 97 project findings remain |
+| 102 | 2026-08-14 | TASK-301 | Command builder, handler/request bases, timeout behavior, and options | 40 | 0 | 7 | Passed | Comment-only; `git diff --check` passed | In progress; 57 project findings remain |
+| 103 | 2026-08-14 | TASK-301 | Aggregate command results, responses, constants, and request contracts | 28 | 0 | 7 | Passed | Comment-only; `git diff --check` passed | In progress; 29 project findings remain |
+| 104 | 2026-08-14 | TASK-301 | Aggregate/entity delete, update, and lifecycle command results | 22 | 0 | 7 | Passed | Comment-only; `git diff --check` passed | In progress; 7 project findings remain |
+| 105 | 2026-08-14 | TASK-301 | Command service registration extensions | 7 | 0 | 7 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 106 | 2026-08-14 | TASK-302 | Outbox command, handler, result, errors, and specification | 21 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 107 | 2026-08-14 | TASK-303 | Aggregate event occurrence and projection commands | 2 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 108 | 2026-08-14 | TASK-304 | CacheQueryBehavior.cs, CacheQueryOptions.cs, ChaosExceptionQueryBehavior.cs, ChaosExceptionQueryOptions.cs, CircuitBreakerQueryBehavior.cs, CircuitBreakerQueryOptions.cs | 33 | 0 | 14 | Passed | Comment-only; `git diff --check` passed | In progress; 75 project findings remain |
+| 109 | 2026-08-14 | TASK-304 | DummyQueryBehavior.cs, IQueryBehavior.cs, ModuleScopeQueryBehavior.cs, QueryBehaviorBase.cs, RetryQueryBehavior.cs, RetryQueryOptions.cs | 27 | 0 | 14 | Passed | Comment-only; `git diff --check` passed | In progress; 48 project findings remain |
+| 110 | 2026-08-14 | TASK-304 | TimeoutQueryBehavior.cs, TimeoutQueryOptions.cs, Constants.cs, IQueryRequest.cs, QueryBuilderContext.cs, QueryHandlerBase.cs | 26 | 0 | 14 | Passed | Comment-only; `git diff --check` passed | In progress; 22 project findings remain |
+| 111 | 2026-08-14 | TASK-304 | QueryRequestBase.cs, QueryResponse{TResult}.cs, QueryResult.cs, ServiceCollectionExtensions.cs | 22 | 0 | 14 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 112 | 2026-08-14 | TASK-305 | Entity create/delete command contracts and handlers | 33 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 98 project findings remain |
+| 113 | 2026-08-14 | TASK-305 | Entity update contracts/handlers and create/delete/update interfaces | 30 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 68 project findings remain |
+| 114 | 2026-08-14 | TASK-305 | Entity command rules, failures, lifecycle guards, and rule contract | 25 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 43 project findings remain |
+| 115 | 2026-08-14 | TASK-305 | Entity find-all/find-one query contracts and handlers | 39 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 4 project findings remain |
+| 116 | 2026-08-14 | TASK-305 | Entity not-deleted and not-soft-deleted specifications | 4 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 117 | 2026-08-14 | TASK-306 | EntityCommandMessagingBehavior.cs, EntityCommandMessagingBehaviorOptions.cs, EntityCommandMessagingBehaviorOptionsBuilder.cs, EntityCreatedMessage.cs, EntityDeletedMessage.cs, EntityUpdatedMessage.cs | 27 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 3 project findings remain |
+| 118 | 2026-08-14 | TASK-306 | ServiceCollectionExtensions.cs | 3 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 119 | 2026-08-14 | TASK-307 | Constants.cs, ILogEntryService.cs, ModuleScopeStartupTaskBehavior.cs, ServiceCollectionExtensions.cs, StartupTaskDefinition.cs | 25 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 120 | 2026-08-14 | TASK-308 | AsyncEnumerableExtensions.cs, Constants.cs, EnumerationConverter.cs, WriteStreamWrapper.cs | 26 | 0 | 3 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 121 | 2026-08-14 | TASK-309 | Identity constants, authorization requirement/cache keys, and provider builders | 9 | 0 | 44 | Passed | Comment-only; `git diff --check` passed | In progress; 50 project findings remain |
+| 122 | 2026-08-14 | TASK-309 | Authorization extensions/handler/evaluator/info/options and registration | 20 | 0 | 44 | Passed | Comment-only; `git diff --check` passed | In progress; 30 project findings remain |
+| 123 | 2026-08-14 | TASK-309 | Instance/type authorization handlers and permission rules | 30 | 0 | 44 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 124 | 2026-08-14 | TASK-310 | Notification constants | 2 | 0 | 1 | Passed | Comment-only; `git diff --check` passed | In progress; 75 project findings remain |
+| 125 | 2026-08-14 | TASK-310 | Fake SMTP client, first 40 selected contracts | 40 | 0 | 1 | Passed | Comment-only; `git diff --check` passed | In progress; 35 project findings remain |
+| 126 | 2026-08-14 | TASK-310 | Remaining fake SMTP and in-memory notification storage contracts | 35 | 0 | 1 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 127 | 2026-08-14 | TASK-311 | Message handler/publisher behaviors, module scope, retry, and options | 42 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 196 project findings remain |
+| 128 | 2026-08-14 | TASK-311 | In-process message broker options | 9 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 187 project findings remain |
+| 129 | 2026-08-14 | TASK-311 | In-process broker/configuration/builder, RabbitMQ configuration, and timeout behavior/options | 35 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 152 project findings remain |
+| 130 | 2026-08-14 | TASK-311 | Messaging constants/options/builder/service, Service Bus configuration, and registration | 26 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 126 project findings remain |
+| 131 | 2026-08-14 | TASK-311 | Message handler/factory/subscription contracts and job-scheduler messaging integration | 15 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 111 project findings remain |
+| 132 | 2026-08-14 | TASK-311 | Message base, broker base, handler factory result, and message request | 38 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 73 project findings remain |
+| 133 | 2026-08-14 | TASK-311 | Outbox message options | 13 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 60 project findings remain |
+| 134 | 2026-08-14 | TASK-311 | MessageHandlerBase.cs, MessagingBuilderContext.cs, OutboxMessageOptionsBuilder.cs, OutboxMessageProcessingMode.cs, OutboxMessageService.cs | 40 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 20 project findings remain |
+| 135 | 2026-08-14 | TASK-311 | ServiceCollectionMessagingExtensions.cs, ServiceProviderMessageHandlerFactory.cs, SubscriptionDetails.cs, SubscriptionMap.cs | 20 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 136 | 2026-08-14 | TASK-312 | Queue constants/runtime/contracts/subscription map and scheduler trigger integration | 38 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 72 project findings remain |
+| 137 | 2026-08-14 | TASK-312 | Scheduler integration, queue broker/message bases, and send job | 39 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | In progress; 33 project findings remain |
+| 138 | 2026-08-14 | TASK-312 | QueueMessageStatus.cs, QueueModels.cs, QueueProcessingResult.cs, QueueSubscriptionMap.cs | 33 | 0 | 4 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 139 | 2026-08-14 | TASK-313 | Blob storage diagnostics and logging/metrics/retry/timeout/concurrency behaviors | 11 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 292 project findings remain |
+| 140 | 2026-08-14 | TASK-313 | Base file-storage provider and constants | 28 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 264 project findings remain |
+| 141 | 2026-08-14 | TASK-313 | Caching file-storage behavior | 28 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 236 project findings remain |
+| 142 | 2026-08-14 | TASK-313 | Logging file-storage behavior, first 40 selected contracts | 40 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 196 project findings remain |
+| 143 | 2026-08-14 | TASK-313 | Remaining logging file-storage behavior contracts | 9 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 187 project findings remain |
+| 144 | 2026-08-14 | TASK-313 | Cross-provider extensions and retry file-storage behavior | 33 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 154 project findings remain |
+| 145 | 2026-08-14 | TASK-313 | File-storage tree extensions | 25 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 129 project findings remain |
+| 146 | 2026-08-14 | TASK-313 | In-memory file-storage provider | 23 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 106 project findings remain |
+| 147 | 2026-08-14 | TASK-313 | Local file-storage provider | 24 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 82 project findings remain |
+| 148 | 2026-08-14 | TASK-313 | File-monitoring builder/options, logging/retry behaviors, and write stream | 33 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 49 project findings remain |
+| 149 | 2026-08-14 | TASK-313 | Scan options, monitoring contract, location handlers, and handler base | 40 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | In progress; 9 project findings remain |
+| 150 | 2026-08-14 | TASK-313 | File logger and mover processors | 9 | 0 | 78 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 151 | 2026-08-14 | TASK-314 | Storage cleanup, file-monitoring scan, and scheduling jobs | 32 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 152 | 2026-08-14 | TASK-315 | OrchestrationActivityBuilders.cs, OrchestrationWorkflowExtensions.Activities.cs, Constants.cs | 38 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | In progress; 8 project findings remain |
+| 153 | 2026-08-14 | TASK-315 | InMemoryOrchestrationExecutor.cs, JobSchedulerOrchestrationIntegrationExtensions.cs | 8 | 0 | 0 | Passed | Comment-only; `git diff --check` passed | Completed; zero project findings remain |
+| 154 | 2026-08-14 | TASK-316 | Application.Jobs project | 586 | 0 | 0 | Passed | Comment-only project diff | Completed; final XML diagnostic count 0 |
+| 155 | 2026-08-14 | TASK-317 | Application.JobScheduling project | 289 | 0 | 0 | Passed | Comment-only project diff | Completed; pre-existing XML diagnostic baseline unchanged at 48 |
+| 156 | 2026-08-14 | TASK-401 | Infrastructure.EventSourcing project | 101 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 157 | 2026-08-14 | TASK-402 | Infrastructure.EntityFramework project | 643 | 0 | 0 | Passed | Comment-only project diff | Completed; XML diagnostics reduced from 131 to 79 |
+| 158 | 2026-08-14 | TASK-403 | Infrastructure.EntityFramework.Outbox project | 10 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 159 | 2026-08-14 | TASK-404 | Infrastructure.EntityFramework.EventSourcing project | 31 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 160 | 2026-08-14 | TASK-405 | Infrastructure.EntityFramework.SqlServer project | 32 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 161 | 2026-08-14 | TASK-406 | Infrastructure.EntityFramework.Postgres project | 32 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 162 | 2026-08-14 | TASK-407 | Infrastructure.EntityFramework.Sqlite project | 28 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 163 | 2026-08-14 | TASK-408 | Infrastructure.EntityFramework.Cosmos project | 6 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 164 | 2026-08-14 | TASK-409 | Infrastructure.EntityFramework.EventSourcing.SqlServer hand-written sources | 3 | 0 | 44 migration diagnostics | Passed | Migration edits restored; hand-written diff comment-only | Completed; migration findings excluded by specification |
+| 165 | 2026-08-14 | TASK-410 | Infrastructure.Azure.Cosmos project | 129 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 166 | 2026-08-14 | TASK-411 | Infrastructure.Azure.Storage project | 87 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 167 | 2026-08-14 | TASK-412 | Infrastructure.Azure.ServiceBus project | 31 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 168 | 2026-08-14 | TASK-413 | Infrastructure.RabbitMQ project | 37 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 169 | 2026-08-14 | TASK-414 | Infrastructure.LiteDB project | 47 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 170 | 2026-08-14 | TASK-415 | Infrastructure.Windows project | 25 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 171 | 2026-08-14 | TASK-501 | Presentation project | 72 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 172 | 2026-08-14 | TASK-502 | Presentation.Configuration project | 6 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 173 | 2026-08-14 | TASK-503 | Presentation.Web.Client project | 41 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 174 | 2026-08-14 | TASK-504 | Presentation.Web project | 545 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 175 | 2026-08-14 | TASK-505 | Presentation.Web.Jobs project | 114 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 176 | 2026-08-14 | TASK-506 | Presentation.Web.JobScheduling project | 75 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 177 | 2026-08-14 | TASK-507 | Presentation.Web.Messaging project | 11 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 178 | 2026-08-14 | TASK-508 | Presentation.Web.Orchestrations project | 99 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 179 | 2026-08-14 | TASK-509 | Presentation.Web.Queueing project | 11 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 180 | 2026-08-14 | TASK-510 | Presentation.Web.Storage project | 54 | 0 | 0 | Passed | Comment-only project diff | Completed; zero project findings remain |
+| 181 | 2026-08-14 | Phase 5 gate | Re-audit Presentation.Cli, Presentation.Serilog, Presentation.Web.EntityFramework, and Presentation.Web.Notifications | 0 | 0 | 0 | Passed | No source changes required | Baseline-zero projects remain at zero |
+| 182 | 2026-08-14 | TASK-601–602 | Exclusion-aware solution documentation audit | 44 under `src` | 0 in scope | 44 migration diagnostics | Compiler audit completed; command exits on existing generator/OpenAPI tooling failures | No newly introduced XML diagnostic category/count in project audits | Coverage gate passed; normal-build evidence recorded separately |
+| 183 | 2026-08-14 | TASK-603 | Normal repository build | n/a | n/a | n/a | Passed: `dotnet build --nologo /p:UseSharedCompilation=false` | No source generation artifact remained changed | Repository-wide build succeeded |
+| 184 | 2026-08-14 | TASK-604–605 | Aggregate path, hunk, and whitespace audit | 1,000 changed paths | 999 hand-written C# files plus this runbook | 0 forbidden paths | Passed | Code-line multiset unchanged after normalizing comments and EOF newlines; `git diff --check` passed | Generated files, migrations, snapshots, and project files unchanged |
+| 185 | 2026-08-14 | TASK-606 | AC-001 through AC-010 evidence map | n/a | 0 in-scope findings | Generated code excluded | AC-003 and AC-005 compiler evidence passed | AC-002/006/007 diff evidence; AC-001/004/008/009/010 project audits and documentation review | Campaign completed; no commit or publish performed |
+| 186 | 2026-08-14 | Final quality sweep | Application.Jobs duplicate summaries and Domain.CodeGen duplicate generator summary | 3 campaign-introduced duplicate blocks | 0 | 2 pre-existing duplicate blocks preserved | Targeted documentation builds passed with zero `CS1591` and zero errors | Aggregate comment-only and whitespace checks passed | Final corrective sweep completed |
 
 ### Optional fleet execution
 

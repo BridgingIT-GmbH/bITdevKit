@@ -531,6 +531,13 @@ public class RuleBuilder
         return Result.Merge(matchResult, unmatchResult);
     }
 
+    /// <summary>Asynchronously classifies items, processes both groups with synchronous handlers, and merges their results.</summary>
+    /// <typeparam name="T">The type of item classified by the configured rules.</typeparam>
+    /// <param name="items">The items to classify into matched and unmatched groups.</param>
+    /// <param name="matchHandler">The handler invoked with items that satisfy all configured rules.</param>
+    /// <param name="unmatchHandler">The handler invoked with items that do not satisfy all configured rules.</param>
+    /// <param name="cancellationToken">A token that can cancel asynchronous rule classification.</param>
+    /// <returns>A task containing the merged handler results.</returns>
     public async Task<Result> SwitchAsync<T>(
         IEnumerable<T> items,
         Func<IEnumerable<T>, Result> matchHandler,

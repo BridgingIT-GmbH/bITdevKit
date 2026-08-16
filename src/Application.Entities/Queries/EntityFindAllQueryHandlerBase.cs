@@ -7,6 +7,11 @@ namespace BridgingIT.DevKit.Application.Entities;
 
 using Constants = Queries.Constants;
 
+/// <summary>
+/// Represents entity find all query handler base.
+/// </summary>
+/// <typeparam name="TQuery">The query type.</typeparam>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 [Obsolete("Use the new Requester from now on")]
 public abstract class
     EntityFindAllQueryHandlerBase<TQuery, TEntity>
@@ -18,6 +23,11 @@ public abstract class
     private List<ISpecification<TEntity>> specifications;
     private List<Func<TQuery, ISpecification<TEntity>>> specificationFuncs;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityFindAllQueryHandlerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="repository">The repository used by the operation.</param>
     protected EntityFindAllQueryHandlerBase(ILoggerFactory loggerFactory, IGenericRepository<TEntity> repository)
         : base(loggerFactory)
     {
@@ -26,6 +36,11 @@ public abstract class
         this.repository = repository;
     }
 
+    /// <summary>
+    /// Adds specification.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification(
         ISpecification<TEntity> specification)
     {
@@ -34,12 +49,21 @@ public abstract class
         return this;
     }
 
+    /// <summary>
+    /// Represents add specification.
+    /// </summary>
+    /// <typeparam name="TSpecification">The specification type.</typeparam>
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification<TSpecification>()
         where TSpecification : class, ISpecification<TEntity>
     {
         return this.AddSpecification(Factory<TSpecification>.Create());
     }
 
+    /// <summary>
+    /// Adds specification.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual EntityFindAllQueryHandlerBase<TQuery, TEntity> AddSpecification(
         Func<TQuery, ISpecification<TEntity>> specification)
     {
@@ -48,11 +72,17 @@ public abstract class
         return this;
     }
 
+    /// <summary>
+    /// Adds specifications.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual IEnumerable<ISpecification<TEntity>> AddSpecifications(TQuery request)
     {
         return [];
     }
 
+    /// <inheritdoc/>
     public override async Task<QueryResponse<ResultPaged<TEntity>>> Process(
         TQuery query,
         CancellationToken cancellationToken)

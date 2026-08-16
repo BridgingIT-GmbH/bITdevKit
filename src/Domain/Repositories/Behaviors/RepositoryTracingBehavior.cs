@@ -5,6 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+/// <summary>
+/// Represents generic repository tracing decorator.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="inner">The inner used by the operation.</param>
 [Obsolete("Use GenericRepositoryTracingBehavior instead")]
 public class GenericRepositoryTracingDecorator<TEntity>(IGenericRepository<TEntity> inner)
     : RepositoryTracingBehavior<TEntity>(inner)
@@ -28,6 +33,9 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
 {
     private readonly string type = typeof(TEntity).Name;
 
+    /// <summary>
+    /// Gets the inner.
+    /// </summary>
     protected IGenericRepository<TEntity> Inner { get; } = inner;
 
     /// <inheritdoc />
@@ -65,6 +73,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
@@ -74,6 +88,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
@@ -81,11 +101,22 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
         return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         return await Activity.Current.StartActvity($"REPOSITORY Delete {this.type}",
@@ -93,6 +124,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await Activity.Current.StartActvity($"REPOSITORY Delete {this.type}",
@@ -132,6 +169,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the exists operation.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await Activity.Current.StartActvity($"REPOSITORY Exists {this.type}",
@@ -139,6 +182,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -148,6 +197,13 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -158,6 +214,13 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -168,6 +231,14 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         Expression<Func<TEntity, TProjection>> projection,
         IFindOptions<TEntity> options = null,
@@ -178,6 +249,15 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
@@ -190,6 +270,15 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         IEnumerable<ISpecification<TEntity>> specifications,
         Expression<Func<TEntity, TProjection>> projection,
@@ -202,6 +291,13 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -212,6 +308,13 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -222,6 +325,13 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -232,6 +342,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the insert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await Activity.Current.StartActvity($"REPOSITORY Insert {this.type}",
@@ -239,6 +355,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the insert set operation.
+    /// </summary>
+    /// <param name="entities">The entities involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> InsertSetAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
@@ -248,6 +370,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the update operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await Activity.Current.StartActvity($"REPOSITORY Update {this.type}",
@@ -255,6 +383,12 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
             cancellationToken: cancellationToken);
     }
 
+    /// <summary>
+    /// Executes the upsert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

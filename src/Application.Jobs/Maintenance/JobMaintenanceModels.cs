@@ -12,8 +12,14 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 public abstract record JobMaintenanceOptions
 {
+    /// <summary>
+    /// Gets or sets the dry run.
+    /// </summary>
     public bool DryRun { get; init; }
 
+    /// <summary>
+    /// Gets or sets the batch size.
+    /// </summary>
     public int BatchSize { get; init; } = 100;
 }
 
@@ -22,8 +28,14 @@ public abstract record JobMaintenanceOptions
 /// </summary>
 public sealed record JobArchiveOccurrencesJobData : JobMaintenanceOptions
 {
+    /// <summary>
+    /// Gets or sets the retention window.
+    /// </summary>
     public TimeSpan RetentionWindow { get; init; } = TimeSpan.FromDays(30);
 
+    /// <summary>
+    /// Gets or sets the statuses.
+    /// </summary>
     public IReadOnlyList<JobOccurrenceStatus> Statuses { get; init; } =
     [
         JobOccurrenceStatus.Completed,
@@ -31,8 +43,14 @@ public sealed record JobArchiveOccurrencesJobData : JobMaintenanceOptions
         JobOccurrenceStatus.Cancelled,
     ];
 
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     public string JobName { get; init; }
 
+    /// <summary>
+    /// Gets or sets the trigger name.
+    /// </summary>
     public string TriggerName { get; init; }
 }
 
@@ -41,6 +59,9 @@ public sealed record JobArchiveOccurrencesJobData : JobMaintenanceOptions
 /// </summary>
 public sealed record JobPurgeHistoryJobData : JobMaintenanceOptions
 {
+    /// <summary>
+    /// Gets or sets the retention window.
+    /// </summary>
     public TimeSpan RetentionWindow { get; init; } = TimeSpan.FromDays(30);
 }
 
@@ -49,14 +70,29 @@ public sealed record JobPurgeHistoryJobData : JobMaintenanceOptions
 /// </summary>
 public sealed record JobPurgeOccurrencesRequest : JobMaintenanceOptions
 {
+    /// <summary>
+    /// Gets or sets the older than.
+    /// </summary>
     public DateTimeOffset? OlderThan { get; init; }
 
+    /// <summary>
+    /// Gets or sets the statuses.
+    /// </summary>
     public IReadOnlyList<JobOccurrenceStatus> Statuses { get; init; }
 
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     public string JobName { get; init; }
 
+    /// <summary>
+    /// Gets or sets the trigger name.
+    /// </summary>
     public string TriggerName { get; init; }
 
+    /// <summary>
+    /// Gets or sets the is archived.
+    /// </summary>
     public bool? IsArchived { get; init; }
 }
 
@@ -70,6 +106,9 @@ public sealed record JobReleaseExpiredLeasesJobData : JobMaintenanceOptions;
 /// </summary>
 public sealed record JobRecoverStuckOccurrencesJobData : JobMaintenanceOptions
 {
+    /// <summary>
+    /// Gets or sets the stuck for.
+    /// </summary>
     public TimeSpan StuckFor { get; init; } = TimeSpan.FromMinutes(5);
 }
 

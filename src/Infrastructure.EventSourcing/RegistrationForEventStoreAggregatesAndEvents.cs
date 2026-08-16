@@ -10,11 +10,19 @@ using System.Reflection;
 using Domain.EventSourcing.Model;
 using Domain.EventSourcing.Registration;
 
+/// <summary>
+/// Represents registration for event store aggregates and events.
+/// </summary>
 public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEventStoreAggregatesAndEvents
 {
     private readonly IEventStoreAggregateRegistration aggregateRegistration;
     private readonly IEventStoreAggregateEventRegistration aggregateEventRegistration;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>RegistrationForEventStoreAggregatesAndEvents</c> class.
+    /// </summary>
+    /// <param name="aggregateRegistration">The aggregate registration used by the operation.</param>
+    /// <param name="aggregateEventRegistration">The aggregate event registration used by the operation.</param>
     public RegistrationForEventStoreAggregatesAndEvents(
         IEventStoreAggregateRegistration aggregateRegistration,
         IEventStoreAggregateEventRegistration aggregateEventRegistration)
@@ -25,11 +33,18 @@ public class RegistrationForEventStoreAggregatesAndEvents : IRegistrationForEven
         EnsureArg.IsNotNull(aggregateEventRegistration, nameof(aggregateEventRegistration));
     }
 
+    /// <summary>
+    /// Executes the register aggregates and events operation.
+    /// </summary>
     public void RegisterAggregatesAndEvents()
     {
         this.RegisterAggregatesAndEvents(AppDomain.CurrentDomain.GetAssemblies());
     }
 
+    /// <summary>
+    /// Executes the register aggregates and events operation.
+    /// </summary>
+    /// <param name="assemblies">The assemblies used by the operation.</param>
     public void RegisterAggregatesAndEvents(Assembly[] assemblies)
     {
         EnsureArg.IsNotNull(assemblies, nameof(assemblies));

@@ -515,19 +515,31 @@ public static class Retry
     }
 }
 
+/// <summary>
+///     Represents an operation that exhausted its configured retry attempts.
+/// </summary>
 public class RetryException : Exception
 {
+    /// <summary>Initializes a retry exception with the number of failed attempts and final exception.</summary>
+    /// <param name="retryCount">The number of retry attempts.</param>
+    /// <param name="innerException">The final operation exception.</param>
     public RetryException(int retryCount, Exception innerException)
         : base($"retry failed after #{retryCount} attempts", innerException)
     {
         this.RetryCount = retryCount;
     }
 
+    /// <summary>Initializes a new instance of the <see cref="RetryException"/> class.</summary>
     public RetryException() { }
 
+    /// <summary>Initializes a retry exception with an error message.</summary>
+    /// <param name="message">The error message.</param>
     public RetryException(string message)
         : base(message) { }
 
+    /// <summary>Initializes a retry exception with an error message and inner exception.</summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="innerException">The exception that caused the retry failure.</param>
     public RetryException(string message, Exception innerException)
         : base(message, innerException) { }
 

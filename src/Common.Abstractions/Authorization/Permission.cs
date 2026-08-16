@@ -17,6 +17,11 @@ public readonly struct Permission : IEquatable<Permission>
         this.value = value;
     }
 
+    /// <summary>
+    /// Creates a permission value from an application-defined permission name.
+    /// </summary>
+    /// <param name="permission">The permission name to preserve in the value.</param>
+    /// <returns>A permission backed by <paramref name="permission"/>.</returns>
     public static Permission For(string permission)
     {
         return new Permission(permission);
@@ -97,6 +102,7 @@ public readonly struct Permission : IEquatable<Permission>
     /// </summary>
     public static Permission Print => new("Print");
 
+    /// <inheritdoc/>
     public bool Equals(Permission other)
     {
         return this.value == other.value;

@@ -12,8 +12,11 @@ public class IsBeforeRule(DateTime value, DateTime comparisonDate, string messag
 {
     private readonly string message = message ?? $"Value must be before {comparisonDate}";
 
+    /// <summary>Gets the configured message or a default naming the exclusive upper date boundary.</summary>
     public override string Message => this.message;
 
+    /// <summary>Returns success only when the value is strictly earlier than the comparison date.</summary>
+    /// <returns>A result representing the exclusive date comparison.</returns>
     public override Result Execute() =>
         Result.SuccessIf(value < comparisonDate);
 }

@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
+/// <summary>
+/// Represents kestrel ports console command.
+/// </summary>
 public class KestrelPortsConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

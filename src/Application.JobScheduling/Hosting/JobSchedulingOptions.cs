@@ -5,11 +5,23 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Configures job scheduling.
+/// </summary>
 public class JobSchedulingOptions : OptionsBase
 {
+    /// <summary>
+    /// Gets or sets the enabled.
+    /// </summary>
     public bool Enabled { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the startup delay.
+    /// </summary>
     public TimeSpan StartupDelay { get; set; } = TimeSpan.Zero;
 
+    /// <summary>
+    /// Gets or sets the group options.
+    /// </summary>
     public JobGroupOptions GroupOptions { get; set; }
 }

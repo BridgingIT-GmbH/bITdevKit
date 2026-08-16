@@ -7,8 +7,15 @@ namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 
 using Domain.EventSourcing.Model;
 
+/// <summary>
+/// Defines operations for i event store options.
+/// </summary>
+/// <typeparam name="TAggregate">The aggregate type.</typeparam>
 public interface IEventStoreOptions<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
+    /// <summary>
+    /// Gets or sets the is snapshot enabled.
+    /// </summary>
     bool IsSnapshotEnabled { get; init; }
 }

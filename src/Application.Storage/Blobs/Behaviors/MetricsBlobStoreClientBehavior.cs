@@ -34,6 +34,7 @@ public sealed class MetricsBlobStoreClientBehavior(
     IMetricsService metricsService = null,
     string storeName = null) : BlobStoreClientBehaviorBase(inner, storeName)
 {
+    /// <inheritdoc/>
     protected override async Task<Result<T>> ExecuteAsync<T>(
         string operation,
         BlobStoreOperationContext context,
@@ -70,6 +71,7 @@ public sealed class MetricsBlobStoreClientBehavior(
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result> ExecuteAsync(
         string operation,
         BlobStoreOperationContext context,

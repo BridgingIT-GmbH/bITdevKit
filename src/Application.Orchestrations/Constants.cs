@@ -5,11 +5,23 @@
 
 namespace BridgingIT.DevKit.Application.Orchestrations;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Defines the log key value.
+    /// </summary>
     public const string LogKey = "ORC";
 
+    /// <summary>
+    /// Defines the correlation id key value.
+    /// </summary>
     public const string CorrelationIdKey = "CorrelationId";
 
+    /// <summary>
+    /// Defines the flow id key value.
+    /// </summary>
     public const string FlowIdKey = "FlowId";
 }

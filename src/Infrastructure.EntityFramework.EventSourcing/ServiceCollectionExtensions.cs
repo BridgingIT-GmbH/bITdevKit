@@ -13,6 +13,9 @@ using Infrastructure.EventSourcing.Publishing;
 using Microsoft.Extensions.DependencyInjection;
 using Models;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>

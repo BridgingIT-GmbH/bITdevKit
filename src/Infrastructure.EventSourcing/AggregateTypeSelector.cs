@@ -8,10 +8,18 @@ namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 using Domain.EventSourcing.Model;
 using Domain.EventSourcing.Store;
 
+/// <summary>
+/// Represents aggregate type selector.
+/// </summary>
 public class AggregateTypeSelector : IAggregateTypeSelector
 {
     private Type[] typeCache; // TODO: perf
 
+    /// <summary>
+    /// Finds .
+    /// </summary>
+    /// <param name="typeName">The type name used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public Type Find(string typeName)
     {
         if (this.typeCache is null)

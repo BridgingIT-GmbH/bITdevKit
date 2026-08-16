@@ -11,6 +11,9 @@ using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
 
+/// <summary>
+/// Represents info console command.
+/// </summary>
 public class InfoConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

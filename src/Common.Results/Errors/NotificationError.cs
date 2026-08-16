@@ -11,7 +11,9 @@ namespace BridgingIT.DevKit.Common;
 public class NotificationError(string message, string channel = null, Exception innerException = null)
     : ResultErrorBase(message ?? "Notification failed")
 {
+    /// <summary>Gets the notification channel on which delivery failed, when supplied.</summary>
     public string Channel { get; } = channel;
 
+    /// <summary>Gets the exception that caused or describes the notification failure, when available.</summary>
     public Exception InnerException { get; } = innerException;
 }

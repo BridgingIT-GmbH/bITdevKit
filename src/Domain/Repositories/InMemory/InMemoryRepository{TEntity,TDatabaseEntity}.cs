@@ -7,6 +7,15 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents in memory repository wrapper.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <typeparam name="TDatabaseEntity">The database entity type.</typeparam>
+/// <typeparam name="TContext">The context type.</typeparam>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="context">The context for the operation.</param>
+/// <param name="idSelector">The id selector used by the operation.</param>
 public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
     ILoggerFactory loggerFactory,
     TContext context,
@@ -17,12 +26,22 @@ public class InMemoryRepositoryWrapper<TEntity, TDatabaseEntity, TContext>(
     where TDatabaseEntity : class
 { }
 
+/// <summary>
+/// Represents in memory repository.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <typeparam name="TDatabaseEntity">The database entity type.</typeparam>
 public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<TEntity>
     where TEntity : class, IEntity
     where TDatabaseEntity : class
 {
     private readonly Func<TDatabaseEntity, object> idSelector;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>InMemoryRepository</c> class.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="idSelector">The id selector used by the operation.</param>
     public InMemoryRepository(InMemoryRepositoryOptions<TEntity> options, Func<TDatabaseEntity, object> idSelector)
         : base(options)
     {
@@ -30,17 +49,29 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         this.idSelector = idSelector;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>InMemoryRepository</c> class.
+    /// </summary>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="idSelector">The id selector used by the operation.</param>
     public InMemoryRepository(
         Builder<InMemoryRepositoryOptionsBuilder<TEntity>, InMemoryRepositoryOptions<TEntity>> optionsBuilder,
         Func<TDatabaseEntity, object> idSelector)
         : this(optionsBuilder(new InMemoryRepositoryOptionsBuilder<TEntity>()).Build(), idSelector) { }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>InMemoryRepository</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="idSelector">The id selector used by the operation.</param>
     public InMemoryRepository(
         ILoggerFactory loggerFactory,
         InMemoryContext<TEntity> context,
         Func<TDatabaseEntity, object> idSelector)
         : this(o => o.LoggerFactory(loggerFactory).Context(context), idSelector) { }
 
+    /// <inheritdoc/>
     public override async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -57,6 +88,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         return await Task.FromResult(this.FindAll(result, options)).AnyContext();
     }
 
+    /// <inheritdoc/>
     public override async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -79,6 +111,7 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         return default;
     }
 
+    /// <inheritdoc/>
     public override async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
@@ -96,6 +129,12 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         return this.Options.Mapper.MapSpecification<TEntity, TDatabaseEntity>(specification).Compile();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="entities">The entities involved in the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected IEnumerable<TEntity> FindAll(IEnumerable<TDatabaseEntity> entities, IFindOptions<TEntity> options = null)
     {
         var result = entities;

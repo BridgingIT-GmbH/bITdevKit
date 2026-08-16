@@ -23,6 +23,9 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId>
     private readonly List<IDomainEvent> domainEvents = [];
     private readonly Lock domainEventsLock = new(); // Dedicated lock object for thread safety
 
+    /// <summary>
+    /// Gets this instance as the concrete active-entity type.
+    /// </summary>
     protected TEntity Self => (TEntity)this;
 
     /// <summary>

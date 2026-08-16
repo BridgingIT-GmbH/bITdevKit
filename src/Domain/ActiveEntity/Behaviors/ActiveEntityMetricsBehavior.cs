@@ -27,153 +27,203 @@ public class ActiveEntityMetricsBehavior<TEntity>(IMetricsService metricsService
     private readonly AsyncLocal<Stack<OperationState>> operations = new();
     private readonly string entityName = Metrics.NormalizeTypeName(typeof(TEntity));
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeInsertAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_write", "insert", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterInsertAsync(TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_write", "insert", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeUpdateAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_write", "update", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterUpdateAsync(TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_write", "update", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeUpdateSetAsync(CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_write", "update_set", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterUpdateSetAsync(bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_write", "update_set", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeUpsertAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_write", "upsert", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterUpsertAsync(TEntity entity, RepositoryActionResult action, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_write", "upsert", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeDeleteAsync(TEntity entity, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_delete", "delete", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterDeleteAsync(TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_delete", "delete", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeDeleteAsync(object id, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_delete", "delete", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterDeleteAsync(object id, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_delete", "delete", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeDeleteSetAsync(CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_delete", "delete_set", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterDeleteSetAsync(bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_delete", "delete_set", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(object id, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_one", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindOneAsync(object id, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_one", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_one", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_one", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_one", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_one", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_one", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindOneAsync(FilterModel filter, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_one", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_all", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindAllAsync(IFindOptions<TEntity> options, IEnumerable<TEntity> entities, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_all", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_all", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, IEnumerable<TEntity> entities, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_all", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllPagedAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "find_all_paged", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterFindAllPagedAsync(IFindOptions<TEntity> options, ResultPaged<TEntity> result, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "find_all_paged", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "project_all", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, IEnumerable<TProjection> entities, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "project_all", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "project_all", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, IEnumerable<TProjection> entities, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "project_all", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "project_all", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterProjectAllAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, IEnumerable<TProjection> entities, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "project_all", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "project_all_paged", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, ResultPaged<TProjection> result, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "project_all_paged", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "exists", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterExistsAsync(bool exists, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "exists", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(object id, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "exists", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterExistsAsync(object id, bool exists, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "exists", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "exists", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterExistsAsync(ISpecification<TEntity> specification, bool exists, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "exists", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "exists", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, bool exists, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "exists", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(FilterModel filter, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "exists", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterExistsAsync(FilterModel filter, bool exists, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "exists", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeCountAsync(CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "count", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterCountAsync(long count, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "count", success, cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeCountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default) =>
         this.BeginAsync("activeentity_read", "count", cancellationToken);
 
+    /// <inheritdoc/>
     public override Task<Result> AfterCountAsync(ISpecification<TEntity> specification, long count, bool success, CancellationToken cancellationToken = default) =>
         this.EndAsync("activeentity_read", "count", success, cancellationToken);
 

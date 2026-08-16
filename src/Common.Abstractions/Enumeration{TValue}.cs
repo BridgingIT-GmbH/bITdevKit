@@ -17,6 +17,9 @@ namespace BridgingIT.DevKit.Common;
 public abstract class Enumeration<TValue>(int id, TValue value)
     : Enumeration<int, TValue>(id, value), IEnumeration<TValue>, IEquatable<Enumeration<TValue>>
 {
+    /// <summary>
+    /// Creates an enumeration with default identifier and value data for deserialization frameworks.
+    /// </summary>
     protected Enumeration() : this(default, default) // for json deserialization
     {
     }

@@ -9,6 +9,13 @@ using System.Linq.Dynamic.Core;
 
 public static partial class Extensions
 {
+    /// <summary>
+    /// Executes the order by if operation.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IOrderedQueryable<TEntity> OrderByIf<TEntity>(
         this IQueryable<TEntity> source,
         IFindOptions<TEntity> options)
@@ -43,6 +50,15 @@ public static partial class Extensions
         return result;
     }
 
+    /// <summary>
+    /// Executes the order by if operation.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TDatabaseEntity">The database entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <returns>The result of the operation.</returns>
     public static IOrderedQueryable<TDatabaseEntity> OrderByIf<TEntity, TDatabaseEntity>(
         this IQueryable<TDatabaseEntity> source,
         IFindOptions<TEntity> options,

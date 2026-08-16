@@ -5,8 +5,18 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Provides stream, byte-array, and string adapters for <see cref="ISerializer"/> implementations.
+/// </summary>
 public static class SerializerExtensions
 {
+    /// <summary>
+    ///     Serializes a value to UTF-8 text for text serializers or Base64 text for binary serializers.
+    /// </summary>
+    /// <typeparam name="T">The type of value to serialize.</typeparam>
+    /// <param name="source">The serializer to use.</param>
+    /// <param name="input">The value to serialize.</param>
+    /// <returns>The serialized text, or <see langword="null"/> when <paramref name="input"/> is <see langword="null"/>.</returns>
     public static string SerializeToString<T>(this ISerializer source, T input)
     {
         if (input is null)

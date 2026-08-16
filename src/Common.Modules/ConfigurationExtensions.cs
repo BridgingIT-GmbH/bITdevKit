@@ -48,6 +48,12 @@ public static class ConfigurationExtensions
         return source.GetSection(key, skipPlaceholders);
     }
 
+    /// <summary>
+    ///     Determines whether a configuration section has a scalar value or at least one child.
+    /// </summary>
+    /// <param name="configuration">The configuration to inspect.</param>
+    /// <param name="key">The section key.</param>
+    /// <returns><see langword="true"/> when the section contains a value or child; otherwise, <see langword="false"/>.</returns>
     public static bool SectionExists(this IConfiguration configuration, string key)
     {
         var section = configuration.GetSection(key);

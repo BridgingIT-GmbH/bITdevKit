@@ -200,6 +200,10 @@ public interface ISimpleRequest<TResponse> : ISimpleRequest;
 /// </summary>
 public interface ISimpleRequestHandler
 {
+    /// <summary>Handles a request supplied through the non-generic dispatch path.</summary>
+    /// <param name="request">The request to handle.</param>
+    /// <param name="cancellationToken">A token that can cancel handling.</param>
+    /// <returns>The handler response.</returns>
     ValueTask<object> HandleAsync(object request, CancellationToken cancellationToken = default);
 }
 
@@ -211,6 +215,10 @@ public interface ISimpleRequestHandler
 public interface ISimpleRequestHandler<in TRequest, TResponse> : ISimpleRequestHandler
     where TRequest : ISimpleRequest<TResponse>
 {
+    /// <summary>Handles a strongly typed request.</summary>
+    /// <param name="request">The request to handle.</param>
+    /// <param name="cancellationToken">A token that can cancel handling.</param>
+    /// <returns>The strongly typed handler response.</returns>
     ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default);
 
 #pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
@@ -236,6 +244,7 @@ public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, Cancellati
 {
     private readonly Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc = handlerFunc;
 
+    /// <inheritdoc/>
     public ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default)
     {
         return this.handlerFunc(request, cancellationToken);
@@ -247,6 +256,12 @@ public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, Cancellati
 /// </summary>
 public interface ISimpleRequestPipelineBehavior
 {
+    /// <summary>Executes behavior logic around the next request handler.</summary>
+    /// <typeparam name="TResponse">The response type.</typeparam>
+    /// <param name="request">The request being handled.</param>
+    /// <param name="next">The next handler delegate.</param>
+    /// <param name="cancellationToken">A token that can cancel processing.</param>
+    /// <returns>The handler response.</returns>
     ValueTask<TResponse> HandleAsync<TResponse>(ISimpleRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken = default);
 }
 
@@ -260,6 +275,7 @@ public delegate ValueTask<TResponse> RequestHandlerDelegate<TResponse>();
 /// </summary>
 public class LoggingRequestPipelineBehavior(ILogger logger) : ISimpleRequestPipelineBehavior
 {
+    /// <inheritdoc/>
     public async ValueTask<TResponse> HandleAsync<TResponse>(ISimpleRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken = default)
     {
         logger?.LogInformation($"Handling request of type {request.GetType().Name}");

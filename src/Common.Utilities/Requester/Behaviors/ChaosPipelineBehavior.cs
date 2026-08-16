@@ -11,6 +11,14 @@ using Microsoft.Extensions.Options;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
+/// <summary>
+///     Injects configured chaos exceptions into matching request-handler executions.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
+/// <param name="policyCache">The handler policy cache.</param>
+/// <param name="options">Default chaos settings used when an attribute omits values.</param>
 public class ChaosPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ConcurrentDictionary<Type, PolicyConfig> policyCache,
@@ -21,11 +29,13 @@ public class ChaosPipelineBehavior<TRequest, TResponse>(
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly ChaosOptions chaosOptions = options?.Value ?? new ChaosOptions();
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.Chaos != null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

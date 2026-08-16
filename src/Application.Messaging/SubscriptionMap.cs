@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Represents subscription map.
+/// </summary>
 public class SubscriptionMap : ISubscriptionMap
 {
     private readonly IDictionary<string, List<SubscriptionDetails>> map;
@@ -53,6 +56,11 @@ public class SubscriptionMap : ISubscriptionMap
         this.messageTypes.Add(typeof(TMessage));
     }
 
+    /// <summary>
+    /// Adds .
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="handler">The handler used by the operation.</param>
     public void Add(Type message, Type handler)
     {
         EnsureArg.IsNotNull(message, nameof(message));
@@ -79,6 +87,12 @@ public class SubscriptionMap : ISubscriptionMap
         this.messageTypes.Add(typeof(TMessage));
     }
 
+    /// <summary>
+    /// Adds .
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="handler">The handler used by the operation.</param>
+    /// <param name="messageName">The message name used by the operation.</param>
     public void Add(Type message, Type handler, string messageName)
     {
         EnsureArg.IsNotNull(message, nameof(message));

@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Defines operations for i active entity configurator.
+/// </summary>
 public interface IActiveEntityConfigurator
 {
     /// <summary>
@@ -67,6 +70,9 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
     private readonly List<(Type behaviorType, object options)> behaviors = [];
     private readonly List<Action<IServiceCollection>> registrations = registrations ?? [];
 
+    /// <summary>
+    /// Gets the services.
+    /// </summary>
     public IServiceCollection Services { get; } = services ?? throw new ArgumentNullException(nameof(services));
 
     /// <summary>
@@ -112,6 +118,12 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
         return this;
     }
 
+    /// <summary>
+    /// Adds behavior type.
+    /// </summary>
+    /// <param name="behaviorType">The behavior type used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public IActiveEntityConfigurator AddBehaviorType(Type behaviorType, object options = null)
     {
         ArgumentNullException.ThrowIfNull(behaviorType);

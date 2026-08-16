@@ -10,8 +10,19 @@ using BridgingIT.DevKit.Application.Commands;
 using MediatR.Registration;
 using Scrutor;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds commands.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="assemblyExcludePatterns">The assembly exclude patterns used by the operation.</param>
+    /// <param name="skipHandlerRegistration">The skip handler registration used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static CommandBuilderContext AddCommands(
         this IServiceCollection services,
         IEnumerable<string> assemblyExcludePatterns = null,
@@ -48,6 +59,13 @@ public static class ServiceCollectionExtensions
         return new CommandBuilderContext(services);
     }
 
+    /// <summary>
+    /// Adds commands.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="types">The types used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CommandBuilderContext AddCommands(
         this IServiceCollection services,
         IEnumerable<Type> types,
@@ -76,6 +94,13 @@ public static class ServiceCollectionExtensions
         return new CommandBuilderContext(services);
     }
 
+    /// <summary>
+    /// Adds commands.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="assemblies">The assemblies used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CommandBuilderContext AddCommands(
         this IServiceCollection services,
         IEnumerable<Assembly> assemblies,
@@ -103,6 +128,13 @@ public static class ServiceCollectionExtensions
         return new CommandBuilderContext(services);
     }
 
+    /// <summary>
+    /// Adds commands.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CommandBuilderContext AddCommands<T>(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Transient)
@@ -130,12 +162,23 @@ public static class ServiceCollectionExtensions
         return new CommandBuilderContext(services);
     }
 
+    /// <summary>
+    /// Provides with behavior.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
     public static CommandBuilderContext WithBehavior<T>(this CommandBuilderContext context)
         where T : class, ICommandBehavior
     {
         return WithBehavior(context, typeof(T));
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CommandBuilderContext WithBehavior(this CommandBuilderContext context, Type behavior)
     {
         if (behavior is not null)

@@ -5,8 +5,15 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
+/// <summary>
+/// Identifies a declaration with immutable name metadata.
+/// </summary>
+/// <param name="immutableName">The immutable name used by the operation.</param>
 [AttributeUsage(AttributeTargets.Class)]
 public class ImmutableNameAttribute(string immutableName) : Attribute
 {
+    /// <summary>
+    /// Gets the immutable name.
+    /// </summary>
     public string ImmutableName { get; } = immutableName;
 }

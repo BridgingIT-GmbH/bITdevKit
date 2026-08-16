@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
+/// <summary>
+/// Defines operations for i lite db context.
+/// </summary>
 public interface ILiteDbContext : IDisposable
 {
+    /// <summary>
+    /// Gets the database.
+    /// </summary>
     LiteDatabase Database { get; }
 }

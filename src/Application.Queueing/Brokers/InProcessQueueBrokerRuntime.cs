@@ -597,37 +597,88 @@ public class InProcessQueueBrokerRuntime
 /// </summary>
 public sealed class InProcessQueueTrackedItem
 {
+    /// <summary>
+    /// Gets or sets the id.
+    /// </summary>
     public Guid Id { get; init; }
 
+    /// <summary>
+    /// Gets or sets the message.
+    /// </summary>
     public IQueueMessage Message { get; init; }
 
+    /// <summary>
+    /// Gets or sets the queue name.
+    /// </summary>
     public string QueueName { get; init; }
 
+    /// <summary>
+    /// Gets or sets the type.
+    /// </summary>
     public string Type { get; init; }
 
+    /// <summary>
+    /// Gets or sets the registered handler type.
+    /// </summary>
     public string RegisteredHandlerType { get; set; }
 
+    /// <summary>
+    /// Gets or sets the is archived.
+    /// </summary>
     public bool IsArchived { get; set; }
 
+    /// <summary>
+    /// Gets or sets the archived date.
+    /// </summary>
     public DateTimeOffset? ArchivedDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status.
+    /// </summary>
     public QueueMessageStatus Status { get; set; }
 
+    /// <summary>
+    /// Gets or sets the attempt count.
+    /// </summary>
     public int AttemptCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the created date.
+    /// </summary>
     public DateTimeOffset CreatedDate { get; init; }
 
+    /// <summary>
+    /// Gets or sets the expires on.
+    /// </summary>
     public DateTimeOffset? ExpiresOn { get; init; }
 
+    /// <summary>
+    /// Gets or sets the locked by.
+    /// </summary>
     public string LockedBy { get; set; }
 
+    /// <summary>
+    /// Gets or sets the locked until.
+    /// </summary>
     public DateTimeOffset? LockedUntil { get; set; }
 
+    /// <summary>
+    /// Gets or sets the processing started date.
+    /// </summary>
     public DateTimeOffset? ProcessingStartedDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the processed date.
+    /// </summary>
     public DateTimeOffset? ProcessedDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the last error.
+    /// </summary>
     public string LastError { get; set; }
 
+    /// <summary>
+    /// Gets or sets the content hash.
+    /// </summary>
     public string ContentHash { get; init; }
 }

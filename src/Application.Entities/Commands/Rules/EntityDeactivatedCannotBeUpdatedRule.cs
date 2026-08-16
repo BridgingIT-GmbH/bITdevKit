@@ -7,14 +7,22 @@ namespace BridgingIT.DevKit.Application.Entities;
 
 using Humanizer;
 
+/// <summary>
+/// Represents entity deactivated cannot be updated rule.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public class EntityDeactivatedCannotBeUpdatedRule<TEntity> : EntityUpdateCommandRuleBase<TEntity>
     where TEntity : class, IEntity, IAuditable
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityDeactivatedCannotBeUpdatedRule</c> class.
+    /// </summary>
     public EntityDeactivatedCannotBeUpdatedRule()
     {
         this.Message = $"{typeof(TEntity).Name.Pluralize()} which are deactivated cannot be updated";
     }
 
+    /// <inheritdoc/>
     public override Task<bool> IsSatisfiedAsync(TEntity entity)
     {
         if (entity.AuditState?.IsDeactivated() == true)

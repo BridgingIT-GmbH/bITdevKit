@@ -24,6 +24,12 @@ public class InMemoryNotificationStorageProvider(
     private readonly ConcurrentDictionary<Guid, EmailMessage> messages = [];
     private readonly ILogger<InMemoryNotificationStorageProvider> logger = logger ?? NullLogger<InMemoryNotificationStorageProvider>.Instance;
 
+    /// <summary>
+    /// Represents save.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -46,6 +52,12 @@ public class InMemoryNotificationStorageProvider(
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
+    /// <summary>
+    /// Represents update.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public async Task<Result> UpdateAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -74,6 +86,12 @@ public class InMemoryNotificationStorageProvider(
         return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
+    /// <summary>
+    /// Represents delete.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public async Task<Result> DeleteAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -101,6 +119,12 @@ public class InMemoryNotificationStorageProvider(
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
+    /// <summary>
+    /// Represents get pending.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="batchSize">The batch size used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public async Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(
         int batchSize,
         //int maxRetries,

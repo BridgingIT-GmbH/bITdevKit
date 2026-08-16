@@ -31,6 +31,7 @@ public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : I
         }
     }
 
+    /// <inheritdoc/>
     public Result MapResult(TSource source, TTarget target)
     {
         try
@@ -103,6 +104,7 @@ public class ObjectMapper : IMapper
             $"Invalid mapping delegate type for {typeof(TSource)} to {typeof(TTarget)}");
     }
 
+    /// <inheritdoc/>
     public Result<TTarget> MapResult<TSource, TTarget>(TSource source)
         where TTarget : class
     {
@@ -156,6 +158,7 @@ public class ObjectMapper : IMapper
             $"Invalid mapping delegate type for {typeof(TSource)} to {typeof(TTarget)}");
     }
 
+    /// <inheritdoc/>
     public Result<TTarget> MapResult<TSource, TTarget>(TSource source, TTarget target)
         where TTarget : class
     {

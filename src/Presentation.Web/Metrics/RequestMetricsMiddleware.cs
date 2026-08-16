@@ -27,6 +27,11 @@ public class RequestMetricsMiddleware(
         "/notificationhub*", "/_content*", "/signalrhub*", "/_bdk/api/logentries*"
     ];
 
+    /// <summary>
+    /// Executes the invoke operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task Invoke(HttpContext context)
     {
         if (this.ShouldSkip(context))

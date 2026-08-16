@@ -9,9 +9,13 @@ using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+/// <summary>
+/// Identifies a declaration with from query filter metadata.
+/// </summary>
 public class FromQueryFilterAttribute()
     : ModelBinderAttribute(typeof(FromQueryFilterModelBinder))
     , IBindingSourceMetadata, IModelNameProvider, IFromQueryMetadata
 {
+    /// <inheritdoc/>
     public override BindingSource BindingSource => BindingSource.Query;
 }

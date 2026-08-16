@@ -10,6 +10,14 @@ using Domain.EventSourcing.AggregatePublish;
 using Domain.EventSourcing.Model;
 using MediatR;
 
+/// <summary>
+/// Represents publish aggregate event sender.
+/// </summary>
+/// <param name="mediator">The mediator used by the operation.</param>
+/// <param name="eventStorePublishingModes">The event store publishing modes used by the operation.</param>
+/// <param name="aggregateEventMediatorRequestSender">The aggregate event mediator request sender used by the operation.</param>
+/// <param name="aggregateEventMediatorNotificationSender">The aggregate event mediator notification sender used by the operation.</param>
+/// <param name="aggregateEventOutboxSender">The aggregate event outbox sender used by the operation.</param>
 public class PublishAggregateEventSender(
     IMediator mediator,
     EventStorePublishingModes eventStorePublishingModes,

@@ -17,6 +17,11 @@ using System.Reflection;
 /// </remarks>
 public static class TraceActivityHelper
 {
+    /// <summary>
+    ///     Adds declaring-type, function-name, and parameter-type tags for a method.
+    /// </summary>
+    /// <param name="activity">The activity to tag. A <see langword="null"/> activity is ignored.</param>
+    /// <param name="method">The method whose metadata supplies the tags.</param>
     public static void AddMethodTags(Activity activity, MethodInfo method)
     {
         activity?.AddTag("code.namespace", method.DeclaringType?.ToString());
@@ -24,6 +29,12 @@ public static class TraceActivityHelper
         activity?.AddTag("code.function.parameters", method.ToParametersString());
     }
 
+    /// <summary>
+    ///     Adds tags declared by <see cref="ActivityAttributesAttribute"/> on a method and its runtime type.
+    /// </summary>
+    /// <param name="activity">The activity to tag.</param>
+    /// <param name="method">The method inspected for tag attributes.</param>
+    /// <param name="innerType">The runtime type inspected for tag attributes.</param>
     public static void AddAttributeTags(Activity activity, MethodInfo method, Type innerType)
     {
         var methodActivityAttributes = method.GetCustomAttribute<ActivityAttributesAttribute>(false);

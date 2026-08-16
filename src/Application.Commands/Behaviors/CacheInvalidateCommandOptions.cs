@@ -5,12 +5,24 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Defines operations for i cache invalidate command.
+/// </summary>
 public interface ICacheInvalidateCommand
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     CacheInvalidateCommandOptions Options { get; }
 }
 
+/// <summary>
+/// Configures cache invalidate command.
+/// </summary>
 public class CacheInvalidateCommandOptions
 {
+    /// <summary>
+    /// Gets or sets the key.
+    /// </summary>
     public string Key { get; set; }
 }

@@ -15,6 +15,12 @@ using Newtonsoft.Json;
 // TODO: get rid of Newtonsoft dependency
 
 // ReSharper disable once ClassNeverInstantiated.Global
+/// <summary>
+/// Represents aggregate event outbox sender.
+/// </summary>
+/// <param name="outboxMessageWriterRepository">The outbox message writer repository used by the operation.</param>
+/// <param name="eventStoreAggregateEventRegistration">The event store aggregate event registration used by the operation.</param>
+/// <param name="eventStoreAggregateRegistration">The event store aggregate registration used by the operation.</param>
 public class AggregateEventOutboxSender(
     IOutboxMessageWriterRepository outboxMessageWriterRepository,
     IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
@@ -27,6 +33,13 @@ public class AggregateEventOutboxSender(
 
     private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
 
+    /// <summary>
+    /// Executes the write to outbox operation.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="savedEvent">The saved event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task WriteToOutboxAsync<TAggregate>(AggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {

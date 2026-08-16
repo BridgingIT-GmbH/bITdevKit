@@ -12,11 +12,18 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Converts enum values using both their declared names and any <see cref="EnumMemberAttribute.Value"/> aliases.
+/// </summary>
+/// <typeparam name="T">The enum type to convert.</typeparam>
 public class EnumMemberConverter<T> : JsonConverter<T> where T : struct, Enum
 {
     private readonly Dictionary<string, T> nameToEnum;
     private readonly Dictionary<T, string> enumToName;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EnumMemberConverter{T}"/> class.
+    /// </summary>
     public EnumMemberConverter()
     {
         this.nameToEnum = new Dictionary<string, T>(StringComparer.OrdinalIgnoreCase);
@@ -37,6 +44,7 @@ public class EnumMemberConverter<T> : JsonConverter<T> where T : struct, Enum
         }
     }
 
+    /// <inheritdoc/>
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.String)
@@ -50,6 +58,7 @@ public class EnumMemberConverter<T> : JsonConverter<T> where T : struct, Enum
             : throw new JsonException($"Invalid enum value '{enumString}' for {typeof(T).Name}");
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(this.enumToName[value]);

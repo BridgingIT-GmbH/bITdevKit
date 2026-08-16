@@ -31,6 +31,7 @@ public class EnumerationJsonConverter<TEnumeration, TId, TValue> : JsonConverter
     where TId : IComparable
     where TValue : IComparable
 {
+    /// <inheritdoc/>
     public override TEnumeration Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -42,6 +43,7 @@ public class EnumerationJsonConverter<TEnumeration, TId, TValue> : JsonConverter
         return Enumeration<TId, TValue>.FromId<TEnumeration>(id);
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, TEnumeration value, JsonSerializerOptions options)
     {
         if (value == null)
@@ -230,11 +232,15 @@ public class EnumerationCollectionJsonConverter<TEnumeration, TId, TValue>
 {
     private readonly EnumerationJsonConverter<TEnumeration, TId, TValue> itemConverter;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EnumerationCollectionJsonConverter{TEnumeration, TId, TValue}"/> class.
+    /// </summary>
     public EnumerationCollectionJsonConverter()
     {
         this.itemConverter = new EnumerationJsonConverter<TEnumeration, TId, TValue>();
     }
 
+    /// <inheritdoc/>
     public override ICollection<TEnumeration> Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
@@ -264,6 +270,7 @@ public class EnumerationCollectionJsonConverter<TEnumeration, TId, TValue>
         return items;
     }
 
+    /// <inheritdoc/>
     public override void Write(
         Utf8JsonWriter writer,
         ICollection<TEnumeration> value,
@@ -312,11 +319,15 @@ public class EnumerationListJsonConverter<TEnumeration, TId, TValue>
 {
     private readonly EnumerationJsonConverter<TEnumeration, TId, TValue> itemConverter;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EnumerationListJsonConverter{TEnumeration, TId, TValue}"/> class.
+    /// </summary>
     public EnumerationListJsonConverter()
     {
         this.itemConverter = new EnumerationJsonConverter<TEnumeration, TId, TValue>();
     }
 
+    /// <inheritdoc/>
     public override List<TEnumeration> Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
@@ -346,6 +357,7 @@ public class EnumerationListJsonConverter<TEnumeration, TId, TValue>
         return items;
     }
 
+    /// <inheritdoc/>
     public override void Write(
         Utf8JsonWriter writer,
         List<TEnumeration> value,
@@ -394,11 +406,15 @@ public class EnumerationSetJsonConverter<TEnumeration, TId, TValue>
 {
     private readonly EnumerationJsonConverter<TEnumeration, TId, TValue> itemConverter;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EnumerationSetJsonConverter{TEnumeration, TId, TValue}"/> class.
+    /// </summary>
     public EnumerationSetJsonConverter()
     {
         this.itemConverter = new EnumerationJsonConverter<TEnumeration, TId, TValue>();
     }
 
+    /// <inheritdoc/>
     public override HashSet<TEnumeration> Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
@@ -428,6 +444,7 @@ public class EnumerationSetJsonConverter<TEnumeration, TId, TValue>
         return items;
     }
 
+    /// <inheritdoc/>
     public override void Write(
         Utf8JsonWriter writer,
         HashSet<TEnumeration> value,

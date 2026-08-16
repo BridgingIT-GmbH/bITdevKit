@@ -5,8 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Provides themed fake-user catalogues for development and demonstration environments.
+/// </summary>
 public static class FakeUsers
 {
+    /// <summary>Gets the Star Wars-themed users, including a default administrator identity.</summary>
     public static readonly FakeUser[] Starwars =
     [
         new(
@@ -229,6 +233,7 @@ public static class FakeUsers
         //    })
     ];
 
+    /// <summary>Gets German-language sample identities.</summary>
     public static readonly FakeUser[] German =
     [
         new(
@@ -259,6 +264,7 @@ public static class FakeUsers
             "passwort")
     ];
 
+    /// <summary>Gets English-language sample identities.</summary>
     public static readonly FakeUser[] English =
     [
        new(
@@ -289,6 +295,7 @@ public static class FakeUsers
             "password")
    ];
 
+    /// <summary>Gets fantasy-themed sample identities.</summary>
     public static readonly FakeUser[] Fantasy =
     [
         new(

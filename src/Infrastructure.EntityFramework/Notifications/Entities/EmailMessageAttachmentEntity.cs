@@ -9,48 +9,48 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("__Notifications_EmailAttachments")]
 /// <summary>
 /// Represents a persisted attachment row for a notification email.
 /// </summary>
+[Table("__Notifications_EmailAttachments")]
 public class EmailMessageAttachmentEntity
 {
-    [Key]
     /// <summary>
     /// Gets or sets the attachment primary key.
     /// </summary>
+    [Key]
     public Guid Id { get; set; }
 
-    [Required]
     /// <summary>
     /// Gets or sets the parent notification email identifier.
     /// </summary>
+    [Required]
     public Guid EmailMessageId { get; set; }
 
-    [Required]
-    [MaxLength(255)]
     /// <summary>
     /// Gets or sets the original attachment file name.
     /// </summary>
+    [Required]
+    [MaxLength(255)]
     public string FileName { get; set; }
 
-    [Required]
-    [MaxLength(100)]
     /// <summary>
     /// Gets or sets the attachment media type.
     /// </summary>
+    [Required]
+    [MaxLength(100)]
     public string ContentType { get; set; }
 
-    [Required]
     /// <summary>
     /// Gets or sets the persisted attachment payload bytes.
     /// </summary>
+    [Required]
     public byte[] Content { get; set; }
 
-    [MaxLength(256)]
     /// <summary>
     /// Gets or sets the content identifier for inline attachments.
     /// </summary>
+    [MaxLength(256)]
     public string ContentId { get; set; }
 
     /// <summary>
@@ -58,9 +58,9 @@ public class EmailMessageAttachmentEntity
     /// </summary>
     public bool IsEmbedded { get; set; }
 
-    [ForeignKey(nameof(EmailMessageId))]
     /// <summary>
     /// Gets or sets the parent email navigation property.
     /// </summary>
+    [ForeignKey(nameof(EmailMessageId))]
     public EmailMessageEntity EmailMessage { get; set; }
 }

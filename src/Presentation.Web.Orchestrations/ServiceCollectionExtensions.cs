@@ -147,6 +147,12 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds mcp handlers.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="enabled">The enabled used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static OrchestrationBuilderContext AddMcpHandlers(
         this OrchestrationBuilderContext context,
         bool enabled = true)
@@ -161,6 +167,12 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Adds orchestration mcp handlers.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="enabled">The enabled used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static IServiceCollection AddOrchestrationMcpHandlers(this IServiceCollection services, bool enabled = true)
     {
         EnsureArg.IsNotNull(services, nameof(services));

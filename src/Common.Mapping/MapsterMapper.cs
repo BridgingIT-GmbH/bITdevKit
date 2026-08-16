@@ -29,6 +29,7 @@ public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = nul
         }
     }
 
+    /// <inheritdoc/>
     public Result MapResult(TSource source, TDestination destination)
     {
         try
@@ -62,6 +63,7 @@ public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
         return source is null ? default : source.Adapt<TTarget>(this.config);
     }
 
+    /// <inheritdoc/>
     public Result<TTarget> MapResult<TSource, TTarget>(TSource source)
         where TTarget : class
     {
@@ -89,6 +91,7 @@ public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
         return source is null ? target : source.Adapt(target, this.config);
     }
 
+    /// <inheritdoc/>
     public Result<TTarget> MapResult<TSource, TTarget>(TSource source, TTarget target)
         where TTarget : class
     {

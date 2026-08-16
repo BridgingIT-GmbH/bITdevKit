@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
+/// <summary>
+/// Represents blob storage diagnostics service collection extensions.
+/// </summary>
 public static class BlobStorageDiagnosticsServiceCollectionExtensions
 {
     /// <summary>

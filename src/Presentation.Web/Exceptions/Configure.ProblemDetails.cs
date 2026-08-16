@@ -23,14 +23,28 @@ using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOp
 //    }
 //}
 
+/// <summary>
+/// Represents configure.
+/// </summary>
 [Obsolete("Use the new GlobalExceptionHandler")]
 public static class Configure // TODO: this should be replace by the GlobalExceptionHandler (Presentation.Web.Middleware)
 {
+    /// <summary>
+    /// Executes the problem details operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
     public static void ProblemDetails(ProblemDetailsOptions options)
     {
         ProblemDetails(options, false);
     }
 
+    /// <summary>
+    /// Executes the problem details operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="includeExceptionDetails">The include exception details used by the operation.</param>
+    /// <param name="mappings">The mappings used by the operation.</param>
+    /// <param name="allowedHeaderNames">The allowed header names used by the operation.</param>
     public static void ProblemDetails(
         ProblemDetailsOptions options,
         bool includeExceptionDetails = false,

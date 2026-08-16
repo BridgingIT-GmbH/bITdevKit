@@ -61,6 +61,13 @@ public class InMemorySequenceNumberGenerator(
         return this;
     }
 
+    /// <summary>
+    /// Gets next.
+    /// </summary>
+    /// <param name="sequenceName">The sequence name used by the operation.</param>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<long>> GetNextAsync(
         string sequenceName,
         string schema = null,
@@ -116,6 +123,13 @@ public class InMemorySequenceNumberGenerator(
         }
     }
 
+    /// <summary>
+    /// Gets next multiple.
+    /// </summary>
+    /// <param name="sequenceNames">The sequence names used by the operation.</param>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Dictionary<string, long>>> GetNextMultipleAsync(
         IEnumerable<string> sequenceNames,
         string schema = null,
@@ -146,6 +160,13 @@ public class InMemorySequenceNumberGenerator(
         return Result<Dictionary<string, long>>.Success(results);
     }
 
+    /// <summary>
+    /// Executes the exists operation.
+    /// </summary>
+    /// <param name="sequenceName">The sequence name used by the operation.</param>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<Result<bool>> ExistsAsync(
         string sequenceName,
         string schema = null,
@@ -157,6 +178,13 @@ public class InMemorySequenceNumberGenerator(
         return Task.FromResult(Result<bool>.Success(exists));
     }
 
+    /// <summary>
+    /// Gets sequence info.
+    /// </summary>
+    /// <param name="sequenceName">The sequence name used by the operation.</param>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<Result<SequenceInfo>> GetSequenceInfoAsync(
         string sequenceName,
         string schema = null,
@@ -185,6 +213,13 @@ public class InMemorySequenceNumberGenerator(
         return Task.FromResult(Result<SequenceInfo>.Success(info));
     }
 
+    /// <summary>
+    /// Gets current value.
+    /// </summary>
+    /// <param name="sequenceName">The sequence name used by the operation.</param>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<Result<long>> GetCurrentValueAsync(
         string sequenceName,
         string schema = null,
@@ -202,6 +237,14 @@ public class InMemorySequenceNumberGenerator(
         return Task.FromResult(Result<long>.Success(state.CurrentValue));
     }
 
+    /// <summary>
+    /// Executes the reset sequence operation.
+    /// </summary>
+    /// <param name="sequenceName">The sequence name used by the operation.</param>
+    /// <param name="startValue">The start value used by the operation.</param>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<Result> ResetSequenceAsync(
         string sequenceName,
         long startValue,

@@ -7,6 +7,10 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
+/// <summary>
+/// Represents module db context base.
+/// </summary>
+/// <param name="options">The options controlling the operation.</param>
 public abstract class ModuleDbContextBase(DbContextOptions options) : DbContext(options)
 {
     /// <summary>
@@ -21,11 +25,13 @@ public abstract class ModuleDbContextBase(DbContextOptions options) : DbContext(
     /// </summary>
     protected bool ApplyConfigurationsFromAssembly { get; set; } = true;
 
+    /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.ConfigureWarnings(c => c.Log((RelationalEventId.CommandExecuted, LogLevel.Debug)));
     }
 
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var schema = this.Schema ??

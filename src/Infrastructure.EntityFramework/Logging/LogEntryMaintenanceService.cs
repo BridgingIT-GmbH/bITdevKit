@@ -150,6 +150,7 @@ public class LogEntryMaintenanceService<TContext>(
         }
     }
 
+    /// <inheritdoc/>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("[{LogKey}] log maintenance service stopping", "LOG");
@@ -169,6 +170,7 @@ public class LogEntryMaintenanceService<TContext>(
         await base.StopAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.timer?.Dispose();

@@ -13,6 +13,10 @@ using Domain.EventSourcing.AggregatePublish;
 using Domain.EventSourcing.Model;
 using MediatR;
 
+/// <summary>
+/// Represents aggregate event mediator request sender.
+/// </summary>
+/// <param name="mediator">The mediator used by the operation.</param>
 public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregateEventMediatorRequestSender
 {
     private readonly IMediator mediator = mediator;
@@ -42,6 +46,12 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         }
     }
 
+    /// <summary>
+    /// Executes the send projection event operation.
+    /// </summary>
+    /// <param name="savedEvent">The saved event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<bool> SendProjectionEventAsync(object savedEvent, object aggregate)
     {
         var genericPublishAggregateCommand =
@@ -60,6 +70,13 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
             " not found.");
     }
 
+    /// <summary>
+    /// Executes the send event occured operation.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="savedEvent">The saved event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SendEventOccuredAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
@@ -78,6 +95,12 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         }
     }
 
+    /// <summary>
+    /// Executes the send event occured operation.
+    /// </summary>
+    /// <param name="savedEvent">The saved event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<bool> SendEventOccuredAsync(object savedEvent, object aggregate)
     {
         var genericPublishAggregateCommand =

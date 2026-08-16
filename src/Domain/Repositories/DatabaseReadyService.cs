@@ -32,6 +32,10 @@ public class DatabaseReadyService : IDatabaseReadyService
     private readonly ILogger<DatabaseReadyService> logger;
     private readonly ConcurrentDictionary<string, State> states = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Initializes a new instance of the <c>DatabaseReadyService</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
     public DatabaseReadyService(ILoggerFactory loggerFactory = null)
     {
         this.logger = loggerFactory?.CreateLogger<DatabaseReadyService>() ??

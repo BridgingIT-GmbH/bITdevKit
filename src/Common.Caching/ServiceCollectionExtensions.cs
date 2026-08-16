@@ -11,8 +11,18 @@ using Configuration;
 using Extensions;
 using Logging;
 
+/// <summary>
+///     Provides dependency-injection registration for DevKit caching.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    ///     Adds the shared memory cache and initializes a caching builder context.
+    /// </summary>
+    /// <param name="services">The service collection receiving registrations.</param>
+    /// <param name="configuration">The configuration made available to subsequent provider registrations.</param>
+    /// <param name="optionsAction">An optional action invoked with a builder context before the default registrations are added.</param>
+    /// <returns>A caching builder context for registering a provider.</returns>
     public static CachingBuilderContext AddCaching(
         this IServiceCollection services,
         IConfiguration configuration = null,
@@ -27,6 +37,13 @@ public static class ServiceCollectionExtensions
         return new CachingBuilderContext(services, configuration);
     }
 
+    /// <summary>
+    ///     Registers the in-memory cache provider using explicit settings or settings bound from configuration.
+    /// </summary>
+    /// <param name="context">The caching builder context.</param>
+    /// <param name="configuration">Explicit provider settings, or <see langword="null"/> to bind them from <paramref name="section"/>.</param>
+    /// <param name="section">The configuration section used when explicit settings are not supplied.</param>
+    /// <returns>The same builder context.</returns>
     public static CachingBuilderContext WithInMemoryProvider(
         this CachingBuilderContext context,
         InMemoryCacheProviderConfiguration configuration = null,

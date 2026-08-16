@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Configures default expiration values for the in-memory cache provider.
+/// </summary>
 public class InMemoryCacheProviderConfiguration
 {
+    /// <summary>
+    ///     Gets or sets the default sliding expiration applied when an operation does not specify one.
+    /// </summary>
     public TimeSpan? SlidingExpiration { get; set; }
 
+    /// <summary>
+    ///     Gets or sets the default absolute expiration applied when an operation does not specify one.
+    /// </summary>
     public DateTimeOffset? AbsoluteExpiration { get; set; }
 }

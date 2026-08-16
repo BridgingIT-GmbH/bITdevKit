@@ -524,12 +524,33 @@ public class CronExpressionBuilder
 /// </summary>
 public enum CronDayOfWeek
 {
+    /// <summary>
+    /// Represents the sunday value.
+    /// </summary>
     Sunday,
+    /// <summary>
+    /// Represents the monday value.
+    /// </summary>
     Monday,
+    /// <summary>
+    /// Represents the tuesday value.
+    /// </summary>
     Tuesday,
+    /// <summary>
+    /// Represents the wednesday value.
+    /// </summary>
     Wednesday,
+    /// <summary>
+    /// Represents the thursday value.
+    /// </summary>
     Thursday,
+    /// <summary>
+    /// Represents the friday value.
+    /// </summary>
     Friday,
+    /// <summary>
+    /// Represents the saturday value.
+    /// </summary>
     Saturday
 }
 
@@ -538,16 +559,52 @@ public enum CronDayOfWeek
 /// </summary>
 public enum CronMonth
 {
+    /// <summary>
+    /// Represents the january value.
+    /// </summary>
     January = 1,
+    /// <summary>
+    /// Represents the february value.
+    /// </summary>
     February,
+    /// <summary>
+    /// Represents the march value.
+    /// </summary>
     March,
+    /// <summary>
+    /// Represents the april value.
+    /// </summary>
     April,
+    /// <summary>
+    /// Represents the may value.
+    /// </summary>
     May,
+    /// <summary>
+    /// Represents the june value.
+    /// </summary>
     June,
+    /// <summary>
+    /// Represents the july value.
+    /// </summary>
     July,
+    /// <summary>
+    /// Represents the august value.
+    /// </summary>
     August,
+    /// <summary>
+    /// Represents the september value.
+    /// </summary>
     September,
+    /// <summary>
+    /// Represents the october value.
+    /// </summary>
     October,
+    /// <summary>
+    /// Represents the november value.
+    /// </summary>
     November,
+    /// <summary>
+    /// Represents the december value.
+    /// </summary>
     December
 }

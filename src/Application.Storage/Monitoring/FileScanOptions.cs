@@ -68,6 +68,9 @@ public class FileScanOptions
     /// </summary>
     public int? MaxFilesToScan { get; set; } = null; // Default: No limit
 
+    /// <summary>
+    /// Gets or sets the throw if directory not exists.
+    /// </summary>
     public bool ThrowIfDirectoryNotExists { get; set; } = false;
 
     /// <summary>

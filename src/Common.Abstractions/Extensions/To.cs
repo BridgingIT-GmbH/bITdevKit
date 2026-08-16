@@ -12,6 +12,13 @@ using Microsoft.Extensions.Primitives;
 
 public static partial class Extensions
 {
+    /// <summary>Converts a value to a requested type using invariant or caller-supplied culture and special handling for common framework types.</summary>
+    /// <typeparam name="TValue">The target type.</typeparam>
+    /// <param name="source">The value to convert.</param>
+    /// <param name="throws">Whether supported format and cast failures should be propagated.</param>
+    /// <param name="defaultValue">The value returned for null input or a suppressed conversion failure.</param>
+    /// <param name="cultureInfo">The culture used for textual and convertible values; invariant culture is used when omitted.</param>
+    /// <returns>The converted value or <paramref name="defaultValue"/> when conversion is suppressed.</returns>
     [DebuggerStepThrough]
     public static TValue To<TValue>(
         this object source,
@@ -105,6 +112,13 @@ public static partial class Extensions
         }
     }
 
+    /// <summary>Converts a value to a runtime-selected type using invariant or caller-supplied culture.</summary>
+    /// <param name="source">The value to convert.</param>
+    /// <param name="targetType">The requested result type.</param>
+    /// <param name="throws">Whether supported format and cast failures should be propagated.</param>
+    /// <param name="defaultValue">The value returned for null input or a suppressed conversion failure.</param>
+    /// <param name="cultureInfo">The culture used for textual and convertible values; invariant culture is used when omitted.</param>
+    /// <returns>The converted value; null input converted to <see cref="Guid"/> returns <see cref="Guid.Empty"/>.</returns>
     [DebuggerStepThrough]
     public static object To(
         this object source,
@@ -202,6 +216,12 @@ public static partial class Extensions
         }
     }
 
+    /// <summary>Attempts to convert a value to a requested type without propagating format, overflow, or cast failures.</summary>
+    /// <typeparam name="TValue">The target type.</typeparam>
+    /// <param name="source">The value to convert.</param>
+    /// <param name="result">The converted value when successful; otherwise, <see langword="default"/>.</param>
+    /// <param name="cultureInfo">The culture used for textual and convertible values; invariant culture is used when omitted.</param>
+    /// <returns><see langword="true"/> when conversion succeeds.</returns>
     [DebuggerStepThrough]
     public static bool TryTo<TValue>(this object source, out TValue result, CultureInfo cultureInfo = null)
     {
@@ -306,6 +326,12 @@ public static partial class Extensions
         }
     }
 
+    /// <summary>Attempts to convert a value to a runtime-selected type without propagating format, overflow, or cast failures.</summary>
+    /// <param name="source">The value to convert.</param>
+    /// <param name="targetType">The requested result type.</param>
+    /// <param name="result">The converted value when successful; otherwise, <see langword="null"/>.</param>
+    /// <param name="cultureInfo">The culture used for textual and convertible values; invariant culture is used when omitted.</param>
+    /// <returns><see langword="true"/> when conversion succeeds.</returns>
     [DebuggerStepThrough]
     public static bool TryTo(this object source, Type targetType, out object result, CultureInfo cultureInfo = null)
     {

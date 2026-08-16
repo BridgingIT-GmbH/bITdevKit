@@ -10,6 +10,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 
+/// <summary>
+///     Retries exceptions from request handlers according to handler policy and default retry settings.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
+/// <param name="policyCache">The handler policy cache.</param>
+/// <param name="options">Default retry settings used when an attribute omits values.</param>
 public class RetryPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ConcurrentDictionary<Type, PolicyConfig> policyCache,
@@ -20,11 +28,13 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly RetryOptions retryOptions = options?.Value ?? new RetryOptions();
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return true;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,
@@ -58,6 +68,7 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
         return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
     }
 
+    /// <inheritdoc/>
     public override bool IsHandlerSpecific()
     {
         return true;

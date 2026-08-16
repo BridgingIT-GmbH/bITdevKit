@@ -9,6 +9,9 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 
+/// <summary>
+/// Provides calendar-boundary, component-extraction, and invariant-formatting helpers for <see cref="DateTimeOffset"/> values.
+/// </summary>
 public static class DateTimeOffsetExtensions
 {
     /// <summary>

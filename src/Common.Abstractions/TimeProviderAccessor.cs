@@ -46,7 +46,7 @@ public static class TimeProviderAccessor
 
     /// <summary>
     /// Sets the current <see cref="TimeProvider"/> instance.
-    /// Intended for internal use by <see cref="ServiceCollectionExtensions.AddTimeProvider(IServiceCollection, TimeProvider)"/>.
+    /// Intended for internal use by the <c>AddTimeProvider</c> service-registration extension.
     /// </summary>
     /// <param name="provider">The <see cref="TimeProvider"/> to set as current.</param>
     public static void SetCurrent(TimeProvider provider) => Current = provider;

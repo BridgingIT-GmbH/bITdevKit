@@ -17,12 +17,20 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
+/// <summary>
+/// Represents fake identity provider endpoints.
+/// </summary>
+/// <param name="logger">The logger that receives diagnostic events.</param>
+/// <param name="options">The options controlling the operation.</param>
+/// <param name="identityProvider">The identity provider used by the operation.</param>
+/// <param name="userInfoService">The user info service used by the operation.</param>
 public class FakeIdentityProviderEndpoints(
     ILogger<FakeIdentityProviderEndpoints> logger,
     FakeIdentityProviderEndpointsOptions options,
     IFakeIdentityProvider identityProvider,
     IUserInfoService userInfoService) : EndpointsBase
 {
+    /// <inheritdoc/>
     public override void Map(IEndpointRouteBuilder app)
     {
         options ??= new FakeIdentityProviderEndpointsOptions();

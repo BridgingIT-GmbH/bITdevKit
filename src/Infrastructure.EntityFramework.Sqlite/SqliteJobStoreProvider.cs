@@ -12,12 +12,21 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Represents sqlite job store provider.
+/// </summary>
 public class SqliteJobStoreProvider : IJobStoreProvider
 {
     private readonly ILogger<SqliteJobStoreProvider> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>SqliteJobStoreProvider</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
     public SqliteJobStoreProvider(ILoggerFactory loggerFactory, string connectionString, string tablePrefix)
     {
         this.logger = loggerFactory?.CreateLogger<SqliteJobStoreProvider>() ?? NullLogger<SqliteJobStoreProvider>.Instance;

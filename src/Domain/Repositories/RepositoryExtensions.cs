@@ -106,6 +106,14 @@ public static class RepositoryExtensions
         return await source.DeleteSetAsync(specifications, findOptions, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Represents find one.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="expression">The expression used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<TEntity> FindOneAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         Expression<Func<TEntity, bool>> expression,
@@ -116,6 +124,14 @@ public static class RepositoryExtensions
         return await source.FindOneAsync(new Specification<TEntity>(expression), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Represents find one.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filterModel">The filter model used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<TEntity> FindOneAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,
@@ -182,6 +198,14 @@ public static class RepositoryExtensions
         return await source.FindAllAsync(new Specification<TEntity>(expression), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Represents find all.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filterModel">The filter model used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<IEnumerable<TEntity>> FindAllAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,
@@ -288,6 +312,15 @@ public static class RepositoryExtensions
             .Select(i => i.To<TId>());
     }
 
+    /// <summary>
+    /// Represents find all ids.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The id type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filterModel">The filter model used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<IEnumerable<TId>> FindAllIdsAsync<TEntity, TId>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,

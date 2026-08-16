@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class NotFoundError(string message = null) : ResultErrorBase(message ?? "Not found")
 {
+    /// <summary>Initializes a not-found error with the default message.</summary>
     public NotFoundError() : this(null)
     {
     }

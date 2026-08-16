@@ -9,6 +9,9 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Creates the standard <see cref="JsonSerializerOptions"/> used by DevKit serializers.
+/// </summary>
 public static class DefaultJsonSerializerOptions
 {
     /// <summary>

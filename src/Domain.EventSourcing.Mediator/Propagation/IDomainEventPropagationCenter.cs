@@ -7,8 +7,17 @@ namespace BridgingIT.DevKit.Domain.EventSourcing;
 
 using Model;
 
+/// <summary>
+/// Defines operations for i domain event propagation center.
+/// </summary>
 public interface IDomainEventPropagationCenter
 {
+    /// <summary>
+    /// Executes the apply domain event operation.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="domainEvent">The domain event used by the operation.</param>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
     void ApplyDomainEvent<TAggregate>(DomainEventWithGuid domainEvent, TAggregate aggregate)
         where TAggregate : IAggregateRootWithGuid, new();
 }

@@ -22,6 +22,11 @@ public class CurrentUserLoggingMiddleware
     private readonly ILogger logger;
     private readonly RequestDelegate next;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>CurrentUserLoggingMiddleware</c> class.
+    /// </summary>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="next">The next used by the operation.</param>
     public CurrentUserLoggingMiddleware(
         ILogger<CurrentUserLoggingMiddleware> logger,
         RequestDelegate next)
@@ -33,6 +38,11 @@ public class CurrentUserLoggingMiddleware
         this.next = next;
     }
 
+    /// <summary>
+    /// Executes the invoke operation.
+    /// </summary>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task Invoke(HttpContext httpContext)
     {
         EnsureArg.IsNotNull(httpContext, nameof(httpContext));

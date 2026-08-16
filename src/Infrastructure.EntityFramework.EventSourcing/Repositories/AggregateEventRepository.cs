@@ -14,6 +14,11 @@ using Infrastructure.EventSourcing;
 using Models;
 using Repositories;
 
+/// <summary>
+/// Represents aggregate event repository.
+/// </summary>
+/// <param name="aggregateRegistration">The aggregate registration used by the operation.</param>
+/// <param name="options">The options controlling the operation.</param>
 public class AggregateEventRepository(
     IEventStoreAggregateRegistration aggregateRegistration,
     EntityFrameworkRepositoryOptions options) : EntityFrameworkGenericRepository<EventStoreAggregateEvent>(options),
@@ -22,11 +27,24 @@ public class AggregateEventRepository(
     private readonly IEventStoreAggregateRegistration aggregateRegistration = aggregateRegistration;
     private readonly EventStoreDbContext context = options.DbContext as EventStoreDbContext;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>AggregateEventRepository</c> class.
+    /// </summary>
+    /// <param name="aggregateRegistration">The aggregate registration used by the operation.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public AggregateEventRepository(
         IEventStoreAggregateRegistration aggregateRegistration,
         Builder<EntityFrameworkRepositoryOptionsBuilder, EntityFrameworkRepositoryOptions> optionsBuilder)
         : this(aggregateRegistration, optionsBuilder(new EntityFrameworkRepositoryOptionsBuilder()).Build()) { }
 
+    /// <summary>
+    /// Executes the insert operation.
+    /// </summary>
+    /// <param name="aggregateEvent">The aggregate event used by the operation.</param>
+    /// <param name="immutableAggregateTypeName">The immutable aggregate type name used by the operation.</param>
+    /// <param name="immutableEventTypeName">The immutable event type name used by the operation.</param>
+    /// <param name="data">The data used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task InsertAsync(
         IAggregateEvent aggregateEvent,
         string immutableAggregateTypeName,
@@ -47,6 +65,13 @@ public class AggregateEventRepository(
         await base.InsertAsync(dto).AnyContext();
     }
 
+    /// <summary>
+    /// Gets events.
+    /// </summary>
+    /// <param name="aggregateId">The aggregate id used by the operation.</param>
+    /// <param name="immutableAggregateTypeName">The immutable aggregate type name used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<EventStoreAggregateEvent[]> GetEventsAsync(
         Guid aggregateId,
         string immutableAggregateTypeName,
@@ -64,6 +89,11 @@ public class AggregateEventRepository(
         return result.ToArray();
     }
 
+    /// <summary>
+    /// Gets aggregate ids.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Guid[]> GetAggregateIdsAsync(CancellationToken cancellationToken)
     {
         var list = await this.FindAllAsync(null, cancellationToken).AnyContext();
@@ -71,6 +101,12 @@ public class AggregateEventRepository(
         return list.Select(s => s.AggregateId).Distinct().ToArray();
     }
 
+    /// <summary>
+    /// Gets aggregate ids.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Guid[]> GetAggregateIdsAsync<TAggregate>(CancellationToken cancellationToken)
         where TAggregate : EventSourcingAggregateRoot
     {
@@ -81,6 +117,11 @@ public class AggregateEventRepository(
         return list.Select(s => s.AggregateId).Distinct().ToArray();
     }
 
+    /// <summary>
+    /// Executes the execute scoped operation.
+    /// </summary>
+    /// <param name="operation">The operation used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteScopedAsync(Func<Task> operation)
     {
         //tag::ExecuteScopedAsync[]
@@ -93,6 +134,13 @@ public class AggregateEventRepository(
         //end::ExecuteScopedAsync[]
     }
 
+    /// <summary>
+    /// Gets max version.
+    /// </summary>
+    /// <param name="aggregateId">The aggregate id used by the operation.</param>
+    /// <param name="immutableAggregateName">The immutable aggregate name used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<int> GetMaxVersionAsync(
         Guid aggregateId,
         string immutableAggregateName,

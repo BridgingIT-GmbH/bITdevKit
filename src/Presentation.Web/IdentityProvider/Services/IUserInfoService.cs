@@ -5,7 +5,15 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+/// <summary>
+/// Defines operations for i user info service.
+/// </summary>
 public interface IUserInfoService
 {
+    /// <summary>
+    /// Gets user info.
+    /// </summary>
+    /// <param name="accessToken">The access token used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     UserInfoResponse GetUserInfo(string accessToken);
 }

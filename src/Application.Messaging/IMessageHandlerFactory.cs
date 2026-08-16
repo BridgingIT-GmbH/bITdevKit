@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Defines operations for i message handler factory.
+/// </summary>
 public interface IMessageHandlerFactory
 {
     /// <summary>

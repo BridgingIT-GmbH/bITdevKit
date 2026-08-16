@@ -5,7 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Defines operations for i outbox message queue.
+/// </summary>
 public interface IOutboxMessageQueue
 {
+    /// <summary>
+    /// Executes the enqueue operation.
+    /// </summary>
+    /// <param name="messageId">The message id used by the operation.</param>
     void Enqueue(string messageId);
 }

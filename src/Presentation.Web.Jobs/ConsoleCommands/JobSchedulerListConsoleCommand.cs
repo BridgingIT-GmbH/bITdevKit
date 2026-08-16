@@ -8,32 +8,60 @@ namespace BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Application.Jobs;
 using Spectre.Console;
 
+/// <summary>
+/// Represents job scheduler list console command.
+/// </summary>
 public class JobSchedulerListConsoleCommand : JobSchedulerConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     [ConsoleCommandOption("name", Alias = "n", Description = "Filter by job name")]
     public string JobName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the group.
+    /// </summary>
     [ConsoleCommandOption("group", Alias = "g", Description = "Filter by group")]
     public string Group { get; set; }
 
+    /// <summary>
+    /// Gets or sets the module.
+    /// </summary>
     [ConsoleCommandOption("module", Alias = "m", Description = "Filter by module")]
     public string Module { get; set; }
 
+    /// <summary>
+    /// Gets or sets the enabled.
+    /// </summary>
     [ConsoleCommandOption("enabled", Description = "Show enabled jobs only")]
     public bool Enabled { get; set; }
 
+    /// <summary>
+    /// Gets or sets the disabled.
+    /// </summary>
     [ConsoleCommandOption("disabled", Description = "Show disabled jobs only")]
     public bool Disabled { get; set; }
 
+    /// <summary>
+    /// Gets or sets the paused.
+    /// </summary>
     [ConsoleCommandOption("paused", Description = "Show paused jobs only")]
     public bool Paused { get; set; }
 
+    /// <summary>
+    /// Gets or sets the take.
+    /// </summary>
     [ConsoleCommandOption("take", Alias = "t", Description = "Max items to show", Default = 50)]
     public int Take { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulerListConsoleCommand</c> class.
+    /// </summary>
     public JobSchedulerListConsoleCommand()
         : base("list", "List registered jobs") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (this.Enabled && this.Disabled)

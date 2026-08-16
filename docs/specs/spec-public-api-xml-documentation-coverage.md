@@ -1,6 +1,6 @@
 ---
 created: 2026-08-14
-status: draft
+status: implemented
 ---
 
 # Specification: Public API XML Documentation Coverage

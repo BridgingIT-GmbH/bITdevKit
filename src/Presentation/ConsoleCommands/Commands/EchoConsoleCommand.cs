@@ -7,11 +7,26 @@ namespace BridgingIT.DevKit.Presentation;
 
 using Spectre.Console;
 
+/// <summary>
+/// Represents echo console command.
+/// </summary>
 public class EchoConsoleCommand : ConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the text.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Text to echo", Required = true)] public string Text { get; set; }
+    /// <summary>
+    /// Gets or sets the upper.
+    /// </summary>
     [ConsoleCommandOption("upper", Alias = "u", Description = "Uppercase output")] public bool Upper { get; set; }
+    /// <summary>
+    /// Gets or sets the repeat.
+    /// </summary>
     [ConsoleCommandOption("repeat", Alias = "r", Description = "Repeat count", Default = 1)] public int Repeat { get; set; }
+    /// <summary>
+    /// Gets or sets the color.
+    /// </summary>
     [ConsoleCommandOption("color", Alias = "c", Description = "Spectre color (e.g. green, yellow)")] public string Color { get; set; }
 
     /// <summary>

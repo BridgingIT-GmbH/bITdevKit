@@ -13,6 +13,9 @@ using System.Threading;
 using BridgingIT.DevKit.Common;
 using Humanizer;
 
+/// <summary>
+/// Represents file storage provider tree extensions.
+/// </summary>
 public static class FileStorageProviderTreeExtensions
 {
     [DebuggerDisplay("Path={Path}")]
@@ -25,6 +28,16 @@ public static class FileStorageProviderTreeExtensions
         public int FileCount { get; set; }
     }
 
+    /// <summary>
+    /// Executes the render directory operation.
+    /// </summary>
+    /// <param name="provider">The provider used by the operation.</param>
+    /// <param name="renderer">The renderer used by the operation.</param>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="skipFiles">The skip files used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async Task<Result<string>> RenderDirectoryAsync(
         this IFileStorageProvider provider,
         IFileStorageTreeRenderer renderer = null,
@@ -198,30 +211,85 @@ public static class FileStorageProviderTreeExtensions
     }
 }
 
+/// <summary>
+/// Represents tree node.
+/// </summary>
 public class TreeNode
 {
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
     public string Name { get; set; }
+    /// <summary>
+    /// Gets or sets the is directory.
+    /// </summary>
     public bool IsDirectory { get; set; }
+    /// <summary>
+    /// Gets or sets the size.
+    /// </summary>
     public long Size { get; set; }
+    /// <summary>
+    /// Gets or sets the last modified.
+    /// </summary>
     public DateTimeOffset? LastModified { get; set; }
+    /// <summary>
+    /// Gets or sets the file count.
+    /// </summary>
     public int FileCount { get; set; }
+    /// <summary>
+    /// Gets or sets the total size.
+    /// </summary>
     public long TotalSize { get; set; }
+    /// <summary>
+    /// Gets or sets the children.
+    /// </summary>
     public List<TreeNode> Children { get; set; } = [];
+    /// <summary>
+    /// Gets or sets the is last.
+    /// </summary>
     public bool IsLast { get; set; }
+    /// <summary>
+    /// Gets or sets the prefix.
+    /// </summary>
     public string Prefix { get; set; } // For tracking indentation levels
 }
 
+/// <summary>
+/// Defines operations for i file storage tree renderer.
+/// </summary>
 public interface IFileStorageTreeRenderer
 {
+    /// <summary>
+    /// Executes the render node operation.
+    /// </summary>
+    /// <param name="node">The node used by the operation.</param>
+    /// <param name="level">The level used by the operation.</param>
     void RenderNode(TreeNode node, int level);
+    /// <summary>
+    /// Executes the render totals operation.
+    /// </summary>
+    /// <param name="totalFiles">The total files used by the operation.</param>
+    /// <param name="totalSize">The total size used by the operation.</param>
     void RenderTotals(int totalFiles, long totalSize);
+    /// <summary>
+    /// Executes the to string operation.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     string ToString();
 }
 
+/// <summary>
+/// Represents text file storage tree renderer.
+/// </summary>
 public class TextFileStorageTreeRenderer : IFileStorageTreeRenderer
 {
     private readonly StringBuilder builder = new();
 
+    /// <summary>
+    /// Executes the render node operation.
+    /// </summary>
+    /// <param name="node">The node used by the operation.</param>
+    /// <param name="level">The level used by the operation.</param>
     public void RenderNode(TreeNode node, int level)
     {
         var prefix = node.Prefix + (node.IsLast ? "└── " : "├── ");
@@ -236,12 +304,18 @@ public class TextFileStorageTreeRenderer : IFileStorageTreeRenderer
         }
     }
 
+    /// <summary>
+    /// Executes the render totals operation.
+    /// </summary>
+    /// <param name="totalFiles">The total files used by the operation.</param>
+    /// <param name="totalSize">The total size used by the operation.</param>
     public void RenderTotals(int totalFiles, long totalSize)
     {
         var line = $"Total: {totalFiles} files, {FormatSize(totalSize)}";
         this.builder.AppendLine(line);
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.builder.ToString();
@@ -253,15 +327,26 @@ public class TextFileStorageTreeRenderer : IFileStorageTreeRenderer
     }
 }
 
+/// <summary>
+/// Represents html file storage tree renderer.
+/// </summary>
 public class HtmlFileStorageTreeRenderer : IFileStorageTreeRenderer
 {
     private readonly StringBuilder builder = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <c>HtmlFileStorageTreeRenderer</c> class.
+    /// </summary>
     public HtmlFileStorageTreeRenderer()
     {
         this.builder.AppendLine("<ul>");
     }
 
+    /// <summary>
+    /// Executes the render node operation.
+    /// </summary>
+    /// <param name="node">The node used by the operation.</param>
+    /// <param name="level">The level used by the operation.</param>
     public void RenderNode(TreeNode node, int level)
     {
         var className = node.IsDirectory ? "directory" : "file";
@@ -275,6 +360,11 @@ public class HtmlFileStorageTreeRenderer : IFileStorageTreeRenderer
         }
     }
 
+    /// <summary>
+    /// Executes the render totals operation.
+    /// </summary>
+    /// <param name="totalFiles">The total files used by the operation.</param>
+    /// <param name="totalSize">The total size used by the operation.</param>
     public void RenderTotals(int totalFiles, long totalSize)
     {
         this.builder.AppendLine($"</ul>");
@@ -282,6 +372,7 @@ public class HtmlFileStorageTreeRenderer : IFileStorageTreeRenderer
         this.builder.AppendLine("</ul>");
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.builder.ToString();

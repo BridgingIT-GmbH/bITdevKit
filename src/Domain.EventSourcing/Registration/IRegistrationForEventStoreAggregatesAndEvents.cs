@@ -7,8 +7,18 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Registration;
 
 using System.Reflection;
 
+/// <summary>
+/// Defines operations for i registration for event store aggregates and events.
+/// </summary>
 public interface IRegistrationForEventStoreAggregatesAndEvents
 {
+    /// <summary>
+    /// Executes the register aggregates and events operation.
+    /// </summary>
     void RegisterAggregatesAndEvents();
+    /// <summary>
+    /// Executes the register aggregates and events operation.
+    /// </summary>
+    /// <param name="assemblies">The assemblies used by the operation.</param>
     void RegisterAggregatesAndEvents(Assembly[] assemblies);
 }

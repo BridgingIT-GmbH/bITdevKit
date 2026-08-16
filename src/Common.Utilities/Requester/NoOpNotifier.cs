@@ -21,6 +21,10 @@ public class NoOpNotifier(ILoggerFactory loggerFactory = null) : INotifier
 {
     private readonly ILogger<NoOpNotifier> logger = loggerFactory?.CreateLogger<NoOpNotifier>() ?? NullLogger<NoOpNotifier>.Instance;
 
+    /// <summary>
+    ///     Attempts to get registration information from the no-operation notifier.
+    /// </summary>
+    /// <exception cref="NotImplementedException">Registration inspection is not implemented by this fallback notifier.</exception>
     public RegistrationInformation GetRegistrationInformation()
     {
         throw new NotImplementedException();

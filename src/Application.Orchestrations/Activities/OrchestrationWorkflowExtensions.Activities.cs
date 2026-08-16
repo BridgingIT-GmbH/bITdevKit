@@ -13,6 +13,15 @@ using Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static partial class OrchestrationWorkflowExtensions
 {
+    /// <summary>
+    /// Represents query activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TRequest">The request type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> QueryActivity<TData, TRequest, TValue>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationRequestActivityBuilder<TData, TRequest, TValue>> configure,
@@ -27,6 +36,15 @@ public static partial class OrchestrationWorkflowExtensions
             $"QueryActivity<{typeof(TRequest).Name}>");
     }
 
+    /// <summary>
+    /// Represents command activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TRequest">The request type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> CommandActivity<TData, TRequest, TValue>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationRequestActivityBuilder<TData, TRequest, TValue>> configure,
@@ -41,6 +59,15 @@ public static partial class OrchestrationWorkflowExtensions
             $"CommandActivity<{typeof(TRequest).Name}>");
     }
 
+    /// <summary>
+    /// Represents send request activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TRequest">The request type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> SendRequestActivity<TData, TRequest, TValue>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationRequestActivityBuilder<TData, TRequest, TValue>> configure,
@@ -55,6 +82,14 @@ public static partial class OrchestrationWorkflowExtensions
             $"SendRequestActivity<{typeof(TRequest).Name}>");
     }
 
+    /// <summary>
+    /// Represents publish notification activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TNotification">The notification type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> PublishNotificationActivity<TData, TNotification>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationNotificationActivityBuilder<TData, TNotification>> configure,
@@ -108,6 +143,14 @@ public static partial class OrchestrationWorkflowExtensions
             activityName);
     }
 
+    /// <summary>
+    /// Represents publish message activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> PublishMessageActivity<TData, TMessage>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationMessageActivityBuilder<TData, TMessage>> configure,
@@ -122,6 +165,14 @@ public static partial class OrchestrationWorkflowExtensions
             $"PublishMessageActivity<{typeof(TMessage).Name}>");
     }
 
+    /// <summary>
+    /// Represents send queue message activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> SendQueueMessageActivity<TData, TMessage>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationQueueActivityBuilder<TData, TMessage>> configure,
@@ -136,6 +187,14 @@ public static partial class OrchestrationWorkflowExtensions
             $"SendQueueMessageActivity<{typeof(TMessage).Name}>");
     }
 
+    /// <summary>
+    /// Represents execute pipeline activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TPipelineContext">The pipeline context type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> ExecutePipelineActivity<TData, TPipelineContext>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationPipelineActivityBuilder<TData, TPipelineContext>> configure,
@@ -152,6 +211,15 @@ public static partial class OrchestrationWorkflowExtensions
             (factory, settings) => factory.Create<TPipelineContext>(settings.PipelineName));
     }
 
+    /// <summary>
+    /// Represents execute pipeline activity.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TPipelineDefinition">The pipeline definition type.</typeparam>
+    /// <typeparam name="TPipelineContext">The pipeline context type.</typeparam>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="name">The name of the value.</param>
     public static IOrchestrationStateBuilder<TData> ExecutePipelineActivity<TData, TPipelineDefinition, TPipelineContext>(
         this IOrchestrationStateBuilder<TData> builder,
         Action<IOrchestrationPipelineActivityBuilder<TData, TPipelineContext>> configure = null,

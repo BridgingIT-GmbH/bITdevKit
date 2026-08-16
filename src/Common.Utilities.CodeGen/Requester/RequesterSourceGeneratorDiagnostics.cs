@@ -23,6 +23,7 @@ public static class RequesterSourceGeneratorDiagnostics
         EachValidationRequiresCollection,
         ConflictingValidationAttributes);
 
+    /// <summary>Gets the diagnostic reported when a generated request is not partial.</summary>
     public static readonly DiagnosticDescriptor RequestMustBePartial = new(
         "RQGEN001",
         "Requester request must be partial",
@@ -32,6 +33,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Source-generated commands and queries must be partial so the generator can emit additional members.");
 
+    /// <summary>Gets the diagnostic reported when a request is both a command and a query.</summary>
     public static readonly DiagnosticDescriptor CommandAndQueryConflict = new(
         "RQGEN002",
         "Request cannot be both command and query",
@@ -41,6 +43,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Choose either [Command] or [Query] on a single source-generated request type.");
 
+    /// <summary>Gets the diagnostic reported for an invalid request response type.</summary>
     public static readonly DiagnosticDescriptor InvalidResponseType = new(
         "RQGEN003",
         "Invalid request response type",
@@ -50,6 +53,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Commands and queries may omit the explicit response type and infer it from the handle method. When specified explicitly, the response type must be valid.");
 
+    /// <summary>Gets the diagnostic reported when a query returns Unit.</summary>
     public static readonly DiagnosticDescriptor QueryUnitNotAllowed = new(
         "RQGEN004",
         "Queries cannot return Unit",
@@ -59,6 +63,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Queries must return a value and cannot use Unit.");
 
+    /// <summary>Gets the diagnostic reported for an incompatible request base type.</summary>
     public static readonly DiagnosticDescriptor RequestBaseMismatch = new(
         "RQGEN005",
         "Request base type is incompatible with the generated response",
@@ -68,6 +73,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "The generator can add RequestBase<TResponse> automatically, but it cannot override an existing incompatible base type.");
 
+    /// <summary>Gets the diagnostic reported for a nested generated request.</summary>
     public static readonly DiagnosticDescriptor NestedRequestsNotSupported = new(
         "RQGEN006",
         "Nested request types are not supported",
@@ -77,6 +83,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Move the source-generated request to a top-level type for v1.");
 
+    /// <summary>Gets the diagnostic reported for a generic generated request.</summary>
     public static readonly DiagnosticDescriptor GenericRequestsNotSupported = new(
         "RQGEN007",
         "Generic request types are not supported",
@@ -86,6 +93,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Source-generated Requester requests are intentionally limited to non-generic types in v1.");
 
+    /// <summary>Gets the diagnostic reported when a request has no handle method.</summary>
     public static readonly DiagnosticDescriptor MissingHandleMethod = new(
         "RQGEN008",
         "Missing handle method",
@@ -95,6 +103,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "A single developer-authored [Handle] method is required for each source-generated request.");
 
+    /// <summary>Gets the diagnostic reported when a request declares multiple handle methods.</summary>
     public static readonly DiagnosticDescriptor DuplicateHandleMethod = new(
         "RQGEN009",
         "Duplicate handle methods",
@@ -104,6 +113,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Only one [Handle] method is supported per source-generated request.");
 
+    /// <summary>Gets the diagnostic reported when a request handle method is static.</summary>
     public static readonly DiagnosticDescriptor HandleMethodMustBeInstance = new(
         "RQGEN010",
         "Handle method must be an instance method",
@@ -113,6 +123,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "The v1 Requester generator only supports instance [Handle] methods so request members can be accessed directly.");
 
+    /// <summary>Gets the diagnostic reported when a request handle method is generic.</summary>
     public static readonly DiagnosticDescriptor HandleMethodMustNotBeGeneric = new(
         "RQGEN011",
         "Generic handle methods are not supported",
@@ -122,6 +133,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "The v1 Requester generator only supports non-generic [Handle] methods.");
 
+    /// <summary>Gets the diagnostic reported when a request handle method returns asynchronous void.</summary>
     public static readonly DiagnosticDescriptor AsyncVoidHandleNotAllowed = new(
         "RQGEN012",
         "async void handle methods are not supported",
@@ -131,6 +143,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Handle methods must return Result<TResponse> or Task<Result<TResponse>>.");
 
+    /// <summary>Gets the diagnostic reported for an unsupported request handle return type.</summary>
     public static readonly DiagnosticDescriptor InvalidHandleReturnType = new(
         "RQGEN013",
         "Unsupported handle return type",
@@ -140,6 +153,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Only synchronous or asynchronous Result<TResponse> returns are supported.");
 
+    /// <summary>Gets the diagnostic reported for unsupported request handle parameters.</summary>
     public static readonly DiagnosticDescriptor InvalidHandleParameters = new(
         "RQGEN014",
         "Unsupported handle parameters",
@@ -149,6 +163,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Handle methods must not declare the request type as a parameter, may declare optional SendOptions and CancellationToken parameters, and any remaining parameters are resolved from DI.");
 
+    /// <summary>Gets the diagnostic reported when a request declares multiple validation methods.</summary>
     public static readonly DiagnosticDescriptor DuplicateValidateMethod = new(
         "RQGEN015",
         "Duplicate validate methods",
@@ -158,6 +173,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Only one [Validate] method is supported per source-generated request.");
 
+    /// <summary>Gets the diagnostic reported when a request validation method is not static.</summary>
     public static readonly DiagnosticDescriptor ValidateMethodMustBeStatic = new(
         "RQGEN016",
         "Validate method must be static",
@@ -167,6 +183,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "The v1 Requester generator only supports static [Validate] methods.");
 
+    /// <summary>Gets the diagnostic reported for an invalid request validation return type.</summary>
     public static readonly DiagnosticDescriptor InvalidValidateReturnType = new(
         "RQGEN017",
         "Invalid validate return type",
@@ -176,6 +193,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Validate methods must configure rules on an InlineValidator<TRequest> and not return a value.");
 
+    /// <summary>Gets the diagnostic reported for an invalid request validation parameter.</summary>
     public static readonly DiagnosticDescriptor InvalidValidateParameter = new(
         "RQGEN018",
         "Invalid validate parameter type",
@@ -185,6 +203,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "The v1 Requester generator only supports void Validate(InlineValidator<TRequest> validator).");
 
+    /// <summary>Gets the diagnostic reported when generated request members collide with authored members.</summary>
     public static readonly DiagnosticDescriptor GeneratedNameCollision = new(
         "RQGEN019",
         "Generated member name collision",
@@ -194,6 +213,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Rename the authored member or use a different request type name so the generator can emit its bridge, helper, or handler members.");
 
+    /// <summary>Gets the diagnostic reported when request generation targets an unsupported type.</summary>
     public static readonly DiagnosticDescriptor InvalidAttributedType = new(
         "RQGEN020",
         "Invalid source-generated request type",
@@ -203,6 +223,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Source-generated Requester requests must be concrete classes.");
 
+    /// <summary>Gets the diagnostic reported when an explicit response type differs from the handle return type.</summary>
     public static readonly DiagnosticDescriptor ExplicitResponseTypeMismatch = new(
         "RQGEN021",
         "Explicit response type does not match handle return type",
@@ -212,6 +233,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "When [Command(typeof(TResponse))] or [Query(typeof(TResponse))] specifies an explicit response type, it must match the Result<TResponse> returned by the handle method.");
 
+    /// <summary>Gets the diagnostic reported for unsupported request validation-attribute usage.</summary>
     public static readonly DiagnosticDescriptor UnsupportedValidationAttributeUsage = new(
         "RQGEN022",
         "Validation attribute usage is not supported",
@@ -221,6 +243,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Simple property validation attributes only support a conservative set of property and collection-element validation scenarios.");
 
+    /// <summary>Gets the diagnostic reported for invalid request validation-attribute arguments.</summary>
     public static readonly DiagnosticDescriptor InvalidValidationAttributeArguments = new(
         "RQGEN023",
         "Validation attribute arguments are invalid",
@@ -230,6 +253,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "Validation attributes must provide the argument shape expected by the generated FluentValidation mapping.");
 
+    /// <summary>Gets the diagnostic reported when request element validation targets a non-collection property.</summary>
     public static readonly DiagnosticDescriptor EachValidationRequiresCollection = new(
         "RQGEN024",
         "Element validation requires a collection property",
@@ -239,6 +263,7 @@ public static class RequesterSourceGeneratorDiagnostics
         true,
         description: "RuleForEach-based validation attributes can only be applied to collection properties.");
 
+    /// <summary>Gets the diagnostic reported for conflicting request validation attributes.</summary>
     public static readonly DiagnosticDescriptor ConflictingValidationAttributes = new(
         "RQGEN025",
         "Validation attributes conflict",

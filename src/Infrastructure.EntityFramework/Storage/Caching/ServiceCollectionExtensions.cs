@@ -13,6 +13,14 @@ using Microsoft.Extensions.Logging;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with entity framework document store provider operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CachingBuilderContext WithEntityFrameworkDocumentStoreProvider<TContext>(
         this CachingBuilderContext context,
         DocumentStoreCacheProviderConfiguration configuration = null,

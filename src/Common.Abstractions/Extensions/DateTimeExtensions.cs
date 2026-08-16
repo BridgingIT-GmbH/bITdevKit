@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Globalization;
 
+/// <summary>
+/// Provides deterministic parsing, calendar arithmetic, boundary alignment, and epoch conversion for <see cref="DateTime"/> values.
+/// </summary>
 public static class DateTimeExtensions
 {
     /// <summary>
@@ -194,6 +197,11 @@ public static class DateTimeExtensions
         return source.Kind == DateTimeKind.Unspecified;
     }
 
+    /// <summary>
+    /// Parses a date string or Unix epoch value using the default policy that rejects ambiguous slash dates.
+    /// </summary>
+    /// <param name="source">The date or epoch text to parse.</param>
+    /// <returns>The parsed UTC value, or <see langword="null"/> when parsing fails.</returns>
     [DebuggerStepThrough]
     public static DateTime? ParseDateOrEpoch(this string source)
     {
@@ -262,6 +270,12 @@ public static class DateTimeExtensions
             : throw new ArgumentException($"Invalid date format: {source}. Use a supported date format or Unix epoch.", nameof(source));
     }
 
+    /// <summary>
+    /// Attempts to parse a date string or Unix epoch value using the default policy that rejects ambiguous slash dates.
+    /// </summary>
+    /// <param name="source">The date or epoch text to parse.</param>
+    /// <param name="result">The parsed UTC value when successful; otherwise, the default value.</param>
+    /// <returns><see langword="true"/> when parsing succeeds.</returns>
     [DebuggerStepThrough]
     public static bool TryParseDateOrEpoch(this string source, out DateTime result)
     {
@@ -392,6 +406,14 @@ public static class DateTimeExtensions
             second is >= 1 and <= 12;
     }
 
+    /// <summary>
+    /// Adds signed calendar days, seven-day weeks, months, or years while preserving the time and <see cref="DateTime.Kind"/>.
+    /// </summary>
+    /// <param name="date">The value to adjust.</param>
+    /// <param name="unit">The calendar unit to add.</param>
+    /// <param name="amount">The signed number of units.</param>
+    /// <returns>The adjusted value, clamping the day when the target month is shorter.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="unit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateTime Add(this DateTime date, DateUnit unit, int amount)
     {
@@ -442,6 +464,14 @@ public static class DateTimeExtensions
         return new DateTime(targetYear, targetMonth, targetDay, date.Hour, date.Minute, date.Second, date.Millisecond, date.Kind);
     }
 
+    /// <summary>
+    /// Determines whether a date-time lies between two boundaries.
+    /// </summary>
+    /// <param name="date">The value to evaluate.</param>
+    /// <param name="start">The lower boundary.</param>
+    /// <param name="end">The upper boundary.</param>
+    /// <param name="inclusive">Whether equality with either boundary counts as in range.</param>
+    /// <returns><see langword="true"/> when the selected boundary comparison succeeds.</returns>
     [DebuggerStepThrough]
     public static bool IsInRange(this DateTime date, DateTime start, DateTime end, bool inclusive = true)
     {
@@ -517,6 +547,9 @@ public static class DateTimeExtensions
         return date.IsInRelativeRange(GetNowForKind(date.Kind, timeProvider), unit, amount, direction, inclusive);
     }
 
+    /// <summary>Gets the invariant-culture week number using Monday as the first day and the first-day calendar rule.</summary>
+    /// <param name="date">The value whose week number should be calculated.</param>
+    /// <returns>The calendar week number.</returns>
     [DebuggerStepThrough]
     public static int GetWeekOfYear(this DateTime date)
     {
@@ -526,12 +559,20 @@ public static class DateTimeExtensions
         return calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
     }
 
+    /// <summary>Determines whether the value belongs to a leap year in the Gregorian calendar.</summary>
+    /// <param name="date">The value whose year should be evaluated.</param>
+    /// <returns><see langword="true"/> when the year is a leap year.</returns>
     [DebuggerStepThrough]
     public static bool IsLeapYear(this DateTime date)
     {
         return DateTime.IsLeapYear(date.Year);
     }
 
+    /// <summary>
+    /// Calculates the signed whole-day difference from the current time of the same <see cref="DateTime.Kind"/> to a target value.
+    /// </summary>
+    /// <param name="date">The target value.</param>
+    /// <returns>The truncated whole-day difference.</returns>
     [DebuggerStepThrough]
     public static int DaysUntil(this DateTime date)
     {
@@ -579,12 +620,18 @@ public static class DateTimeExtensions
         return date.DaysUntil(GetNowForKind(date.Kind, timeProvider));
     }
 
+    /// <summary>Converts a date-time to Unix epoch seconds using its kind-aware offset conversion.</summary>
+    /// <param name="date">The value to convert.</param>
+    /// <returns>The number of seconds since the Unix epoch.</returns>
     [DebuggerStepThrough]
     public static long ToUnixTimeSeconds(this DateTime date)
     {
         return date.ToDateTimeOffset().ToUnixTimeSeconds();
     }
 
+    /// <summary>Converts a date-time to Unix epoch milliseconds using its kind-aware offset conversion.</summary>
+    /// <param name="date">The value to convert.</param>
+    /// <returns>The number of milliseconds since the Unix epoch.</returns>
     [DebuggerStepThrough]
     public static long ToUnixTimeMilliseconds(this DateTime date)
     {
@@ -663,6 +710,12 @@ public static class DateTimeExtensions
         return DateTimeOffset.FromUnixTimeMilliseconds(source);
     }
 
+    /// <summary>
+    /// Converts a date-time to an offset value while preserving its represented instant when the kind is UTC or local.
+    /// </summary>
+    /// <param name="date">The value to convert.</param>
+    /// <param name="offset">The requested offset, or the natural UTC/local offset when omitted.</param>
+    /// <returns>The corresponding offset value; unspecified values are interpreted at the supplied offset or UTC.</returns>
     [DebuggerStepThrough]
     public static DateTimeOffset ToDateTimeOffset(this DateTime date, TimeSpan? offset = null)
     {
@@ -676,6 +729,10 @@ public static class DateTimeExtensions
         };
     }
 
+    /// <summary>Calculates the signed duration from one date-time to another.</summary>
+    /// <param name="date">The starting value.</param>
+    /// <param name="target">The ending value.</param>
+    /// <returns><paramref name="target"/> minus <paramref name="date"/>.</returns>
     [DebuggerStepThrough]
     public static TimeSpan TimeSpanTo(this DateTime date, DateTime target)
     {
@@ -704,6 +761,11 @@ public static class DateTimeExtensions
         return TimeOnly.FromDateTime(source);
     }
 
+    /// <summary>Floors a date-time to the start of its containing day, Monday-based week, month, or year.</summary>
+    /// <param name="dateTime">The value to floor.</param>
+    /// <param name="dateUnit">The calendar boundary to use.</param>
+    /// <returns>The start of the containing calendar unit with the original kind.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="dateUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateTime FloorTo(this DateTime dateTime, DateUnit dateUnit)
     {
@@ -722,6 +784,11 @@ public static class DateTimeExtensions
         }
     }
 
+    /// <summary>Floors a date-time to the start of its containing millisecond, second, minute, hour, or day.</summary>
+    /// <param name="dateTime">The value to floor.</param>
+    /// <param name="timeUnit">The clock boundary to use.</param>
+    /// <returns>The aligned value with the original kind.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="timeUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateTime FloorTo(this DateTime dateTime, TimeUnit timeUnit)
     {
@@ -758,6 +825,11 @@ public static class DateTimeExtensions
         return new DateTime(dateTime.Ticks - (dateTime.Ticks % interval.Ticks), dateTime.Kind);
     }
 
+    /// <summary>Moves a date-time to the next calendar boundary unless it is already aligned.</summary>
+    /// <param name="dateTime">The value to ceiling.</param>
+    /// <param name="dateUnit">The day, Monday-based week, month, or year boundary to use.</param>
+    /// <returns>The source when aligned; otherwise, the next calendar boundary.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="dateUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateTime CeilingTo(this DateTime dateTime, DateUnit dateUnit)
     {
@@ -777,6 +849,11 @@ public static class DateTimeExtensions
         };
     }
 
+    /// <summary>Moves a date-time to the next clock-unit boundary unless it is already aligned.</summary>
+    /// <param name="dateTime">The value to ceiling.</param>
+    /// <param name="timeUnit">The millisecond, second, minute, hour, or day boundary to use.</param>
+    /// <returns>The source when aligned; otherwise, the next clock boundary.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="timeUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateTime CeilingTo(this DateTime dateTime, TimeUnit timeUnit)
     {
@@ -814,12 +891,21 @@ public static class DateTimeExtensions
         return floor == dateTime ? dateTime : floor.AddTicks(interval.Ticks);
     }
 
+    /// <summary>Aligns a date-time to the start of its containing calendar unit.</summary>
+    /// <param name="dateTime">The value to align.</param>
+    /// <param name="dateUnit">The calendar unit whose lower boundary should be returned.</param>
+    /// <returns>The same value as <see cref="FloorTo(DateTime, DateUnit)"/>.</returns>
     [DebuggerStepThrough]
     public static DateTime RoundToNearest(this DateTime dateTime, DateUnit dateUnit)
     {
         return dateTime.FloorTo(dateUnit);
     }
 
+    /// <summary>Rounds a date-time to the nearest millisecond, second, minute, hour, or day using half-up tick arithmetic.</summary>
+    /// <param name="dateTime">The value to round.</param>
+    /// <param name="timeUnit">The clock unit used as the rounding interval.</param>
+    /// <returns>The rounded value with the original kind.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="timeUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateTime RoundToNearest(this DateTime dateTime, TimeUnit timeUnit)
     {
@@ -854,6 +940,14 @@ public static class DateTimeExtensions
         return new DateTime(roundedTicks, dateTime.Kind);
     }
 
+    /// <summary>
+    /// Adds or subtracts working days while skipping configured holidays and non-working weekdays.
+    /// </summary>
+    /// <param name="dateTime">The starting value whose time and kind are preserved.</param>
+    /// <param name="days">The signed number of working days to move.</param>
+    /// <param name="holidays">Dates to skip, or <see langword="null"/> for none.</param>
+    /// <param name="nonWorkingDays">Weekdays to skip; Saturday and Sunday are used when omitted.</param>
+    /// <returns>The value reached after the requested number of working days.</returns>
     [DebuggerStepThrough]
     public static DateTime AddBusinessDays(this DateTime dateTime, int days, DateTime[] holidays, params DayOfWeek[] nonWorkingDays)
     {

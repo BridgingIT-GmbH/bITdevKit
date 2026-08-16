@@ -10,14 +10,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using System.Collections.Generic;
 
+/// <summary>
+/// Represents requester info console command.
+/// </summary>
 public class RequesterInfoConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>RequesterInfoConsoleCommand</c> class.
+    /// </summary>
     public RequesterInfoConsoleCommand() : base("list", "List registrations") { }
 
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "requester";
 
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["req"];
 
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var requester = services.GetRequiredService<IRequester>();

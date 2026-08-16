@@ -9,8 +9,15 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
+/// <summary>
+/// Provides runtime type classification, readable type names, hierarchy-safe member lookup, and interface checks.
+/// </summary>
 public static class TypeExtensions
 {
+    /// <summary>Determines whether an object's runtime type exactly equals a target type.</summary>
+    /// <param name="source">The object to inspect.</param>
+    /// <param name="targetType">The exact runtime type to match.</param>
+    /// <returns><see langword="true"/> for an exact match; otherwise, <see langword="false"/>, including for null input.</returns>
     [DebuggerStepThrough]
     public static bool IsOfType(this object source, Type targetType)
     {
@@ -22,6 +29,10 @@ public static class TypeExtensions
         return source.GetType() == targetType;
     }
 
+    /// <summary>Determines whether a non-null object's runtime type differs from a target type.</summary>
+    /// <param name="source">The object to inspect.</param>
+    /// <param name="targetType">The exact runtime type used for comparison.</param>
+    /// <returns><see langword="true"/> when the non-null object's type differs; null input returns <see langword="false"/>.</returns>
     [DebuggerStepThrough]
     public static bool IsNotOfType(this object source, Type targetType)
     {
@@ -33,6 +44,9 @@ public static class TypeExtensions
         return source.GetType() != targetType;
     }
 
+    /// <summary>Determines whether a type is a constructed <see cref="Nullable{T}"/> value type.</summary>
+    /// <param name="source">The type to inspect.</param>
+    /// <returns><see langword="true"/> only for a constructed nullable value type.</returns>
     public static bool IsNullableType(this Type source)
     {
         if (source is null)
@@ -120,6 +134,10 @@ public static class TypeExtensions
         return !source.IsSimpleType() && (source.IsCollectionType() || (source.IsClass && source != typeof(object)));
     }
 
+    /// <summary>Formats a type name without its namespace and recursively expands generic arguments.</summary>
+    /// <param name="source">The type to format.</param>
+    /// <param name="useAngleBrackets">Whether generic arguments use angle brackets instead of square brackets.</param>
+    /// <returns>The readable type name, or an empty string for null input.</returns>
     [DebuggerStepThrough]
     public static string PrettyName(this Type source, bool useAngleBrackets = true)
     {
@@ -141,6 +159,10 @@ public static class TypeExtensions
         return source.Name;
     }
 
+    /// <summary>Formats a namespace-qualified type name and recursively expands generic arguments.</summary>
+    /// <param name="source">The type to format.</param>
+    /// <param name="useAngleBrackets">Whether generic arguments use angle brackets instead of square brackets.</param>
+    /// <returns>The readable fully qualified name, or an empty string for null input.</returns>
     [DebuggerStepThrough]
     public static string FullPrettyName(this Type source, bool useAngleBrackets = true)
     {
@@ -162,10 +184,13 @@ public static class TypeExtensions
         return source.FullName;
     }
 
+    /// <summary>Removes assembly version, culture, and public-key-token components from an assembly-qualified type name.</summary>
+    /// <param name="source">The type whose assembly-qualified name should be shortened.</param>
+    /// <returns>The shortened name, or an empty string when no assembly-qualified name is available.</returns>
     [DebuggerStepThrough]
     public static string AssemblyQualifiedNameShort(this Type source)
     {
-        var aqn = source.AssemblyQualifiedName; /// Remove version, culture, and public key token info but preserve structure
+        var aqn = source.AssemblyQualifiedName; // Remove version, culture, and public key token info but preserve structure
         if (string.IsNullOrEmpty(aqn))
         {
             return string.Empty;
@@ -184,6 +209,9 @@ public static class TypeExtensions
     //    return $"{assemblyQualifiedName.Split(',')[0]}, {assemblyQualifiedName.Split(',')[1]}".Replace("  ", " ");
     //}
 
+    /// <summary>Determines whether a non-array type represents a built-in integral, floating-point, or decimal number.</summary>
+    /// <param name="type">The type to inspect.</param>
+    /// <returns><see langword="true"/> for a supported numeric type.</returns>
     [DebuggerStepThrough]
     public static bool IsNumeric(this Type type)
     {
@@ -226,6 +254,11 @@ public static class TypeExtensions
         return false;
     }
 
+    /// <summary>Finds a field by walking from a type through its base types without triggering ambiguous reflection matches.</summary>
+    /// <param name="source">The most-derived type to inspect.</param>
+    /// <param name="name">The field name.</param>
+    /// <param name="flags">The binding flags applied at each hierarchy level; <see cref="BindingFlags.DeclaredOnly"/> is added.</param>
+    /// <returns>The first matching field, or <see langword="null"/>.</returns>
     [DebuggerStepThrough]
     public static FieldInfo GetFieldUnambiguous(
         this Type source,
@@ -252,6 +285,11 @@ public static class TypeExtensions
         return null;
     }
 
+    /// <summary>Finds a property by walking from a type through its base types without triggering ambiguous reflection matches.</summary>
+    /// <param name="source">The most-derived type to inspect.</param>
+    /// <param name="name">The property name.</param>
+    /// <param name="flags">The binding flags applied at each hierarchy level; <see cref="BindingFlags.DeclaredOnly"/> is added.</param>
+    /// <returns>The first matching property, or <see langword="null"/>.</returns>
     [DebuggerStepThrough]
     public static PropertyInfo GetPropertyUnambiguous(
         this Type source,
@@ -308,11 +346,19 @@ public static class TypeExtensions
             : source.GetInterfaces().Any(c => c.Name == @interface.Name);
     }
 
+    /// <summary>Determines whether a type satisfies every supplied interface check.</summary>
+    /// <param name="type">The type to inspect.</param>
+    /// <param name="interfaces">The interface contracts that must all be implemented.</param>
+    /// <returns><see langword="true"/> when every contract is implemented, including for an empty contract set.</returns>
     public static bool ImplementsAllInterfaces(this Type type, params Type[] interfaces)
     {
         return interfaces.All(type.ImplementsInterface);
     }
 
+    /// <summary>Determines whether a type satisfies at least one supplied interface check.</summary>
+    /// <param name="type">The type to inspect.</param>
+    /// <param name="interfaces">The interface contracts to test.</param>
+    /// <returns><see langword="true"/> when any contract is implemented.</returns>
     public static bool ImplementsAnyInterface(this Type type, params Type[] interfaces)
     {
         return interfaces.Any(type.ImplementsInterface);

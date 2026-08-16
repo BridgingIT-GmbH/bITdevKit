@@ -22,12 +22,24 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
     private readonly ILogger<RetryFileStorageBehavior> logger = loggerFactory?.CreateLogger<RetryFileStorageBehavior>() ?? NullLoggerFactory.Instance.CreateLogger<RetryFileStorageBehavior>();
     private readonly RetryOptions options = options ?? new RetryOptions();
 
+    /// <summary>
+    /// Gets the inner provider.
+    /// </summary>
     public IFileStorageProvider InnerProvider => this.innerProvider;
 
+    /// <summary>
+    /// Gets the location name.
+    /// </summary>
     public string LocationName => this.InnerProvider.LocationName;
 
+    /// <summary>
+    /// Gets the description.
+    /// </summary>
     public string Description => this.InnerProvider.Description;
 
+    /// <summary>
+    /// Gets the supports notifications.
+    /// </summary>
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
     private async Task<Result<T>> ExecuteWithRetryAsync<T>(Func<Task<Result<T>>> operation, string operationName, string path, CancellationToken cancellationToken = default)
@@ -112,6 +124,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         return errors.Any(e => e is FileSystemError || e is FileSystemPermissionError || e is ExceptionError);
     }
 
+    /// <summary>
+    /// Executes the file exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -127,6 +146,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the read file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -141,6 +167,14 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="content">The content used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -155,6 +189,14 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the open write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="useTemporaryWrite">The use temporary write used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -169,6 +211,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Deletes file.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -183,6 +232,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Gets checksum.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -197,6 +252,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Gets file metadata.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -211,6 +272,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the set file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadata">The metadata used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         try
@@ -225,6 +293,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the update file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadataUpdate">The metadata update used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         try
@@ -239,6 +314,15 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the list files operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="continuationToken">The continuation token used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)
     {
@@ -254,6 +338,14 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the copy file operation.
+    /// </summary>
+    /// <param name="sourcePath">The source path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -268,6 +360,14 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the rename file operation.
+    /// </summary>
+    /// <param name="oldPath">The old path used by the operation.</param>
+    /// <param name="newPath">The new path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -282,6 +382,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the rename directory operation.
+    /// </summary>
+    /// <param name="oldPath">The old path used by the operation.</param>
+    /// <param name="newPath">The new path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> RenameDirectoryAsync(string oldPath, string newPath, CancellationToken cancellationToken = default)
     {
         try
@@ -296,6 +403,14 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the move file operation.
+    /// </summary>
+    /// <param name="sourcePath">The source path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -310,6 +425,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the copy files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -325,6 +447,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the move files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -340,6 +469,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Deletes files.
+    /// </summary>
+    /// <param name="paths">The paths used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -355,6 +491,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the directory exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -369,6 +511,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Creates directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -383,6 +531,13 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Deletes directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         try
@@ -397,6 +552,14 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the list directories operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
         string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)
     {
@@ -412,6 +575,11 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Executes the check health operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -426,17 +594,59 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the retry start operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="operation">The operation used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="maxRetries">The max retries used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] file storage: retry start (type={LocationName}, operation={Operation}, path={Path}, maxRetries={MaxRetries})")]
         public static partial void LogRetryStart(ILogger logger, string logKey, string locationName, string operation, string path, int maxRetries);
 
+        /// <summary>
+        /// Writes a log entry for the retry attempt operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="retryCount">The retry count used by the operation.</param>
+        /// <param name="maxRetries">The max retries used by the operation.</param>
+        /// <param name="operation">The operation used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="errors">The errors used by the operation.</param>
         [LoggerMessage(1, LogLevel.Warning, "[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Errors} (type={LocationName})")]
         public static partial void LogRetryAttempt(ILogger logger, string logKey, string locationName, int retryCount, int maxRetries, string operation, string path, IEnumerable<IResultError> errors);
 
+        /// <summary>
+        /// Writes a log entry for the retry success operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="operation">The operation used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="retries">The retries used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] file storage: successfully completed {Operation} on '{Path}' after {Retries} retries  (type={LocationName})")]
         public static partial void LogRetrySuccess(ILogger logger, string logKey, string locationName, string operation, string path, int retries);
 
+        /// <summary>
+        /// Writes a log entry for the retry failure operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="operation">The operation used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="retries">The retries used by the operation.</param>
+        /// <param name="error">The error used by the operation.</param>
         [LoggerMessage(3, LogLevel.Error, "[{LogKey}] file storage: failed {Operation} on '{Path}' after {Retries} retries: {Error}  (type={LocationName})")]
         public static partial void LogRetryFailure(ILogger logger, string logKey, string locationName, string operation, string path, int retries, string error);
     }
@@ -447,5 +657,8 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
 /// </summary>
 public class RetryOptions
 {
+    /// <summary>
+    /// Gets or sets the max retries.
+    /// </summary>
     public int MaxRetries { get; set; } = 3;
 }

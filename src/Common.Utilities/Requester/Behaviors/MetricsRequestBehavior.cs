@@ -23,11 +23,13 @@ public class MetricsRequestBehavior<TRequest, TResponse>(ILoggerFactory loggerFa
     where TRequest : class
     where TResponse : IResult
 {
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return request is not null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

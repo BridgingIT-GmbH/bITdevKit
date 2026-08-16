@@ -22,6 +22,9 @@ using System.Reflection;
 /// </remarks>
 public interface IRequest<TValue> : IRequest;
 
+/// <summary>
+///     Defines request identity and creation-time metadata shared by all response types.
+/// </summary>
 public interface IRequest
 {
     /// <summary>
@@ -348,6 +351,13 @@ public class RequestHandlerProvider(IHandlerCache handlerCache) : IRequestHandle
 /// </example>
 public interface IRequestBehaviorsProvider
 {
+    /// <summary>
+    ///     Resolves request pipeline behaviors in registration order.
+    /// </summary>
+    /// <typeparam name="TRequest">The request type.</typeparam>
+    /// <typeparam name="TValue">The response value type.</typeparam>
+    /// <param name="serviceProvider">The service provider used to construct behaviors.</param>
+    /// <returns>The resolved pipeline behaviors.</returns>
     IReadOnlyList<IPipelineBehavior<TRequest, IResult<TValue>>> GetBehaviors<TRequest, TValue>(IServiceProvider serviceProvider)
         where TRequest : class, IRequest<TValue>;
 }
@@ -376,6 +386,7 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
     //private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
 
+    /// <inheritdoc/>
     public IReadOnlyList<IPipelineBehavior<TRequest, IResult<TValue>>> GetBehaviors<TRequest, TValue>(IServiceProvider serviceProvider)
         where TRequest : class, IRequest<TValue>
     {
@@ -640,6 +651,14 @@ public partial class Requester(
         }
     }
 
+    /// <summary>
+    ///     Dispatches a request through the runtime generic send path inferred from its concrete type.
+    /// </summary>
+    /// <typeparam name="TValue">The response value type.</typeparam>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">Optional request processing settings.</param>
+    /// <param name="cancellationToken">A token that can cancel dispatch.</param>
+    /// <returns>The request result.</returns>
     public Task<Result<TValue>> SendAsync<TValue>(
         IRequest<TValue> request,
         SendOptions options = null,
@@ -786,15 +805,19 @@ public partial class Requester(
     /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>Logs the start of request processing.</summary>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] request processing (type={RequestType}, id={RequestId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string requestType, string requestId);
 
+        /// <summary>Logs successful request processing and elapsed time.</summary>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] request success (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
         public static partial void LogSuccess(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
 
+        /// <summary>Logs failed request processing and elapsed time.</summary>
         [LoggerMessage(2, LogLevel.Error, "[{LogKey}] request failed (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
         public static partial void LogFailed(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
 
+        /// <summary>Logs an exception raised while processing a request.</summary>
         [LoggerMessage(3, LogLevel.Error, "[{LogKey}] request processing failed for {RequestType} ({RequestId})")]
         public static partial void LogError(ILogger logger, string logKey, Exception ex, string requestType, string requestId);
     }

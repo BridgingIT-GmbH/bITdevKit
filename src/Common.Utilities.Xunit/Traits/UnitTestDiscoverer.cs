@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
+/// <summary>
+///     Emits the unit-test category and optional unit-test identifier traits.
+/// </summary>
 public class UnitTestDiscoverer : ITraitDiscoverer
 {
     internal const string TypeName = "BridgingIT.DevKit.Common." + nameof(UnitTestDiscoverer);

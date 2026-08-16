@@ -53,6 +53,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the domain error. If null, a default message is used.</param>
 public class DomainError(string message = null) : ResultErrorBase(message ?? "Domain error")
 {
+    /// <summary>Initializes a domain error with the default message.</summary>
     public DomainError() : this(null)
     {
     }

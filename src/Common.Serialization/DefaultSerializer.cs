@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Provides the shared default serializer instance.
+/// </summary>
 public static class DefaultSerializer
 {
     /// <summary>

@@ -20,6 +20,12 @@ public class JobSchedulerQueryService(
 {
     private static readonly JobSchedulerQueryCapabilities Capabilities = new();
 
+    /// <summary>
+    /// Executes the query jobs operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerJobModel>> QueryJobsAsync(JobSchedulerJobQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerJobQueryRequest { SortBy = "JobName" };
@@ -54,6 +60,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query triggers operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerTriggerModel>> QueryTriggersAsync(JobSchedulerTriggerQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerTriggerQueryRequest { SortBy = "JobName" };
@@ -91,6 +103,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query recurring triggers operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerRecurringTriggerModel>> QueryRecurringTriggersAsync(JobSchedulerRecurringTriggerQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerRecurringTriggerQueryRequest { SortBy = "NextDueUtc" };
@@ -129,6 +147,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query occurrences operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerOccurrenceModel>> QueryOccurrencesAsync(JobSchedulerOccurrenceQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerOccurrenceQueryRequest { SortBy = "DueUtc" };
@@ -173,6 +197,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query retries operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerRetryModel>> QueryRetriesAsync(JobSchedulerRetryQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerRetryQueryRequest { SortBy = "RetryDueUtc" };
@@ -209,6 +239,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query batches operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerBatchModel>> QueryBatchesAsync(JobSchedulerBatchQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerBatchQueryRequest { SortBy = "CreatedDate" };
@@ -246,6 +282,13 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query batch occurrences operation.
+    /// </summary>
+    /// <param name="batchId">The batch id used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerBatchChildOccurrenceModel>> QueryBatchOccurrencesAsync(string batchId, JobSchedulerBatchOccurrenceQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerBatchOccurrenceQueryRequest { SortBy = "Sequence" };
@@ -294,6 +337,13 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query batch history operation.
+    /// </summary>
+    /// <param name="batchId">The batch id used by the operation.</param>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerBatchHistoryModel>> QueryBatchHistoryAsync(string batchId, JobSchedulerBatchHistoryQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerBatchHistoryQueryRequest { SortBy = "RecordedAt" };
@@ -343,6 +393,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query dependencies operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerDependencyModel>> QueryDependenciesAsync(JobSchedulerDependencyQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerDependencyQueryRequest { SortBy = "CreatedDate" };
@@ -383,6 +439,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query executions operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerExecutionModel>> QueryExecutionsAsync(JobSchedulerExecutionQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerExecutionQueryRequest { SortBy = "StartedUtc" };
@@ -427,6 +489,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query execution history operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerExecutionHistoryModel>> QueryExecutionHistoryAsync(JobSchedulerExecutionHistoryQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerExecutionHistoryQueryRequest { SortBy = "RecordedAt" };
@@ -470,6 +538,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query leases operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerLeaseModel>> QueryLeasesAsync(JobSchedulerLeaseQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerLeaseQueryRequest { SortBy = "ExpiresUtc" };
@@ -507,6 +581,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Executes the query servers operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<ResultPaged<JobSchedulerServerModel>> QueryServersAsync(JobSchedulerServerQueryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerServerQueryRequest { SortBy = "LastSeenUtc" };
@@ -539,6 +619,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Gets metrics.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<JobSchedulerMetricsModel>> GetMetricsAsync(JobSchedulerMetricsRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerMetricsRequest();
@@ -594,6 +680,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Gets dashboard summary.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<JobSchedulerDashboardSummaryModel>> GetDashboardSummaryAsync(JobSchedulerDashboardSummaryRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerDashboardSummaryRequest();
@@ -644,6 +736,11 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Gets dashboard navigation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<JobSchedulerDashboardNavigationModel>> GetDashboardNavigationAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -677,6 +774,11 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Gets dashboard overview.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<JobSchedulerDashboardOverviewModel>> GetDashboardOverviewAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -715,6 +817,12 @@ public class JobSchedulerQueryService(
         }
     }
 
+    /// <summary>
+    /// Gets dashboard timeline.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<JobSchedulerTimelineModel>> GetDashboardTimelineAsync(JobSchedulerTimelineRequest request = null, CancellationToken cancellationToken = default)
     {
         request ??= new JobSchedulerTimelineRequest();

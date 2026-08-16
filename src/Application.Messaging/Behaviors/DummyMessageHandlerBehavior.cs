@@ -5,8 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Provides dummy message handler behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class DummyMessageHandlerBehavior(ILoggerFactory loggerFactory) : MessageHandlerBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

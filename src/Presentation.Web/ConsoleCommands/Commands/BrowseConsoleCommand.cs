@@ -13,18 +13,40 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+/// <summary>
+/// Represents browse console command.
+/// </summary>
 public class BrowseConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
+    /// <summary>
+    /// Gets the group name.
+    /// </summary>
     public string GroupName => "browse";
+    /// <summary>
+    /// Gets the group aliases.
+    /// </summary>
     public IReadOnlyCollection<string> GroupAliases => ["web"];
+    /// <summary>
+    /// Gets or sets the path.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Relative path to append", Required = false)] public string Path { get; set; }
+    /// <summary>
+    /// Gets or sets the no https.
+    /// </summary>
     [ConsoleCommandOption("no-https", Description = "Prefer HTTP instead of HTTPS")] public bool NoHttps { get; set; }
+    /// <summary>
+    /// Gets or sets the all.
+    /// </summary>
     [ConsoleCommandOption("all", Description = "Open all bound addresses")] public bool All { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <c>BrowseConsoleCommand</c> class.
+    /// </summary>
     public BrowseConsoleCommand() : base("open", "Open default browser on Kestrel address", "web") { }
 
     /// <inheritdoc />
     public override bool IsWebConsoleEnabled => false;
 
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var server = services.GetService<IServer>(); var feature = server?.Features.Get<IServerAddressesFeature>(); var addresses = feature?.Addresses?.ToList() ?? [];

@@ -8,6 +8,12 @@ namespace BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
+/// <summary>
+///     Writes Microsoft.Extensions.Logging events and active scopes to xUnit test output.
+/// </summary>
+/// <param name="output">The xUnit output sink.</param>
+/// <param name="scopeProvider">The provider that tracks active logging scopes.</param>
+/// <param name="categoryName">The logger category included in each message.</param>
 public class XunitLogger(
     ITestOutputHelper output,
     LoggerExternalScopeProvider scopeProvider,
@@ -17,16 +23,19 @@ public class XunitLogger(
     private readonly ITestOutputHelper output = output;
     private readonly LoggerExternalScopeProvider scopeProvider = scopeProvider;
 
+    /// <inheritdoc/>
     public bool IsEnabled(LogLevel logLevel)
     {
         return logLevel != LogLevel.None;
     }
 
+    /// <inheritdoc/>
     public IDisposable BeginScope<TState>(TState state)
     {
         return this.scopeProvider.Push(state);
     }
 
+    /// <inheritdoc/>
     public void Log<TState>(
         LogLevel logLevel,
         EventId eventId,
@@ -57,11 +66,22 @@ public class XunitLogger(
     }
 
 #pragma warning disable SA1204
+    /// <summary>
+    ///     Creates a non-generic logger with an empty category.
+    /// </summary>
+    /// <param name="output">The xUnit output sink.</param>
+    /// <returns>The created logger.</returns>
     public static ILogger Create(ITestOutputHelper output)
     {
         return new XunitLogger(output, new LoggerExternalScopeProvider(), string.Empty);
     }
 
+    /// <summary>
+    ///     Creates a logger categorized by a specified type.
+    /// </summary>
+    /// <typeparam name="T">The category type.</typeparam>
+    /// <param name="output">The xUnit output sink.</param>
+    /// <returns>The created typed logger.</returns>
     public static ILogger<T> Create<T>(ITestOutputHelper output)
     {
         return new XunitLogger<T>(output, new LoggerExternalScopeProvider());

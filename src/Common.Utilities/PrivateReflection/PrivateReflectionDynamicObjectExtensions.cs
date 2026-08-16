@@ -9,6 +9,11 @@ using PrivateReflection;
 
 public static partial class UtilitiesExtensions
 {
+    /// <summary>
+    ///     Wraps a non-primitive object for dynamic access to its private members.
+    /// </summary>
+    /// <param name="o">The object to wrap.</param>
+    /// <returns>The original value for null, primitive, and string inputs; otherwise, a dynamic reflection wrapper.</returns>
     public static dynamic AsReflectionDynamic(this object o)
     {
         return PrivateReflectionDynamicObject.WrapObjectIfNeeded(o);

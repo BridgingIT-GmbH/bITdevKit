@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Builds database checker options configuration.
+/// </summary>
 public class DatabaseCheckerOptionsBuilder : OptionsBuilderBase<DatabaseCheckerOptions, DatabaseCheckerOptionsBuilder>
 {
     /// <summary>

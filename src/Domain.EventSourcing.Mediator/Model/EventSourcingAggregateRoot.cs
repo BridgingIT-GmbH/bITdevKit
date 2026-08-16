@@ -12,10 +12,17 @@ using Newtonsoft.Json;
 
 // TODO: get rid of Newtonsoft dependency
 
+/// <summary>
+/// Represents event sourcing aggregate root.
+/// </summary>
 public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggregateRootWithGuid, IAggregateRootCommitting
 {
     private readonly IList<IAggregateEvent> unsavedEvents = [];
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EventSourcingAggregateRoot</c> class.
+    /// </summary>
+    /// <param name="event">The event used by the operation.</param>
     [JsonConstructor] // TODO: refactor this (ContractResolver?) so the JsonNet dependency is not needed (less JsonNet dependencies)
     protected EventSourcingAggregateRoot(IAggregateEvent @event)
     {
@@ -26,6 +33,11 @@ public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggrega
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EventSourcingAggregateRoot</c> class.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="events">The events used by the operation.</param>
     protected EventSourcingAggregateRoot(Guid id, IEnumerable<IAggregateEvent> events)
     {
         this.Id = id;
@@ -39,10 +51,20 @@ public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggrega
         }
     }
 
+    /// <summary>
+    /// Gets or sets the version.
+    /// </summary>
     public int Version { get; private set; }
 
+    /// <summary>
+    /// Gets the unsaved events.
+    /// </summary>
     public IEnumerable<IAggregateEvent> UnsavedEvents => this.unsavedEvents;
 
+    /// <summary>
+    /// Executes the event has been added to event store operation.
+    /// </summary>
+    /// <param name="event">The event used by the operation.</param>
     public void EventHasBeenAddedToEventStore(IAggregateEvent @event)
     {
         this.unsavedEvents.Remove(@event);
@@ -53,11 +75,21 @@ public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggrega
         await mediator.Publish(@event, CancellationToken.None).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the event has been commited operation.
+    /// </summary>
+    /// <param name="mediator">The mediator used by the operation.</param>
+    /// <param name="event">The event used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected async Task EventHasBeenCommitedAsync(IMediator mediator, IAggregateEvent @event)
     {
         await (this as IAggregateRootCommitting).EventHasBeenCommittedAsync(mediator, @event).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the apply event operation.
+    /// </summary>
+    /// <param name="event">The event used by the operation.</param>
     protected void ApplyEvent(IAggregateEvent @event)
     {
         EnsureArg.IsNotNull(@event, nameof(@event));
@@ -65,12 +97,20 @@ public abstract class EventSourcingAggregateRoot : AggregateRoot<Guid>, IAggrega
         this.AsReflectionDynamic().Apply(@event);
     }
 
+    /// <summary>
+    /// Executes the receive event operation.
+    /// </summary>
+    /// <param name="event">The event used by the operation.</param>
     protected void ReceiveEvent(IAggregateEvent @event)
     {
         this.IntegrateEvent(@event);
         this.unsavedEvents.Add(@event);
     }
 
+    /// <summary>
+    /// Gets next version.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     protected int GetNextVersion()
     {
         return this.Version + 1;

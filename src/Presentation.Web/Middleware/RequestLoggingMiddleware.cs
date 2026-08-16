@@ -36,6 +36,12 @@ public class RequestLoggingMiddleware
     private readonly RequestLoggingOptions options;
     private readonly ILogger logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>RequestLoggingMiddleware</c> class.
+    /// </summary>
+    /// <param name="next">The next used by the operation.</param>
+    /// <param name="diagnosticContext">The diagnostic context used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public RequestLoggingMiddleware(
         RequestDelegate next,
         DiagnosticContext diagnosticContext = null,
@@ -52,6 +58,11 @@ public class RequestLoggingMiddleware
         this.messageTemplateFinished = new MessageTemplateParser().Parse(options.MessageTemplateFinished);
     }
 
+    /// <summary>
+    /// Executes the invoke operation.
+    /// </summary>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task Invoke(HttpContext httpContext)
     {
         EnsureArg.IsNotNull(httpContext, nameof(httpContext));

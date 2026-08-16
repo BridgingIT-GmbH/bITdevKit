@@ -58,6 +58,11 @@ public class EntityPermissionOptions
 
     //public bool EnableManagementEndpoints { get; set; }
 
+    /// <summary>
+    /// Represents add entity.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="permissions">The permissions used by the operation.</param>
     public EntityPermissionOptions AddEntity<TEntity>(params Permission[] permissions)
         where TEntity : class, IEntity
     {

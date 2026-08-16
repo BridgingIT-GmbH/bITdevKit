@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
+/// <summary>
+///     Builds validated fake-authentication options from users and shared claims.
+/// </summary>
 public class FakeAuthenticationOptionsBuilder
 {
     private readonly List<FakeUser> users = [];
@@ -99,6 +102,11 @@ public class FakeAuthenticationOptionsBuilder
         return this;
     }
 
+    /// <summary>
+    ///     Creates fake-authentication options from the accumulated users and claims.
+    /// </summary>
+    /// <returns>The configured fake-authentication options.</returns>
+    /// <exception cref="InvalidOperationException">No users are configured or more than one user is marked as default.</exception>
     public FakeAuthenticationOptions Build()
     {
         if (!this.users.Any())

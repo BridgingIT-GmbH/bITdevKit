@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages;
 
+/// <summary>
+/// Represents signin view model.
+/// </summary>
 public class SigninViewModel
 {
+    /// <summary>
+    /// Gets or sets the request.
+    /// </summary>
     public AuthorizeRequest Request { get; set; } = new AuthorizeRequest();
 
+    /// <summary>
+    /// Gets or sets the options.
+    /// </summary>
     public FakeIdentityProviderEndpointsOptions Options { get; set; } = new FakeIdentityProviderEndpointsOptions();
 }

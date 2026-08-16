@@ -15,6 +15,15 @@ using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds cosmos sql repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="providerOptionsBuilder">The provider options builder used by the operation.</param>
+    /// <param name="idGenerator">The id generator used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static RepositoryBuilderContext<TEntity> AddCosmosSqlRepository<TEntity>(
         this IServiceCollection services,
         Builder<CosmosSqlProviderOptionsBuilder<TEntity>, CosmosSqlProviderOptions<TEntity>> providerOptionsBuilder,
@@ -65,6 +74,15 @@ public static partial class ServiceCollectionExtensions
         return services.AddCosmosSqlRepository(provider: null, idGenerator, lifetime);
     }
 
+    /// <summary>
+    /// Adds cosmos sql repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="provider">The provider used by the operation.</param>
+    /// <param name="idGenerator">The id generator used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static RepositoryBuilderContext<TEntity> AddCosmosSqlRepository<TEntity>(
         this IServiceCollection services,
         ICosmosSqlProvider<TEntity> provider = null,
@@ -119,6 +137,15 @@ public static partial class ServiceCollectionExtensions
         return new RepositoryBuilderContext<TEntity>(services, lifetime);
     }
 
+    /// <summary>
+    /// Adds cosmos sql repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="providerFactory">The provider factory used by the operation.</param>
+    /// <param name="idGenerator">The id generator used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static RepositoryBuilderContext<TEntity> AddCosmosSqlRepository<TEntity>(
         this IServiceCollection services,
         Func<IServiceProvider, ICosmosSqlProvider<TEntity>> providerFactory,

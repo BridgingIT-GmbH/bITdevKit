@@ -166,6 +166,7 @@ public class EntityPermissionInfo : IEquatable<EntityPermissionInfo>
         return value?.GetHashCode(StringComparison.Ordinal) ?? 0;
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         var entityAndPermission = $"{this.EntityType} [{this.Permission}]";

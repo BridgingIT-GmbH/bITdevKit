@@ -18,14 +18,22 @@ public class FileMoverProcessor(ILogger<FileMoverProcessor> logger) : IFileEvent
 {
     private readonly ILogger<FileMoverProcessor> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>Gets the processor name.</summary>
     public string ProcessorName => nameof(FileMoverProcessor);
 
+    /// <summary>Gets or sets whether the processor is enabled.</summary>
     public bool IsEnabled { get; set; } = true;
 
+    /// <summary>Gets the behaviors applied around processing.</summary>
     public IEnumerable<IProcessorBehavior> Behaviors => [];
 
+    /// <summary>Gets or sets the root directory to which files are moved.</summary>
     public string DestinationRoot { get; set; } // Public property for configuration
 
+    /// <summary>Moves the supplied file into the configured destination root.</summary>
+    /// <param name="context">The file-processing context containing the source provider and event.</param>
+    /// <param name="token">The token used to cancel processing.</param>
+    /// <returns>A task that represents the asynchronous move operation.</returns>
     public async Task ProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));

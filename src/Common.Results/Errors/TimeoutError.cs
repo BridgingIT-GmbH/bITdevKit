@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class TimeoutError(string message) : ResultErrorBase(message ?? "Timeout")
 {
+    /// <summary>Initializes a timeout error with the default message.</summary>
     public TimeoutError() : this(null)
     {
     }

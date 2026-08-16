@@ -9,6 +9,9 @@ using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
 
+/// <summary>
+/// Represents http context extensions.
+/// </summary>
 public static class HttpContextExtensions
 {
     private static readonly ISerializer Serializer = new SystemTextJsonSerializer();

@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Application.Entities;
 
 using Microsoft.Extensions.Localization;
 
+/// <summary>
+/// Represents check.
+/// </summary>
 public static class Check
 {
     /// <summary>
@@ -30,6 +33,15 @@ public static class Check
         satisfied?.Invoke();
     }
 
+    /// <summary>
+    /// Represents throw.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="rules">The rules used by the operation.</param>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="localizer">The localizer used by the operation.</param>
+    /// <param name="satisfied">The satisfied used by the operation.</param>
     public static async Task<TResult> ThrowAsync<TEntity, TResult>(
         IEnumerable<IEntityCommandRule<TEntity>> rules,
         TEntity entity,

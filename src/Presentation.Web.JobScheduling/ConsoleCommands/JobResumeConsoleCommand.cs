@@ -8,16 +8,29 @@ namespace BridgingIT.DevKit.Presentation;
 using Spectre.Console;
 using System;
 
+/// <summary>
+/// Represents job resume console command.
+/// </summary>
 public class JobResumeConsoleCommand : JobGroupConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Job name", Required = true)]
     public string JobName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the job group.
+    /// </summary>
     [ConsoleCommandArgument(1, Description = "Job group", Required = false)]
     public string JobGroup { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobResumeConsoleCommand</c> class.
+    /// </summary>
     public JobResumeConsoleCommand() : base("resume", "Resume paused job") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(this.JobName))

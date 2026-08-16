@@ -5,17 +5,38 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+/// <summary>
+/// Represents system info.
+/// </summary>
 public class SystemInfo
 {
+    /// <summary>
+    /// Gets or sets the request.
+    /// </summary>
     public Dictionary<string, object> Request { get; set; }
 
+    /// <summary>
+    /// Gets or sets the runtime.
+    /// </summary>
     public Dictionary<string, string> Runtime { get; set; }
 
+    /// <summary>
+    /// Gets or sets the memory.
+    /// </summary>
     public Dictionary<string, string> Memory { get; set; }
 
+    /// <summary>
+    /// Gets or sets the configuration.
+    /// </summary>
     public Dictionary<string, string> Configuration { get; set; }
 
+    /// <summary>
+    /// Gets or sets the custom metadata.
+    /// </summary>
     public Dictionary<string, string> CustomMetadata { get; set; }
 
+    /// <summary>
+    /// Gets or sets the uptime.
+    /// </summary>
     public string Uptime { get; set; }
 }

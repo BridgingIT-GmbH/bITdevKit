@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Builds database migrator options configuration.
+/// </summary>
 public class DatabaseMigratorOptionsBuilder
     : OptionsBuilderBase<DatabaseMigratorOptions, DatabaseMigratorOptionsBuilder>
 {

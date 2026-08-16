@@ -16,6 +16,9 @@ using System.Text;
 #pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
 #pragma warning disable RS1042 // Implementations of this interface are not allowed
 #pragma warning disable RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
+/// <summary>
+/// Represents active entity feature generator.
+/// </summary>
 [Generator]
 public class ActiveEntityFeatureGenerator : IIncrementalGenerator
 {
@@ -27,6 +30,10 @@ public class ActiveEntityFeatureGenerator : IIncrementalGenerator
         new QueryDslFeature()
     ];
 
+    /// <summary>
+    /// Executes the initialize operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Collect candidate classes with attributes
@@ -83,10 +90,24 @@ public class ActiveEntityFeatureGenerator : IIncrementalGenerator
     }
 }
 
+/// <summary>
+/// Represents forwarder feature.
+/// </summary>
 public class ForwarderFeature : IActiveEntityFeature
 {
+    /// <summary>
+    /// Gets the features.
+    /// </summary>
     public ActiveEntityFeatures Features => ActiveEntityFeatures.Forwarders;
 
+    /// <summary>
+    /// Executes the generate operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="compilation">The compilation used by the operation.</param>
+    /// <param name="entityType">The name of the entity type.</param>
+    /// <param name="enabledFeatures">The enabled features used by the operation.</param>
+    /// <param name="featureContext">The feature context used by the operation.</param>
     public void Generate(SourceProductionContext context, Compilation compilation, INamedTypeSymbol entityType, ActiveEntityFeatures enabledFeatures, FeatureGenerationContext featureContext)
     {
         if (!enabledFeatures.HasFlag(this.Features))
@@ -189,19 +210,24 @@ namespace {ns}
 /// <summary>
 /// Generates convention-based finder methods for each supported property of the entity.
 /// Example: For a property "string FirstName", it generates:
-///   public static Task<Result<IEnumerable<TEntity>>> FindAllByFirstNameAsync(string value, ...)
-///   public static Task<Result<TEntity>> FindOneByFirstNameAsync(string value, ...)
-/// </summary>
-/// <summary>
-/// Generates convention-based finder methods for each supported property of the entity.
-/// Example: For a property "string FirstName", it generates:
 ///   public static Task&lt;Result&lt;IEnumerable&lt;TEntity&gt;&gt;&gt; FindAllByFirstNameAsync(string value, ...)
 ///   public static Task&lt;Result&lt;TEntity&gt;&gt; FindOneByFirstNameAsync(string value, ...)
 /// </summary>
 public class ConventionFinderFeature : IActiveEntityFeature
 {
+    /// <summary>
+    /// Gets the features.
+    /// </summary>
     public ActiveEntityFeatures Features => ActiveEntityFeatures.ConventionFinders;
 
+    /// <summary>
+    /// Executes the generate operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="compilation">The compilation used by the operation.</param>
+    /// <param name="entityType">The name of the entity type.</param>
+    /// <param name="enabledFeatures">The enabled features used by the operation.</param>
+    /// <param name="featureContext">The feature context used by the operation.</param>
     public void Generate(SourceProductionContext context, Compilation compilation, INamedTypeSymbol entityType, ActiveEntityFeatures enabledFeatures, FeatureGenerationContext featureContext)
     {
         if (!enabledFeatures.HasFlag(this.Features))
@@ -392,8 +418,19 @@ namespace {ns}
 /// </summary>
 public class SpecificationFeature : IActiveEntityFeature
 {
+    /// <summary>
+    /// Gets the features.
+    /// </summary>
     public ActiveEntityFeatures Features => ActiveEntityFeatures.Specifications;
 
+    /// <summary>
+    /// Executes the generate operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="compilation">The compilation used by the operation.</param>
+    /// <param name="entityType">The name of the entity type.</param>
+    /// <param name="enabledFeatures">The enabled features used by the operation.</param>
+    /// <param name="featureContext">The feature context used by the operation.</param>
     public void Generate(SourceProductionContext context, Compilation compilation, INamedTypeSymbol entityType, ActiveEntityFeatures enabledFeatures, FeatureGenerationContext featureContext)
     {
         if (!enabledFeatures.HasFlag(this.Features))
@@ -554,8 +591,19 @@ namespace {ns}
 /// </summary>
 public class QueryDslFeature : IActiveEntityFeature
 {
+    /// <summary>
+    /// Gets the features.
+    /// </summary>
     public ActiveEntityFeatures Features => ActiveEntityFeatures.QueryDsl;
 
+    /// <summary>
+    /// Executes the generate operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="compilation">The compilation used by the operation.</param>
+    /// <param name="entityType">The name of the entity type.</param>
+    /// <param name="enabledFeatures">The enabled features used by the operation.</param>
+    /// <param name="featureContext">The feature context used by the operation.</param>
     public void Generate(SourceProductionContext context, Compilation compilation, INamedTypeSymbol entityType, ActiveEntityFeatures enabledFeatures, FeatureGenerationContext featureContext)
     {
         if (!enabledFeatures.HasFlag(this.Features))
@@ -660,39 +708,95 @@ namespace {ns}
 #pragma warning restore RS1035
 #pragma warning restore RS1038
 
+/// <summary>
+/// Defines the supported active entity features values.
+/// </summary>
 [Flags]
 public enum ActiveEntityFeatures
 {
+    /// <summary>
+    /// Represents the none value.
+    /// </summary>
     None = 0,
+    /// <summary>
+    /// Represents the forwarders value.
+    /// </summary>
     Forwarders = 1 << 0,
+    /// <summary>
+    /// Represents the convention finders value.
+    /// </summary>
     ConventionFinders = 1 << 1,
+    /// <summary>
+    /// Represents the specifications value.
+    /// </summary>
     Specifications = 1 << 2,
+    /// <summary>
+    /// Represents the query dsl value.
+    /// </summary>
     QueryDsl = 1 << 3,
+    /// <summary>
+    /// Represents the all value.
+    /// </summary>
     All = ~0
 }
 
+/// <summary>
+/// Identifies a declaration with active entity features metadata.
+/// </summary>
+/// <param name="features">The features used by the operation.</param>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class ActiveEntityFeaturesAttribute(ActiveEntityFeatures features = ActiveEntityFeatures.All) : Attribute
 {
+    /// <summary>
+    /// Gets the features.
+    /// </summary>
     public ActiveEntityFeatures Features { get; } = features;
 }
 
+/// <summary>
+/// Defines operations for i active entity feature.
+/// </summary>
 public interface IActiveEntityFeature
 {
+    /// <summary>
+    /// Gets the features.
+    /// </summary>
     ActiveEntityFeatures Features { get; }
 
+    /// <summary>
+    /// Executes the generate operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="compilation">The compilation used by the operation.</param>
+    /// <param name="entityType">The name of the entity type.</param>
+    /// <param name="enabledFeatures">The enabled features used by the operation.</param>
+    /// <param name="featureContext">The feature context used by the operation.</param>
     void Generate(SourceProductionContext context, Compilation compilation, INamedTypeSymbol entityType, ActiveEntityFeatures enabledFeatures, FeatureGenerationContext featureContext);
 }
 
+/// <summary>
+/// Represents feature generation context.
+/// </summary>
 public class FeatureGenerationContext
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>FeatureGenerationContext</c> class.
+    /// </summary>
+    /// <param name="valueObjectSymbol">The value object symbol used by the operation.</param>
+    /// <param name="enumerationSymbol">The enumeration symbol used by the operation.</param>
     public FeatureGenerationContext(INamedTypeSymbol valueObjectSymbol, INamedTypeSymbol enumerationSymbol)
     {
         this.ValueObjectSymbol = valueObjectSymbol;
         this.EnumerationSymbol = enumerationSymbol;
     }
 
+    /// <summary>
+    /// Gets the value object symbol.
+    /// </summary>
     public INamedTypeSymbol ValueObjectSymbol { get; }
 
+    /// <summary>
+    /// Gets the enumeration symbol.
+    /// </summary>
     public INamedTypeSymbol EnumerationSymbol { get; }
 }

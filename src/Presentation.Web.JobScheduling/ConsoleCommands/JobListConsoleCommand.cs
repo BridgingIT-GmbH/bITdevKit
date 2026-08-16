@@ -8,19 +8,35 @@ namespace BridgingIT.DevKit.Presentation;
 using Spectre.Console;
 using System;
 
+/// <summary>
+/// Represents job list console command.
+/// </summary>
 public class JobListConsoleCommand : JobGroupConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the job group.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Job group name", Required = false)]
     public string JobGroup { get; set; }
 
+    /// <summary>
+    /// Gets or sets the filter.
+    /// </summary>
     [ConsoleCommandOption("filter", Alias = "f", Description = "Filter jobs by name")]
     public string Filter { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status.
+    /// </summary>
     [ConsoleCommandOption("status", Alias = "s", Description = "Filter by status (Running/Idle/Failed)")]
     public string Status { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobListConsoleCommand</c> class.
+    /// </summary>
     public JobListConsoleCommand() : base("list", "List all jobs in group") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         await this.ExecuteWithJobServiceAsync(console, services, async jobService =>

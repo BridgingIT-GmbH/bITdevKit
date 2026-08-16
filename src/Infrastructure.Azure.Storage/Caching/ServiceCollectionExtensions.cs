@@ -10,6 +10,13 @@ using Extensions;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with azure blob document store provider operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CachingBuilderContext WithAzureBlobDocumentStoreProvider(
         this CachingBuilderContext context,
         DocumentStoreCacheProviderConfiguration configuration = null,
@@ -37,6 +44,13 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with azure table document store provider operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CachingBuilderContext WithAzureTableDocumentStoreProvider(
         this CachingBuilderContext context,
         DocumentStoreCacheProviderConfiguration configuration = null,

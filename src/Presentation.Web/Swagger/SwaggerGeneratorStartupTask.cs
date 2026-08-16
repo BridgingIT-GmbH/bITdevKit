@@ -18,6 +18,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Represents swagger generator startup task.
+/// </summary>
+/// <param name="logger">The logger that receives diagnostic events.</param>
+/// <param name="serviceProvider">The service provider used by the operation.</param>
+/// <param name="environment">The environment used by the operation.</param>
+/// <param name="options">The options controlling the operation.</param>
+/// <param name="openApiSettings">The open api settings used by the operation.</param>
 public class SwaggerGeneratorStartupTask(
     ILogger<SwaggerGeneratorStartupTask> logger,
     IServiceProvider serviceProvider,
@@ -30,6 +38,11 @@ public class SwaggerGeneratorStartupTask(
     private readonly SwaggerGeneratorOptions options = options?.Value ?? new SwaggerGeneratorOptions();
     private readonly AspNetCoreOpenApiDocumentGeneratorSettings openApiSettings = openApiSettings?.Value ?? new AspNetCoreOpenApiDocumentGeneratorSettings();
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Starting Swagger documentation generation");
@@ -140,7 +153,13 @@ public class SwaggerGeneratorStartupTask(
     }
 }
 
+/// <summary>
+/// Configures swagger generator.
+/// </summary>
 public class SwaggerGeneratorOptions
 {
+    /// <summary>
+    /// Gets or sets the swagger directory.
+    /// </summary>
     public string SwaggerDirectory { get; set; } = "wwwroot";
 }

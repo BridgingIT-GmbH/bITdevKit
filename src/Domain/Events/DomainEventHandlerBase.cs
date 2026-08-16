@@ -89,6 +89,13 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
         }
     }
 
+    /// <summary>
+    /// Handles a domain event using the supplied publishing options.
+    /// </summary>
+    /// <typeparam name="TEvent">The event type.</typeparam>
+    /// <param name="event">The event used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public virtual async Task<Result> HandleAsync(TEvent @event, PublishOptions options, CancellationToken cancellationToken) // notifier handler interface
     {
         await this.Process(@event, cancellationToken);
@@ -104,11 +111,30 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
     /// <returns>A task that represents the asynchronous operation.</returns>
     public abstract Task Process(TEvent @event, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
+    /// <typeparam name="TEvent">The event type.</typeparam>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="domainEventId">The domain event id used by the operation.</param>
+        /// <param name="domainEventType">The domain event type used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] event processing (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string domainEventId, string domainEventType);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="domainEventId">The domain event id used by the operation.</param>
+        /// <param name="domainEventType">The domain event type used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] event processed (eventId={DomainEventId}, eventType={DomainEventType}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string domainEventId, string domainEventType, long timeElapsed);
     }

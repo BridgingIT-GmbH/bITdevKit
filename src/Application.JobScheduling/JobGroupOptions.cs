@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Configures job group.
+/// </summary>
 public class JobGroupOptions
 {
+    /// <summary>
+    /// Gets or sets the disallow concurrent execution groups.
+    /// </summary>
     public string[] DisallowConcurrentExecutionGroups { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the disallow concurrent execution default group.
+    /// </summary>
     public bool DisallowConcurrentExecutionDefaultGroup { get; set; }
 }

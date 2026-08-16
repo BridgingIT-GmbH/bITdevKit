@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 using Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Represents service provider message handler factory.
+/// </summary>
 public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory
 {
     private readonly IServiceProvider serviceProvider;

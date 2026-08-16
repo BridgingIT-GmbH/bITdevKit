@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class AccessDeniedError(string message = null) : ResultErrorBase(message ?? "Access denied")
 {
+    /// <summary>Initializes an access-denied error with the default message.</summary>
     public AccessDeniedError() : this(null)
     {
     }

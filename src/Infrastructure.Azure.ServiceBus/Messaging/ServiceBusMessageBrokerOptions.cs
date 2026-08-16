@@ -8,22 +8,49 @@ namespace BridgingIT.DevKit.Infrastructure.Azure;
 using Application.Messaging;
 using Common;
 
+/// <summary>
+/// Configures service bus message broker.
+/// </summary>
 public class ServiceBusMessageBrokerOptions : OptionsBase
 {
+    /// <summary>
+    /// Gets or sets the publisher behaviors.
+    /// </summary>
     public IEnumerable<IMessagePublisherBehavior> PublisherBehaviors { get; set; }
 
+    /// <summary>
+    /// Gets or sets the handler behaviors.
+    /// </summary>
     public IEnumerable<IMessageHandlerBehavior> HandlerBehaviors { get; set; }
 
+    /// <summary>
+    /// Gets or sets the handler factory.
+    /// </summary>
     public IMessageHandlerFactory HandlerFactory { get; set; }
 
+    /// <summary>
+    /// Gets or sets the serializer.
+    /// </summary>
     public ISerializer Serializer { get; set; }
 
+    /// <summary>
+    /// Gets or sets the connection string.
+    /// </summary>
     public string ConnectionString { get; set; }
 
+    /// <summary>
+    /// Gets or sets the topic scope.
+    /// </summary>
     public string TopicScope { get; set; }
 
+    /// <summary>
+    /// Gets or sets the retries.
+    /// </summary>
     public int Retries { get; set; } = 3;
 
+    /// <summary>
+    /// Gets or sets the process delay.
+    /// </summary>
     public int ProcessDelay { get; set; } = 100;
 
     /// <summary>

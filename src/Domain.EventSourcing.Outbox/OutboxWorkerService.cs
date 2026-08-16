@@ -13,6 +13,12 @@ using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using BridgingIT.DevKit.Domain;
 
+/// <summary>
+/// Represents outbox worker service.
+/// </summary>
+/// <param name="repository">The repository used by the operation.</param>
+/// <param name="receiver">The receiver used by the operation.</param>
+/// <param name="loggerOptions">The logger options used by the operation.</param>
 public class OutboxWorkerService(
     IOutboxMessageWorkerRepository repository,
     IAggregateEventOutboxReceiver receiver,
@@ -22,6 +28,10 @@ public class OutboxWorkerService(
     private readonly IAggregateEventOutboxReceiver receiver = receiver;
     private readonly ILogger<OutboxWorkerService> logger = loggerOptions.CreateLogger<OutboxWorkerService>();
 
+    /// <summary>
+    /// Executes the do work operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task DoWorkAsync()
     {
         foreach (var message in await this.repository.FindAllAsync(

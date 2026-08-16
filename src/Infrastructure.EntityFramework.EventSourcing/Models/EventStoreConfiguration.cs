@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing.Models;
 
+/// <summary>
+/// Represents event store configuration.
+/// </summary>
 public class EventStoreConfiguration : IEventStoreConfiguration
 {
+    /// <summary>
+    /// Gets or sets the default schema.
+    /// </summary>
     public string DefaultSchema { get; set; } = "EventStore";
 }

@@ -237,6 +237,10 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
         return this.Include is not null || this.includes.Count != 0;
     }
 
+    /// <summary>
+    /// Determines whether has hierarchy.
+    /// </summary>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool HasHierarchy()
     {
         return this.Hierarchy is not null;

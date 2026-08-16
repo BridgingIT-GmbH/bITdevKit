@@ -11,6 +11,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Represents sql server job store provider.
+/// </summary>
 public class SqlServerJobStoreProvider : IJobStoreProvider
 {
     private readonly ILogger<SqlServerJobStoreProvider> logger;
@@ -18,6 +21,12 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
     private readonly string schema;
     private readonly string prefix;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>SqlServerJobStoreProvider</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
     public SqlServerJobStoreProvider(ILoggerFactory loggerFactory, string connectionString, string tablePrefix)
     {
         this.logger = loggerFactory?.CreateLogger<SqlServerJobStoreProvider>() ?? NullLogger<SqlServerJobStoreProvider>.Instance;
@@ -30,6 +39,20 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         this.prefix = parts.Length > 1 ? parts[1] : parts[0]; // "QRTZ_"
     }
 
+    /// <summary>
+    /// Gets job runs.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="jobGroup">The job group used by the operation.</param>
+    /// <param name="startDate">The start date used by the operation.</param>
+    /// <param name="endDate">The end date used by the operation.</param>
+    /// <param name="status">The status used by the operation.</param>
+    /// <param name="priority">The priority used by the operation.</param>
+    /// <param name="instanceName">The instance name used by the operation.</param>
+    /// <param name="resultContains">The result contains used by the operation.</param>
+    /// <param name="take">The take used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<JobRun>> GetJobRunsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate, DateTimeOffset? endDate,
@@ -83,6 +106,15 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         return runs;
     }
 
+    /// <summary>
+    /// Gets job run stats.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="jobGroup">The job group used by the operation.</param>
+    /// <param name="startDate">The start date used by the operation.</param>
+    /// <param name="endDate">The end date used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobRunStats> GetJobRunStatsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate, DateTimeOffset? endDate,
@@ -137,6 +169,12 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         return new JobRunStats();
     }
 
+    /// <summary>
+    /// Saves job run.
+    /// </summary>
+    /// <param name="jobRun">The job run used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
         var tableName = this.GetTableName("JOURNAL_TRIGGERS");
@@ -205,6 +243,14 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         }
     }
 
+    /// <summary>
+    /// Executes the purge job runs operation.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="jobGroup">The job group used by the operation.</param>
+    /// <param name="olderThan">The older than used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
         var tableName = this.GetTableName("JOURNAL_TRIGGERS");

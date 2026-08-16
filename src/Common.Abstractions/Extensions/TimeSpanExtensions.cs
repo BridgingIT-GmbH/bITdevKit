@@ -8,8 +8,14 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Globalization;
 
+/// <summary>
+/// Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.
+/// </summary>
 public static class TimeSpanExtensions
 {
+    /// <summary>Creates a cancellation source whose cancellation behavior is determined by a timeout.</summary>
+    /// <param name="source">Zero for an already-cancelled source, a positive timeout for scheduled cancellation, or a negative value for no scheduled cancellation.</param>
+    /// <returns>A new cancellation token source.</returns>
     [DebuggerStepThrough]
     public static CancellationTokenSource ToCancellationTokenSource(this TimeSpan source)
     {
@@ -29,6 +35,9 @@ public static class TimeSpanExtensions
         return new CancellationTokenSource();
     }
 
+    /// <summary>Creates a cancellation source from an optional timeout.</summary>
+    /// <param name="source">The optional timeout; a missing value produces a source without scheduled cancellation.</param>
+    /// <returns>A new cancellation token source.</returns>
     [DebuggerStepThrough]
     public static CancellationTokenSource ToCancellationTokenSource(this TimeSpan? source)
     {
@@ -40,18 +49,30 @@ public static class TimeSpanExtensions
         return new CancellationTokenSource();
     }
 
+    /// <summary>Creates a cancellation source using a fallback timeout when no timeout is supplied.</summary>
+    /// <param name="source">The optional preferred timeout.</param>
+    /// <param name="defaultTimeout">The timeout used when <paramref name="source"/> has no value.</param>
+    /// <returns>A new cancellation token source.</returns>
     [DebuggerStepThrough]
     public static CancellationTokenSource ToCancellationTokenSource(this TimeSpan? source, TimeSpan defaultTimeout)
     {
         return (source ?? defaultTimeout).ToCancellationTokenSource();
     }
 
+    /// <summary>Returns the shorter of two durations by comparing their tick counts.</summary>
+    /// <param name="source">The first duration.</param>
+    /// <param name="other">The second duration.</param>
+    /// <returns>The shorter duration, or <paramref name="source"/> when equal.</returns>
     [DebuggerStepThrough]
     public static TimeSpan Min(this TimeSpan source, TimeSpan other)
     {
         return source.Ticks > other.Ticks ? other : source;
     }
 
+    /// <summary>Returns the longer of two durations by comparing their tick counts.</summary>
+    /// <param name="source">The first duration.</param>
+    /// <param name="other">The second duration.</param>
+    /// <returns>The longer duration, or <paramref name="source"/> when equal.</returns>
     [DebuggerStepThrough]
     public static TimeSpan Max(this TimeSpan source, TimeSpan other)
     {
@@ -247,12 +268,18 @@ public static class TimeSpanExtensions
         return TimeSpan.FromDays(value * 7);
     }
 
+    /// <summary>Removes fractional seconds while preserving the day, hour, minute, and whole-second components.</summary>
+    /// <param name="timeSpan">The duration to truncate.</param>
+    /// <returns>A duration with zero fractional-second ticks.</returns>
     [DebuggerStepThrough]
     public static TimeSpan TruncateToSeconds(this TimeSpan timeSpan)
     {
         return new TimeSpan(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
     }
 
+    /// <summary>Parses duration or clock text, including compact <c>HHmm</c> and <c>HHmmss</c> forms.</summary>
+    /// <param name="source">The text to parse.</param>
+    /// <returns>The parsed duration or time of day; <see cref="TimeSpan.Zero"/> when parsing fails.</returns>
     [DebuggerStepThrough]
     public static TimeSpan ParseTime(this string source)
     {
@@ -311,6 +338,10 @@ public static class TimeSpanExtensions
         return result;
     }
 
+    /// <summary>Attempts to parse duration or clock text, including compact <c>HHmm</c> and <c>HHmmss</c> forms.</summary>
+    /// <param name="source">The text to parse.</param>
+    /// <param name="result">The parsed duration or time of day, or zero when parsing fails.</param>
+    /// <returns><see langword="true"/> when either duration or invariant clock parsing succeeds.</returns>
     [DebuggerStepThrough]
     public static bool TryParseTime(this string source, out TimeSpan result)
     {

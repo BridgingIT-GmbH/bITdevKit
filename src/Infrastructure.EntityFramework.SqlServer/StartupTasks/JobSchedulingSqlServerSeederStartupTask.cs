@@ -12,6 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Represents job scheduling sql server seeder startup task.
+/// </summary>
 public class JobSchedulingSqlServerSeederStartupTask
     : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
@@ -21,6 +24,12 @@ public class JobSchedulingSqlServerSeederStartupTask
     private readonly string tablePrefix;
     private readonly IDatabaseReadyService databaseReadyService;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingSqlServerSeederStartupTask</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="databaseReadyService">The database ready service used by the operation.</param>
     public JobSchedulingSqlServerSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration, IDatabaseReadyService databaseReadyService = null)
         : this(loggerFactory,
             configuration.GetSection("JobScheduling:Quartz", false)["quartz.dataSource.default.connectionString"],
@@ -29,6 +38,12 @@ public class JobSchedulingSqlServerSeederStartupTask
         this.databaseReadyService = databaseReadyService;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingSqlServerSeederStartupTask</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
     public JobSchedulingSqlServerSeederStartupTask(
         ILoggerFactory loggerFactory,
         string connectionString,
@@ -46,6 +61,11 @@ public class JobSchedulingSqlServerSeederStartupTask
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 30) };
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         try

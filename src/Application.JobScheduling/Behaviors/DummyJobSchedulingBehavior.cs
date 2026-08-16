@@ -5,10 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Provides dummy job scheduling behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class DummyJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
     private const string JobIdKey = "JobId";
 
+    /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
         var jobId = context.JobDetail.JobDataMap?.GetString(JobIdKey) ?? context.FireInstanceId;

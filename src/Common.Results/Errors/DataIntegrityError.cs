@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class DataIntegrityError(string message = null) : ResultErrorBase(message ?? "Data integrity violation")
 {
+    /// <summary>Initializes a data-integrity error with the default message.</summary>
     public DataIntegrityError() : this(null)
     {
     }

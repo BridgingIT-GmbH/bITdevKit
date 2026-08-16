@@ -13,6 +13,7 @@ using System.Text.Json.Serialization;
 /// </summary>
 public class PropertyBagJsonConverter : JsonConverter<PropertyBag>
 {
+    /// <inheritdoc/>
     public override PropertyBag Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -50,6 +51,7 @@ public class PropertyBagJsonConverter : JsonConverter<PropertyBag>
         throw new JsonException("Expected end of object");
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, PropertyBag value, JsonSerializerOptions options)
     {
         if (value == null)

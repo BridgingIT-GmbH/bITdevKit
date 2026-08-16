@@ -12,11 +12,23 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 /// </summary>
 public class PublishAggregateEventCouldNotBeConstructedException : Exception
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>PublishAggregateEventCouldNotBeConstructedException</c> class.
+    /// </summary>
     public PublishAggregateEventCouldNotBeConstructedException() { }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>PublishAggregateEventCouldNotBeConstructedException</c> class.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
     public PublishAggregateEventCouldNotBeConstructedException(string message)
         : base(message) { }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>PublishAggregateEventCouldNotBeConstructedException</c> class.
+    /// </summary>
+    /// <param name="message">The message associated with the operation.</param>
+    /// <param name="innerException">The inner exception used by the operation.</param>
     public PublishAggregateEventCouldNotBeConstructedException(string message, Exception innerException)
         : base(message, innerException) { }
 }

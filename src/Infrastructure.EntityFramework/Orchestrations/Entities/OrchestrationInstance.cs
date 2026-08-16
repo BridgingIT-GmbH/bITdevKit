@@ -9,6 +9,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BridgingIT.DevKit.Application.Orchestrations;
 
+/// <summary>
+/// Represents the durable orchestration instance row stored in Entity Framework persistence.
+/// </summary>
 [Table("__Orchestration_Instances")]
 [Index(nameof(OrchestrationName), nameof(Status), nameof(StartedUtc))]
 [Index(nameof(Status), nameof(StartedUtc))]
@@ -17,9 +20,6 @@ using BridgingIT.DevKit.Application.Orchestrations;
 [Index(nameof(CurrentState), nameof(Status))]
 [Index(nameof(CorrelationId))]
 [Index(nameof(ConcurrencyKey))]
-/// <summary>
-/// Represents the durable orchestration instance row stored in Entity Framework persistence.
-/// </summary>
 public class OrchestrationInstance
 {
     /// <summary>

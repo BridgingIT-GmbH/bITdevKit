@@ -17,12 +17,19 @@ public class FileLoggerProcessor(ILogger<FileLoggerProcessor> logger) : IFileEve
 {
     private readonly ILogger<FileLoggerProcessor> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>Gets the processor name.</summary>
     public string ProcessorName => nameof(FileLoggerProcessor);
 
+    /// <summary>Gets or sets whether the processor is enabled.</summary>
     public bool IsEnabled { get; set; } = true;
 
+    /// <summary>Gets the behaviors applied around processing.</summary>
     public IEnumerable<IProcessorBehavior> Behaviors => [];
 
+    /// <summary>Logs the supplied file event.</summary>
+    /// <param name="context">The file-processing context.</param>
+    /// <param name="token">The token used to cancel processing.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));

@@ -36,7 +36,13 @@ public partial class FilterModel
 
     //public FilterCustomType _FilterCustomTypeSchema; // TODO: not in openapi schema
 
+    /// <summary>
+    /// Exposes the <see cref="SpecificationLeaf"/> type so OpenAPI generators include its schema.
+    /// </summary>
     public SpecificationLeaf _SpecificationLeafSchema;
 
+    /// <summary>
+    /// Exposes the <see cref="SpecificationGroup"/> type so OpenAPI generators include its schema.
+    /// </summary>
     public SpecificationGroup _SpecificationGroupSchema;
 }

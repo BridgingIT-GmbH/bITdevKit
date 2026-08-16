@@ -31,12 +31,20 @@ public abstract class AuditableAggregateRoot<TId> : AuditableEntity<TId>, IAggre
     public DomainEvents DomainEvents { get; } = new();
 }
 
+/// <summary>
+/// Represents auditable aggregate root.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
+/// <typeparam name="TIdType">The id type type.</typeparam>
 [DebuggerDisplay("Type={GetType().Name}, Id={Id}")]
 public abstract class AuditableAggregateRoot<TId, TIdType> : AuditableAggregateRoot<TId>, IEntity
     where TId : AggregateRootId<TIdType>
 {
     private TId id;
 
+    /// <summary>
+    /// Stores the id.
+    /// </summary>
     public new TId Id
     {
         get => this.id;

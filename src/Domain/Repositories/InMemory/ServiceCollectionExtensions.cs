@@ -11,6 +11,13 @@ using Microsoft.Extensions.Logging;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Represents add in memory repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
     public static InMemoryRepositoryBuilderContext<TEntity, InMemoryContext<TEntity>> AddInMemoryRepository<TEntity>(
         this IServiceCollection services,
         InMemoryContext<TEntity> context = null,
@@ -50,6 +57,13 @@ public static partial class ServiceCollectionExtensions
         return new InMemoryRepositoryBuilderContext<TEntity, InMemoryContext<TEntity>>(services, lifetime);
     }
 
+    /// <summary>
+    /// Represents add in memory repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
     public static InMemoryRepositoryBuilderContext<TEntity, TContext> AddInMemoryRepository<TEntity, TContext>(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
@@ -80,6 +94,21 @@ public static partial class ServiceCollectionExtensions
         return new InMemoryRepositoryBuilderContext<TEntity, TContext>(services, lifetime);
     }
 
+    /// <summary>
+    /// Configures sequence-number generation for the in-memory repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TContext">The in-memory context type.</typeparam>
+    /// <param name="context">The repository builder context.</param>
+    /// <param name="sequenceName">The name of the sequence.</param>
+    /// <param name="startValue">The initial sequence value.</param>
+    /// <param name="increment">The amount added for each generated value.</param>
+    /// <param name="minValue">The minimum permitted sequence value.</param>
+    /// <param name="maxValue">The maximum permitted sequence value.</param>
+    /// <param name="isCyclic">Whether the sequence restarts after reaching a boundary.</param>
+    /// <param name="schema">The optional schema associated with the sequence.</param>
+    /// <param name="lifetime">The lifetime used to register the sequence generator.</param>
+    /// <returns>The builder context for further configuration.</returns>
     public static InMemoryRepositoryBuilderContext<TEntity, TContext>
         WithSequenceNumberGenerator<TEntity, TContext>(
             this InMemoryRepositoryBuilderContext<TEntity, TContext> context,
@@ -158,5 +187,15 @@ public static partial class ServiceCollectionExtensions
         }
     }
 
+    /// <summary>
+    /// Represents in memory sequence number generator configuration.
+    /// </summary>
+    /// <param name="SequenceName">The sequence name used by the operation.</param>
+    /// <param name="StartValue">The start value used by the operation.</param>
+    /// <param name="Increment">The increment used by the operation.</param>
+    /// <param name="MinValue">The min value used by the operation.</param>
+    /// <param name="MaxValue">The max value used by the operation.</param>
+    /// <param name="IsCyclic">The is cyclic used by the operation.</param>
+    /// <param name="Schema">The schema used by the operation.</param>
     public sealed record InMemorySequenceNumberGeneratorConfiguration(string SequenceName, long StartValue, int Increment, long MinValue, long MaxValue, bool IsCyclic, string Schema);
 }

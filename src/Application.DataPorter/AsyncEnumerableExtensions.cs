@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+/// <summary>
+/// Represents async enumerable extensions.
+/// </summary>
 public static class AsyncEnumerableExtensions
 {
     /// <summary>

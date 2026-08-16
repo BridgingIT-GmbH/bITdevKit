@@ -54,28 +54,64 @@ public class EntityFrameworkJobStoreProvider<TContext> :
         this.logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<EntityFrameworkJobStoreProvider<TContext>>();
     }
 
+    /// <summary>
+    /// Gets the runtime states.
+    /// </summary>
     public IJobRuntimeStateStore RuntimeStates => this;
 
+    /// <summary>
+    /// Gets the trigger runtime states.
+    /// </summary>
     public IJobTriggerRuntimeStateStore TriggerRuntimeStates => this;
 
+    /// <summary>
+    /// Gets the occurrences.
+    /// </summary>
     public IJobOccurrenceStore Occurrences => this;
 
+    /// <summary>
+    /// Gets the executions.
+    /// </summary>
     public IJobExecutionStore Executions => this;
 
+    /// <summary>
+    /// Gets the dependencies.
+    /// </summary>
     public IJobOccurrenceDependencyStore Dependencies => this;
 
+    /// <summary>
+    /// Gets the batches.
+    /// </summary>
     public IJobBatchStore Batches => this;
 
+    /// <summary>
+    /// Gets the leases.
+    /// </summary>
     public IJobLeaseStore Leases => this;
 
+    /// <summary>
+    /// Gets the execution history.
+    /// </summary>
     public IJobExecutionHistoryStore ExecutionHistory => this;
 
+    /// <summary>
+    /// Gets the batch history.
+    /// </summary>
     public IJobBatchHistoryStore BatchHistory => this;
 
+    /// <summary>
+    /// Gets the accepted events.
+    /// </summary>
     public IJobAcceptedEventStore AcceptedEvents => this;
 
+    /// <summary>
+    /// Gets the previous executions.
+    /// </summary>
     public IJobPreviousExecutionStore PreviousExecutions => this;
 
+    /// <summary>
+    /// Gets the queries.
+    /// </summary>
     public IJobSchedulerQueryStore Queries => this;
 
     /// <summary>

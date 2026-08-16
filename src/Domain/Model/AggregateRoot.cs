@@ -30,12 +30,20 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot
     public DomainEvents DomainEvents { get; } = new();
 }
 
+/// <summary>
+/// Represents aggregate root.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
+/// <typeparam name="TIdType">The id type type.</typeparam>
 [DebuggerDisplay("Type={GetType().Name}, Id={Id}")]
 public abstract class AggregateRoot<TId, TIdType> : AggregateRoot<TId>, IEntity
     where TId : AggregateRootId<TIdType>
 {
     private TId id;
 
+    /// <summary>
+    /// Stores the id.
+    /// </summary>
     public new TId Id
     {
         get => this.id;

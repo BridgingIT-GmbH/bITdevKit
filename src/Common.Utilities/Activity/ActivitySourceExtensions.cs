@@ -7,8 +7,17 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
 
+/// <summary>
+///     Provides activity-source selection from registered application sources.
+/// </summary>
 public static class ActivitySourceExtensions
 {
+    /// <summary>
+    ///     Finds a source by name, then the source named <c>default</c>, then the current activity's source.
+    /// </summary>
+    /// <param name="source">The registered activity sources.</param>
+    /// <param name="name">The preferred source name, compared without regard to case.</param>
+    /// <returns>The selected activity source, or <see langword="null"/> when none is available.</returns>
     [DebuggerStepThrough]
     public static ActivitySource Find(this IEnumerable<ActivitySource> source, string name)
     {

@@ -11,6 +11,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Npgsql;
 
+/// <summary>
+/// Represents postgres job store provider.
+/// </summary>
 public class PostgresJobStoreProvider : IJobStoreProvider
 {
     private readonly ILogger<PostgresJobStoreProvider> logger;
@@ -18,6 +21,12 @@ public class PostgresJobStoreProvider : IJobStoreProvider
     private readonly string schema;
     private readonly string prefix;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>PostgresJobStoreProvider</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
     public PostgresJobStoreProvider(ILoggerFactory loggerFactory, string connectionString, string tablePrefix)
     {
         this.logger = loggerFactory?.CreateLogger<PostgresJobStoreProvider>() ?? NullLogger<PostgresJobStoreProvider>.Instance;
@@ -30,6 +39,20 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         this.prefix = parts.Length > 1 ? parts[1] : parts[0]; // Prefix is after schema or the whole string
     }
 
+    /// <summary>
+    /// Gets job runs.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="jobGroup">The job group used by the operation.</param>
+    /// <param name="startDate">The start date used by the operation.</param>
+    /// <param name="endDate">The end date used by the operation.</param>
+    /// <param name="status">The status used by the operation.</param>
+    /// <param name="priority">The priority used by the operation.</param>
+    /// <param name="instanceName">The instance name used by the operation.</param>
+    /// <param name="resultContains">The result contains used by the operation.</param>
+    /// <param name="take">The take used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<JobRun>> GetJobRunsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate, DateTimeOffset? endDate,
@@ -84,6 +107,15 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         return runs;
     }
 
+    /// <summary>
+    /// Gets job run stats.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="jobGroup">The job group used by the operation.</param>
+    /// <param name="startDate">The start date used by the operation.</param>
+    /// <param name="endDate">The end date used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobRunStats> GetJobRunStatsAsync(
         string jobName, string jobGroup,
         DateTimeOffset? startDate, DateTimeOffset? endDate,
@@ -138,6 +170,14 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         return new JobRunStats();
     }
 
+    /// <summary>
+    /// Executes the purge job runs operation.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="jobGroup">The job group used by the operation.</param>
+    /// <param name="olderThan">The older than used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task PurgeJobRunsAsync(string jobName, string jobGroup, DateTimeOffset olderThan, CancellationToken cancellationToken)
     {
         var tableName = this.GetTableName("journal_triggers");
@@ -163,6 +203,12 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         }
     }
 
+    /// <summary>
+    /// Saves job run.
+    /// </summary>
+    /// <param name="jobRun">The job run used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken)
     {
         var tableName = this.GetTableName("journal_triggers");

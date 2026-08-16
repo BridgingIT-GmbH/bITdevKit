@@ -12,9 +12,17 @@ using Domain.Repositories;
 using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents lite db read only generic repository.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntity>
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>LiteDbReadOnlyGenericRepository</c> class.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
     public LiteDbReadOnlyGenericRepository(ILiteDbRepositoryOptions options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
@@ -24,14 +32,30 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         this.Logger = options.CreateLogger<IGenericRepository<TEntity>>();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>LiteDbReadOnlyGenericRepository</c> class.
+    /// </summary>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public LiteDbReadOnlyGenericRepository(
         Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build()) { }
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }
 
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     protected ILiteDbRepositoryOptions Options { get; }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -39,6 +63,13 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.FindAllAsync([], options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -47,6 +78,13 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.FindAllAsync([specification], options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -76,6 +114,14 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
             .ToList());
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         Expression<Func<TEntity, TProjection>> projection,
         IFindOptions<TEntity> options = null,
@@ -84,6 +130,15 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.ProjectAllAsync([], projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
@@ -93,6 +148,15 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.ProjectAllAsync([specification], projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         IEnumerable<ISpecification<TEntity>> specifications,
         Expression<Func<TEntity, TProjection>> projection,
@@ -125,6 +189,13 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
             .ToList());
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -141,6 +212,13 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
             .AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<TEntity> FindOneAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -149,6 +227,13 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.FindOneAsync([specification], options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<TEntity> FindOneAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -163,6 +248,12 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
             .FirstOrDefault());
     }
 
+    /// <summary>
+    /// Executes the exists operation.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
@@ -173,11 +264,22 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext() is not null;
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
@@ -185,6 +287,12 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)

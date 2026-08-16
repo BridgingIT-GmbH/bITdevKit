@@ -37,6 +37,12 @@ public interface IEntityMapper
     /// </returns>
     TDestination Map<TSource, TDestination>(TSource source, TDestination destination);
 
+    /// <summary>
+    /// Executes the map expression operation.
+    /// </summary>
+    /// <typeparam name="TDestination">The destination type.</typeparam>
+    /// <param name="expression">The expression used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     TDestination MapExpression<TDestination>(LambdaExpression expression)
         where TDestination : LambdaExpression;
 

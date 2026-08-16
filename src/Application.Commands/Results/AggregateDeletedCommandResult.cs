@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Represents aggregate deleted command result.
+/// </summary>
+/// <param name="entityId">The entity identifier.</param>
 public class AggregateDeletedCommandResult(string entityId)
 {
     /// <summary>
@@ -13,6 +17,11 @@ public class AggregateDeletedCommandResult(string entityId)
     public string EntityId { get; } = entityId;
 }
 
+/// <summary>
+/// Represents aggregate deleted command result.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
+/// <param name="entityId">The entity identifier.</param>
 public class AggregateDeletedCommandResult<TId>(TId entityId)
 {
     /// <summary>

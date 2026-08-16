@@ -7,6 +7,13 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents in memory repository wrapper.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <typeparam name="TContext">The context type.</typeparam>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="context">The context for the operation.</param>
 public class InMemoryRepositoryWrapper<TEntity, TContext>(ILoggerFactory loggerFactory, TContext context)
     : InMemoryRepository<TEntity>(loggerFactory, context)
     where TEntity : class, IEntity
@@ -22,6 +29,10 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
 {
     private readonly ReaderWriterLockSlim @lock = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <c>InMemoryRepository</c> class.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
     public InMemoryRepository(InMemoryRepositoryOptions<TEntity> options)
     {
         EnsureArg.IsNotNull(options, nameof(options));
@@ -32,15 +43,30 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         this.Options.IdGenerator ??= new InMemoryEntityIdGenerator<TEntity>(this.Options.Context);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>InMemoryRepository</c> class.
+    /// </summary>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public InMemoryRepository(
         Builder<InMemoryRepositoryOptionsBuilder<TEntity>, InMemoryRepositoryOptions<TEntity>> optionsBuilder)
         : this(optionsBuilder(new InMemoryRepositoryOptionsBuilder<TEntity>()).Build()) { }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>InMemoryRepository</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="context">The context for the operation.</param>
     public InMemoryRepository(ILoggerFactory loggerFactory, InMemoryContext<TEntity> context)
         : this(o => o.LoggerFactory(loggerFactory).Context(context)) { }
 
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     protected InMemoryRepositoryOptions<TEntity> Options { get; }
 
+    /// <summary>
+    /// Gets or sets the logger.
+    /// </summary>
     protected ILogger<IGenericRepository<TEntity>> Logger { get; set; }
 
     /// <inheritdoc />
@@ -102,6 +128,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -109,6 +141,13 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await this.FindAllAsync(specifications: null, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -119,6 +158,13 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             : await this.FindAllAsync([specification], options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -134,6 +180,13 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await Task.FromResult(this.FindAll(result, options, cancellationToken).ToList()).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -162,6 +215,13 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -170,6 +230,13 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await this.FindOneAsync([specification], options, cancellationToken);
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -185,6 +252,14 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await Task.FromResult(this.FindAll(result, options, cancellationToken).FirstOrDefault()).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         Expression<Func<TEntity, TProjection>> projection,
         IFindOptions<TEntity> options = null,
@@ -195,6 +270,15 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             .AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
@@ -206,6 +290,15 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             : await this.ProjectAllAsync([specification], projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         IEnumerable<ISpecification<TEntity>> specifications,
         Expression<Func<TEntity, TProjection>> projection,
@@ -225,6 +318,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
             .AnyContext();
     }
 
+    /// <summary>
+    /// Executes the exists operation.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
@@ -235,6 +334,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return Task.FromResult(this.Options.Context.TryGet(id, out _));
     }
 
+    /// <summary>
+    /// Executes the insert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -242,6 +347,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return result.entity;
     }
 
+    /// <summary>
+    /// Executes the insert set operation.
+    /// </summary>
+    /// <param name="entities">The entities involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<IEnumerable<TEntity>> InsertSetAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
@@ -256,6 +367,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return result.Where(e => e is not null);
     }
 
+    /// <summary>
+    /// Executes the update operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -263,6 +380,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return result.entity;
     }
 
+    /// <summary>
+    /// Executes the upsert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
@@ -321,6 +444,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         if (id == default)
@@ -344,6 +473,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity?.Id == default)
@@ -405,11 +540,22 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
@@ -417,6 +563,12 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
@@ -431,11 +583,23 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await Task.FromResult(result.Count()).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the ensure predicate operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     protected virtual Func<TEntity, bool> EnsurePredicate(ISpecification<TEntity> specification)
     {
         return specification.ToPredicate();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="entities">The entities involved in the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected virtual IEnumerable<TEntity> FindAll(
         IEnumerable<TEntity> entities,
         IFindOptions<TEntity> options = null,

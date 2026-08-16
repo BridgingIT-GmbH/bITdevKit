@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Defines the log key value.
+    /// </summary>
     public const string LogKey = "CMD";
 
+    /// <summary>
+    /// Defines the trace operation handle name value.
+    /// </summary>
     public const string TraceOperationHandleName = "COMMAND_HANDLE";
 }

@@ -11,12 +11,16 @@ namespace BridgingIT.DevKit.Common;
 public class ServiceUnavailableError(string message = null, Exception innerException = null)
     : ResultErrorBase(message ?? "Service is unavailable")
 {
+    /// <summary>Gets the exception that caused or describes the service outage, when available.</summary>
     public Exception InnerException { get; } = innerException;
 
+    /// <summary>Initializes a service-unavailable error with the default message and no exception.</summary>
     public ServiceUnavailableError() : this(null, null)
     {
     }
 
+    /// <summary>Initializes a service-unavailable error from an exception and uses the default message.</summary>
+    /// <param name="innerException">The exception that caused or describes the service outage.</param>
     public ServiceUnavailableError(Exception innerException) : this(null, innerException)
     {
     }

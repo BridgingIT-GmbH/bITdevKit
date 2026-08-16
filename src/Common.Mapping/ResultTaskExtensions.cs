@@ -5,8 +5,15 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Provides mapping operations for values produced by asynchronous result pipelines.</summary>
 public static class ResultTaskExtensions
 {
+    /// <summary>Awaits a result and maps its successful value while preserving result semantics.</summary>
+    /// <typeparam name="T">The source result value type.</typeparam>
+    /// <typeparam name="TNew">The target reference type.</typeparam>
+    /// <param name="resultTask">The task containing the value to map.</param>
+    /// <param name="mapper">The mapper used to transform the successful value.</param>
+    /// <returns>A task containing the mapped result; missing mappers, cancellation, and exceptions are represented as result errors.</returns>
     public static async Task<Result<TNew>> MapResult<T, TNew>(this Task<Result<T>> resultTask, IMapper mapper)
         where TNew : class
     {

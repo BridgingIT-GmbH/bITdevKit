@@ -5,15 +5,31 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+/// <summary>
+/// Configures in memory repository.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public class InMemoryRepositoryOptions<TEntity> : OptionsBase
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Gets or sets the context.
+    /// </summary>
     public InMemoryContext<TEntity> Context { get; set; }
 
+    /// <summary>
+    /// Gets or sets the mapper.
+    /// </summary>
     public IEntityMapper Mapper { get; set; }
 
+    /// <summary>
+    /// Gets or sets the publish events.
+    /// </summary>
     public bool PublishEvents { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the id generator.
+    /// </summary>
     public IEntityIdGenerator<TEntity> IdGenerator { get; set; }
 
     /// <summary>

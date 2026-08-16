@@ -17,6 +17,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
 
+/// <summary>
+/// Represents job scheduling endpoints.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="jobService">The job service used by the operation.</param>
+/// <param name="options">The options controlling the operation.</param>
 public class JobSchedulingEndpoints(
     ILoggerFactory loggerFactory,
     IJobService jobService,
@@ -25,6 +31,7 @@ public class JobSchedulingEndpoints(
     private readonly ILogger<JobSchedulingEndpoints> logger = loggerFactory?.CreateLogger<JobSchedulingEndpoints>() ?? NullLogger<JobSchedulingEndpoints>.Instance;
     private readonly JobSchedulingEndpointsOptions options = options ?? new JobSchedulingEndpointsOptions();
 
+    /// <inheritdoc/>
     public override void Map(IEndpointRouteBuilder app)
     {
         if (!this.Enabled)

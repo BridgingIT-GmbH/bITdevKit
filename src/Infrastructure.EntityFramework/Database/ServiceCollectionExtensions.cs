@@ -10,6 +10,13 @@ using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds database creator service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddDatabaseCreatorService<TContext>(
         this IServiceCollection services,
         Builder<DatabaseCreatorOptionsBuilder, DatabaseCreatorOptions> optionsBuilder)
@@ -19,6 +26,13 @@ public static partial class ServiceCollectionExtensions
             optionsBuilder(new DatabaseCreatorOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Adds database creator service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddDatabaseCreatorService<TContext>(
         this IServiceCollection services,
         DatabaseCreatorOptions options = null)
@@ -42,6 +56,13 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds database migrator service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddDatabaseMigratorService<TContext>(
         this IServiceCollection services,
         Builder<DatabaseMigratorOptionsBuilder, DatabaseMigratorOptions> optionsBuilder)
@@ -51,6 +72,13 @@ public static partial class ServiceCollectionExtensions
             new DatabaseMigratorOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Adds database migrator service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddDatabaseMigratorService<TContext>(
         this IServiceCollection services,
         DatabaseMigratorOptions options = null)
@@ -75,6 +103,13 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds database checker service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddDatabaseCheckerService<TContext>(
         this IServiceCollection services,
         DatabaseCheckerOptions options = null)
@@ -99,6 +134,13 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds db context registration.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="provider">The provider used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddDbContextRegistration<TContext>(
         this IServiceCollection services,
         Provider provider)

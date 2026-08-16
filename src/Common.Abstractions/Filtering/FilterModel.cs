@@ -13,6 +13,9 @@ using System.Runtime.Serialization;
 /// </summary>
 public partial class FilterModel
 {
+    /// <summary>Deserializes a URL query string into filtering, ordering, inclusion, hierarchy, and paging criteria.</summary>
+    /// <param name="queryString">The encoded filter-model query string, with or without a leading question mark.</param>
+    /// <returns>The parsed filter model; an empty model is returned for blank input.</returns>
     public static FilterModel FromQueryString(string queryString)
     {
         return FilterModelExtensions.FromQueryString(queryString);
@@ -206,9 +209,11 @@ public class FilterOrderCriteria
 /// </summary>
 public enum FilterLogicOperator
 {
+    /// <summary>Requires all combined criteria to match.</summary>
     [EnumMember(Value = "and")]
     And,
 
+    /// <summary>Requires at least one combined criterion to match.</summary>
     [EnumMember(Value = "or")]
     Or
 }
@@ -218,60 +223,79 @@ public enum FilterLogicOperator
 /// </summary>
 public enum FilterOperator
 {
+    /// <summary>Matches values that are equal.</summary>
     [EnumMember(Value = "eq")]
     Equal,
 
+    /// <summary>Matches values that are not equal.</summary>
     [EnumMember(Value = "neq")]
     NotEqual,
 
+    /// <summary>Matches null values.</summary>
     [EnumMember(Value = "isnull")]
     IsNull,
 
+    /// <summary>Matches non-null values.</summary>
     [EnumMember(Value = "isnotnull")]
     IsNotNull,
 
+    /// <summary>Matches empty values.</summary>
     [EnumMember(Value = "isempty")]
     IsEmpty,
 
+    /// <summary>Matches values that are not empty.</summary>
     [EnumMember(Value = "isnotempty")]
     IsNotEmpty,
 
+    /// <summary>Matches values greater than the comparison value.</summary>
     [EnumMember(Value = "gt")]
     GreaterThan,
 
+    /// <summary>Matches values greater than or equal to the comparison value.</summary>
     [EnumMember(Value = "gte")]
     GreaterThanOrEqual,
 
+    /// <summary>Matches values less than the comparison value.</summary>
     [EnumMember(Value = "lt")]
     LessThan,
 
+    /// <summary>Matches values less than or equal to the comparison value.</summary>
     [EnumMember(Value = "lte")]
     LessThanOrEqual,
 
+    /// <summary>Matches text containing the comparison text.</summary>
     [EnumMember(Value = "contains")]
     Contains,
 
+    /// <summary>Matches text that does not contain the comparison text.</summary>
     [EnumMember(Value = "doesnotcontain")] // string only
     DoesNotContain,
 
+    /// <summary>Matches text beginning with the comparison text.</summary>
     [EnumMember(Value = "startswith")]
     StartsWith,
 
+    /// <summary>Matches text that does not begin with the comparison text.</summary>
     [EnumMember(Value = "doesnotstartwith")] // string only
     DoesNotStartWith,
 
+    /// <summary>Matches text ending with the comparison text.</summary>
     [EnumMember(Value = "endswith")]
     EndsWith,
 
+    /// <summary>Matches text that does not end with the comparison text.</summary>
     [EnumMember(Value = "doesnotendwith")] // string only
     DoesNotEndWith,
 
+    /// <summary>Matches when any child criterion is satisfied.</summary>
     [EnumMember(Value = "any")]
     Any, // children
 
+    /// <summary>Matches when all child criteria are satisfied.</summary>
     [EnumMember(Value = "all")]
     All, // children
 
+    /// <summary>Matches when no child criterion is satisfied.</summary>
     [EnumMember(Value = "none")]
     None, // children
 }
@@ -281,51 +305,67 @@ public enum FilterOperator
 /// </summary>
 public enum FilterCustomType
 {
+    /// <summary>Indicates that no custom filtering behavior is requested.</summary>
     [EnumMember(Value = "none")]
     None,
 
+    /// <summary>Performs a full-text search using a search term and selected fields.</summary>
     [EnumMember(Value = "fulltextsearch")] // params: searchTerm, fields
     FullTextSearch,
 
+    /// <summary>Filters a field between start and end dates.</summary>
     [EnumMember(Value = "daterange")] // params: field, startDate, endDate, inclusive
     DateRange,
 
+    /// <summary>Filters a date field relative to a reference date and direction.</summary>
     [EnumMember(Value = "daterelative")] // params: field, unit (day/week/month/year), amount, direction (past/future)
     DateRelative,
 
+    /// <summary>Filters a field between start and end times.</summary>
     [EnumMember(Value = "timerange")] // params: field, startTime, endTime, inclusive
     TimeRange,
 
+    /// <summary>Filters a time field relative to a reference time and direction.</summary>
     [EnumMember(Value = "timerelative")] // params: field, unit (minute/hour), amount, direction (past/future)
     TimeRelative,
 
+    /// <summary>Filters a numeric field between minimum and maximum values.</summary>
     [EnumMember(Value = "numericrange")] // params: field, min, max
     NumericRange,
 
+    /// <summary>Filters for a null field value.</summary>
     [EnumMember(Value = "isnull")] // params: field
     IsNull,
 
+    /// <summary>Filters for a non-null field value.</summary>
     [EnumMember(Value = "isnotnull")] // params:field
     IsNotNull,
 
+    /// <summary>Filters an enum field to a supplied set of values.</summary>
     [EnumMember(Value = "enumvalues")] // params: field, values
     EnumValues,
 
+    /// <summary>Filters text to values contained in a supplied set.</summary>
     [EnumMember(Value = "textin")] // params: field, values
     TextIn,
 
+    /// <summary>Filters text to values absent from a supplied set.</summary>
     [EnumMember(Value = "textnotin")] // params: field, values
     TextNotIn,
 
+    /// <summary>Filters numeric values to those contained in a supplied set.</summary>
     [EnumMember(Value = "numericin")] // params: field, values
     NumericIn,
 
+    /// <summary>Filters numeric values to those absent from a supplied set.</summary>
     [EnumMember(Value = "numericnotin")] // params: field, values
     NumericNotIn,
 
+    /// <summary>Invokes a registered specification by name and arguments.</summary>
     [EnumMember(Value = "namedspecification")]
     NamedSpecification,
 
+    /// <summary>Evaluates a tree of named specification nodes.</summary>
     [EnumMember(Value = "compositespecification")]
     CompositeSpecification
 }
@@ -383,30 +423,39 @@ public class SpecificationGroup : SpecificationNode
 /// </summary>
 public enum OrderDirection
 {
+    /// <summary>Orders values from lowest to highest.</summary>
     [EnumMember(Value = "asc")]
     Ascending,
 
+    /// <summary>Orders values from highest to lowest.</summary>
     [EnumMember(Value = "desc")]
     Descending
 }
 
+/// <summary>Defines standard result-page capacities for filter-model queries.</summary>
 public enum PageSize
 {
+    /// <summary>Uses an extra-small page containing 5 items.</summary>
     [EnumMember(Value = "xs")]
     ExtraSmall = 5,      // extra small page size
 
+    /// <summary>Uses a small page containing 10 items.</summary>
     [EnumMember(Value = "s")]
     Small = 10,      // small page size
 
+    /// <summary>Uses a medium page containing 25 items.</summary>
     [EnumMember(Value = "m")]
     Medium = 25,     // medium page size
 
+    /// <summary>Uses a large page containing 50 items.</summary>
     [EnumMember(Value = "l")]
     Large = 50,      // large page size
 
+    /// <summary>Uses an extra-large page containing 100 items.</summary>
     [EnumMember(Value = "xl")]
     ExtraLarge = 100, // Extra large page size
 
+    /// <summary>Uses an extra-extra-large page containing 1,000 items.</summary>
     [EnumMember(Value = "xxl")]
     ExtraExtraLarge = 1000 // Extra extra large page size
 }

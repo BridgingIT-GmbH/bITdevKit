@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System.Globalization;
 
+/// <summary>
+/// Represents money.
+/// </summary>
 public class Money : DecimalValueObject
 {
     private int? cachedHashCode;
@@ -19,30 +22,57 @@ public class Money : DecimalValueObject
         this.Currency = currency;
     }
 
+    /// <summary>
+    /// Gets or sets the currency.
+    /// </summary>
     public Currency Currency { get; protected set; }
 
+    /// <summary>
+    /// Executes the zero operation.
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     public static Money Zero()
     {
         return Create(0);
     }
 
+    /// <summary>
+    /// Executes the zero operation.
+    /// </summary>
+    /// <param name="currency">The currency used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Money Zero(Currency currency)
     {
         return Create(0, currency);
     }
 
+    /// <summary>
+    /// Determines whether is zero.
+    /// </summary>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool IsZero()
     {
         return this.Amount == 0;
     }
 
 #pragma warning disable SA1201 // Elements should appear in the correct order
+    /// <summary>
+    /// Executes the implicit operator decimal operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static implicit operator decimal(Money value)
     {
         return value.Amount;
     }
 #pragma warning restore SA1201 // Elements should appear in the correct order
 
+    /// <summary>
+    /// Executes the operator == operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(Money a, Money b)
     {
         if (ReferenceEquals(a, b))
@@ -58,11 +88,23 @@ public class Money : DecimalValueObject
         return false;
     }
 
+    /// <summary>
+    /// Executes the operator != operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(Money a, Money b)
     {
         return !(a == b);
     }
 
+    /// <summary>
+    /// Executes the operator + operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Money operator +(Money a, Money b)
     {
         if (a.Currency != b.Currency)
@@ -73,6 +115,12 @@ public class Money : DecimalValueObject
         return new Money(a.Amount + b.Amount, a.Currency);
     }
 
+    /// <summary>
+    /// Executes the operator   operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Money operator -(Money a, Money b)
     {
         if (a.Currency != b.Currency)
@@ -83,11 +131,22 @@ public class Money : DecimalValueObject
         return new Money(a.Amount - b.Amount, a.Currency);
     }
 
+    /// <summary>
+    /// Creates .
+    /// </summary>
+    /// <param name="amount">The amount used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Money Create(decimal amount)
     {
         return new Money(amount, Currency.UsDollar);
     }
 
+    /// <summary>
+    /// Creates .
+    /// </summary>
+    /// <param name="amount">The amount used by the operation.</param>
+    /// <param name="currency">The currency used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Money Create(decimal amount, Currency currency)
     {
         EnsureArg.IsNotNull(currency, nameof(currency));
@@ -95,6 +154,7 @@ public class Money : DecimalValueObject
         return new Money(amount, currency);
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj)
     {
         if (obj is null || obj.GetType() != this.GetType())
@@ -118,17 +178,20 @@ public class Money : DecimalValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.Format(this.Amount, this.Currency.Code);
     }
 
+    /// <inheritdoc/>
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return this.Currency.Code;
         yield return this.Amount;
     }
 
+    /// <inheritdoc/>
     protected override IEnumerable<IComparable> GetComparableAtomicValues()
     {
         yield return this.Currency.Code;

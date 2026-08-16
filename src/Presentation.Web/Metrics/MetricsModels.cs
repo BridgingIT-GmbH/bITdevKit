@@ -329,36 +329,84 @@ public class MetricsOverviewSnapshotModel : MetricsSnapshotBase
 /// </summary>
 public class DotNetMetricsSnapshotModel : MetricsSnapshotBase
 {
+    /// <summary>
+    /// Gets or sets the cpu usage percent.
+    /// </summary>
     public double CpuUsagePercent { get; set; }
 
+    /// <summary>
+    /// Gets or sets the working set mb.
+    /// </summary>
     public double WorkingSetMb { get; set; }
 
+    /// <summary>
+    /// Gets or sets the private memory mb.
+    /// </summary>
     public double PrivateMemoryMb { get; set; }
 
+    /// <summary>
+    /// Gets or sets the managed memory mb.
+    /// </summary>
     public double ManagedMemoryMb { get; set; }
 
+    /// <summary>
+    /// Gets or sets the heap size mb.
+    /// </summary>
     public double HeapSizeMb { get; set; }
 
+    /// <summary>
+    /// Gets or sets the fragmented memory mb.
+    /// </summary>
     public double FragmentedMemoryMb { get; set; }
 
+    /// <summary>
+    /// Gets or sets the total allocated mb.
+    /// </summary>
     public double TotalAllocatedMb { get; set; }
 
+    /// <summary>
+    /// Gets or sets the gen0 collections.
+    /// </summary>
     public long Gen0Collections { get; set; }
 
+    /// <summary>
+    /// Gets or sets the gen1 collections.
+    /// </summary>
     public long Gen1Collections { get; set; }
 
+    /// <summary>
+    /// Gets or sets the gen2 collections.
+    /// </summary>
     public long Gen2Collections { get; set; }
 
+    /// <summary>
+    /// Gets or sets the thread count.
+    /// </summary>
     public int ThreadCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the worker threads used.
+    /// </summary>
     public int WorkerThreadsUsed { get; set; }
 
+    /// <summary>
+    /// Gets or sets the worker threads available.
+    /// </summary>
     public int WorkerThreadsAvailable { get; set; }
 
+    /// <summary>
+    /// Gets or sets the io threads used.
+    /// </summary>
     public int IoThreadsUsed { get; set; }
 
+    /// <summary>
+    /// Gets or sets the io threads available.
+    /// </summary>
     public int IoThreadsAvailable { get; set; }
 
+    /// <summary>
+    /// Gets or sets the pending work items.
+    /// </summary>
     public long PendingWorkItems { get; set; }
 }
 
@@ -367,34 +415,79 @@ public class DotNetMetricsSnapshotModel : MetricsSnapshotBase
 /// </summary>
 public class AspNetMetricsSnapshotModel : MetricsSnapshotBase
 {
+    /// <summary>
+    /// Gets or sets the total requests.
+    /// </summary>
     public long TotalRequests { get; set; }
 
+    /// <summary>
+    /// Gets or sets the tracked route count.
+    /// </summary>
     public long TrackedRouteCount { get; set; }
 
+    /// <summary>
+    /// Gets or sets the active requests.
+    /// </summary>
     public long ActiveRequests { get; set; }
 
+    /// <summary>
+    /// Gets or sets the max observed concurrent requests.
+    /// </summary>
     public long MaxObservedConcurrentRequests { get; set; }
 
+    /// <summary>
+    /// Gets or sets the failed requests.
+    /// </summary>
     public long FailedRequests { get; set; }
 
+    /// <summary>
+    /// Gets or sets the failure rate percent.
+    /// </summary>
     public double FailureRatePercent { get; set; }
 
+    /// <summary>
+    /// Gets or sets the average latency ms.
+    /// </summary>
     public double AverageLatencyMs { get; set; }
 
+    /// <summary>
+    /// Gets or sets the total latency ms.
+    /// </summary>
     public long TotalLatencyMs { get; set; }
 
+    /// <summary>
+    /// Gets or sets the requests per minute.
+    /// </summary>
     public double RequestsPerMinute { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status1xx.
+    /// </summary>
     public long Status1xx { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status2xx.
+    /// </summary>
     public long Status2xx { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status3xx.
+    /// </summary>
     public long Status3xx { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status4xx.
+    /// </summary>
     public long Status4xx { get; set; }
 
+    /// <summary>
+    /// Gets or sets the status5xx.
+    /// </summary>
     public long Status5xx { get; set; }
 
+    /// <summary>
+    /// Gets or sets the last request at utc.
+    /// </summary>
     public DateTimeOffset? LastRequestAtUtc { get; set; }
 }
 

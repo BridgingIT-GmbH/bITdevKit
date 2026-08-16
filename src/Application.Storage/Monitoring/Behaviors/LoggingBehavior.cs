@@ -9,10 +9,19 @@ using System;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Provides logging behavior.
+/// </summary>
+/// <param name="logger">The logger that receives diagnostic events.</param>
 public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehavior
 {
     private readonly ILogger<LoggingBehavior> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>
+    /// Executes the on scan started operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public void OnScanStarted(FileScanContext context, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -22,6 +31,12 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
             context.StartTime);
     }
 
+    /// <summary>
+    /// Executes the on file detected operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="fileEvent">The file event used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public void OnFileDetected(FileScanContext context, FileEvent fileEvent, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -34,6 +49,12 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
             fileEvent.Checksum);
     }
 
+    /// <summary>
+    /// Executes the on scan completed operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="duration">The duration used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public void OnScanCompleted(FileScanContext context, TimeSpan duration, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Defines operations for i log entry service.
+/// </summary>
 public interface ILogEntryService
 {
     /// <summary>

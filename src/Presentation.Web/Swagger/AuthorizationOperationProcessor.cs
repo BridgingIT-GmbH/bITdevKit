@@ -10,10 +10,19 @@ using NSwag;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
+/// <summary>
+/// Represents authorization operation processor.
+/// </summary>
+/// <param name="name">The name of the value.</param>
 public class AuthorizationOperationProcessor(string name) : IOperationProcessor
 {
     private readonly string name = name;
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool Process(OperationProcessorContext context)
     {
         if (this.name is not null &&

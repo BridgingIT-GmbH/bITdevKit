@@ -12,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using System.Linq;
 
+/// <summary>
+/// Represents status console command.
+/// </summary>
 public class StatusConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

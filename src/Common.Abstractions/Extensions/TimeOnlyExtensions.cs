@@ -8,8 +8,17 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Globalization;
 
+/// <summary>
+/// Provides clock arithmetic, same-day range checks, boundary alignment, and invariant formatting for <see cref="TimeOnly"/> values.
+/// </summary>
 public static class TimeOnlyExtensions
 {
+    /// <summary>Adds a signed clock-unit amount, wrapping across midnight according to <see cref="TimeOnly"/> arithmetic.</summary>
+    /// <param name="time">The time to adjust.</param>
+    /// <param name="unit">The clock unit to add.</param>
+    /// <param name="amount">The signed number of units.</param>
+    /// <returns>The adjusted time of day.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="unit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static TimeOnly Add(this TimeOnly time, TimeUnit unit, int amount)
     {
@@ -24,12 +33,25 @@ public static class TimeOnlyExtensions
         };
     }
 
+    /// <summary>Determines whether a time lies between two same-day boundaries.</summary>
+    /// <param name="time">The time to evaluate.</param>
+    /// <param name="start">The lower same-day boundary.</param>
+    /// <param name="end">The upper same-day boundary.</param>
+    /// <param name="inclusive">Whether equality with either boundary counts as in range.</param>
+    /// <returns><see langword="true"/> when the selected boundary comparison succeeds.</returns>
     [DebuggerStepThrough]
     public static bool IsInRange(this TimeOnly time, TimeOnly start, TimeOnly end, bool inclusive = true)
     {
         return inclusive ? time >= start && time <= end : time > start && time < end;
     }
 
+    /// <summary>Determines whether a time is within a past or future same-day range relative to the current local time.</summary>
+    /// <param name="time">The time to evaluate.</param>
+    /// <param name="unit">The clock unit used to calculate the boundary.</param>
+    /// <param name="amount">The number of units between now and the boundary.</param>
+    /// <param name="direction">Whether the range extends into the past or future.</param>
+    /// <param name="inclusive">Whether now and the calculated boundary are included.</param>
+    /// <returns><see langword="true"/> when the time lies in the same-day range.</returns>
     [DebuggerStepThrough]
     public static bool IsInRelativeRange(this TimeOnly time, TimeUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
     {
@@ -67,6 +89,11 @@ public static class TimeOnlyExtensions
             : (inclusive ? time >= reference && time <= referenceTime : time > reference && time < referenceTime);
     }
 
+    /// <summary>Floors a time to the start of its containing millisecond, second, minute, hour, or day.</summary>
+    /// <param name="timeOnly">The time to floor.</param>
+    /// <param name="timeUnit">The clock boundary to use.</param>
+    /// <returns>The aligned time.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="timeUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static TimeOnly FloorTo(this TimeOnly timeOnly, TimeUnit timeUnit)
     {
@@ -103,6 +130,11 @@ public static class TimeOnlyExtensions
         return TimeOnly.FromTimeSpan(TimeSpan.FromTicks(timeOnly.Ticks - (timeOnly.Ticks % interval.Ticks)));
     }
 
+    /// <summary>Moves a time to the next clock-unit boundary unless it is already aligned.</summary>
+    /// <param name="timeOnly">The time to ceiling.</param>
+    /// <param name="timeUnit">The clock boundary to use.</param>
+    /// <returns>The aligned time; a day ceiling wraps to midnight.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="timeUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static TimeOnly CeilingTo(this TimeOnly timeOnly, TimeUnit timeUnit)
     {
@@ -140,6 +172,11 @@ public static class TimeOnlyExtensions
         return floor == timeOnly ? timeOnly : floor.Add(interval);
     }
 
+    /// <summary>Rounds a time to the nearest clock unit using half-up tick arithmetic and wraps at midnight.</summary>
+    /// <param name="timeOnly">The time to round.</param>
+    /// <param name="timeUnit">The clock unit used as the rounding interval.</param>
+    /// <returns>The rounded time of day.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="timeUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static TimeOnly RoundToNearest(this TimeOnly timeOnly, TimeUnit timeUnit)
     {

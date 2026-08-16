@@ -16,12 +16,28 @@ using BridgingIT.DevKit.Common;
 [DebuggerDisplay("LocationName={LocationName}, Description={Description}")]
 public abstract class BaseFileStorageProvider(string locationName) : IFileStorageProvider
 {
+    /// <summary>
+    /// Gets the location name.
+    /// </summary>
     public string LocationName { get; } = locationName ?? throw new ArgumentNullException(nameof(locationName));
 
+    /// <summary>
+    /// Gets or sets the description.
+    /// </summary>
     public virtual string Description { get; set; } = locationName;
 
+    /// <summary>
+    /// Gets the supports notifications.
+    /// </summary>
     public virtual bool SupportsNotifications { get; }
 
+    /// <summary>
+    /// Executes the file exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -49,6 +65,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the read file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -76,6 +99,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="content">The content used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -103,6 +134,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the open write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="useTemporaryWrite">The use temporary write used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -135,6 +174,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Deletes file.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -162,6 +208,12 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Gets checksum.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -189,6 +241,12 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Gets file metadata.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -216,6 +274,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the set file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadata">The metadata used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         try
@@ -243,6 +308,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the update file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadataUpdate">The metadata update used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         try
@@ -287,6 +359,15 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the list files operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="continuationToken">The continuation token used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern, bool recursive, string continuationToken = null, CancellationToken cancellationToken = default)
     {
@@ -309,6 +390,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the copy file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -336,6 +425,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the rename file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -363,6 +460,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the rename directory operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)
     {
         try
@@ -390,6 +494,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the move file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try
@@ -417,6 +529,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the copy files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (filePairs?.Any() != true)
@@ -480,6 +599,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Deletes files.
+    /// </summary>
+    /// <param name="paths">The paths used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (paths?.Any() != true)
@@ -543,6 +669,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the move files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (filePairs?.Any() != true)
@@ -606,6 +739,12 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the directory exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -632,6 +771,12 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Creates directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         try
@@ -659,6 +804,13 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Deletes directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         try
@@ -686,6 +838,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the list directories operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
         string path, string searchPattern, bool recursive, CancellationToken cancellationToken = default)
     {
@@ -708,6 +868,11 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the check health operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -735,6 +900,14 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    /// <summary>
+    /// Executes the report progress operation.
+    /// </summary>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="bytesProcessed">The bytes processed used by the operation.</param>
+    /// <param name="filesProcessed">The files processed used by the operation.</param>
+    /// <param name="totalFiles">The total files used by the operation.</param>
     public virtual void ReportProgress(IProgress<FileProgress> progress, string path, long bytesProcessed, long filesProcessed, long totalFiles = 1)
     {
         progress?.Report(new FileProgress

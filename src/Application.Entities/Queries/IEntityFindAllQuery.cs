@@ -5,7 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+/// <summary>
+/// Defines operations for i entity find all query.
+/// </summary>
 public interface IEntityFindAllQuery;
 
+/// <summary>
+/// Defines operations for i entity find all query.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public interface IEntityFindAllQuery<TEntity> : IEntityFindAllQuery
     where TEntity : class, IEntity;

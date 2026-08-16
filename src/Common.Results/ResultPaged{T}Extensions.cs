@@ -1223,6 +1223,12 @@ public static class ResultPagedExtensions
         }
     }
 
+    /// <summary>Applies a result-producing operation to each paged value and collects successful output while preserving pagination.</summary>
+    /// <typeparam name="T">The source item type.</typeparam>
+    /// <typeparam name="TOutput">The collected output item type.</typeparam>
+    /// <param name="result">The paged result whose values are processed.</param>
+    /// <param name="operation">The operation applied independently to each source item.</param>
+    /// <returns>A paged success containing all output values when every operation succeeds; otherwise, a failure containing collected errors and messages.</returns>
     public static ResultPaged<TOutput> Collect<T, TOutput>(this ResultPaged<T> result, Func<T, Result<TOutput>> operation)
     {
         if (!result.IsSuccess || operation is null)

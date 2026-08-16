@@ -79,6 +79,11 @@ public sealed class DbContextResolver(IServiceProvider serviceProvider) : IDbCon
 
     private static readonly ConcurrentDictionary<string, Type> TypeCache = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Executes the resolve operation.
+    /// </summary>
+    /// <param name="contextName">The context name used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public DbContext Resolve(string contextName)
     {
         if (string.IsNullOrWhiteSpace(contextName))
@@ -92,6 +97,11 @@ public sealed class DbContextResolver(IServiceProvider serviceProvider) : IDbCon
         return this.ResolveInternal(contextType);
     }
 
+    /// <summary>
+    /// Executes the resolve operation.
+    /// </summary>
+    /// <param name="contextType">The context type used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public DbContext Resolve(Type contextType)
     {
         if (contextType is null || !typeof(DbContext).IsAssignableFrom(contextType))

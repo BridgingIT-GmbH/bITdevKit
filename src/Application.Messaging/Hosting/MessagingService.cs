@@ -29,6 +29,13 @@ public class MessagingService : BackgroundService
     private IServiceScope scope;
     private IMessageBrokerRuntime broker;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>MessagingService</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="applicationLifetime">The application lifetime used by the operation.</param>
+    /// <param name="serviceProvider">The service provider used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public MessagingService(
         ILoggerFactory loggerFactory,
         IHostApplicationLifetime applicationLifetime,

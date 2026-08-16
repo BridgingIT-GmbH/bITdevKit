@@ -12,11 +12,16 @@ using FluentValidation.Results;
 /// </summary>
 public interface IMessage
 {
+    /// <summary>Gets the identifier used to correlate and distinguish the message.</summary>
     string MessageId { get; }
 
+    /// <summary>Gets the time associated with creation of the message.</summary>
     DateTimeOffset Timestamp { get; }
 
+    /// <summary>Gets extensible metadata that accompanies the message.</summary>
     IDictionary<string, object> Properties { get; }
 
+    /// <summary>Validates the message before it is published or handled.</summary>
+    /// <returns>A result containing any validation failures.</returns>
     ValidationResult Validate();
 }

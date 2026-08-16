@@ -9,15 +9,23 @@ using Humanizer;
 using Polly;
 using Polly.Retry;
 
+/// <summary>
+/// Provides circuit breaker query behavior.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactory)
     : QueryBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, MediatR.IRequest<TResponse>
 {
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request)
     {
         return request is ICircuitBreakerQuery;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,

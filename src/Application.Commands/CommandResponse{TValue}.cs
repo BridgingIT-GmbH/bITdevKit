@@ -5,8 +5,16 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Represents command response.
+/// </summary>
+/// <typeparam name="TResult">The result type.</typeparam>
+/// <param name="cancelledReason">The cancelled reason used by the operation.</param>
 public class CommandResponse<TResult>(string cancelledReason = null)
     : CommandResponse(cancelledReason)
 {
+    /// <summary>
+    /// Gets or sets the result.
+    /// </summary>
     public TResult Result { get; set; }
 }

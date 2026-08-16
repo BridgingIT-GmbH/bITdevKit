@@ -13,8 +13,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with service bus broker operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithServiceBusBroker(
         this MessagingBuilderContext context,
         ServiceBusMessageBrokerConfiguration configuration = null,

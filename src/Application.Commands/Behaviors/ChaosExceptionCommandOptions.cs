@@ -5,11 +5,20 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Defines operations for i chaos exception command.
+/// </summary>
 public interface IChaosExceptionCommand
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     ChaosExceptionCommandOptions Options { get; }
 }
 
+/// <summary>
+/// Configures chaos exception command.
+/// </summary>
 public class ChaosExceptionCommandOptions
 {
     /// <summary>
@@ -18,5 +27,8 @@ public class ChaosExceptionCommandOptions
     /// </summary>
     public double InjectionRate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the fault.
+    /// </summary>
     public Exception Fault { get; set; } = new ChaosException();
 }

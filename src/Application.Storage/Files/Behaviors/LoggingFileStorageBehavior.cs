@@ -20,14 +20,33 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
     private readonly ILogger<LoggingFileStorageBehavior> logger = loggerFactory?.CreateLogger<LoggingFileStorageBehavior>() ?? NullLoggerFactory.Instance.CreateLogger<LoggingFileStorageBehavior>();
     private readonly LoggingOptions options = options ?? new LoggingOptions();
 
+    /// <summary>
+    /// Gets the inner provider.
+    /// </summary>
     public IFileStorageProvider InnerProvider => this.innerProvider;
 
+    /// <summary>
+    /// Gets the location name.
+    /// </summary>
     public string LocationName => this.InnerProvider.LocationName;
 
+    /// <summary>
+    /// Gets the description.
+    /// </summary>
     public string Description => this.InnerProvider.Description;
 
+    /// <summary>
+    /// Gets the supports notifications.
+    /// </summary>
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
+    /// <summary>
+    /// Executes the file exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -44,6 +63,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the read file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogRead(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -60,6 +86,14 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="content">The content used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogWrite(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -76,6 +110,14 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the open write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="useTemporaryWrite">The use temporary write used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         this.logger.LogInformation("[{LogKey}] file storage: open write (type={LocationName}, path={Path}, temporary={UseTemporaryWrite})", Constants.LogKey, this.innerProvider.LocationName, path, useTemporaryWrite);
@@ -92,6 +134,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Deletes file.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogDelete(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -108,6 +157,12 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Gets checksum.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogChecksum(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -124,6 +179,12 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Gets file metadata.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogInfo(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -140,6 +201,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the set file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadata">The metadata used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogSetMetadata(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -156,6 +224,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the update file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadataUpdate">The metadata update used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogUpdateMetadata(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -172,6 +247,15 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the list files operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="continuationToken">The continuation token used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)
     {
@@ -189,6 +273,14 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the copy file operation.
+    /// </summary>
+    /// <param name="sourcePath">The source path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogCopy(this.logger, Constants.LogKey, this.innerProvider.LocationName, sourcePath, destinationPath);
@@ -205,6 +297,14 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the rename file operation.
+    /// </summary>
+    /// <param name="oldPath">The old path used by the operation.</param>
+    /// <param name="newPath">The new path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogRenameFile(this.logger, Constants.LogKey, this.innerProvider.LocationName, oldPath, newPath);
@@ -221,6 +321,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the rename directory operation.
+    /// </summary>
+    /// <param name="oldPath">The old path used by the operation.</param>
+    /// <param name="newPath">The new path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> RenameDirectoryAsync(string oldPath, string newPath, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogRenameDirectory(this.logger, Constants.LogKey, this.innerProvider.LocationName, oldPath, newPath);
@@ -237,6 +344,14 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the move file operation.
+    /// </summary>
+    /// <param name="sourcePath">The source path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogMove(this.logger, Constants.LogKey, this.innerProvider.LocationName, sourcePath, destinationPath);
@@ -253,6 +368,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the copy files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var pairDescriptions = string.Join(", ", filePairs.Select(p => $"({p.SourcePath} -> {p.DestinationPath})"));
@@ -270,6 +392,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the move files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var pairDescriptions = string.Join(", ", filePairs.Select(p => $"({p.SourcePath} -> {p.DestinationPath})"));
@@ -287,6 +416,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Deletes files.
+    /// </summary>
+    /// <param name="paths">The paths used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var pathList = string.Join(", ", paths);
@@ -304,6 +440,12 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the directory exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogIsDirectory(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -320,6 +462,12 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Creates directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogCreateDirectory(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);
@@ -336,6 +484,13 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Deletes directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogDeleteDirectory(this.logger, Constants.LogKey, this.innerProvider.LocationName, path, recursive);
@@ -352,6 +507,14 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the list directories operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
         string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)
     {
@@ -369,6 +532,11 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Executes the check health operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         TypedLogger.LogCheckHealth(this.logger, Constants.LogKey, this.innerProvider.LocationName, this.innerProvider.LocationName);
@@ -385,68 +553,225 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the exists operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] file storage: exists (type={LocationName}, path={Path})")]
         public static partial void LogExists(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the read operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] file storage: read (type={LocationName}, path={Path})")]
         public static partial void LogRead(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the write operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] file storage: write (type={LocationName}, path={Path})")]
         public static partial void LogWrite(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the delete operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(3, LogLevel.Information, "[{LogKey}] file storage: delete (type={LocationName}, path={Path})")]
         public static partial void LogDelete(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the checksum operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(4, LogLevel.Information, "[{LogKey}] file storage: checksum (type={LocationName}, path={Path})")]
         public static partial void LogChecksum(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the info operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(5, LogLevel.Information, "[{LogKey}] file storage: info (type={LocationName}, path={Path})")]
         public static partial void LogInfo(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the set metadata operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(6, LogLevel.Information, "[{LogKey}] file storage: set metadata (type={LocationName}, path={Path})")]
         public static partial void LogSetMetadata(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the update metadata operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(7, LogLevel.Information, "[{LogKey}] file storage: update metadata (type={LocationName}, path={Path})")]
         public static partial void LogUpdateMetadata(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the list files operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="pattern">The pattern used by the operation.</param>
         [LoggerMessage(8, LogLevel.Information, "[{LogKey}] file storage: list files (type={LocationName}, path={Path}, pattern={Pattern})")]
         public static partial void LogListFiles(ILogger logger, string logKey, string locationName, string path, string pattern);
 
+        /// <summary>
+        /// Writes a log entry for the copy operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="source">The source sequence.</param>
+        /// <param name="destination">The destination used by the operation.</param>
         [LoggerMessage(9, LogLevel.Information, "[{LogKey}] file storage: copy (type={LocationName}, source={Source}, destination={Destination})")]
         public static partial void LogCopy(ILogger logger, string logKey, string locationName, string source, string destination);
 
+        /// <summary>
+        /// Writes a log entry for the rename file operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="oldPath">The old path used by the operation.</param>
+        /// <param name="newPath">The new path used by the operation.</param>
         [LoggerMessage(10, LogLevel.Information, "[{LogKey}] file storage: rename (type={LocationName}, oldPath={OldPath}, newPath={NewPath})")]
         public static partial void LogRenameFile(ILogger logger, string logKey, string locationName, string oldPath, string newPath);
 
+        /// <summary>
+        /// Writes a log entry for the rename directory operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="oldPath">The old path used by the operation.</param>
+        /// <param name="newPath">The new path used by the operation.</param>
         [LoggerMessage(10, LogLevel.Information, "[{LogKey}] file storage: rename (type={LocationName}, oldPath={OldPath}, newPath={NewPath})")]
         public static partial void LogRenameDirectory(ILogger logger, string logKey, string locationName, string oldPath, string newPath);
 
+        /// <summary>
+        /// Writes a log entry for the move operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="source">The source sequence.</param>
+        /// <param name="destination">The destination used by the operation.</param>
         [LoggerMessage(11, LogLevel.Information, "[{LogKey}] file storage: move (type={LocationName}, source={Source}, destination={Destination})")]
         public static partial void LogMove(ILogger logger, string logKey, string locationName, string source, string destination);
 
+        /// <summary>
+        /// Writes a log entry for the copy multiple operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="pairs">The pairs used by the operation.</param>
         [LoggerMessage(12, LogLevel.Information, "[{LogKey}] file storage: copy multiple (type={LocationName}, pairs={Pairs})")]
         public static partial void LogCopyMultiple(ILogger logger, string logKey, string locationName, string pairs);
 
+        /// <summary>
+        /// Writes a log entry for the move multiple operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="pairs">The pairs used by the operation.</param>
         [LoggerMessage(13, LogLevel.Information, "[{LogKey}] file storage: move multiple (type={LocationName}, pairs={Pairs})")]
         public static partial void LogMoveMultiple(ILogger logger, string logKey, string locationName, string pairs);
 
+        /// <summary>
+        /// Writes a log entry for the delete multiple operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="paths">The paths used by the operation.</param>
         [LoggerMessage(14, LogLevel.Information, "[{LogKey}] file storage: delete multiple (type={LocationName}, paths={Paths})")]
         public static partial void LogDeleteMultiple(ILogger logger, string logKey, string locationName, string paths);
 
+        /// <summary>
+        /// Writes a log entry for the is directory operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(15, LogLevel.Information, "[{LogKey}] file storage: is directory (type={LocationName}, path={Path})")]
         public static partial void LogIsDirectory(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the create directory operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
         [LoggerMessage(16, LogLevel.Information, "[{LogKey}] file storage: create directory (type={LocationName}, path={Path})")]
         public static partial void LogCreateDirectory(ILogger logger, string logKey, string locationName, string path);
 
+        /// <summary>
+        /// Writes a log entry for the delete directory operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="recursive">The recursive used by the operation.</param>
         [LoggerMessage(17, LogLevel.Information, "[{LogKey}] file storage: delete directory (type={LocationName}, path={Path}, recursive={Recursive})")]
         public static partial void LogDeleteDirectory(ILogger logger, string logKey, string locationName, string path, bool recursive);
 
+        /// <summary>
+        /// Writes a log entry for the list directories operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="path">The path used by the operation.</param>
+        /// <param name="pattern">The pattern used by the operation.</param>
         [LoggerMessage(18, LogLevel.Information, "[{LogKey}] file storage: list directories (type={LocationName}, path={Path}, pattern={Pattern})")]
         public static partial void LogListDirectories(ILogger logger, string logKey, string locationName, string path, string pattern);
 
+        /// <summary>
+        /// Writes a log entry for the check health operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="location">The location used by the operation.</param>
         [LoggerMessage(19, LogLevel.Information, "[{LogKey}] file storage: check health (type={LocationName}, location={Location})")]
         public static partial void LogCheckHealth(ILogger logger, string logKey, string locationName, string location);
     }
@@ -457,5 +782,8 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
 /// </summary>
 public class LoggingOptions
 {
+    /// <summary>
+    /// Gets or sets the min level.
+    /// </summary>
     public LogLevel MinLevel { get; set; } = LogLevel.Information;
 }

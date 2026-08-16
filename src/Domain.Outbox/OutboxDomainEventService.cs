@@ -32,6 +32,14 @@ public class OutboxDomainEventService : BackgroundService
     private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>OutboxDomainEventService</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="worker">The worker used by the operation.</param>
+    /// <param name="applicationLifetime">The application lifetime used by the operation.</param>
+    /// <param name="databaseReadyService">The database ready service used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public OutboxDomainEventService(
         ILoggerFactory loggerFactory,
         IOutboxDomainEventWorker worker,

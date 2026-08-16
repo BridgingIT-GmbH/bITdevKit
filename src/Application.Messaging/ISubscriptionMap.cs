@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Defines operations for i subscription map.
+/// </summary>
 public interface ISubscriptionMap
 {
     /// <summary>
@@ -67,6 +70,9 @@ public interface ISubscriptionMap
     /// </summary>
     void Remove(string messageName, Type handler);
 
+    /// <summary>
+    /// Removes all.
+    /// </summary>
     void RemoveAll();
 
     /// <summary>

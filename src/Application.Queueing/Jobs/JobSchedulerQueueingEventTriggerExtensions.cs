@@ -17,6 +17,11 @@ namespace BridgingIT.DevKit.Application.Queueing.Jobs
         private readonly IJobEventIngress ingress;
         private readonly ILogger<JobSchedulerQueueEnqueuerAcceptedEventBehavior> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <c>JobSchedulerQueueEnqueuerAcceptedEventBehavior</c> class.
+        /// </summary>
+        /// <param name="ingress">The ingress used by the operation.</param>
+        /// <param name="loggerFactory">The factory used to create loggers.</param>
         public JobSchedulerQueueEnqueuerAcceptedEventBehavior(
             IJobEventIngress ingress,
             ILoggerFactory loggerFactory = null)
@@ -25,6 +30,13 @@ namespace BridgingIT.DevKit.Application.Queueing.Jobs
             this.logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<JobSchedulerQueueEnqueuerAcceptedEventBehavior>();
         }
 
+        /// <summary>
+        /// Executes the enqueue operation.
+        /// </summary>
+        /// <param name="message">The message associated with the operation.</param>
+        /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+        /// <param name="next">The next used by the operation.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task Enqueue(IQueueMessage message, CancellationToken cancellationToken, QueueEnqueuerDelegate next)
         {
             await next().ConfigureAwait(false);

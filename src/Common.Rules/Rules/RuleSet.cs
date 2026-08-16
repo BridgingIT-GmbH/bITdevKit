@@ -171,19 +171,33 @@ public static class RuleSet
         StringComparison comparison = StringComparison.Ordinal) =>
         new DoesNotEndWithRule(value, suffix, comparison);
 
-    // Creates a rule to check if a DateTime is before another specified date
+    /// <summary>Creates a rule requiring a date and time to be strictly earlier than another.</summary>
+    /// <param name="value">The date and time to validate.</param>
+    /// <param name="comparisonDate">The exclusive upper boundary.</param>
+    /// <param name="message">The optional failure message.</param>
+    /// <returns>The configured date-comparison rule.</returns>
     public static IRule IsBefore(DateTime value, DateTime comparisonDate, string message = null) =>
         new IsBeforeRule(value, comparisonDate, message);
 
-    // Creates a rule to check if a DateTime is after another specified date
+    /// <summary>Creates a rule requiring a date and time to be strictly later than another.</summary>
+    /// <param name="value">The date and time to validate.</param>
+    /// <param name="comparisonDate">The exclusive lower boundary.</param>
+    /// <param name="message">The optional failure message.</param>
+    /// <returns>The configured date-comparison rule.</returns>
     public static IRule IsAfter(DateTime value, DateTime comparisonDate, string message = null) =>
         new IsAfterRule(value, comparisonDate, message);
 
-    // Creates a rule to check if a boolean value is true
+    /// <summary>Creates a rule requiring a Boolean value to be <see langword="true"/>.</summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="message">The optional failure message.</param>
+    /// <returns>The configured Boolean rule.</returns>
     public static IRule IsTrue(bool value, string message = null) =>
         new IsTrueRule(value, message);
 
-    // Creates a rule to check if a boolean value is false
+    /// <summary>Creates a rule requiring a Boolean value to be <see langword="false"/>.</summary>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="message">The optional failure message.</param>
+    /// <returns>The configured Boolean rule.</returns>
     public static IRule IsFalse(bool value, string message = null) =>
         new IsFalseRule(value, message);
 

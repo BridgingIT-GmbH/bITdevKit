@@ -12,6 +12,9 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 
+/// <summary>
+///     Serializes objects and object sequences as CSV and deserializes CSV records using CsvHelper.
+/// </summary>
 public class CsvSerializer : ISerializer
 {
     private readonly CsvConfiguration config;
@@ -19,6 +22,10 @@ public class CsvSerializer : ISerializer
     private readonly CultureInfo culture;
     private readonly List<Type> classMaps = [];
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CsvSerializer"/> class with DevKit CSV settings.
+    /// </summary>
+    /// <param name="settings">The settings to apply, or <see langword="null"/> to use the defaults.</param>
     public CsvSerializer(CsvSerializerSettings settings = null)
     {
         settings ??= new CsvSerializerSettings();
@@ -27,6 +34,11 @@ public class CsvSerializer : ISerializer
         this.config = this.CreateConfiguration(settings);
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CsvSerializer"/> class with an existing CsvHelper configuration.
+    /// </summary>
+    /// <param name="configuration">The CsvHelper configuration to use.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="configuration"/> is <see langword="null"/>.</exception>
     public CsvSerializer(CsvConfiguration configuration)
     {
         this.config = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -34,6 +46,12 @@ public class CsvSerializer : ISerializer
         this.culture = configuration.CultureInfo;
     }
 
+    /// <summary>
+    ///     Writes a value, or each item in an object sequence, as CSV while leaving the output stream open.
+    /// </summary>
+    /// <param name="value">The value or sequence to serialize. A <see langword="null"/> value is ignored.</param>
+    /// <param name="output">The destination stream. A <see langword="null"/> stream is ignored.</param>
+    /// <exception cref="SerializationException">CsvHelper cannot serialize the value.</exception>
     public void Serialize(object value, Stream output)
     {
         if (value is null || output is null)
@@ -65,6 +83,14 @@ public class CsvSerializer : ISerializer
         }
     }
 
+    /// <summary>
+    ///     Reads all CSV records as instances of the specified runtime type while leaving the input stream open.
+    /// </summary>
+    /// <param name="input">The CSV input stream, or <see langword="null"/> to return <see langword="null"/>.</param>
+    /// <param name="type">The type to create for each CSV record.</param>
+    /// <returns>A list containing the deserialized records, or <see langword="null"/> when <paramref name="input"/> is <see langword="null"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
+    /// <exception cref="SerializationException">The CSV data cannot be deserialized.</exception>
     public object Deserialize(Stream input, Type type)
     {
         if (type is null)
@@ -104,6 +130,13 @@ public class CsvSerializer : ISerializer
         }
     }
 
+    /// <summary>
+    ///     Reads the first CSV record as an instance of <typeparamref name="T"/> while leaving the input stream open.
+    /// </summary>
+    /// <typeparam name="T">The record type to create.</typeparam>
+    /// <param name="input">The CSV input stream, or <see langword="null"/> to return the default value.</param>
+    /// <returns>The first deserialized record, or the default value when no record is available.</returns>
+    /// <exception cref="SerializationException">The CSV data cannot be deserialized.</exception>
     public T Deserialize<T>(Stream input)
     {
         if (input is null)
@@ -159,6 +192,10 @@ public class CsvSerializer : ISerializer
         return config;
     }
 
+    /// <summary>
+    ///     Registers the configured date-time converter and class maps with a CSV reader.
+    /// </summary>
+    /// <param name="csv">The reader to configure.</param>
     protected virtual void ConfigureReader(CsvReader csv)
     {
         csv.Context.TypeConverterCache.AddConverter<DateTime>(
@@ -170,6 +207,10 @@ public class CsvSerializer : ISerializer
         }
     }
 
+    /// <summary>
+    ///     Registers the configured date-time converter and class maps with a CSV writer.
+    /// </summary>
+    /// <param name="csv">The writer to configure.</param>
     protected virtual void ConfigureWriter(CsvWriter csv)
     {
         csv.Context.TypeConverterCache.AddConverter<DateTime>(
@@ -181,33 +222,72 @@ public class CsvSerializer : ISerializer
         }
     }
 
+    /// <summary>
+    ///     Registers a CsvHelper class map for subsequent serialization and deserialization operations.
+    /// </summary>
+    /// <typeparam name="T">The class-map type to register.</typeparam>
     public virtual void RegisterClassMap<T>() where T : ClassMap
     {
         this.classMaps.Add(typeof(T));
     }
 }
 
+/// <summary>
+///     Defines delimiter, culture, encoding, date-time, header, and class-map settings for <see cref="CsvSerializer"/>.
+/// </summary>
 public sealed class CsvSerializerSettings
 {
+    /// <summary>
+    ///     Gets the field delimiter. The default is a semicolon.
+    /// </summary>
     public string Delimiter { get; init; } = ";";
+
+    /// <summary>
+    ///     Gets the culture used to parse and format CSV values.
+    /// </summary>
     public CultureInfo Culture { get; init; } = CultureInfo.InvariantCulture;
+
+    /// <summary>
+    ///     Gets the exact format used to parse and format <see cref="DateTime"/> values.
+    /// </summary>
     public string DateTimeFormat { get; init; } = "yyyy-MM-dd HH:mm:ss";
+
+    /// <summary>
+    ///     Gets optional mappings from incoming header names to member names.
+    /// </summary>
     public Dictionary<string, string> HeaderMappings { get; init; }
+
+    /// <summary>
+    ///     Gets the text encoding used for input and output streams.
+    /// </summary>
     public Encoding Encoding { get; init; } = new UTF8Encoding(false);
+
+    /// <summary>
+    ///     Gets the CsvHelper class-map types associated with these settings.
+    /// </summary>
     public List<Type> ClassMaps { get; init; } = [];
 }
 
+/// <summary>
+///     Converts CSV date-time fields using one exact format and culture.
+/// </summary>
 public sealed class CustomDateTimeConverter : DefaultTypeConverter
 {
     private readonly string format;
     private readonly CultureInfo culture;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CustomDateTimeConverter"/> class.
+    /// </summary>
+    /// <param name="format">The exact date-time format to use.</param>
+    /// <param name="culture">The culture used for parsing and formatting.</param>
     public CustomDateTimeConverter(string format, CultureInfo culture)
     {
         this.format = format;
         this.culture = culture;
     }
 
+    /// <inheritdoc/>
     public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
     {
         if (string.IsNullOrEmpty(text))
@@ -218,6 +298,7 @@ public sealed class CustomDateTimeConverter : DefaultTypeConverter
         return DateTime.ParseExact(text, this.format, this.culture);
     }
 
+    /// <inheritdoc/>
     public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
     {
         if (value is DateTime dateTime)

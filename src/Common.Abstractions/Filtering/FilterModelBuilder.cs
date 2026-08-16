@@ -29,12 +29,19 @@ public static class FilterModelBuilder
         return new Builder<T>(FilterModel.Value);
     }
 
+    /// <summary>Creates a typed builder that appends criteria to an existing filter model.</summary>
+    /// <typeparam name="T">The root object type addressed by expression selectors.</typeparam>
+    /// <param name="filterModel">The model to update, or <see langword="null"/> to use the current thread's model.</param>
+    /// <returns>A builder backed by the selected filter model.</returns>
     public static Builder<T> For<T>(FilterModel filterModel)
     {
         filterModel ??= FilterModel.Value;
         return new Builder<T>(filterModel);
     }
 
+    /// <summary>Builds filter, ordering, inclusion, hierarchy, paging, and tracking criteria for a root object type.</summary>
+    /// <typeparam name="T">The root object type addressed by expression selectors.</typeparam>
+    /// <param name="model">The mutable filter model that receives each configured criterion.</param>
     public class Builder<T>(FilterModel model)
     {
         internal readonly FilterModel filterModel = model;
@@ -44,6 +51,7 @@ public static class FilterModelBuilder
         /// </summary>
         /// <param name="page">The page number to retrieve.</param>
         /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="condition">When explicitly false, skips the paging update.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.SetPaging(1, 10); // Sets to retrieve the first page with 10 items per page.
@@ -75,6 +83,7 @@ public static class FilterModelBuilder
         /// Sets the paging options for the filter model and the first page.
         /// </summary>
         /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="condition">When explicitly false, skips the paging update.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.SetPaging(1, 10); // Sets to retrieve the first page with 10 items per page.
@@ -102,6 +111,7 @@ public static class FilterModelBuilder
         /// </summary>
         /// <param name="page">The page number to set.</param>
         /// <param name="standardPageSize">The standard page size to use from the <see cref="PageSize"/> enum.</param>
+        /// <param name="condition">When explicitly false, skips the paging update.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.SetPaging(1, PageSize.Medium);
@@ -128,6 +138,7 @@ public static class FilterModelBuilder
         /// Sets the paging for the filter model using a standard page size and the first page.
         /// </summary>
         /// <param name="standardPageSize">The standard page size to use from the <see cref="PageSize"/> enum.</param>
+        /// <param name="condition">When explicitly false, skips the paging update.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.SetPaging(PageSize.Medium);
@@ -170,8 +181,7 @@ public static class FilterModelBuilder
         /// data context from monitoring changes to returned entities. Use this option when you do not intend to update
         /// the queried entities.</remarks>
         /// <param name="value">A value indicating whether entity tracking should be disabled. Defaults to <see langword="true"/>.</param>
-        /// <param name="condition">If specified, applies the no-tracking configuration only when the condition is <see langword="true"/>. </param>
-        /// <see langword="false"/>, the configuration is not changed.</param>
+        /// <param name="condition">If specified, applies the no-tracking configuration only when the condition is <see langword="true"/>; when <see langword="false"/>, the configuration is not changed.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance with the updated tracking configuration.</returns>
         public Builder<T> SetNoTracking(bool value = true, bool? condition = null)
         {
@@ -191,6 +201,7 @@ public static class FilterModelBuilder
         /// <param name="propertySelector">An expression selecting the property to filter on.</param>
         /// <param name="filterOperator">The operator to use for filtering.</param>
         /// <param name="value">The value to compare against.</param>
+        /// <param name="condition">When explicitly false, skips the filter.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <exception cref="ArgumentException">Thrown if the property selector is invalid.</exception>
         /// <example>
@@ -235,6 +246,7 @@ public static class FilterModelBuilder
         /// <param name="collectionSelector">An expression selecting the collection property.</param>
         /// <param name="filterOperator">The operator to use for filtering the collection.</param>
         /// <param name="configure">A configuration action to specify filters for the collection items.</param>
+        /// <param name="condition">When explicitly false, skips the filter.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.AddCollectionFilter(person => person.Addresses, FilterOperator.Any, collectionBuilder =>
@@ -280,6 +292,14 @@ public static class FilterModelBuilder
             return this;
         }
 
+        /// <summary>Adds a nested property criterion only when its configured child builder produces filters.</summary>
+        /// <typeparam name="T2">The selected property type used by the nested builder.</typeparam>
+        /// <param name="propertySelector">A member expression identifying the property to filter.</param>
+        /// <param name="filterOperator">The operator used to combine the configured child criteria.</param>
+        /// <param name="configure">The action that adds child criteria to a temporary nested builder.</param>
+        /// <param name="condition">When explicitly false, skips the criterion.</param>
+        /// <returns>The current builder for further configuration.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="propertySelector"/> is not a member expression.</exception>
         public Builder<T> AddFilter<T2>(
             Expression<Func<T, T2>> propertySelector,
             FilterOperator filterOperator,
@@ -323,6 +343,7 @@ public static class FilterModelBuilder
         /// </summary>
         /// <param name="orderBy">An expression selecting the property to order by.</param>
         /// <param name="direction">The direction of the ordering (ascending or descending).</param>
+        /// <param name="condition">When explicitly false, skips the ordering.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.AddOrdering(person => person.LastName, OrderDirection.Ascending);
@@ -356,6 +377,7 @@ public static class FilterModelBuilder
         /// Adds an include criterion to the filter model, specifying related entities to include.
         /// </summary>
         /// <param name="includeSelector">An expression selecting the property to include.</param>
+        /// <param name="condition">When explicitly false, skips the include.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.AddInclude(person => person.Addresses);
@@ -403,6 +425,7 @@ public static class FilterModelBuilder
         /// </summary>
         /// <typeparam name="TProperty">The type of the navigation property to include.</typeparam>
         /// <param name="includeSelector">An expression selecting the property to include.</param>
+        /// <param name="condition">When explicitly false, skips the include.</param>
         /// <returns>An <see cref="IncludeBuilder{T, TProperty}"/> instance for chaining ThenInclude calls.</returns>
         /// <example>
         /// builder.AddInclude(person => person.BillingAddress)
@@ -439,6 +462,8 @@ public static class FilterModelBuilder
         /// Adds an hierarchy criterion to the filter model, specifying the children to include.
         /// </summary>
         /// <param name="hierarchySelector">An expression selecting the property that contains the children.</param>
+        /// <param name="maxDepth">The maximum hierarchy depth to include.</param>
+        /// <param name="condition">When explicitly false, skips the hierarchy configuration.</param>
         /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
         /// <example>
         /// builder.AddHierarchy(manager => manager.Employees);
@@ -460,6 +485,7 @@ public static class FilterModelBuilder
         /// Adds a custom filter to the filter model, which allows for specialized filtering logic.
         /// </summary>
         /// <param name="customType">The type of the custom filter to add.</param>
+        /// <param name="condition">When explicitly false, skips the custom filter.</param>
         /// <returns>A <see cref="CustomFilterBuilder"/> instance for adding parameters to the custom filter.</returns>
         /// <example>
         /// var customFilter = builder.AddCustomFilter(FilterCustomType.FullTextSearch);
@@ -530,6 +556,11 @@ public static class FilterModelBuilder
                 return this;
             }
 
+            /// <summary>Adds an array-valued parameter when enabled without replacing an existing parameter with the same key.</summary>
+            /// <param name="key">The custom-filter parameter name.</param>
+            /// <param name="values">The parameter's string values.</param>
+            /// <param name="condition">When explicitly false, skips the parameter.</param>
+            /// <returns>The current custom-filter builder.</returns>
             public CustomFilterBuilder AddParameter(string key, string[] values, bool? condition = null)
             {
                 if (condition.HasValue && !condition.Value)

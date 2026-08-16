@@ -9,11 +9,18 @@ using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+/// <summary>
+/// Identifies a declaration with from body filter metadata.
+/// </summary>
 public class FromBodyFilterAttribute()
     : ModelBinderAttribute(typeof(FromBodyFilterModelBinder)),
     IBindingSourceMetadata, IFromBodyMetadata
 {
+    /// <inheritdoc/>
     public override BindingSource BindingSource => BindingSource.Body;
 
+    /// <summary>
+    /// Gets the allow empty.
+    /// </summary>
     public bool AllowEmpty => true;
 }

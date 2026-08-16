@@ -19,8 +19,20 @@ using Logging;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Quartz;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds sqlite db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="sqliteOptionsBuilder">The sqlite options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqliteDbContextBuilderContext<TContext> AddSqliteDbContext<TContext>(
         this IServiceCollection services,
         Builder<SqliteOptionsBuilder, SqliteOptions> optionsBuilder,
@@ -35,6 +47,15 @@ public static class ServiceCollectionExtensions
             lifetime);
     }
 
+    /// <summary>
+    /// Adds sqlite db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="sqliteOptionsBuilder">The sqlite options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqliteDbContextBuilderContext<TContext> AddSqliteDbContext<TContext>(
         this IServiceCollection services,
         SqliteOptions options,
@@ -130,6 +151,15 @@ public static class ServiceCollectionExtensions
         }
     }
 
+    /// <summary>
+    /// Adds sqlite db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="sqliteOptionsBuilder">The sqlite options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqliteDbContextBuilderContext<TContext> AddSqliteDbContext<TContext>(
         this IServiceCollection services,
         string connectionString,
@@ -149,6 +179,14 @@ public static class ServiceCollectionExtensions
             provider: Provider.Sqlite);
     }
 
+    /// <summary>
+    /// Executes the with sequence number generator operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqliteDbContextBuilderContext<TContext> WithSequenceNumberGenerator<TContext>(
         this SqliteDbContextBuilderContext<TContext> context,
         SequenceNumberGeneratorOptions options = null,

@@ -23,8 +23,17 @@ public partial class ConcurrentGroupExecutionListener(
     private readonly ILogger<ConcurrentGroupExecutionListener> logger = loggerFactory?.CreateLogger<ConcurrentGroupExecutionListener>() ?? NullLogger<ConcurrentGroupExecutionListener>.Instance;
     private readonly JobGroupOptions options = options ?? throw new ArgumentNullException(nameof(options));
 
+    /// <summary>
+    /// Gets the name.
+    /// </summary>
     public string Name => nameof(ConcurrentGroupExecutionListener);
 
+    /// <summary>
+    /// Executes the job to be executed operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task JobToBeExecuted(IJobExecutionContext context,
         CancellationToken cancellationToken = default)
     {
@@ -48,6 +57,12 @@ public partial class ConcurrentGroupExecutionListener(
         TypedLogger.LogJobAcquiredExclusiveAccess(this.logger, Constants.LogKey, jobName, groupName, entryId);
     }
 
+    /// <summary>
+    /// Executes the job execution vetoed operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task JobExecutionVetoed(IJobExecutionContext context,
         CancellationToken cancellationToken = default)
     {
@@ -65,6 +80,13 @@ public partial class ConcurrentGroupExecutionListener(
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the job was executed operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="jobException">The job exception used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task JobWasExecuted(IJobExecutionContext context,
         JobExecutionException jobException,
         CancellationToken cancellationToken = default)
@@ -101,6 +123,9 @@ public partial class ConcurrentGroupExecutionListener(
         }
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
         foreach (var semaphore in groupSemaphores.Values)
@@ -111,20 +136,63 @@ public partial class ConcurrentGroupExecutionListener(
         groupSemaphores.Clear();
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the job not handled operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
+        /// <param name="entryId">The entry id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] job not handled by group mutual exclusion (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobNotHandled(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
+        /// <summary>
+        /// Writes a log entry before waiting for exclusive group access.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name.</param>
+        /// <param name="jobGroup">The job group.</param>
+        /// <param name="entryId">The scheduler fire-instance identifier.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] job waiting for exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobWaitingForExclusiveAccess(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
+        /// <summary>
+        /// Writes a log entry after exclusive group access is acquired.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name.</param>
+        /// <param name="jobGroup">The job group.</param>
+        /// <param name="entryId">The scheduler fire-instance identifier.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] job acquired exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobAcquiredExclusiveAccess(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
+        /// <summary>
+        /// Writes a log entry when a vetoed execution releases exclusive group access.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name.</param>
+        /// <param name="jobGroup">The job group.</param>
+        /// <param name="entryId">The scheduler fire-instance identifier.</param>
         [LoggerMessage(3, LogLevel.Information, "[{LogKey}] job execution vetoed, releasing exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobExecutionVetoed(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
+        /// <summary>
+        /// Writes a log entry before releasing exclusive group access.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name.</param>
+        /// <param name="jobGroup">The job group.</param>
+        /// <param name="entryId">The scheduler fire-instance identifier.</param>
         [LoggerMessage(4, LogLevel.Information, "[{LogKey}] job releasing exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobReleasingExclusiveAccess(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
     }

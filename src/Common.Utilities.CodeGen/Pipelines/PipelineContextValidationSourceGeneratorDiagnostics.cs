@@ -23,6 +23,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         EachValidationRequiresCollection,
         ConflictingValidationAttributes);
 
+    /// <summary>Gets the diagnostic reported when a validated pipeline context is not partial.</summary>
     public static readonly DiagnosticDescriptor ContextMustBePartial = new(
         "PLNVAL001",
         "Pipeline context must be partial",
@@ -32,6 +33,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Pipeline contexts using source-generated validation must be partial so the generator can emit a nested Validator type.");
 
+    /// <summary>Gets the diagnostic reported when a pipeline context declares multiple validation methods.</summary>
     public static readonly DiagnosticDescriptor DuplicateValidateMethod = new(
         "PLNVAL002",
         "Duplicate validate methods",
@@ -41,6 +43,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Only one [Validate] method is supported per source-generated pipeline context.");
 
+    /// <summary>Gets the diagnostic reported when a pipeline validation method is not static.</summary>
     public static readonly DiagnosticDescriptor ValidateMethodMustBeStatic = new(
         "PLNVAL003",
         "Validate method must be static",
@@ -50,6 +53,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Pipeline-context validation generation only supports static [Validate] methods.");
 
+    /// <summary>Gets the diagnostic reported for an invalid pipeline validation return type.</summary>
     public static readonly DiagnosticDescriptor InvalidValidateReturnType = new(
         "PLNVAL004",
         "Invalid validate return type",
@@ -59,6 +63,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Validate methods must configure rules on an InlineValidator<TContext> and not return a value.");
 
+    /// <summary>Gets the diagnostic reported for an invalid pipeline validation parameter.</summary>
     public static readonly DiagnosticDescriptor InvalidValidateParameter = new(
         "PLNVAL005",
         "Invalid validate parameter type",
@@ -68,6 +73,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Pipeline-context validation generation only supports void Validate(InlineValidator<TContext> validator).");
 
+    /// <summary>Gets the diagnostic reported when generated validation members collide with authored members.</summary>
     public static readonly DiagnosticDescriptor GeneratedNameCollision = new(
         "PLNVAL006",
         "Generated member name collision",
@@ -77,6 +83,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Rename the authored member or nested type so the generator can emit its Validator type.");
 
+    /// <summary>Gets the diagnostic reported when validation is applied to an unsupported pipeline context type.</summary>
     public static readonly DiagnosticDescriptor InvalidAttributedType = new(
         "PLNVAL007",
         "Invalid pipeline context type",
@@ -86,6 +93,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Source-generated pipeline-context validation is limited to concrete classes deriving from PipelineContextBase.");
 
+    /// <summary>Gets the diagnostic reported for a nested validated pipeline context.</summary>
     public static readonly DiagnosticDescriptor NestedContextsNotSupported = new(
         "PLNVAL008",
         "Nested pipeline contexts are not supported",
@@ -95,6 +103,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Move the validated pipeline context to a top-level type for v1.");
 
+    /// <summary>Gets the diagnostic reported for a generic validated pipeline context.</summary>
     public static readonly DiagnosticDescriptor GenericContextsNotSupported = new(
         "PLNVAL009",
         "Generic pipeline contexts are not supported",
@@ -104,6 +113,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Source-generated pipeline-context validation is intentionally limited to non-generic types in v1.");
 
+    /// <summary>Gets the diagnostic reported for unsupported validation-attribute usage.</summary>
     public static readonly DiagnosticDescriptor UnsupportedValidationAttributeUsage = new(
         "PLNVAL010",
         "Validation attribute usage is not supported",
@@ -113,6 +123,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Simple property validation attributes on pipeline contexts only support a conservative set of property and collection-element validation scenarios.");
 
+    /// <summary>Gets the diagnostic reported for invalid validation-attribute arguments.</summary>
     public static readonly DiagnosticDescriptor InvalidValidationAttributeArguments = new(
         "PLNVAL011",
         "Validation attribute arguments are invalid",
@@ -122,6 +133,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "Validation attributes must provide the argument shape expected by the generated FluentValidation mapping.");
 
+    /// <summary>Gets the diagnostic reported when element validation targets a non-collection property.</summary>
     public static readonly DiagnosticDescriptor EachValidationRequiresCollection = new(
         "PLNVAL012",
         "Element validation requires a collection property",
@@ -131,6 +143,7 @@ public static class PipelineContextValidationSourceGeneratorDiagnostics
         true,
         description: "RuleForEach-based validation attributes can only be applied to collection properties.");
 
+    /// <summary>Gets the diagnostic reported for conflicting validation attributes.</summary>
     public static readonly DiagnosticDescriptor ConflictingValidationAttributes = new(
         "PLNVAL013",
         "Validation attributes conflict",

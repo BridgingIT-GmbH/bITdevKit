@@ -8,15 +8,32 @@ namespace BridgingIT.DevKit.Infrastructure.Azure;
 using System.Reflection;
 using System.Text.Json;
 
+/// <summary>
+/// Represents azure table entity converter.
+/// </summary>
 public static class AzureTableEntityConverter
 {
     private static JsonSerializerOptions defaultJsonSerializerOptions = DefaultJsonSerializerOptions.Create();
 
+    /// <summary>
+    /// Executes the set default json serializer options operation.
+    /// </summary>
+    /// <param name="jsonSerializerOptions">The json serializer options used by the operation.</param>
     public static void SetDefaultJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions = default)
     {
         defaultJsonSerializerOptions = jsonSerializerOptions ?? DefaultJsonSerializerOptions.Create();
     }
 
+    /// <summary>
+    /// Executes the to table entity operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="partitionKey">The partition key used by the operation.</param>
+    /// <param name="rowKey">The row key used by the operation.</param>
+    /// <param name="jsonSerializerOptions">The json serializer options used by the operation.</param>
+    /// <param name="propertyConverters">The property converters used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TableEntity ToTableEntity<T>(
         this T entity,
         string partitionKey,
@@ -35,6 +52,14 @@ public static class AzureTableEntityConverter
             propertyConverters);
     }
 
+    /// <summary>
+    /// Executes the from table entity operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="tableEntity">The table entity used by the operation.</param>
+    /// <param name="jsonSerializerOptions">The json serializer options used by the operation.</param>
+    /// <param name="propertyConverters">The property converters used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static T FromTableEntity<T>(
         this TableEntity tableEntity,
         JsonSerializerOptions jsonSerializerOptions = default,
@@ -208,10 +233,26 @@ public static class AzureTableEntityConverter
     }
 }
 
+/// <summary>
+/// Represents property converter.
+/// </summary>
+/// <typeparam name="T">The  type.</typeparam>
+/// <param name="toTableEntityProperty">The to table entity property used by the operation.</param>
+/// <param name="setObjectProperty">The set object property used by the operation.</param>
 public class PropertyConverter<T>(Func<T, object> toTableEntityProperty, Action<T, object> setObjectProperty)
 {
+    /// <summary>
+    /// Gets the to table entity property.
+    /// </summary>
     public Func<T, object> ToTableEntityProperty { get; } = toTableEntityProperty;
+    /// <summary>
+    /// Gets the set object property.
+    /// </summary>
     public Action<T, object> SetObjectProperty { get; } = setObjectProperty;
 }
 
+/// <summary>
+/// Represents property converters.
+/// </summary>
+/// <typeparam name="T">The  type.</typeparam>
 public class PropertyConverters<T> : Dictionary<string, PropertyConverter<T>>;

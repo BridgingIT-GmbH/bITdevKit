@@ -5,23 +5,54 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
+/// <summary>
+/// Represents outbox message.
+/// </summary>
+/// <typeparam name="Guid">The guid type.</typeparam>
 public class OutboxMessage : Entity<Guid> // TODO: rename to OutboxEventMessage
 {
+    /// <summary>
+    /// Gets or sets the aggregate id.
+    /// </summary>
     public Guid AggregateId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the aggregate type.
+    /// </summary>
     public string AggregateType { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the event type.
+    /// </summary>
     public string EventType { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the aggregate.
+    /// </summary>
     public string Aggregate { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the aggregate event.
+    /// </summary>
     public string AggregateEvent { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the time stamp.
+    /// </summary>
     public DateTime TimeStamp { get; set; }
 
+    /// <summary>
+    /// Gets or sets the is processed.
+    /// </summary>
     public bool IsProcessed { get; set; }
 
+    /// <summary>
+    /// Gets or sets the retry attempt.
+    /// </summary>
     public int RetryAttempt { get; set; }
 
+    /// <summary>
+    /// Gets or sets the message id.
+    /// </summary>
     public Guid MessageId { get; set; }
 }

@@ -11,9 +11,19 @@ using System.Linq;
 using System.Text.Json;
 
 // Keycloak implementation
+/// <summary>
+/// Represents key cloak user info service.
+/// </summary>
+/// <param name="tokenService">The token service used by the operation.</param>
+/// <param name="options">The options controlling the operation.</param>
 public class KeyCloakUserInfoService(ITokenService tokenService, FakeIdentityProviderEndpointsOptions options)
     : IUserInfoService
 {
+    /// <summary>
+    /// Gets user info.
+    /// </summary>
+    /// <param name="accessToken">The access token used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public UserInfoResponse GetUserInfo(string accessToken)
     {
         var validationResult = tokenService.ValidateToken(accessToken);

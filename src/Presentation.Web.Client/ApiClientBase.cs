@@ -7,15 +7,30 @@ namespace BridgingIT.DevKit.Presentation.Web.Client;
 
 using System.Net.Http.Headers;
 
+/// <summary>
+/// Represents api client base.
+/// </summary>
 public class ApiClientBase
 {
+    /// <summary>
+    /// Gets or sets the bearer token.
+    /// </summary>
     public string BearerToken { get; private set; }
 
+    /// <summary>
+    /// Executes the set bearer token operation.
+    /// </summary>
+    /// <param name="token">The token used by the operation.</param>
     public void SetBearerToken(string token)
     {
         this.BearerToken = token;
     }
 
+    /// <summary>
+    /// Creates http request message.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     protected Task<HttpRequestMessage> CreateHttpRequestMessageAsync(CancellationToken cancellationToken)
     {
         var message = new HttpRequestMessage();

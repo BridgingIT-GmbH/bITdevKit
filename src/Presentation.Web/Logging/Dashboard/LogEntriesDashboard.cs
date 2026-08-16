@@ -22,9 +22,20 @@ using Microsoft.Extensions.Logging;
 /// </example>
 public static class LogEntriesDashboard
 {
+    /// <summary>
+    /// Defines the default page size value.
+    /// </summary>
     public const int DefaultPageSize = 100;
+    /// <summary>
+    /// Defines the default level value.
+    /// </summary>
     public const LogLevel DefaultLevel = LogLevel.Information;
 
+    /// <summary>
+    /// Creates filter.
+    /// </summary>
+    /// <param name="httpContext">The http context used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static LogEntriesDashboardFilter CreateFilter(HttpContext httpContext)
     {
         var query = httpContext.Request.Query;
@@ -48,6 +59,11 @@ public static class LogEntriesDashboard
         return filter;
     }
 
+    /// <summary>
+    /// Creates request.
+    /// </summary>
+    /// <param name="filter">The filter used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static LogEntryQueryRequest CreateRequest(LogEntriesDashboardFilter filter)
     {
         return new LogEntryQueryRequest
@@ -68,6 +84,13 @@ public static class LogEntriesDashboard
         };
     }
 
+    /// <summary>
+    /// Executes the build query operation.
+    /// </summary>
+    /// <param name="filter">The filter used by the operation.</param>
+    /// <param name="continuationToken">The continuation token used by the operation.</param>
+    /// <param name="afterId">The after id used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string BuildQuery(LogEntriesDashboardFilter filter, string continuationToken = null, long? afterId = null)
     {
         var values = new Dictionary<string, string>
@@ -121,21 +144,42 @@ public static class LogEntriesDashboard
         return $"{DashboardEndpoints.BuildLogEntriesPath(options)}{BuildQuery(filter)}";
     }
 
+    /// <summary>
+    /// Executes the format date operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string FormatDate(DateTimeOffset? value)
     {
         return value?.LocalDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 
+    /// <summary>
+    /// Executes the format timestamp operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string FormatTimestamp(DateTimeOffset value)
     {
         return value.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
+    /// <summary>
+    /// Executes the format short timestamp operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string FormatShortTimestamp(DateTimeOffset value)
     {
         return value.LocalDateTime.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
     }
 
+    /// <summary>
+    /// Executes the short id operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <param name="maxLength">The max length used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string ShortId(string value, int maxLength = 12)
     {
         return string.IsNullOrWhiteSpace(value)
@@ -143,16 +187,31 @@ public static class LogEntriesDashboard
             : value.Length <= maxLength ? value : value[..maxLength];
     }
 
+    /// <summary>
+    /// Executes the display value operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string DisplayValue(string value)
     {
         return string.IsNullOrWhiteSpace(value) ? "-" : value;
     }
 
+    /// <summary>
+    /// Executes the display level operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string DisplayLevel(string value)
     {
         return string.Equals(value, "Critical", StringComparison.OrdinalIgnoreCase) ? "Fatal" : DisplayValue(value);
     }
 
+    /// <summary>
+    /// Gets level badge class.
+    /// </summary>
+    /// <param name="level">The level used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string GetLevelBadgeClass(string level)
     {
         return level switch
@@ -166,6 +225,11 @@ public static class LogEntriesDashboard
         };
     }
 
+    /// <summary>
+    /// Gets row class.
+    /// </summary>
+    /// <param name="level">The level used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string GetRowClass(string level)
     {
         return level switch
@@ -240,31 +304,73 @@ public static class LogEntriesDashboard
     }
 }
 
+/// <summary>
+/// Represents log entries dashboard filter.
+/// </summary>
 public sealed class LogEntriesDashboardFilter
 {
+    /// <summary>
+    /// Gets or sets the search text.
+    /// </summary>
     public string SearchText { get; init; }
 
+    /// <summary>
+    /// Gets or sets the level.
+    /// </summary>
     public LogLevel? Level { get; init; }
 
+    /// <summary>
+    /// Gets or sets the page size.
+    /// </summary>
     public int PageSize { get; init; } = LogEntriesDashboard.DefaultPageSize;
 
+    /// <summary>
+    /// Gets or sets the start time.
+    /// </summary>
     public DateTimeOffset? StartTime { get; init; }
 
+    /// <summary>
+    /// Gets or sets the end time.
+    /// </summary>
     public DateTimeOffset? EndTime { get; init; }
 
+    /// <summary>
+    /// Gets or sets the trace id.
+    /// </summary>
     public string TraceId { get; init; }
 
+    /// <summary>
+    /// Gets or sets the span id.
+    /// </summary>
     public string SpanId { get; init; }
 
+    /// <summary>
+    /// Gets or sets the correlation id.
+    /// </summary>
     public string CorrelationId { get; init; }
 
+    /// <summary>
+    /// Gets or sets the log key.
+    /// </summary>
     public string LogKey { get; init; }
 
+    /// <summary>
+    /// Gets or sets the module name.
+    /// </summary>
     public string ModuleName { get; init; }
 
+    /// <summary>
+    /// Gets or sets the short type name.
+    /// </summary>
     public string ShortTypeName { get; init; }
 
+    /// <summary>
+    /// Gets or sets the continuation token.
+    /// </summary>
     public string ContinuationToken { get; init; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked after the id operation.
+    /// </summary>
     public long? AfterId { get; init; }
 }

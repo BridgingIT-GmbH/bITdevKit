@@ -8,6 +8,11 @@ namespace BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Represents message publish job.
+/// </summary>
+/// <typeparam name="TData">The data type.</typeparam>
+/// <typeparam name="TMessage">The message type.</typeparam>
 public sealed class MessagePublishJob<TData, TMessage> : IJob<TData>
     where TMessage : class, IMessage
 {
@@ -20,6 +25,12 @@ public sealed class MessagePublishJob<TData, TMessage> : IJob<TData>
         this.registrations = registrations;
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IResult> ExecuteAsync(IJobExecutionContext<TData> context, CancellationToken cancellationToken = default)
     {
         var settings = this.registrations.Get<TData, TMessage>(context.JobName);

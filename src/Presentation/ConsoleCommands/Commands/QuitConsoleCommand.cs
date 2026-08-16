@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 
+/// <summary>
+/// Represents quit console command.
+/// </summary>
 public class QuitConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

@@ -11,10 +11,16 @@ using Configuration;
 using Extensions;
 using Microsoft.Extensions.Hosting;
 
+/// <summary>
+/// Represents service collection messaging extensions.
+/// </summary>
 public static class ServiceCollectionMessagingExtensions
 {
     private static readonly object subscriptionsLock = new();
 
+    /// <summary>
+    /// Stores the subscriptions.
+    /// </summary>
     public static readonly List<(Type message, Type handler)> Subscriptions = [];
     private static MessagingOptions contextOptions;
 
@@ -61,6 +67,12 @@ public static class ServiceCollectionMessagingExtensions
         }
     }
 
+    /// <summary>
+    /// Adds messaging.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsAction">The options action used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext AddMessaging(
         this IServiceCollection services,
         Action<MessagingBuilderContext> optionsAction = null)
@@ -68,6 +80,13 @@ public static class ServiceCollectionMessagingExtensions
         return services.AddMessaging(null, options: null, optionsAction);
     }
 
+    /// <summary>
+    /// Adds messaging.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="optionsAction">The options action used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext AddMessaging(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -76,6 +95,13 @@ public static class ServiceCollectionMessagingExtensions
         return services.AddMessaging(configuration, options: null, optionsAction);
     }
 
+    /// <summary>
+    /// Adds messaging.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="optionsAction">The options action used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext AddMessaging(
         this IServiceCollection services,
         Builder<MessagingOptionsBuilder, MessagingOptions> optionsBuilder,
@@ -86,6 +112,14 @@ public static class ServiceCollectionMessagingExtensions
             optionsAction);
     }
 
+    /// <summary>
+    /// Adds messaging.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="optionsAction">The options action used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext AddMessaging(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -97,6 +131,14 @@ public static class ServiceCollectionMessagingExtensions
             optionsAction);
     }
 
+    /// <summary>
+    /// Adds messaging.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="optionsAction">The options action used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext AddMessaging(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -136,6 +178,13 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the subscribe operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns>The result of the operation.</returns>
     [Obsolete("Please use WithSubscription")]
     public static MessagingBuilderContext Subscribe<TMessage, THandler>(this MessagingBuilderContext context)
         where TMessage : IMessage
@@ -146,6 +195,13 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with subscription operation.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <typeparam name="THandler">The handler type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithSubscription<TMessage, THandler>(this MessagingBuilderContext context)
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
@@ -155,6 +211,12 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Provides with behavior.
+    /// </summary>
+    /// <typeparam name="TBehavior">The behavior type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
     public static MessagingBuilderContext WithBehavior<TBehavior>(
         this MessagingBuilderContext context,
         IMessagePublisherBehavior behavior = null)
@@ -172,6 +234,12 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="implementationFactory">The implementation factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithBehavior(
         this MessagingBuilderContext context,
         Func<IServiceProvider, IMessagePublisherBehavior> implementationFactory)
@@ -184,6 +252,12 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithBehavior(
         this MessagingBuilderContext context,
         IMessagePublisherBehavior behavior)
@@ -196,6 +270,12 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Provides with behavior.
+    /// </summary>
+    /// <typeparam name="TBehavior">The behavior type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
     public static MessagingBuilderContext WithBehavior<TBehavior>(
         this MessagingBuilderContext context,
         IMessageHandlerBehavior behavior = null)
@@ -213,6 +293,12 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="implementationFactory">The implementation factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithBehavior(
         this MessagingBuilderContext context,
         Func<IServiceProvider, IMessageHandlerBehavior> implementationFactory)
@@ -225,6 +311,12 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="behavior">The behavior used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithBehavior(
         this MessagingBuilderContext context,
         IMessageHandlerBehavior behavior)

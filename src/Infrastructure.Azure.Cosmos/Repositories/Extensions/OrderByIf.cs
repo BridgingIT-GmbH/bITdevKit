@@ -9,6 +9,15 @@ using System.Linq.Expressions;
 
 public static partial class Extensions
 {
+    /// <summary>
+    /// Executes the order by if operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="expression">The expression used by the operation.</param>
+    /// <param name="descending">The descending used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static IQueryable<T> OrderByIf<T, TKey>(
         this IQueryable<T> source,
         Expression<Func<T, TKey>> expression,

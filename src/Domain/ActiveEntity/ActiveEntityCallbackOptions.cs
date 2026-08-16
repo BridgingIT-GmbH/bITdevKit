@@ -17,19 +17,43 @@ using System.Threading.Tasks;
 public class ActiveEntityCallbackOptions<TEntity, TId>
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Gets or sets the callback invoked before the insert operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> BeforeInsertAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked after the insert operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> AfterInsertAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked before the update operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> BeforeUpdateAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked after the update operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> AfterUpdateAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked before the upsert operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> BeforeUpsertAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked after the upsert operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> AfterUpsertAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked before the delete operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> BeforeDeleteAsync { get; set; }
 
+    /// <summary>
+    /// Gets or sets the callback invoked after the delete operation.
+    /// </summary>
     public Func<IActiveEntityEntityProvider<TEntity, TId>, CancellationToken, Task<Result>> AfterDeleteAsync { get; set; }
 }

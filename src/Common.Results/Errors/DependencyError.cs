@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class DependencyError(string message = null) : ResultErrorBase(message ?? "Missing or invalid dependency")
 {
+    /// <summary>Initializes a dependency error with the default message.</summary>
     public DependencyError() : this(null)
     {
     }

@@ -5,6 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
+/// <summary>
+/// Represents the aggregate created event domain event.
+/// </summary>
+/// <typeparam name="TAggregate">The aggregate type.</typeparam>
+/// <param name="id">The entity identifier.</param>
 public abstract class AggregateCreatedEvent<TAggregate>(Guid id) : AggregateEvent(id, 1)
     where TAggregate : class
 { }

@@ -8,10 +8,18 @@ namespace BridgingIT.DevKit.Infrastructure.EventSourcing;
 using Domain.EventSourcing.Model;
 using Domain.EventSourcing.Store;
 
+/// <summary>
+/// Represents event type selector.
+/// </summary>
 public class EventTypeSelector : IEventTypeSelector
 {
     private Type[] typeCache = [];
 
+    /// <summary>
+    /// Finds type.
+    /// </summary>
+    /// <param name="typename">The typename used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public Type FindType(string typename)
     {
         if (this.typeCache.Length == 0)

@@ -11,8 +11,19 @@ using BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Diagnostics;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds event store sql server.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="defaultSchema">The default schema used by the operation.</param>
+    /// <param name="eventStorePublishingModes">The event store publishing modes used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     [Obsolete("Bitte die Überladung benutzen.")]
     public static IServiceCollection AddEventStoreSqlServer(
         this IServiceCollection services,
@@ -132,6 +143,17 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds event store context sql server.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="nameOfMigrationsAssembly">The name of migrations assembly used by the operation.</param>
+    /// <param name="defaultSchema">The default schema used by the operation.</param>
+    /// <param name="eventStorePublishingModes">The event store publishing modes used by the operation.</param>
+    /// <param name="maxRetryCount">The max retry count used by the operation.</param>
+    /// <param name="maxRetryDelaySeconds">The max retry delay seconds used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     [Obsolete("Bitte die generische Variante verwenden")]
     public static IServiceCollection AddEventStoreContextSqlServer(
         this IServiceCollection services,

@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Executes a Pipeline-backed outbound job registered through <see cref="Microsoft.Extensions.DependencyInjection.JobSchedulerPipelineIntegrationExtensions.WithPipelineExecuteJob{TData, TPipelineDefinition, TPipelineContext}(Microsoft.Extensions.DependencyInjection.JobBuilderContext, string, Action{JobPipelineExecuteDefinitionBuilder{TData, TPipelineDefinition, TPipelineContext}})"/>.
+/// Executes a Pipeline-backed outbound job registered through <c>WithPipelineExecuteJob</c>.
 /// </summary>
 /// <typeparam name="TData">The typed job data contract.</typeparam>
 /// <typeparam name="TPipelineDefinition">The pipeline definition source type.</typeparam>
@@ -29,6 +29,7 @@ public sealed class PipelineExecuteJob<TData, TPipelineDefinition, TPipelineCont
         this.registrations = registrations;
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> ExecuteAsync(
         IJobExecutionContext<TData> context,
         CancellationToken cancellationToken = default)

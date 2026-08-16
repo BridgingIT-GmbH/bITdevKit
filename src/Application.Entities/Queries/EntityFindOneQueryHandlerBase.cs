@@ -7,6 +7,11 @@ namespace BridgingIT.DevKit.Application.Entities;
 
 using Constants = Queries.Constants;
 
+/// <summary>
+/// Represents entity find one query handler base.
+/// </summary>
+/// <typeparam name="TQuery">The query type.</typeparam>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 [Obsolete("Use the new Requester from now on")]
 public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<TQuery, Result<TEntity>>
     where TQuery : EntityFindOneQueryBase<TEntity>
@@ -16,6 +21,11 @@ public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<T
     private List<ISpecification<TEntity>> specifications;
     private List<Func<TQuery, ISpecification<TEntity>>> specificationFuncs;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityFindOneQueryHandlerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="repository">The repository used by the operation.</param>
     public EntityFindOneQueryHandlerBase(ILoggerFactory loggerFactory, IGenericRepository<TEntity> repository)
         : base(loggerFactory)
     {
@@ -23,6 +33,11 @@ public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<T
         this.repository = repository;
     }
 
+    /// <summary>
+    /// Adds specification.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual EntityFindOneQueryHandlerBase<TQuery, TEntity> AddSpecification(
         ISpecification<TEntity> specification)
     {
@@ -31,12 +46,21 @@ public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<T
         return this;
     }
 
+    /// <summary>
+    /// Represents add specification.
+    /// </summary>
+    /// <typeparam name="TSpecification">The specification type.</typeparam>
     public virtual EntityFindOneQueryHandlerBase<TQuery, TEntity> AddSpecification<TSpecification>()
         where TSpecification : class, ISpecification<TEntity>
     {
         return this.AddSpecification(Factory<TSpecification>.Create());
     }
 
+    /// <summary>
+    /// Adds specification.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual EntityFindOneQueryHandlerBase<TQuery, TEntity> AddSpecification(
         Func<TQuery, ISpecification<TEntity>> specification)
     {
@@ -45,11 +69,17 @@ public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<T
         return this;
     }
 
+    /// <summary>
+    /// Adds specifications.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual IEnumerable<ISpecification<TEntity>> AddSpecifications(TQuery request)
     {
         return [];
     }
 
+    /// <inheritdoc/>
     public override async Task<QueryResponse<Result<TEntity>>> Process(
         TQuery query,
         CancellationToken cancellationToken)

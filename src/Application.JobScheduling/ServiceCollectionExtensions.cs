@@ -13,6 +13,9 @@ using Configuration;
 using Extensions;
 using Quartz.Impl;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     //private static bool schedulerIsAdded;

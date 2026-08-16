@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using System.Diagnostics;
 using System.Globalization;
 
+/// <summary>
+/// Provides calendar arithmetic, range checks, boundary calculations, and timestamp conversions for <see cref="DateOnly"/> values.
+/// </summary>
 public static class DateOnlyExtensions
 {
     /// <summary>
@@ -105,6 +108,14 @@ public static class DateOnlyExtensions
         return new DateOnly(source.Year, 12, 31);
     }
 
+    /// <summary>
+    /// Adds a number of calendar days, seven-day weeks, calendar months, or calendar years to a date.
+    /// </summary>
+    /// <param name="source">The date to adjust.</param>
+    /// <param name="unit">The calendar unit to add.</param>
+    /// <param name="amount">The signed number of units to add.</param>
+    /// <returns>The adjusted date, clamping the day to the last valid day when changing month or year.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="unit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateOnly Add(this DateOnly source, DateUnit unit, int amount)
     {
@@ -133,12 +144,29 @@ public static class DateOnlyExtensions
         return new DateOnly(targetYear, targetMonth, targetDay);
     }
 
+    /// <summary>
+    /// Determines whether a date lies between two boundaries.
+    /// </summary>
+    /// <param name="source">The date to evaluate.</param>
+    /// <param name="start">The lower boundary.</param>
+    /// <param name="end">The upper boundary.</param>
+    /// <param name="inclusive">Whether equality with either boundary counts as in range.</param>
+    /// <returns><see langword="true"/> when the date satisfies the selected boundary comparison.</returns>
     [DebuggerStepThrough]
     public static bool IsInRange(this DateOnly source, DateOnly start, DateOnly end, bool inclusive = true)
     {
         return inclusive ? source >= start && source <= end : source > start && source < end;
     }
 
+    /// <summary>
+    /// Determines whether a date is within a past or future range relative to the current local date.
+    /// </summary>
+    /// <param name="source">The date to evaluate.</param>
+    /// <param name="unit">The calendar unit used to calculate the range boundary.</param>
+    /// <param name="amount">The number of units between today and the range boundary.</param>
+    /// <param name="direction">Whether the range extends into the past or future.</param>
+    /// <param name="inclusive">Whether today and the calculated boundary are included.</param>
+    /// <returns><see langword="true"/> when the date falls in the calculated range.</returns>
     [DebuggerStepThrough]
     public static bool IsInRelativeRange(this DateOnly source, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
     {
@@ -175,6 +203,11 @@ public static class DateOnlyExtensions
             : (inclusive ? source >= reference && source <= referenceDate : source > reference && source < referenceDate);
     }
 
+    /// <summary>
+    /// Gets the invariant-culture week number using Monday as the first day and the first-day calendar rule.
+    /// </summary>
+    /// <param name="source">The date whose week number should be calculated.</param>
+    /// <returns>The calendar week number.</returns>
     [DebuggerStepThrough]
     public static int GetWeekOfYear(this DateOnly source)
     {
@@ -185,12 +218,22 @@ public static class DateOnlyExtensions
         return calendar.GetWeekOfYear(dateTime, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
     }
 
+    /// <summary>
+    /// Determines whether the date belongs to a leap year in the Gregorian calendar.
+    /// </summary>
+    /// <param name="source">The date whose year should be evaluated.</param>
+    /// <returns><see langword="true"/> when the year is a leap year.</returns>
     [DebuggerStepThrough]
     public static bool IsLeapYear(this DateOnly source)
     {
         return DateTime.IsLeapYear(source.Year);
     }
 
+    /// <summary>
+    /// Calculates the signed number of whole days from the current local date to a target date.
+    /// </summary>
+    /// <param name="date">The target date.</param>
+    /// <returns>A positive value for a future date, zero for today, or a negative value for a past date.</returns>
     [DebuggerStepThrough]
     public static int DaysUntil(this DateOnly date)
     {
@@ -216,6 +259,11 @@ public static class DateOnlyExtensions
         return date.DayNumber - reference.DayNumber;
     }
 
+    /// <summary>
+    /// Converts midnight UTC on a date to Unix epoch seconds.
+    /// </summary>
+    /// <param name="source">The date to convert.</param>
+    /// <returns>The number of seconds since 1970-01-01T00:00:00Z.</returns>
     [DebuggerStepThrough]
     public static long ToUnixTimeSeconds(this DateOnly source)
     {
@@ -241,6 +289,12 @@ public static class DateOnlyExtensions
         return source.AtStartOfDay().ToUnixTimeMilliseconds();
     }
 
+    /// <summary>
+    /// Combines a date with midnight using a specified offset.
+    /// </summary>
+    /// <param name="source">The date to convert.</param>
+    /// <param name="offset">The offset to apply, or UTC when omitted.</param>
+    /// <returns>A date-time offset at the start of the date.</returns>
     [DebuggerStepThrough]
     public static DateTimeOffset ToDateTimeOffset(this DateOnly source, TimeSpan? offset = null)
     {
@@ -286,12 +340,25 @@ public static class DateOnlyExtensions
         return new DateTimeOffset(source.ToDateTime(time), offset ?? TimeSpan.Zero);
     }
 
+    /// <summary>
+    /// Calculates the signed midnight-to-midnight duration from one date to another.
+    /// </summary>
+    /// <param name="source">The starting date.</param>
+    /// <param name="target">The ending date.</param>
+    /// <returns>The whole-day duration from <paramref name="source"/> to <paramref name="target"/>.</returns>
     [DebuggerStepThrough]
     public static TimeSpan TimeSpanTo(this DateOnly source, DateOnly target)
     {
         return target.ToDateTime(TimeOnly.MinValue) - source.ToDateTime(TimeOnly.MinValue);
     }
 
+    /// <summary>
+    /// Moves a date to the start of its containing day, Monday-based week, month, or year.
+    /// </summary>
+    /// <param name="source">The date to floor.</param>
+    /// <param name="dateUnit">The calendar boundary to use.</param>
+    /// <returns>The start of the containing calendar unit.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="dateUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateOnly FloorTo(this DateOnly source, DateUnit dateUnit)
     {
@@ -310,6 +377,13 @@ public static class DateOnlyExtensions
         }
     }
 
+    /// <summary>
+    /// Moves a date to the next calendar-unit boundary unless it already lies on that boundary.
+    /// </summary>
+    /// <param name="source">The date to ceiling.</param>
+    /// <param name="dateUnit">The day, Monday-based week, month, or year boundary to use.</param>
+    /// <returns>The source when already aligned; otherwise, the next boundary.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="dateUnit"/> is unsupported.</exception>
     [DebuggerStepThrough]
     public static DateOnly CeilingTo(this DateOnly source, DateUnit dateUnit)
     {
@@ -329,6 +403,12 @@ public static class DateOnlyExtensions
         };
     }
 
+    /// <summary>
+    /// Aligns a date to the start of its containing calendar unit.
+    /// </summary>
+    /// <param name="source">The date to align.</param>
+    /// <param name="dateUnit">The calendar unit whose lower boundary should be returned.</param>
+    /// <returns>The same value as <see cref="FloorTo(DateOnly, DateUnit)"/>.</returns>
     [DebuggerStepThrough]
     public static DateOnly RoundToNearest(this DateOnly source, DateUnit dateUnit)
     {

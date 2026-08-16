@@ -5,8 +5,15 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
+/// <summary>
+/// Represents entity record.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
 public abstract record EntityRecord<TId> : IEntity<TId>
 {
+    /// <summary>
+    /// Gets or sets the id.
+    /// </summary>
     public TId Id { get; set; }
 
     object IEntity.Id
@@ -25,6 +32,12 @@ public abstract record EntityRecord<TId> : IEntity<TId>
     //    return !(left == right);
     //}
 
+    /// <summary>
+    /// Executes the equals operation.
+    /// </summary>
+    /// <typeparam name="TId">The id type.</typeparam>
+    /// <param name="other">The other used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public virtual bool Equals(EntityRecord<TId> other)
     {
         if (other is null)
@@ -50,14 +63,23 @@ public abstract record EntityRecord<TId> : IEntity<TId>
         return EqualityComparer<TId>.Default.Equals(this.Id, other.Id);
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         return HashCode.Combine(GetUnproxiedType(this), this.Id);
     }
 
     // Optional: Override EqualityContract if needed
+    /// <summary>
+    /// Gets the equality contract.
+    /// </summary>
     protected virtual Type EqualityContract => typeof(EntityRecord<TId>);
 
+    /// <summary>
+    /// Gets unproxied type.
+    /// </summary>
+    /// <param name="obj">The obj used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected static Type GetUnproxiedType(object obj)
     {
         var type = obj.GetType();

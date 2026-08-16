@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Presentation;
 using Spectre.Console;
 using System.Threading; // added for ThreadPool
 
+/// <summary>
+/// Represents threads console command.
+/// </summary>
 public class ThreadsConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

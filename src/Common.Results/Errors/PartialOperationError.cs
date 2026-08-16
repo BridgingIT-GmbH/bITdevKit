@@ -10,6 +10,9 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class PartialOperationError(string message, IEnumerable<string> failedPaths, Exception innerException = null) : ResultErrorBase(message ?? "Partial operation failure")
 {
+    /// <summary>Gets the paths whose individual operations failed; an empty sequence is used when none were supplied.</summary>
     public IEnumerable<string> FailedPaths { get; } = failedPaths ?? [];
+
+    /// <summary>Gets the exception that caused or describes the partial failure, when available.</summary>
     public Exception InnerException { get; } = innerException;
 }

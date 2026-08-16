@@ -9,6 +9,9 @@ using BridgingIT.DevKit.Common;
 using Spectre.Console;
 using System.Diagnostics;
 
+/// <summary>
+/// Represents memory console command.
+/// </summary>
 public class MemoryConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

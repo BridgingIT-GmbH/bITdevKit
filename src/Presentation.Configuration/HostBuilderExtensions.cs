@@ -7,6 +7,9 @@ namespace Microsoft.Extensions.Configuration;
 
 using Hosting;
 
+/// <summary>
+/// Represents host builder extensions.
+/// </summary>
 public static class HostBuilderExtensions
 {
     /// <summary>

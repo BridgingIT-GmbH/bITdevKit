@@ -16,6 +16,9 @@ public abstract class MessageBase : IMessage, IEquatable<MessageBase>
 {
     private int? hashCode;
 
+    /// <summary>
+    /// Stores the id.
+    /// </summary>
     [Obsolete("Use the new MessageId from now on")]
     public virtual string Id
     {
@@ -53,11 +56,17 @@ public abstract class MessageBase : IMessage, IEquatable<MessageBase>
         return new ValidationResult();
     }
 
+    /// <summary>
+    /// Executes the equals operation.
+    /// </summary>
+    /// <param name="other">The other used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool Equals(MessageBase other)
     {
         return other is not null && this.MessageId.Equals(other.MessageId);
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         return this.hashCode ?? (this.hashCode = this.MessageId.GetHashCode() ^ 31).Value;

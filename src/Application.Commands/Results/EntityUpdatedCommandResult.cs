@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+/// <summary>
+/// Represents entity updated command result.
+/// </summary>
+/// <param name="entityId">The entity identifier.</param>
 public class EntityUpdatedCommandResult(string entityId)
 {
     /// <summary>
@@ -13,6 +17,11 @@ public class EntityUpdatedCommandResult(string entityId)
     public string EntityId { get; } = entityId;
 }
 
+/// <summary>
+/// Represents entity updated command result.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
+/// <param name="entityId">The entity identifier.</param>
 public class EntityUpdatedCommandResult<TId>(TId entityId)
 {
     /// <summary>

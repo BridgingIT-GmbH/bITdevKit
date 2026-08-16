@@ -5,10 +5,19 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+/// <summary>
+/// Configures identity entity permission evaluation endpoints.
+/// </summary>
 public class IdentityEntityPermissionEvaluationEndpointsOptions : EndpointsOptionsBase
 {
+    /// <summary>
+    /// Gets or sets the bypass cache.
+    /// </summary>
     public bool BypassCache { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>IdentityEntityPermissionEvaluationEndpointsOptions</c> class.
+    /// </summary>
     public IdentityEntityPermissionEvaluationEndpointsOptions()
     {
         this.GroupPath = "/_bdk/api/identity/evaluate/entities/permissions";

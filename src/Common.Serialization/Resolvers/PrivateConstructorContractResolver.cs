@@ -9,8 +9,12 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
+/// <summary>
+///     Enables System.Text.Json to construct object types that expose only non-public constructors.
+/// </summary>
 public class PrivateConstructorContractResolver : DefaultJsonTypeInfoResolver
 {
+    /// <inheritdoc/>
     public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
     {
         var jsonTypeInfo = base.GetTypeInfo(type, options);

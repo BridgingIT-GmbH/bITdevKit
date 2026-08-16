@@ -23,6 +23,9 @@ public static partial class Extensions
         return (source ?? []).Where(i => i is not null);
     }
 
+    /// <summary>Normalizes a null string to <see cref="string.Empty"/> while preserving non-null text unchanged.</summary>
+    /// <param name="source">The string to normalize.</param>
+    /// <returns><paramref name="source"/>, or an empty string when it is null.</returns>
     [DebuggerStepThrough]
     public static string SafeNull(this string source)
     {

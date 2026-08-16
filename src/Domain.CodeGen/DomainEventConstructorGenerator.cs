@@ -15,14 +15,25 @@ using System.Text;
 #pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
 #pragma warning disable RS1042 // Implementations of this interface are not allowed
 #pragma warning disable RS1038 // Compiler extensions should be implemented in assemblies with compiler-provided references
+/// <summary>
+/// Represents domain event constructor generator.
+/// </summary>
 [Generator]
 public class DomainEventConstructorGenerator : ISourceGenerator
 {
+    /// <summary>
+    /// Executes the initialize operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new DomainEventSyntaxReceiver());
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
     public void Execute(GeneratorExecutionContext context)
     {
         if (context.SyntaxReceiver is not DomainEventSyntaxReceiver receiver)

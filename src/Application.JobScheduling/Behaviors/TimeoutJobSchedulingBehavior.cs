@@ -9,8 +9,13 @@ using Humanizer;
 using Polly;
 using Polly.Timeout;
 
+/// <summary>
+/// Provides timeout job scheduling behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class TimeoutJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSchedulingBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
         var options = ((context.JobInstance as JobWrapper)?.InnerJob as ITimeoutJobScheduling)?.Options;

@@ -31,6 +31,13 @@ public class DiagnosticSchemaTransformer : IOpenApiSchemaTransformer
     // Thread-safe collection for distinct schema types logged
     private static readonly ConcurrentDictionary<string, bool> LoggedSchemas = new();
 
+    /// <summary>
+    /// Executes the transform operation.
+    /// </summary>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task TransformAsync(
         OpenApiSchema schema,
         OpenApiSchemaTransformerContext context,

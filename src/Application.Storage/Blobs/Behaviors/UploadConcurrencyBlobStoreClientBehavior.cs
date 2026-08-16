@@ -64,6 +64,7 @@ public sealed partial class UploadConcurrencyBlobStoreClientBehavior
             this.options.QueueWaitTimeout.TotalMilliseconds);
     }
 
+    /// <inheritdoc/>
     protected override async Task<Result<T>> ExecuteAsync<T>(
         string operation,
         BlobStoreOperationContext context,
@@ -132,6 +133,7 @@ public sealed partial class UploadConcurrencyBlobStoreClientBehavior
         }
     }
 
+    /// <inheritdoc/>
     protected override Task<Result> ExecuteAsync(
         string operation,
         BlobStoreOperationContext context,

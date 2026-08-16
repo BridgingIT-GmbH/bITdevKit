@@ -8,20 +8,42 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 using Configuration;
 
+/// <summary>
+/// Represents cosmos client builder context.
+/// </summary>
+/// <param name="services">The service collection to configure.</param>
+/// <param name="lifetime">The lifetime used by the operation.</param>
+/// <param name="configuration">The configuration to apply.</param>
+/// <param name="connectionString">The connection string used by the operation.</param>
 public class CosmosClientBuilderContext(
     IServiceCollection services,
     ServiceLifetime lifetime = ServiceLifetime.Scoped,
     IConfiguration configuration = null,
     string connectionString = null)
 {
+    /// <summary>
+    /// Gets the services.
+    /// </summary>
     public IServiceCollection Services { get; } = services;
 
+    /// <summary>
+    /// Gets the lifetime.
+    /// </summary>
     public ServiceLifetime Lifetime { get; } = lifetime;
 
+    /// <summary>
+    /// Gets the configuration.
+    /// </summary>
     public IConfiguration Configuration { get; } = configuration;
 
+    /// <summary>
+    /// Gets the connection string.
+    /// </summary>
     public string ConnectionString { get; } = connectionString;
 
+    /// <summary>
+    /// Stores the account name.
+    /// </summary>
     public string AccountName
     {
         get

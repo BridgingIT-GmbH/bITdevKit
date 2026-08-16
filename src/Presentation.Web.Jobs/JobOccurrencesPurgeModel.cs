@@ -13,17 +13,38 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 public sealed class JobOccurrencesPurgeModel
 {
+    /// <summary>
+    /// Gets or sets the older than.
+    /// </summary>
     public DateTimeOffset? OlderThan { get; set; }
 
+    /// <summary>
+    /// Gets or sets the statuses.
+    /// </summary>
     public JobOccurrenceStatus[] Statuses { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the job name.
+    /// </summary>
     public string JobName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the trigger name.
+    /// </summary>
     public string TriggerName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the is archived.
+    /// </summary>
     public bool? IsArchived { get; set; }
 
+    /// <summary>
+    /// Gets or sets the dry run.
+    /// </summary>
     public bool DryRun { get; set; }
 
+    /// <summary>
+    /// Gets or sets the batch size.
+    /// </summary>
     public int BatchSize { get; set; } = 100;
 }

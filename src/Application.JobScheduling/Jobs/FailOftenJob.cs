@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
+/// <summary>
+/// Represents fail often job.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 [ExcludeFromCodeCoverage]
 public class FailOftenJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
 //IRetryJobScheduling,
@@ -19,6 +23,7 @@ public class FailOftenJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
 
     //ChaosExceptionJobSchedulingOptions IChaosExceptionJobScheduling.Options => new() { InjectionRate = 0.75 };
 
+    /// <inheritdoc/>
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         var dataMap = context.JobDetail.JobDataMap;

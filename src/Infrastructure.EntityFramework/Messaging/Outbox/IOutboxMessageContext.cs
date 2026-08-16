@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Defines operations for i outbox message context.
+/// </summary>
 public interface IOutboxMessageContext
 {
+    /// <summary>
+    /// Gets or sets the outbox messages.
+    /// </summary>
     DbSet<OutboxMessage> OutboxMessages { get; set; }
 }

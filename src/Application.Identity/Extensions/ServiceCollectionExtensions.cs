@@ -12,6 +12,13 @@ using Microsoft.Extensions.Configuration;
 /// </summary>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds entity authorization.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddEntityAuthorization(
         this IServiceCollection services,
         Action<AuthorizationOptionsBuilder> configure, IConfiguration configuration = null)
@@ -23,9 +30,20 @@ public static partial class ServiceCollectionExtensions
     }
 }
 
+/// <summary>
+/// Builds authorization options configuration.
+/// </summary>
+/// <param name="services">The service collection to configure.</param>
+/// <param name="configuration">The configuration to apply.</param>
 public class AuthorizationOptionsBuilder(IServiceCollection services, IConfiguration configuration = null)
 {
+    /// <summary>
+    /// Gets the services.
+    /// </summary>
     public IServiceCollection Services { get; } = services;
 
+    /// <summary>
+    /// Gets the configuration.
+    /// </summary>
     public IConfiguration Configuration { get; } = configuration;
 }

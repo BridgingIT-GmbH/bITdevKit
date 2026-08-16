@@ -56,15 +56,30 @@ public class EntityFrameworkEntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
     /// </summary>
     public class Assignment
     {
+        /// <summary>
+        /// Gets or sets the property selector.
+        /// </summary>
         public LambdaExpression PropertySelector { get; set; }
 
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
         public object Value { get; set; }
 
+        /// <summary>
+        /// Gets or sets the value factory.
+        /// </summary>
         public LambdaExpression ValueFactory { get; set; }
 
+        /// <summary>
+        /// Gets the is computed.
+        /// </summary>
         public bool IsComputed => this.ValueFactory != null;
     }
 
+    /// <summary>
+    /// Gets the assignments.
+    /// </summary>
     public IReadOnlyList<Assignment> Assignments => this.assignments;
 
     /// <summary>

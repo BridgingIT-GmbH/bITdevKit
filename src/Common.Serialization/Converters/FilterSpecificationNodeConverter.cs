@@ -9,8 +9,12 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+/// <summary>
+///     Converts polymorphic <see cref="SpecificationNode"/> instances based on their leaf or group properties.
+/// </summary>
 public class FilterSpecificationNodeConverter : JsonConverter<SpecificationNode>
 {
+    /// <inheritdoc/>
     public override SpecificationNode Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using var doc = JsonDocument.ParseValue(ref reader);
@@ -29,6 +33,7 @@ public class FilterSpecificationNodeConverter : JsonConverter<SpecificationNode>
         throw new NotSupportedException("Unknown SpecificationNode type.");
     }
 
+    /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, SpecificationNode value, JsonSerializerOptions options)
     {
         switch (value)

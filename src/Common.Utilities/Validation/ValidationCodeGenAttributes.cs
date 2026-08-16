@@ -220,11 +220,23 @@ public sealed class ValidateMaxLengthAttribute : ValidationCodeGenAttribute
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateGreaterThanAttribute : SingleValueValidationCodeGenAttribute
 {
+    /// <summary>Initializes a greater-than rule with an integer comparison value.</summary>
+    /// <param name="value">The exclusive lower bound.</param>
     public ValidateGreaterThanAttribute(long value) : base(Format(value)) { }
+    /// <summary>Initializes a greater-than rule with an integer comparison value and message.</summary>
+    /// <param name="value">The exclusive lower bound.</param><param name="message">The custom validation message.</param>
     public ValidateGreaterThanAttribute(long value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a greater-than rule with a floating-point comparison value.</summary>
+    /// <param name="value">The exclusive lower bound.</param>
     public ValidateGreaterThanAttribute(double value) : base(Format(value)) { }
+    /// <summary>Initializes a greater-than rule with a floating-point comparison value and message.</summary>
+    /// <param name="value">The exclusive lower bound.</param><param name="message">The custom validation message.</param>
     public ValidateGreaterThanAttribute(double value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a greater-than rule with an invariant string comparison value.</summary>
+    /// <param name="value">The exclusive lower bound.</param>
     public ValidateGreaterThanAttribute(string value) : base(value) { }
+    /// <summary>Initializes a greater-than rule with an invariant string comparison value and message.</summary>
+    /// <param name="value">The exclusive lower bound.</param><param name="message">The custom validation message.</param>
     public ValidateGreaterThanAttribute(string value, string message) : base(value, message) { }
 }
 
@@ -234,11 +246,23 @@ public sealed class ValidateGreaterThanAttribute : SingleValueValidationCodeGenA
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateGreaterThanOrEqualToAttribute : SingleValueValidationCodeGenAttribute
 {
+    /// <summary>Initializes a greater-than-or-equal rule with an integer comparison value.</summary>
+    /// <param name="value">The inclusive lower bound.</param>
     public ValidateGreaterThanOrEqualToAttribute(long value) : base(Format(value)) { }
+    /// <summary>Initializes a greater-than-or-equal rule with an integer comparison value and message.</summary>
+    /// <param name="value">The inclusive lower bound.</param><param name="message">The custom validation message.</param>
     public ValidateGreaterThanOrEqualToAttribute(long value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a greater-than-or-equal rule with a floating-point comparison value.</summary>
+    /// <param name="value">The inclusive lower bound.</param>
     public ValidateGreaterThanOrEqualToAttribute(double value) : base(Format(value)) { }
+    /// <summary>Initializes a greater-than-or-equal rule with a floating-point comparison value and message.</summary>
+    /// <param name="value">The inclusive lower bound.</param><param name="message">The custom validation message.</param>
     public ValidateGreaterThanOrEqualToAttribute(double value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a greater-than-or-equal rule with an invariant string comparison value.</summary>
+    /// <param name="value">The inclusive lower bound.</param>
     public ValidateGreaterThanOrEqualToAttribute(string value) : base(value) { }
+    /// <summary>Initializes a greater-than-or-equal rule with an invariant string comparison value and message.</summary>
+    /// <param name="value">The inclusive lower bound.</param><param name="message">The custom validation message.</param>
     public ValidateGreaterThanOrEqualToAttribute(string value, string message) : base(value, message) { }
 }
 
@@ -248,11 +272,23 @@ public sealed class ValidateGreaterThanOrEqualToAttribute : SingleValueValidatio
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateLessThanAttribute : SingleValueValidationCodeGenAttribute
 {
+    /// <summary>Initializes a less-than rule with an integer comparison value.</summary>
+    /// <param name="value">The exclusive upper bound.</param>
     public ValidateLessThanAttribute(long value) : base(Format(value)) { }
+    /// <summary>Initializes a less-than rule with an integer comparison value and message.</summary>
+    /// <param name="value">The exclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateLessThanAttribute(long value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a less-than rule with a floating-point comparison value.</summary>
+    /// <param name="value">The exclusive upper bound.</param>
     public ValidateLessThanAttribute(double value) : base(Format(value)) { }
+    /// <summary>Initializes a less-than rule with a floating-point comparison value and message.</summary>
+    /// <param name="value">The exclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateLessThanAttribute(double value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a less-than rule with an invariant string comparison value.</summary>
+    /// <param name="value">The exclusive upper bound.</param>
     public ValidateLessThanAttribute(string value) : base(value) { }
+    /// <summary>Initializes a less-than rule with an invariant string comparison value and message.</summary>
+    /// <param name="value">The exclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateLessThanAttribute(string value, string message) : base(value, message) { }
 }
 
@@ -262,11 +298,23 @@ public sealed class ValidateLessThanAttribute : SingleValueValidationCodeGenAttr
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateLessThanOrEqualToAttribute : SingleValueValidationCodeGenAttribute
 {
+    /// <summary>Initializes a less-than-or-equal rule with an integer comparison value.</summary>
+    /// <param name="value">The inclusive upper bound.</param>
     public ValidateLessThanOrEqualToAttribute(long value) : base(Format(value)) { }
+    /// <summary>Initializes a less-than-or-equal rule with an integer comparison value and message.</summary>
+    /// <param name="value">The inclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateLessThanOrEqualToAttribute(long value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a less-than-or-equal rule with a floating-point comparison value.</summary>
+    /// <param name="value">The inclusive upper bound.</param>
     public ValidateLessThanOrEqualToAttribute(double value) : base(Format(value)) { }
+    /// <summary>Initializes a less-than-or-equal rule with a floating-point comparison value and message.</summary>
+    /// <param name="value">The inclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateLessThanOrEqualToAttribute(double value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes a less-than-or-equal rule with an invariant string comparison value.</summary>
+    /// <param name="value">The inclusive upper bound.</param>
     public ValidateLessThanOrEqualToAttribute(string value) : base(value) { }
+    /// <summary>Initializes a less-than-or-equal rule with an invariant string comparison value and message.</summary>
+    /// <param name="value">The inclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateLessThanOrEqualToAttribute(string value, string message) : base(value, message) { }
 }
 
@@ -276,11 +324,23 @@ public sealed class ValidateLessThanOrEqualToAttribute : SingleValueValidationCo
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateEqualAttribute : SingleValueValidationCodeGenAttribute
 {
+    /// <summary>Initializes an equality rule with an integer comparison value.</summary>
+    /// <param name="value">The required value.</param>
     public ValidateEqualAttribute(long value) : base(Format(value)) { }
+    /// <summary>Initializes an equality rule with an integer comparison value and message.</summary>
+    /// <param name="value">The required value.</param><param name="message">The custom validation message.</param>
     public ValidateEqualAttribute(long value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes an equality rule with a floating-point comparison value.</summary>
+    /// <param name="value">The required value.</param>
     public ValidateEqualAttribute(double value) : base(Format(value)) { }
+    /// <summary>Initializes an equality rule with a floating-point comparison value and message.</summary>
+    /// <param name="value">The required value.</param><param name="message">The custom validation message.</param>
     public ValidateEqualAttribute(double value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes an equality rule with an invariant string comparison value.</summary>
+    /// <param name="value">The required value.</param>
     public ValidateEqualAttribute(string value) : base(value) { }
+    /// <summary>Initializes an equality rule with an invariant string comparison value and message.</summary>
+    /// <param name="value">The required value.</param><param name="message">The custom validation message.</param>
     public ValidateEqualAttribute(string value, string message) : base(value, message) { }
 }
 
@@ -290,11 +350,23 @@ public sealed class ValidateEqualAttribute : SingleValueValidationCodeGenAttribu
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateNotEqualAttribute : SingleValueValidationCodeGenAttribute
 {
+    /// <summary>Initializes an inequality rule with an integer comparison value.</summary>
+    /// <param name="value">The disallowed value.</param>
     public ValidateNotEqualAttribute(long value) : base(Format(value)) { }
+    /// <summary>Initializes an inequality rule with an integer comparison value and message.</summary>
+    /// <param name="value">The disallowed value.</param><param name="message">The custom validation message.</param>
     public ValidateNotEqualAttribute(long value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes an inequality rule with a floating-point comparison value.</summary>
+    /// <param name="value">The disallowed value.</param>
     public ValidateNotEqualAttribute(double value) : base(Format(value)) { }
+    /// <summary>Initializes an inequality rule with a floating-point comparison value and message.</summary>
+    /// <param name="value">The disallowed value.</param><param name="message">The custom validation message.</param>
     public ValidateNotEqualAttribute(double value, string message) : base(Format(value), message) { }
+    /// <summary>Initializes an inequality rule with an invariant string comparison value.</summary>
+    /// <param name="value">The disallowed value.</param>
     public ValidateNotEqualAttribute(string value) : base(value) { }
+    /// <summary>Initializes an inequality rule with an invariant string comparison value and message.</summary>
+    /// <param name="value">The disallowed value.</param><param name="message">The custom validation message.</param>
     public ValidateNotEqualAttribute(string value, string message) : base(value, message) { }
 }
 
@@ -304,12 +376,16 @@ public sealed class ValidateNotEqualAttribute : SingleValueValidationCodeGenAttr
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateInclusiveBetweenAttribute : ValidationCodeGenAttribute
 {
+    /// <summary>Initializes an inclusive range rule with integer bounds.</summary>
+    /// <param name="from">The inclusive lower bound.</param><param name="to">The inclusive upper bound.</param>
     public ValidateInclusiveBetweenAttribute(long from, long to)
     {
         this.From = SingleValueValidationCodeGenAttribute.Format(from);
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an inclusive range rule with integer bounds and a custom message.</summary>
+    /// <param name="from">The inclusive lower bound.</param><param name="to">The inclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateInclusiveBetweenAttribute(long from, long to, string message)
         : base(message)
     {
@@ -317,12 +393,16 @@ public sealed class ValidateInclusiveBetweenAttribute : ValidationCodeGenAttribu
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an inclusive range rule with floating-point bounds.</summary>
+    /// <param name="from">The inclusive lower bound.</param><param name="to">The inclusive upper bound.</param>
     public ValidateInclusiveBetweenAttribute(double from, double to)
     {
         this.From = SingleValueValidationCodeGenAttribute.Format(from);
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an inclusive range rule with floating-point bounds and a custom message.</summary>
+    /// <param name="from">The inclusive lower bound.</param><param name="to">The inclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateInclusiveBetweenAttribute(double from, double to, string message)
         : base(message)
     {
@@ -330,12 +410,16 @@ public sealed class ValidateInclusiveBetweenAttribute : ValidationCodeGenAttribu
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an inclusive range rule with invariant string bounds.</summary>
+    /// <param name="from">The inclusive lower bound.</param><param name="to">The inclusive upper bound.</param>
     public ValidateInclusiveBetweenAttribute(string from, string to)
     {
         this.From = from;
         this.To = to;
     }
 
+    /// <summary>Initializes an inclusive range rule with invariant string bounds and a custom message.</summary>
+    /// <param name="from">The inclusive lower bound.</param><param name="to">The inclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateInclusiveBetweenAttribute(string from, string to, string message)
         : base(message)
     {
@@ -360,12 +444,16 @@ public sealed class ValidateInclusiveBetweenAttribute : ValidationCodeGenAttribu
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateExclusiveBetweenAttribute : ValidationCodeGenAttribute
 {
+    /// <summary>Initializes an exclusive range rule with integer bounds.</summary>
+    /// <param name="from">The exclusive lower bound.</param><param name="to">The exclusive upper bound.</param>
     public ValidateExclusiveBetweenAttribute(long from, long to)
     {
         this.From = SingleValueValidationCodeGenAttribute.Format(from);
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an exclusive range rule with integer bounds and a custom message.</summary>
+    /// <param name="from">The exclusive lower bound.</param><param name="to">The exclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateExclusiveBetweenAttribute(long from, long to, string message)
         : base(message)
     {
@@ -373,12 +461,16 @@ public sealed class ValidateExclusiveBetweenAttribute : ValidationCodeGenAttribu
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an exclusive range rule with floating-point bounds.</summary>
+    /// <param name="from">The exclusive lower bound.</param><param name="to">The exclusive upper bound.</param>
     public ValidateExclusiveBetweenAttribute(double from, double to)
     {
         this.From = SingleValueValidationCodeGenAttribute.Format(from);
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an exclusive range rule with floating-point bounds and a custom message.</summary>
+    /// <param name="from">The exclusive lower bound.</param><param name="to">The exclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateExclusiveBetweenAttribute(double from, double to, string message)
         : base(message)
     {
@@ -386,12 +478,16 @@ public sealed class ValidateExclusiveBetweenAttribute : ValidationCodeGenAttribu
         this.To = SingleValueValidationCodeGenAttribute.Format(to);
     }
 
+    /// <summary>Initializes an exclusive range rule with invariant string bounds.</summary>
+    /// <param name="from">The exclusive lower bound.</param><param name="to">The exclusive upper bound.</param>
     public ValidateExclusiveBetweenAttribute(string from, string to)
     {
         this.From = from;
         this.To = to;
     }
 
+    /// <summary>Initializes an exclusive range rule with invariant string bounds and a custom message.</summary>
+    /// <param name="from">The exclusive lower bound.</param><param name="to">The exclusive upper bound.</param><param name="message">The custom validation message.</param>
     public ValidateExclusiveBetweenAttribute(string from, string to, string message)
         : base(message)
     {
@@ -554,7 +650,11 @@ public sealed class ValidateGuidFormatAttribute : ValidationCodeGenAttribute
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateEmailAttribute : ValidationCodeGenAttribute
 {
+    /// <summary>Initializes an email-address validation rule.</summary>
     public ValidateEmailAttribute() { }
+
+    /// <summary>Initializes an email-address validation rule with a custom message.</summary>
+    /// <param name="message">The custom validation message.</param>
     public ValidateEmailAttribute(string message) : base(message) { }
 }
 
@@ -564,8 +664,13 @@ public sealed class ValidateEmailAttribute : ValidationCodeGenAttribute
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateMatchesAttribute : ValidationCodeGenAttribute
 {
+    /// <summary>Initializes a regular-expression validation rule.</summary>
+    /// <param name="pattern">The regular expression that values must match.</param>
     public ValidateMatchesAttribute(string pattern) => this.Pattern = pattern;
 
+    /// <summary>Initializes a regular-expression validation rule with a custom message.</summary>
+    /// <param name="pattern">The regular expression that values must match.</param>
+    /// <param name="message">The custom validation message.</param>
     public ValidateMatchesAttribute(string pattern, string message)
         : base(message) => this.Pattern = pattern;
 
@@ -581,7 +686,11 @@ public sealed class ValidateMatchesAttribute : ValidationCodeGenAttribute
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateEachNotNullAttribute : ValidationCodeGenAttribute
 {
+    /// <summary>Initializes a rule that requires each collection element to be non-null.</summary>
     public ValidateEachNotNullAttribute() { }
+
+    /// <summary>Initializes a rule that requires each collection element to be non-null and uses a custom message.</summary>
+    /// <param name="message">The custom validation message.</param>
     public ValidateEachNotNullAttribute(string message) : base(message) { }
 }
 
@@ -591,6 +700,10 @@ public sealed class ValidateEachNotNullAttribute : ValidationCodeGenAttribute
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateEachNotEmptyAttribute : ValidationCodeGenAttribute
 {
+    /// <summary>Initializes a rule that requires each collection element to be non-empty.</summary>
     public ValidateEachNotEmptyAttribute() { }
+
+    /// <summary>Initializes a rule that requires each collection element to be non-empty and uses a custom message.</summary>
+    /// <param name="message">The custom validation message.</param>
     public ValidateEachNotEmptyAttribute(string message) : base(message) { }
 }

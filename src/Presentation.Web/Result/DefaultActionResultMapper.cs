@@ -9,8 +9,16 @@ using System.Net;
 using Common;
 using Microsoft.AspNetCore.Mvc;
 
+/// <summary>
+/// Represents default action result mapper.
+/// </summary>
 public class DefaultActionResultMapper : IActionResultMapper
 {
+    /// <summary>
+    /// Executes the ok operation.
+    /// </summary>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult Ok(IResult result)
     {
         if (!result.HasError())
@@ -26,6 +34,13 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the ok operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Ok<TModel>(IResult result, TModel model)
     {
         if (!result.HasError())
@@ -41,6 +56,13 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the ok operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Ok<TModel>(IResult result, Action<TModel> action)
         where TModel : new()
     {
@@ -60,6 +82,13 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the ok operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="models">The models used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ICollection<TModel>> Ok<TModel>(IResult result, IEnumerable<TModel> models)
     {
         if (!result.HasError())
@@ -75,6 +104,12 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the ok operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ResultPaged<TModel>> Ok<TModel>(ResultPaged<TModel> result)
     {
         if (!result.HasError())
@@ -90,6 +125,15 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Creates d.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Created<TModel>(
         IResult result,
         TModel model,
@@ -114,6 +158,15 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Creates d.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Created<TModel>(
         IResult result,
         Action<TModel> action,
@@ -142,6 +195,16 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Creates d.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Created<TModel>(
         IResult result,
         TModel model,
@@ -167,6 +230,16 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Creates d.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Created<TModel>(
         IResult result,
         Action<TModel> action,
@@ -196,6 +269,15 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the updated operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Updated<TModel>(
         IResult result,
         TModel model,
@@ -220,6 +302,15 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the updated operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Updated<TModel>(
         IResult result,
         Action<TModel> action,
@@ -249,6 +340,16 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the updated operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Updated<TModel>(
         IResult result,
         TModel model,
@@ -277,6 +378,16 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the updated operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Updated<TModel>(
         IResult result,
         Action<TModel> action,
@@ -310,6 +421,15 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the accepted operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Accepted<TModel>(
         IResult result,
         TModel model,
@@ -334,6 +454,15 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the accepted operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Accepted<TModel>(
         IResult result,
         Action<TModel> action,
@@ -362,6 +491,16 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the accepted operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Accepted<TModel>(
         IResult result,
         TModel model,
@@ -387,6 +526,16 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the accepted operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Accepted<TModel>(
         IResult result,
         Action<TModel> action,
@@ -416,16 +565,32 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Deletes d.
+    /// </summary>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult Deleted(IResult result)
     {
         return this.NoContent(result);
     }
 
+    /// <summary>
+    /// Deletes d.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Deleted<TModel>(IResult result)
     {
         return this.NoContent<TModel>(result);
     }
 
+    /// <summary>
+    /// Executes the no content operation.
+    /// </summary>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult NoContent(IResult result)
     {
         if (!result.HasError())
@@ -436,6 +601,12 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the no content operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> NoContent<TModel>(IResult result)
     {
         if (!result.HasError())
@@ -446,6 +617,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the object operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<TModel> Object<TModel>(IResult result, TModel model, int statusCode)
     {
         if (!result.HasError())
@@ -456,6 +635,14 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the object operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="models">The models used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ICollection<TModel>> Object<TModel>(
         IResult result,
         IEnumerable<TModel> models,
@@ -469,6 +656,13 @@ public class DefaultActionResultMapper : IActionResultMapper
         return MapError(result);
     }
 
+    /// <summary>
+    /// Executes the object operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual ActionResult<ResultPaged<TModel>> Object<TModel>(ResultPaged<TModel> result, int statusCode)
     {
         if (!result.HasError())

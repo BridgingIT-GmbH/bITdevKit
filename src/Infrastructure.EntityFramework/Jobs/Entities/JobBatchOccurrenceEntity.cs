@@ -10,36 +10,60 @@ using System.ComponentModel.DataAnnotations.Schema;
 using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// Represents a durable batch-membership row.
+/// </summary>
 [Table("__Jobs_BatchOccurrences")]
 [PrimaryKey(nameof(BatchId), nameof(OccurrenceId))]
 [Index(nameof(BatchId), nameof(Sequence))]
 [Index(nameof(OccurrenceId))]
-/// <summary>
-/// Represents a durable batch-membership row.
-/// </summary>
 public class JobBatchOccurrenceEntity
 {
+    /// <summary>
+    /// Gets or sets the batch id.
+    /// </summary>
     [Required]
     public Guid BatchId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the occurrence id.
+    /// </summary>
     [Required]
     public Guid OccurrenceId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the child status.
+    /// </summary>
     [Required]
     public JobOccurrenceStatus ChildStatus { get; set; }
 
+    /// <summary>
+    /// Gets or sets the sequence.
+    /// </summary>
     public int? Sequence { get; set; }
 
+    /// <summary>
+    /// Gets or sets the created date.
+    /// </summary>
     [Required]
     public DateTimeOffset CreatedDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the updated date.
+    /// </summary>
     [Required]
     public DateTimeOffset UpdatedDate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the concurrency version.
+    /// </summary>
     [Required]
     [ConcurrencyCheck]
     public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
 
+    /// <summary>
+    /// Executes the advance concurrency version operation.
+    /// </summary>
     public void AdvanceConcurrencyVersion()
     {
         this.ConcurrencyVersion = Guid.NewGuid();

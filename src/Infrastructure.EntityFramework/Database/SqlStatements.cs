@@ -5,10 +5,21 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Database;
 
+/// <summary>
+/// Represents sql statements.
+/// </summary>
 public static class SqlStatements
 {
+    /// <summary>
+    /// Represents sql server.
+    /// </summary>
     public static class SqlServer
     {
+        /// <summary>
+        /// Executes the truncate all tables operation.
+        /// </summary>
+        /// <param name="ignoreTables">The ignore tables used by the operation.</param>
+        /// <returns>The result of the operation.</returns>
         public static string TruncateAllTables(IEnumerable<string> ignoreTables = null)
         {
             ignoreTables = ignoreTables.EmptyToNull();
@@ -77,8 +88,16 @@ DROP TABLE ##ExcludedTablePatterns
         }
     }
 
+    /// <summary>
+    /// Represents sqlite.
+    /// </summary>
     public static class Sqlite
     {
+        /// <summary>
+        /// Executes the truncate all tables operation.
+        /// </summary>
+        /// <param name="ignoreTables">The ignore tables used by the operation.</param>
+        /// <returns>The result of the operation.</returns>
         public static string TruncateAllTables(IEnumerable<string> ignoreTables = null)
         {
             ignoreTables = ignoreTables.EmptyToNull();
@@ -150,8 +169,16 @@ DROP TABLE ExcludedTablePatterns;
         }
     }
 
+    /// <summary>
+    /// Represents postgre sql.
+    /// </summary>
     public static class PostgreSQL
     {
+        /// <summary>
+        /// Executes the truncate all tables operation.
+        /// </summary>
+        /// <param name="ignoreTables">The ignore tables used by the operation.</param>
+        /// <returns>The result of the operation.</returns>
         public static string TruncateAllTables(IEnumerable<string> ignoreTables = null)
         {
             ignoreTables = ignoreTables.EmptyToNull();

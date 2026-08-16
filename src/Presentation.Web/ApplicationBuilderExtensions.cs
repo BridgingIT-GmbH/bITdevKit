@@ -66,6 +66,11 @@ public static class ApplicationBuilderExtensions
         return app;
     }
 
+    /// <summary>
+    /// Configures active entity.
+    /// </summary>
+    /// <param name="app">The app used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IApplicationBuilder UseActiveEntity(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);

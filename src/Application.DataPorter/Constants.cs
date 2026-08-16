@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Defines the log key import value.
+    /// </summary>
     public const string LogKeyImport = "IMP";
 
+    /// <summary>
+    /// Defines the log key export value.
+    /// </summary>
     public const string LogKeyExport = "EXP";
 }

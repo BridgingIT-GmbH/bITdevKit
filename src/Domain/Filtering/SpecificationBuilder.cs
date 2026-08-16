@@ -423,8 +423,17 @@ public static class SpecificationBuilder
     }
 }
 
+/// <summary>
+/// Represents type converter.
+/// </summary>
 public static class TypeConverter
 {
+    /// <summary>
+    /// Executes the change type operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <param name="targetType">The target type used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static object ChangeType(object value, Type targetType)
     {
         if (value == null)

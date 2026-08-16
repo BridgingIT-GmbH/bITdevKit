@@ -7,13 +7,26 @@ namespace BridgingIT.DevKit.Domain;
 
 using BridgingIT.DevKit.Domain.Repositories;
 
+/// <summary>
+/// Configures active entity in memory provider.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public class ActiveEntityInMemoryProviderOptions<TEntity> : OptionsBase
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Gets or sets the context.
+    /// </summary>
     public InMemoryContext<TEntity> Context { get; set; }
 
+    /// <summary>
+    /// Gets or sets the publish events.
+    /// </summary>
     public bool PublishEvents { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets the id generator.
+    /// </summary>
     public IEntityIdGenerator<TEntity> IdGenerator { get; set; }
 
     /// <summary>

@@ -173,6 +173,9 @@ public interface IFileMonitoringService
 /// </summary>
 public class FileEventReceivedEventArgs(FileEvent fileEvent) : EventArgs
 {
+    /// <summary>
+    /// Gets the file event.
+    /// </summary>
     public FileEvent FileEvent { get; } = fileEvent;
 }
 
@@ -181,10 +184,19 @@ public class FileEventReceivedEventArgs(FileEvent fileEvent) : EventArgs
 /// </summary>
 public class ProcessingErrorEventArgs(FileEvent fileEvent, string processorName, Exception exception) : EventArgs
 {
+    /// <summary>
+    /// Gets the file event.
+    /// </summary>
     public FileEvent FileEvent { get; } = fileEvent;
 
+    /// <summary>
+    /// Gets the processor name.
+    /// </summary>
     public string ProcessorName { get; } = processorName;
 
+    /// <summary>
+    /// Gets the exception.
+    /// </summary>
     public Exception Exception { get; } = exception;
 }
 
@@ -193,13 +205,28 @@ public class ProcessingErrorEventArgs(FileEvent fileEvent, string processorName,
 /// </summary>
 public class LocationStatus
 {
+    /// <summary>
+    /// Gets or sets the location name.
+    /// </summary>
     public string LocationName { get; set; }
 
+    /// <summary>
+    /// Gets or sets the is active.
+    /// </summary>
     public bool IsActive { get; set; }
 
+    /// <summary>
+    /// Gets or sets the is paused.
+    /// </summary>
     public bool IsPaused { get; set; }
 
+    /// <summary>
+    /// Gets or sets the queue size.
+    /// </summary>
     public int QueueSize { get; set; }
 
+    /// <summary>
+    /// Gets or sets the last scan time.
+    /// </summary>
     public DateTimeOffset LastScanTime { get; set; }
 }

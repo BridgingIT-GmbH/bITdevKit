@@ -10,11 +10,19 @@ using Domain.Outbox;
 using Microsoft.Extensions.Logging;
 
 #pragma warning disable CS0618 // Type or member is obsolete
+/// <summary>
+/// Represents outbox message command handler.
+/// </summary>
 public class OutboxMessageCommandHandler : CommandHandlerBase<OutboxMessageCommand, OutboxMessageCommandResult>
 #pragma warning restore CS0618 // Type or member is obsolete
 {
     private readonly IOutboxMessageWriterRepository repository;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>OutboxMessageCommandHandler</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="repository">The repository used by the operation.</param>
     public OutboxMessageCommandHandler(ILoggerFactory loggerFactory, IOutboxMessageWriterRepository repository)
         : base(loggerFactory)
     {
@@ -23,6 +31,7 @@ public class OutboxMessageCommandHandler : CommandHandlerBase<OutboxMessageComma
         this.repository = repository;
     }
 
+    /// <inheritdoc/>
     public override async Task<CommandResponse<OutboxMessageCommandResult>> Process(
         OutboxMessageCommand request,
         CancellationToken cancellationToken)

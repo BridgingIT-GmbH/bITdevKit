@@ -5,7 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Represents an error associated with an invalid or unusable argument.</summary>
+/// <param name="argument">The argument description or name; when omitted, the base error message is <c>Argument error</c>.</param>
 public class ArgumentError(string argument = null) : ResultErrorBase(argument ?? "Argument error")
 {
+    /// <summary>Gets the supplied argument description or name.</summary>
     public string Argument { get; } = argument;
 }

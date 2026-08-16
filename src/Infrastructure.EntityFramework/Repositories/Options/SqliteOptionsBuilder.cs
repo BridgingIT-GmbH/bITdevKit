@@ -8,8 +8,16 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 
+/// <summary>
+/// Builds sqlite options configuration.
+/// </summary>
 public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOptionsBuilder>
 {
+    /// <summary>
+    /// Configures connection string.
+    /// </summary>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public SqliteOptionsBuilder UseConnectionString(string connectionString)
     {
         this.Target.ConnectionString = connectionString;
@@ -17,6 +25,14 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Configures migrations.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <param name="schemaEnabled">The schema enabled used by the operation.</param>
+    /// <param name="schemaName">The schema name used by the operation.</param>
+    /// <param name="schemaAssemblyName">The schema assembly name used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public SqliteOptionsBuilder UseMigrations(
         bool value = true,
         bool schemaEnabled = true,
@@ -31,6 +47,12 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Configures logger.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <param name="sensitiveDataLoggingEnabled">The sensitive data logging enabled used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public SqliteOptionsBuilder UseLogger(bool value = true, bool sensitiveDataLoggingEnabled = false)
     {
         this.Target.LoggerEnabled = value;
@@ -39,12 +61,22 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Configures idempotent migrations.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public SqliteOptionsBuilder UseIdempotentMigrations(bool value = true)
     {
         this.Target.IdempotentMigrationsEnabled = value;
         return this;
     }
 
+    /// <summary>
+    /// Configures command logger.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public SqliteOptionsBuilder UseCommandLogger(bool value = true)
     {
         this.Target.CommandLoggerEnabled = value;
@@ -52,6 +84,12 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Configures simple logger.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <param name="logLevel">The log level used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public SqliteOptionsBuilder UseSimpleLogger(bool value = true, LogLevel logLevel = LogLevel.Debug)
     {
         this.Target.SimpleLoggerEnabled = value;
@@ -60,6 +98,11 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Configures intercepter.
+    /// </summary>
+    /// <typeparam name="TInterceptor">The interceptor type.</typeparam>
+    /// <returns>The result of the operation.</returns>
     public SqliteOptionsBuilder UseIntercepter<TInterceptor>()
         where TInterceptor : class, IInterceptor
     {
@@ -68,6 +111,11 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Executes the enable detailed errors operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public SqliteOptionsBuilder EnableDetailedErrors(bool value = true)
     {
         this.Target.DetailedErrorsEnabled = value;
@@ -75,6 +123,11 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    /// <summary>
+    /// Configures memory cache.
+    /// </summary>
+    /// <param name="cache">The cache used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public SqliteOptionsBuilder UseMemoryCache(IMemoryCache cache)
     {
         this.Target.MemoryCache = cache;

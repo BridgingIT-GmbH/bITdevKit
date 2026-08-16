@@ -9,6 +9,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Microsoft.JSInterop;
 
+/// <summary>
+/// Represents js runtime extensions.
+/// </summary>
 [ExcludeFromCodeCoverage]
 public static class JsRuntimeExtensions
 {
@@ -206,6 +209,13 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Executes the navigate to operation.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="url">The url used by the operation.</param>
+    /// <param name="target">The target used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async Task NavigateTo(this IJSRuntime source, string url, string target = "_blank")
     {
         try
@@ -237,6 +247,12 @@ public static class JsRuntimeExtensions
         return source.InvokeAsync<T>("eval", code);
     }
 
+    /// <summary>
+    /// Gets local storage item.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<string> GetLocalStorageItemAsync(this IJSRuntime source, string key)
     {
         try
@@ -255,12 +271,26 @@ public static class JsRuntimeExtensions
         return default;
     }
 
+    /// <summary>
+    /// Gets local storage item.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<T> GetLocalStorageItemAsync<T>(this IJSRuntime source, string key)
     {
         var json = await source.GetLocalStorageItemAsync(key);
         return json == null ? default : JsonSerializer.Deserialize<T>(json);
     }
 
+    /// <summary>
+    /// Executes the set local storage item operation.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask SetLocalStorageItemAsync(this IJSRuntime source, string key, string value)
     {
         try
@@ -278,11 +308,25 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Executes the set local storage item operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static ValueTask SetLocalStorageItemAsync<T>(this IJSRuntime source, string key, T value)
     {
         return source.SetLocalStorageItemAsync(key, JsonSerializer.Serialize(value));
     }
 
+    /// <summary>
+    /// Removes local storage item.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask RemoveLocalStorageItemAsync(this IJSRuntime source, string key)
     {
         try
@@ -300,6 +344,11 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Executes the clear local storage operation.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask ClearLocalStorageAsync(this IJSRuntime source)
     {
         try
@@ -317,6 +366,11 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Gets local storage item count.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<int> GetLocalStorageItemCountAsync(this IJSRuntime source)
     {
         try
@@ -335,6 +389,12 @@ public static class JsRuntimeExtensions
         return default;
     }
 
+    /// <summary>
+    /// Gets session storage item.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<string> GetSessionStorageItemAsync(this IJSRuntime source, string key)
     {
         try
@@ -353,12 +413,26 @@ public static class JsRuntimeExtensions
         return default;
     }
 
+    /// <summary>
+    /// Gets session storage item.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<T> GetSessionStorageItemAsync<T>(this IJSRuntime source, string key)
     {
         var json = await source.GetSessionStorageItemAsync(key);
         return json == null ? default : JsonSerializer.Deserialize<T>(json);
     }
 
+    /// <summary>
+    /// Executes the set session storage item operation.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask SetSessionStorageItemAsync(this IJSRuntime source, string key, string value)
     {
         try
@@ -376,11 +450,25 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Executes the set session storage item operation.
+    /// </summary>
+    /// <typeparam name="T">The  type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static ValueTask SetSessionStorageItemAsync<T>(this IJSRuntime source, string key, T value)
     {
         return source.SetSessionStorageItemAsync(key, JsonSerializer.Serialize(value));
     }
 
+    /// <summary>
+    /// Removes session storage item.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask RemoveSessionStorageItemAsync(this IJSRuntime source, string key)
     {
         try
@@ -398,6 +486,11 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Executes the clear session storage operation.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask ClearSessionStorageAsync(this IJSRuntime source)
     {
         try
@@ -415,11 +508,23 @@ public static class JsRuntimeExtensions
         }
     }
 
+    /// <summary>
+    /// Gets session storage item count.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static ValueTask<int> GetSessionStorageItemCountAsync(this IJSRuntime source)
     {
         return source.InvokeAsync<int>("eval", "sessionStorage.length");
     }
 
+    /// <summary>
+    /// Determines whether has storage key.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="useSessionStorage">The use session storage used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<bool> HasStorageKeyAsync(this IJSRuntime source, string key, bool useSessionStorage = false)
     {
         var storageType = useSessionStorage ? "sessionStorage" : "localStorage";
@@ -440,6 +545,12 @@ public static class JsRuntimeExtensions
         return false;
     }
 
+    /// <summary>
+    /// Gets storage keys.
+    /// </summary>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="useSessionStorage">The use session storage used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async ValueTask<string[]> GetStorageKeysAsync(this IJSRuntime source, bool useSessionStorage = false)
     {
         var storageType = useSessionStorage ? "sessionStorage" : "localStorage";

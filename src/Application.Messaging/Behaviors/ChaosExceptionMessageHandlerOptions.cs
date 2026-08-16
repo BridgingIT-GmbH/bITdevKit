@@ -5,11 +5,20 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Defines operations for i chaos exception message handler.
+/// </summary>
 public interface IChaosExceptionMessageHandler
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     ChaosExceptionMessageHandlerOptions Options { get; }
 }
 
+/// <summary>
+/// Configures chaos exception message handler.
+/// </summary>
 public class ChaosExceptionMessageHandlerOptions
 {
     /// <summary>
@@ -18,5 +27,8 @@ public class ChaosExceptionMessageHandlerOptions
     /// </summary>
     public double InjectionRate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the fault.
+    /// </summary>
     public Exception Fault { get; set; } = new ChaosException();
 }

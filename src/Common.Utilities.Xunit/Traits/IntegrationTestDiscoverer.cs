@@ -8,11 +8,15 @@ namespace BridgingIT.DevKit.Common;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
+/// <summary>
+///     Emits the integration-test category and optional integration-test identifier traits.
+/// </summary>
 public class IntegrationTestDiscoverer : ITraitDiscoverer
 {
     internal const string TypeName = "BridgingIT.DevKit.Common." + nameof(IntegrationTestDiscoverer);
     internal const string AssemblyName = "BridgingIT.DevKit.Common.Utilities.Xunit";
 
+    /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
     {
         var identifier = traitAttribute.GetNamedArgument<string>("Identifier");

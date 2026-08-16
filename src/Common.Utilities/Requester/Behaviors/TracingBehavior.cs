@@ -11,6 +11,13 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Wraps every request execution in a diagnostic activity tagged with the request type.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
+/// <param name="activitySource">The activity source used to create request activities.</param>
 public class TracingBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ActivitySource activitySource = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
@@ -19,11 +26,13 @@ public class TracingBehavior<TRequest, TResponse>(
 {
     private readonly ActivitySource activitySource = activitySource;
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return true; // Always process, no attribute required
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

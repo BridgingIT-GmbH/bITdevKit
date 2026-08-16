@@ -9,12 +9,17 @@ using System.Data.Common;
 using Diagnostics;
 using Constants = BridgingIT.DevKit.Infrastructure.EntityFramework.Constants;
 
+/// <summary>
+/// Represents command logger interceptor.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : DbCommandInterceptor
 {
     private readonly ILogger<CommandLoggerInterceptor> logger =
         loggerFactory?.CreateLogger<CommandLoggerInterceptor>() ??
         NullLoggerFactory.Instance.CreateLogger<CommandLoggerInterceptor>();
 
+    /// <inheritdoc/>
     public override InterceptionResult<int> NonQueryExecuting(
         DbCommand command,
         CommandEventData eventData,
@@ -25,6 +30,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.NonQueryExecuting(command, eventData, result);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<InterceptionResult<int>> NonQueryExecutingAsync(
         DbCommand command,
         CommandEventData eventData,
@@ -36,6 +42,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.NonQueryExecutingAsync(command, eventData, result, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<int> NonQueryExecutedAsync(
         DbCommand command,
         CommandExecutedEventData eventData,
@@ -47,6 +54,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.NonQueryExecutedAsync(command, eventData, result, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override int NonQueryExecuted(DbCommand command, CommandExecutedEventData eventData, int result)
     {
         this.LogExecuted(command, eventData);
@@ -54,6 +62,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.NonQueryExecuted(command, eventData, result);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(
         DbCommand command,
         CommandEventData eventData,
@@ -65,6 +74,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ReaderExecutingAsync(command, eventData, result, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override InterceptionResult<DbDataReader> ReaderExecuting(
         DbCommand command,
         CommandEventData eventData,
@@ -75,6 +85,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ReaderExecuting(command, eventData, result);
     }
 
+    /// <inheritdoc/>
     public override DbDataReader ReaderExecuted(
         DbCommand command,
         CommandExecutedEventData eventData,
@@ -85,6 +96,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ReaderExecuted(command, eventData, result);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<DbDataReader> ReaderExecutedAsync(
         DbCommand command,
         CommandExecutedEventData eventData,
@@ -96,6 +108,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ReaderExecutedAsync(command, eventData, result, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override InterceptionResult<object> ScalarExecuting(
         DbCommand command,
         CommandEventData eventData,
@@ -106,6 +119,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ScalarExecuting(command, eventData, result);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<InterceptionResult<object>> ScalarExecutingAsync(
         DbCommand command,
         CommandEventData eventData,
@@ -117,6 +131,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ScalarExecutingAsync(command, eventData, result, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override object ScalarExecuted(DbCommand command, CommandExecutedEventData eventData, object result)
     {
         this.LogExecuted(command, eventData);
@@ -124,6 +139,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
         return base.ScalarExecuted(command, eventData, result);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<object> ScalarExecutedAsync(
         DbCommand command,
         CommandExecutedEventData eventData,
@@ -153,8 +169,19 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
             eventData.Duration.TotalMilliseconds);
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the command executing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbCommandId">The db command id used by the operation.</param>
+        /// <param name="dbContextName">The db context name used by the operation.</param>
+        /// <param name="dbCommandCommandText">The db command command text used by the operation.</param>
         [LoggerMessage(0,
             LogLevel.Debug,
             "[{LogKey}] database command executing (id={DbCommandId}, context={DbContextName}) {DbCommandCommandText}")]
@@ -165,6 +192,14 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
             string dbContextName,
             string dbCommandCommandText);
 
+        /// <summary>
+        /// Writes a log entry for the command executed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbCommandId">The db command id used by the operation.</param>
+        /// <param name="dbContextName">The db context name used by the operation.</param>
+        /// <param name="dbCommandTimeElapsed">The db command time elapsed used by the operation.</param>
         [LoggerMessage(1,
             LogLevel.Debug,
             "[{LogKey}] database command executed (id={DbCommandId}, context={DbContextName}) -> took {DbCommandTimeElapsed:0.0000} ms")]

@@ -31,78 +31,143 @@ public sealed class InlineJobDefinitionBuilder
 
     internal string JobName => this.inner.JobName;
 
+    /// <summary>
+    /// Executes the with name operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithName(string value)
     {
         this.inner.Name(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the with description operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithDescription(string value)
     {
         this.inner.Description(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the group operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder Group(string value)
     {
         this.inner.Group(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the module operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder Module(string value)
     {
         this.inner.Module(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the enabled operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public InlineJobDefinitionBuilder Enabled(bool value = true)
     {
         this.inner.Enabled(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the with priority operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithPriority(int value)
     {
         this.inner.WithPriority(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the with timeout operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithTimeout(TimeSpan value)
     {
         this.inner.WithTimeout(value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the with concurrency operation.
+    /// </summary>
+    /// <param name="limit">The limit used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithConcurrency(int limit)
     {
         this.inner.WithConcurrency(limit);
         return this;
     }
 
+    /// <summary>
+    /// Executes the with data operation.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithData<TData>()
     {
         this.inner.WithData<TData>();
         return this;
     }
 
+    /// <summary>
+    /// Executes the with property operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithProperty(string key, string value)
     {
         this.inner.WithProperty(key, value);
         return this;
     }
 
+    /// <summary>
+    /// Executes the target instances operation.
+    /// </summary>
+    /// <param name="values">The values used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder TargetInstances(params string[] values)
     {
         this.inner.TargetInstances(values);
         return this;
     }
 
+    /// <summary>
+    /// Executes the with retry operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithRetry(Action<JobRetryPolicyBuilder> configure)
     {
         this.inner.WithRetry(configure);
         return this;
     }
 
+    /// <summary>
+    /// Provides with behavior.
+    /// </summary>
+    /// <typeparam name="TBehavior">The behavior type.</typeparam>
     public InlineJobDefinitionBuilder WithBehavior<TBehavior>()
         where TBehavior : class, IJobBehavior
     {
@@ -110,12 +175,23 @@ public sealed class InlineJobDefinitionBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the with behavior operation.
+    /// </summary>
+    /// <param name="behaviorType">The behavior type used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder WithBehavior(Type behaviorType)
     {
         this.inner.WithBehavior(behaviorType);
         return this;
     }
 
+    /// <summary>
+    /// Adds trigger.
+    /// </summary>
+    /// <param name="triggerName">The trigger name used by the operation.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder AddTrigger(
         string triggerName,
         Action<JobTriggerDefinitionBuilder> configure)
@@ -124,6 +200,12 @@ public sealed class InlineJobDefinitionBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the then operation.
+    /// </summary>
+    /// <param name="successorJobName">The successor job name used by the operation.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     public InlineJobDefinitionBuilder Then(
         string successorJobName,
         Action<JobChainDefinitionBuilder> configure = null)
@@ -132,6 +214,11 @@ public sealed class InlineJobDefinitionBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public InlineJobDefinitionBuilder Execute(Func<IJobExecutionContext, CancellationToken, Task<Result>> value)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -139,12 +226,23 @@ public sealed class InlineJobDefinitionBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public InlineJobDefinitionBuilder Execute(Func<IJobExecutionContext, IServiceProvider, CancellationToken, Task<Result>> value)
     {
         this.handler = value ?? throw new ArgumentNullException(nameof(value));
         return this;
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public InlineJobDefinitionBuilder Execute<TData>(Func<IJobExecutionContext<TData>, CancellationToken, Task<Result>> value)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -163,6 +261,12 @@ public sealed class InlineJobDefinitionBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public InlineJobDefinitionBuilder Execute<TData>(Func<IJobExecutionContext<TData>, IServiceProvider, CancellationToken, Task<Result>> value)
     {
         ArgumentNullException.ThrowIfNull(value);

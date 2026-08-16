@@ -19,6 +19,12 @@ public sealed class JobSchedulerMaintenanceService(
 {
     private readonly JobSchedulerMetrics metrics = new(metricsService);
 
+    /// <summary>
+    /// Executes the archive occurrences operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> ArchiveOccurrencesAsync(JobArchiveOccurrencesJobData options, CancellationToken cancellationToken = default)
     {
         using var activity = JobSchedulerInstrumentation.StartManagementActivity("archive-occurrences", options?.JobName, options?.TriggerName);
@@ -97,6 +103,12 @@ public sealed class JobSchedulerMaintenanceService(
         return report;
     }
 
+    /// <summary>
+    /// Executes the purge occurrences operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> PurgeOccurrencesAsync(JobPurgeOccurrencesRequest request, CancellationToken cancellationToken = default)
     {
         using var activity = JobSchedulerInstrumentation.StartManagementActivity("purge-occurrences", request?.JobName, request?.TriggerName);
@@ -190,6 +202,12 @@ public sealed class JobSchedulerMaintenanceService(
             return report;
     }
 
+    /// <summary>
+    /// Executes the purge history operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> PurgeHistoryAsync(JobPurgeHistoryJobData options, CancellationToken cancellationToken = default)
     {
             using var activity = JobSchedulerInstrumentation.StartManagementActivity("purge-history");
@@ -225,6 +243,12 @@ public sealed class JobSchedulerMaintenanceService(
         return report;
     }
 
+    /// <summary>
+    /// Executes the release expired leases operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> ReleaseExpiredLeasesAsync(JobReleaseExpiredLeasesJobData options, CancellationToken cancellationToken = default)
     {
         using var activity = JobSchedulerInstrumentation.StartManagementActivity("release-expired-leases");
@@ -282,6 +306,12 @@ public sealed class JobSchedulerMaintenanceService(
         return report;
     }
 
+    /// <summary>
+    /// Executes the recover stuck occurrences operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> RecoverStuckOccurrencesAsync(JobRecoverStuckOccurrencesJobData options, CancellationToken cancellationToken = default)
     {
         using var activity = JobSchedulerInstrumentation.StartManagementActivity("recover-stuck-occurrences");
@@ -339,6 +369,12 @@ public sealed class JobSchedulerMaintenanceService(
         return report;
     }
 
+    /// <summary>
+    /// Executes the detect orphaned runtime state operation.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> DetectOrphanedRuntimeStateAsync(JobDetectOrphanedRuntimeStateJobData options, CancellationToken cancellationToken = default)
     {
         using var activity = JobSchedulerInstrumentation.StartManagementActivity("detect-orphaned-runtime-state");

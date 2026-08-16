@@ -7,14 +7,24 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System.Globalization;
 
+/// <summary>
+/// Represents decimal value object.
+/// </summary>
 public abstract class DecimalValueObject : ComparableValueObject
 {
     private int? cachedHashCode;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>DecimalValueObject</c> class.
+    /// </summary>
     protected
         DecimalValueObject() // TODO: make private again when System.Text.Json can deserialize objects with a non-public ctor
     { }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>DecimalValueObject</c> class.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
     protected DecimalValueObject(decimal value)
     {
         this.Amount = value;
@@ -22,15 +32,29 @@ public abstract class DecimalValueObject : ComparableValueObject
 
     //public static DecimalValueObject Zero => new(0);
 
+    /// <summary>
+    /// Gets or sets the amount.
+    /// </summary>
     public decimal Amount { get; protected set; }
 
     //public static implicit operator DecimalValueObject(decimal value) => new(value);
 
+    /// <summary>
+    /// Executes the implicit operator decimal operation.
+    /// </summary>
+    /// <param name="value">The value used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static implicit operator decimal(DecimalValueObject value)
     {
         return value.Amount;
     }
 
+    /// <summary>
+    /// Executes the operator == operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(DecimalValueObject a, DecimalValueObject b)
     {
         if (ReferenceEquals(a, b))
@@ -46,26 +70,56 @@ public abstract class DecimalValueObject : ComparableValueObject
         return false;
     }
 
+    /// <summary>
+    /// Executes the operator != operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(DecimalValueObject a, DecimalValueObject b)
     {
         return !(a == b);
     }
 
+    /// <summary>
+    /// Executes the operator > operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator >(DecimalValueObject a, DecimalValueObject b)
     {
         return a.Amount > b.Amount;
     }
 
+    /// <summary>
+    /// Executes the operator  operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator <(DecimalValueObject a, DecimalValueObject b)
     {
         return a.Amount < b.Amount;
     }
 
+    /// <summary>
+    /// Executes the operator >= operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator >=(DecimalValueObject a, DecimalValueObject b)
     {
         return a.Amount >= b.Amount;
     }
 
+    /// <summary>
+    /// Executes the operator  operation.
+    /// </summary>
+    /// <param name="a">The a used by the operation.</param>
+    /// <param name="b">The b used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator <=(DecimalValueObject a, DecimalValueObject b)
     {
         return a.Amount <= b.Amount;
@@ -77,11 +131,16 @@ public abstract class DecimalValueObject : ComparableValueObject
 
     //public static DecimalValueObject Create(decimal value) => new DecimalValueObject(value);
 
+    /// <summary>
+    /// Determines whether has decimals.
+    /// </summary>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public virtual bool HasDecimals()
     {
         return this.Amount - decimal.Truncate(this.Amount) != decimal.Zero;
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj)
     {
         if (obj is null || obj.GetType() != this.GetType())
@@ -105,16 +164,19 @@ public abstract class DecimalValueObject : ComparableValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.Amount.ToString("0.00", CultureInfo.InvariantCulture);
     }
 
+    /// <inheritdoc/>
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return this.Amount;
     }
 
+    /// <inheritdoc/>
     protected override IEnumerable<IComparable> GetComparableAtomicValues()
     {
         yield return this.Amount;

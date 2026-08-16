@@ -17,14 +17,29 @@ using BridgingIT.DevKit.Application.Messaging;
 /// </example>
 public sealed class DashboardMessagingViewModel
 {
+    /// <summary>
+    /// Gets or sets the captured at utc.
+    /// </summary>
     public DateTimeOffset CapturedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 
+    /// <summary>
+    /// Gets or sets the action base.
+    /// </summary>
     public string ActionBase { get; set; } = "/_bdk/dashboard/messaging";
 
+    /// <summary>
+    /// Gets or sets the stats.
+    /// </summary>
     public BrokerMessageStats Stats { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the summary.
+    /// </summary>
     public BrokerMessageBrokerSummary Summary { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the messages.
+    /// </summary>
     public IReadOnlyList<BrokerMessageInfo> Messages { get; set; } = [];
 
     /// <summary>
@@ -47,11 +62,23 @@ public sealed class DashboardMessagingViewModel
     /// </example>
     public IReadOnlyDictionary<Guid, BrokerMessageContentInfo> MessageContentById { get; set; } = new Dictionary<Guid, BrokerMessageContentInfo>();
 
+    /// <summary>
+    /// Gets or sets the subscriptions.
+    /// </summary>
     public IReadOnlyList<BrokerMessageSubscriptionInfo> Subscriptions { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the waiting messages.
+    /// </summary>
     public IReadOnlyList<BrokerMessageInfo> WaitingMessages { get; set; } = [];
 
+    /// <summary>
+    /// Gets the errors.
+    /// </summary>
     public List<string> Errors { get; } = [];
 
+    /// <summary>
+    /// Gets or sets the is available.
+    /// </summary>
     public bool IsAvailable { get; set; } = true;
 }

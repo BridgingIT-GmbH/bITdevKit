@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
+/// <summary>
+/// Represents env console command.
+/// </summary>
 public class EnvConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

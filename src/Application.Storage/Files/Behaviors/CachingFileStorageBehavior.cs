@@ -17,14 +17,33 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
     private readonly IMemoryCache cache = cache ?? throw new ArgumentNullException(nameof(cache));
     private readonly CachingOptions options = options ?? new CachingOptions();
 
+    /// <summary>
+    /// Gets the inner provider.
+    /// </summary>
     public IFileStorageProvider InnerProvider { get; } = innerProvider ?? throw new ArgumentNullException(nameof(innerProvider));
 
+    /// <summary>
+    /// Gets the location name.
+    /// </summary>
     public string LocationName => this.InnerProvider.LocationName;
 
+    /// <summary>
+    /// Gets the description.
+    /// </summary>
     public string Description => this.InnerProvider.Description;
 
+    /// <summary>
+    /// Gets the supports notifications.
+    /// </summary>
     public bool SupportsNotifications => this.InnerProvider.SupportsNotifications;
 
+    /// <summary>
+    /// Executes the file exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"exists_{path}";
@@ -43,6 +62,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the read file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"read_{path}";
@@ -69,6 +95,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
 
     // Implement other methods similarly, caching where appropriate (e.g., GetChecksumAsync, GetFileInfoAsync)
     // Non-cached methods (e.g., WriteFileAsync, DeleteFileAsync) delegate directly to innerProvider
+    /// <summary>
+    /// Executes the write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="content">The content used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.WriteFileAsync(path, content, progress, cancellationToken);
@@ -80,6 +114,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the open write file operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="useTemporaryWrite">The use temporary write used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken);
@@ -91,6 +133,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Deletes file.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.DeleteFileAsync(path, progress, cancellationToken);
@@ -102,6 +151,12 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Gets checksum.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"checksum_{path}";
@@ -120,6 +175,12 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Gets file metadata.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"info_{path}";
@@ -140,6 +201,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
 
     // ... Implement remaining methods (SetFileMetadataAsync, UpdateFileMetadataAsync, ListFilesAsync, CopyFileAsync, etc.)
     // Delegate non-caching operations to innerProvider, clearing cache as needed
+    /// <summary>
+    /// Executes the set file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadata">The metadata used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.SetFileMetadataAsync(path, metadata, cancellationToken);
@@ -151,6 +219,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the update file metadata operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="metadataUpdate">The metadata update used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.UpdateFileMetadataAsync(path, metadataUpdate, cancellationToken);
@@ -162,6 +237,15 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the list files operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="continuationToken">The continuation token used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)
     {
@@ -181,6 +265,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the copy file operation.
+    /// </summary>
+    /// <param name="sourcePath">The source path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.CopyFileAsync(sourcePath, destinationPath, progress, cancellationToken);
@@ -193,6 +285,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the rename file operation.
+    /// </summary>
+    /// <param name="oldPath">The old path used by the operation.</param>
+    /// <param name="newPath">The new path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> RenameFileAsync(string oldPath, string newPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.RenameFileAsync(oldPath, newPath, progress, cancellationToken);
@@ -205,6 +305,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the rename directory operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> RenameDirectoryAsync(string path, string destinationPath, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.RenameDirectoryAsync(path, destinationPath, cancellationToken);
@@ -217,6 +324,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the move file operation.
+    /// </summary>
+    /// <param name="sourcePath">The source path used by the operation.</param>
+    /// <param name="destinationPath">The destination path used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> MoveFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.MoveFileAsync(sourcePath, destinationPath, progress, cancellationToken);
@@ -229,6 +344,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the copy files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.CopyFilesAsync(filePairs, progress, cancellationToken);
@@ -244,6 +366,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the move files operation.
+    /// </summary>
+    /// <param name="filePairs">The file pairs used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.MoveFilesAsync(filePairs, progress, cancellationToken);
@@ -259,6 +388,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Deletes files.
+    /// </summary>
+    /// <param name="paths">The paths used by the operation.</param>
+    /// <param name="progress">The progress used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.DeleteFilesAsync(paths, progress, cancellationToken);
@@ -273,6 +409,12 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the directory exists operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"isdir_{path}";
@@ -291,6 +433,12 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Creates directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.CreateDirectoryAsync(path, cancellationToken);
@@ -302,6 +450,13 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Deletes directory.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         var result = await this.InnerProvider.DeleteDirectoryAsync(path, recursive, cancellationToken);
@@ -313,6 +468,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the list directories operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <param name="searchPattern">The search pattern used by the operation.</param>
+    /// <param name="recursive">The recursive used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
         string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)
     {
@@ -332,6 +495,11 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         return result;
     }
 
+    /// <summary>
+    /// Executes the check health operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         return await this.InnerProvider.CheckHealthAsync(cancellationToken);
@@ -345,6 +513,9 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         this.cache.Remove($"info_{path}");
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
         throw new NotImplementedException();
@@ -356,5 +527,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
 /// </summary>
 public class CachingOptions
 {
+    /// <summary>
+    /// Gets or sets the cache duration.
+    /// </summary>
     public TimeSpan CacheDuration { get; set; } = TimeSpan.FromMinutes(10);
 }

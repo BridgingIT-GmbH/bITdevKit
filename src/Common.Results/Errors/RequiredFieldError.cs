@@ -11,8 +11,11 @@ namespace BridgingIT.DevKit.Common;
 public class RequiredFieldError(string fieldName, string message = null)
     : ResultErrorBase(message ?? $"Required field '{fieldName}' is missing or empty")
 {
+    /// <summary>Gets the name of the required field that was missing or empty.</summary>
     public string FieldName { get; } = fieldName;
 
+    /// <summary>Initializes an error with a generated message naming the required field.</summary>
+    /// <param name="fieldName">The name of the required field that was missing or empty.</param>
     public RequiredFieldError(string fieldName) : this(fieldName, null)
     {
     }

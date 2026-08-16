@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
+/// <summary>
+/// Represents result map http extensions.
+/// </summary>
 public static class ResultMapHttpExtensions
 {
     /// <summary>
@@ -1091,6 +1094,13 @@ public static class ResultMapHttpExtensions
         return MapFile(result, logger);
     }
 
+    /// <summary>
+    /// Executes the map unauthorized error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapUnauthorizedError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1110,6 +1120,13 @@ public static class ResultMapHttpExtensions
         return (TResult)(IResult)TypedResults.Unauthorized();
     }
 
+    /// <summary>
+    /// Executes the map not found error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapNotFoundError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1129,6 +1146,13 @@ public static class ResultMapHttpExtensions
         return (TResult)(IResult)TypedResults.NotFound();
     }
 
+    /// <summary>
+    /// Executes the map bad request error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapBadRequestError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1169,6 +1193,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map conflict error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapConflictError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1194,6 +1225,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map concurrency error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapConcurrencyError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1219,6 +1257,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map domain policy error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapDomainPolicyError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1243,6 +1288,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map operation cancelled error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapOperationCancelledError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1267,6 +1319,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map timeout error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapTimeoutError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1291,6 +1350,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map exception error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapExceptionError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1315,6 +1381,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map rule error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapRuleError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1339,6 +1412,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map rule exception error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapRuleExceptionError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {
@@ -1363,6 +1443,13 @@ public static class ResultMapHttpExtensions
             extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
+    /// <summary>
+    /// Executes the map error operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="logger">The logger that receives diagnostic events.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TResult MapError<TResult>(ILogger logger, Result result)
         where TResult : IResult
     {

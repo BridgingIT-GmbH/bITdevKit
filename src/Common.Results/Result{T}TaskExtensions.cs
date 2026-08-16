@@ -1359,6 +1359,11 @@ public static partial class ResultTTaskExtensions
         }
     }
 
+    /// <summary>Evaluates a result-returning guard for an awaited successful value.</summary>
+    /// <typeparam name="T">The type of the successful value.</typeparam>
+    /// <param name="resultTask">The result task whose successful value is guarded.</param>
+    /// <param name="predicate">The guard operation; its failure converts the value result to failure.</param>
+    /// <returns>A task containing the guarded result; thrown exceptions are represented as result errors.</returns>
     public static async Task<Result<T>> Unless<T>(
     this Task<Result<T>> resultTask,
     Func<T, Result> predicate)
@@ -1433,6 +1438,12 @@ public static partial class ResultTTaskExtensions
         }
     }
 
+    /// <summary>Asynchronously evaluates a result-returning guard for an awaited successful value.</summary>
+    /// <typeparam name="T">The type of the successful value.</typeparam>
+    /// <param name="resultTask">The result task whose successful value is guarded.</param>
+    /// <param name="predicate">The asynchronous guard operation; its failure converts the value result to failure.</param>
+    /// <param name="cancellationToken">The token passed to the guard operation.</param>
+    /// <returns>A task containing the guarded result; cancellation and thrown exceptions are represented as result errors.</returns>
     public static async Task<Result<T>> UnlessAsync<T>(
     this Task<Result<T>> resultTask,
     Func<T, CancellationToken, Task<Result>> predicate,

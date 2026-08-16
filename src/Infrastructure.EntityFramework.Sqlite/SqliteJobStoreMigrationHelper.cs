@@ -7,8 +7,16 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Microsoft.EntityFrameworkCore.Migrations;
 
+/// <summary>
+/// Represents sqlite job store migration helper.
+/// </summary>
 public static class SqliteJobStoreMigrationHelper
 {
+    /// <summary>
+    /// Creates quartz tables.
+    /// </summary>
+    /// <param name="migrationBuilder">The migration builder used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public static void CreateQuartzTables(MigrationBuilder migrationBuilder, SqliteJobStoreMigrationOptions options = null)
     {
         options ??= new SqliteJobStoreMigrationOptions();
@@ -300,6 +308,11 @@ public static class SqliteJobStoreMigrationHelper
         }
     }
 
+    /// <summary>
+    /// Executes the drop quartz tables operation.
+    /// </summary>
+    /// <param name="migrationBuilder">The migration builder used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public static void DropQuartzTables(MigrationBuilder migrationBuilder, SqliteJobStoreMigrationOptions options = null)
     {
         options ??= new SqliteJobStoreMigrationOptions();
@@ -321,10 +334,25 @@ public static class SqliteJobStoreMigrationHelper
     }
 }
 
+/// <summary>
+/// Configures sqlite job store migration.
+/// </summary>
 public class SqliteJobStoreMigrationOptions
 {
+    /// <summary>
+    /// Gets or sets the schema.
+    /// </summary>
     public string Schema { get; set; } = null; // Ignored in SQLite, included for consistency
+    /// <summary>
+    /// Gets or sets the table prefix.
+    /// </summary>
     public string TablePrefix { get; set; } = "QRTZ_";
+    /// <summary>
+    /// Gets or sets the create indexes.
+    /// </summary>
     public bool CreateIndexes { get; set; } = true;
+    /// <summary>
+    /// Gets or sets the column type overrides.
+    /// </summary>
     public Dictionary<string, string> ColumnTypeOverrides { get; set; } = [];
 }

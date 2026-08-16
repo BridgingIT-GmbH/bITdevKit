@@ -5,4 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.Outbox;
 
+/// <summary>
+/// Defines operations for i outbox message worker repository.
+/// </summary>
+/// <typeparam name="OutboxMessage">The outbox message type.</typeparam>
 public interface IOutboxMessageWorkerRepository : IGenericRepository<OutboxMessage>;

@@ -3,10 +3,10 @@ namespace BridgingIT.DevKit.Application.Queueing;
 using System.Diagnostics;
 using FluentValidation.Results;
 
-[DebuggerDisplay("Id={MessageId}")]
 /// <summary>
 /// Provides a reusable base class for queue messages.
 /// </summary>
+[DebuggerDisplay("Id={MessageId}")]
 public abstract class QueueMessageBase : IQueueMessage
 {
     /// <summary>

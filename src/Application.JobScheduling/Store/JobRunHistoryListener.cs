@@ -8,6 +8,11 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
+/// <summary>
+/// Represents job run history listener.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="jobStore">The job store used by the operation.</param>
 public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobService jobStore) : IJobListener, IDisposable
 {
     private readonly ILogger<JobRunHistoryListener> logger = loggerFactory?.CreateLogger<JobRunHistoryListener>() ?? NullLogger<JobRunHistoryListener>.Instance;
@@ -15,6 +20,9 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
     private readonly List<Action<string, string, string, DateTimeOffset>> onJobSuccessHandlers = [];
     private readonly List<Action<string, string, string, DateTimeOffset>> onJobFailedHandlers = [];
 
+    /// <summary>
+    /// Gets the name.
+    /// </summary>
     public string Name => nameof(JobRunHistoryListener);
 
     /// <summary>
@@ -269,6 +277,9 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         }
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
         this.onJobStartedHandlers?.Clear();
@@ -276,11 +287,31 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         this.onJobFailedHandlers?.Clear();
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the job starting operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
+        /// <param name="entryId">The entry id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] job starting (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobStarting(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
+        /// <summary>
+        /// Writes a log entry for the job completed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobGroup">The job group used by the operation.</param>
+        /// <param name="entryId">The entry id used by the operation.</param>
+        /// <param name="status">The status used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] job completed (name={JobName}, group={JobGroup}, entryId={EntryId}, status={Status})")]
         public static partial void LogJobCompleted(ILogger logger, string logKey, string jobName, string jobGroup, string entryId, string status);
     }

@@ -9,6 +9,10 @@ using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 
+/// <summary>
+/// Represents command handler base.
+/// </summary>
+/// <typeparam name="TCommand">The command type.</typeparam>
 [Obsolete("Use the new Requester from now on")]
 public abstract partial class CommandHandlerBase<TCommand>
     : MediatR.IRequestHandler<TCommand, CommandResponse>, ICommandRequestHandler
@@ -20,6 +24,12 @@ public abstract partial class CommandHandlerBase<TCommand>
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>CommandHandlerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="moduleAccessors">The module accessors used by the operation.</param>
+    /// <param name="activitySources">The activity sources used by the operation.</param>
     protected CommandHandlerBase(
         ILoggerFactory loggerFactory,
         IEnumerable<IModuleContextAccessor> moduleAccessors = null,
@@ -32,8 +42,17 @@ public abstract partial class CommandHandlerBase<TCommand>
         this.activitySources = activitySources;
     }
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     protected ILogger Logger { get; }
 
+    /// <summary>
+    /// Handles .
+    /// </summary>
+    /// <param name="command">The command used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<CommandResponse> Handle(TCommand command, CancellationToken cancellationToken)
     {
         var requestType = command.GetType().PrettyName();
@@ -104,6 +123,12 @@ public abstract partial class CommandHandlerBase<TCommand>
         }
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public abstract Task<CommandResponse> Process(TCommand request, CancellationToken cancellationToken);
 
     private void ValidateRequest(TCommand request)
@@ -117,16 +142,45 @@ public abstract partial class CommandHandlerBase<TCommand>
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="commandType">The command type used by the operation.</param>
+        /// <param name="commandRequestId">The command request id used by the operation.</param>
+        /// <param name="commandHandler">The command handler used by the operation.</param>
+        /// <param name="moduleName">The module name used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] processing (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, module={ModuleName})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string commandType, string commandRequestId, string commandHandler, string moduleName);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="commandType">The command type used by the operation.</param>
+        /// <param name="commandRequestId">The command request id used by the operation.</param>
+        /// <param name="moduleName">The module name used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] processed (type={CommandType}, id={CommandRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string commandType, string commandRequestId, string moduleName, long timeElapsed);
     }
 }
 
+/// <summary>
+/// Represents command handler base.
+/// </summary>
+/// <typeparam name="TCommand">The command type.</typeparam>
+/// <typeparam name="TResult">The result type.</typeparam>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
+/// <param name="activitySources">The activity sources used by the operation.</param>
 [Obsolete("Use the new Requester from now on")]
 public abstract partial class CommandHandlerBase<TCommand, TResult>(
     ILoggerFactory loggerFactory,
@@ -141,9 +195,18 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
     private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     protected ILogger Logger { get; } = loggerFactory?.CreateLogger<CommandHandlerBase<TCommand, TResult>>() ??
         NullLoggerFactory.Instance.CreateLogger<CommandHandlerBase<TCommand, TResult>>();
 
+    /// <summary>
+    /// Handles .
+    /// </summary>
+    /// <param name="command">The command used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<CommandResponse<TResult>> Handle(TCommand command, CancellationToken cancellationToken)
     {
         var requestType = command.GetType().Name;
@@ -230,11 +293,25 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
         }
     }
 
+    /// <summary>
+    /// Executes the failure operation.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="value">The value used by the operation.</param>
+    /// <param name="messages">The messages used by the operation.</param>
+    /// <param name="errorMessage">The error message used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected CommandResponse<Result<TValue>> Failure<TValue>(TValue value, string messages = null, string errorMessage = null)
     {
         return CommandResult.Failure(value);
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public abstract Task<CommandResponse<TResult>> Process(TCommand request, CancellationToken cancellationToken);
 
     private void ValidateRequest(TCommand request)
@@ -251,11 +328,32 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="commandType">The command type used by the operation.</param>
+        /// <param name="commandRequestId">The command request id used by the operation.</param>
+        /// <param name="commandHandler">The command handler used by the operation.</param>
+        /// <param name="moduleName">The module name used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] processing (type={CommandType}, id={CommandRequestId}, handler={CommandHandler}, module={ModuleName})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string commandType, string commandRequestId, string commandHandler, string moduleName);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="commandType">The command type used by the operation.</param>
+        /// <param name="commandRequestId">The command request id used by the operation.</param>
+        /// <param name="moduleName">The module name used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] processed (type={CommandType}, id={CommandRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string commandType, string commandRequestId, string moduleName, long timeElapsed);
     }

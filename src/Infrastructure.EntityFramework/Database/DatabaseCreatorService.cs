@@ -11,6 +11,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Hosting;
 
+/// <summary>
+/// Represents database creator service.
+/// </summary>
+/// <typeparam name="TContext">The context type.</typeparam>
 public class DatabaseCreatorService<TContext> : IHostedService
     where TContext : DbContext
 {
@@ -21,6 +25,14 @@ public class DatabaseCreatorService<TContext> : IHostedService
     private readonly DatabaseCreatorOptions options;
     private Task startupTask;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>DatabaseCreatorService</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="applicationLifetime">The application lifetime used by the operation.</param>
+    /// <param name="serviceProvider">The service provider used by the operation.</param>
+    /// <param name="databaseReadyService">The database ready service used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public DatabaseCreatorService(
         ILoggerFactory loggerFactory,
         IHostApplicationLifetime applicationLifetime,
@@ -38,6 +50,11 @@ public class DatabaseCreatorService<TContext> : IHostedService
         this.options = options ?? new DatabaseCreatorOptions();
     }
 
+    /// <summary>
+    /// Executes the start operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         var contextName = typeof(TContext).Name;
@@ -163,6 +180,11 @@ public class DatabaseCreatorService<TContext> : IHostedService
         return;
     }
 
+    /// <summary>
+    /// Executes the stop operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         if (this.startupTask is not null)

@@ -9,8 +9,18 @@ using BridgingIT.DevKit.Application.Messaging;
 using Configuration;
 using Extensions;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with in process broker operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithInProcessBroker(
         this MessagingBuilderContext context,
         InProcessMessageBrokerConfiguration configuration = null,

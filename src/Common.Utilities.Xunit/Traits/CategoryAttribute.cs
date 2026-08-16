@@ -7,9 +7,16 @@ namespace BridgingIT.DevKit.Common;
 
 using Xunit.Sdk;
 
+/// <summary>
+///     Assigns a named xUnit category trait to a test class or method.
+/// </summary>
+/// <param name="name">The category name.</param>
 [TraitDiscoverer(CategoryDiscoverer.TypeName, CategoryDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 public class CategoryAttribute(string name) : Attribute, ITraitAttribute
 {
+    /// <summary>
+    ///     Gets the category name.
+    /// </summary>
     public string Name { get; } = name;
 }

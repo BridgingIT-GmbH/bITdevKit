@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class RuleException : Exception
 {
+    /// <summary>Gets the violated rule when the constructor retains it.</summary>
     public IRule Rule { get; }
 
     /// <summary>

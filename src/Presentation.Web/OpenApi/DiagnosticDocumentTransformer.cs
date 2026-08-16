@@ -22,6 +22,13 @@ using Microsoft.OpenApi;
 /// </remarks>
 public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
 {
+    /// <summary>
+    /// Executes the transform operation.
+    /// </summary>
+    /// <param name="document">The document used by the operation.</param>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task TransformAsync(
         OpenApiDocument document,
         OpenApiDocumentTransformerContext context,

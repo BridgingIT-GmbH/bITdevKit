@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Identity;
 
+/// <summary>
+/// Builds user permission provider configuration.
+/// </summary>
 public class UserPermissionProviderBuilder
 {
     private readonly IEntityPermissionProvider provider;

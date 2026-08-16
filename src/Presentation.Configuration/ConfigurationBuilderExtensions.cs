@@ -8,8 +8,17 @@ namespace Microsoft.Extensions.Configuration;
 using global::Azure.Identity;
 using Serilog;
 
+/// <summary>
+/// Represents configuration builder extensions.
+/// </summary>
 public static class ConfigurationBuilderExtensions
 {
+    /// <summary>
+    /// Adds environment variables provider.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="prefix">The prefix used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IConfigurationBuilder AddEnvironmentVariablesProvider(
         this IConfigurationBuilder builder,
         string prefix = null)
@@ -17,6 +26,12 @@ public static class ConfigurationBuilderExtensions
         return builder.AddEnvironmentVariables(prefix);
     }
 
+    /// <summary>
+    /// Adds json file configuration provider.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="environment">The environment used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IConfigurationBuilder AddJsonFileConfigurationProvider(
         this IConfigurationBuilder builder,
         string environment = null)
@@ -77,6 +92,12 @@ public static class ConfigurationBuilderExtensions
         }
     }
 
+    /// <summary>
+    /// Adds azure key vault provider.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="environment">The environment used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IConfigurationBuilder AddAzureKeyVaultProvider(
         this IConfigurationBuilder builder,
         string environment = null)
@@ -109,6 +130,12 @@ public static class ConfigurationBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds azure app configuration provider.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="environment">The environment used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IConfigurationBuilder AddAzureAppConfigurationProvider(
         this IConfigurationBuilder builder,
         string environment = null)

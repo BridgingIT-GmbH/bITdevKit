@@ -11,6 +11,9 @@ namespace BridgingIT.DevKit.Common;
 public class DecryptionError(string message, string path = null, Exception innerException = null)
     : ResultErrorBase(message ?? "Decryption operation failed")
 {
+    /// <summary>Gets the encrypted resource path associated with the failure, when supplied.</summary>
     public string Path { get; } = path;
+
+    /// <summary>Gets the exception that caused or describes the decryption failure, when available.</summary>
     public Exception InnerException { get; } = innerException;
 }

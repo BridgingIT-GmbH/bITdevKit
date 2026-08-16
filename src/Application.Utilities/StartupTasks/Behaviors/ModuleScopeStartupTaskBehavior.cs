@@ -9,12 +9,19 @@ using System.Diagnostics;
 using Common;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Provides module scope startup task behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="activitySources">The activity sources used by the operation.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
 public class ModuleScopeStartupTaskBehavior(
     ILoggerFactory loggerFactory,
     IEnumerable<ActivitySource> activitySources = null,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null)
     : StartupTaskBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         var correlationId = GuidGenerator.CreateSequential().ToString("N");

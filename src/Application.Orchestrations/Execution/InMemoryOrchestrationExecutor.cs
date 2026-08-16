@@ -137,9 +137,21 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     /// </summary>
     public enum RecoveryActionResult
     {
+        /// <summary>
+        /// Represents the none value.
+        /// </summary>
         None,
+        /// <summary>
+        /// Represents the continued value.
+        /// </summary>
         Continued,
+        /// <summary>
+        /// Represents the repaired value.
+        /// </summary>
         Repaired,
+        /// <summary>
+        /// Represents the skipped lease conflict value.
+        /// </summary>
         SkippedLeaseConflict,
     }
 

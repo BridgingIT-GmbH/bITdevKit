@@ -41,6 +41,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the external error. If null, a default message is used.</param>
 public class ExternalError(string message = null) : ResultErrorBase(message ?? "External service error")
 {
+    /// <summary>Initializes an external-service error with the default message.</summary>
     public ExternalError() : this(null)
     {
     }

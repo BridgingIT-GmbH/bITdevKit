@@ -18,6 +18,12 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
 {
     private readonly ILogger<LoggingProcessorBehavior> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>
+    /// Runs before the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="token">The token used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task BeforeProcessAsync(FileProcessingContext context, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -33,6 +39,13 @@ public class LoggingProcessorBehavior(ILogger<LoggingProcessorBehavior> logger) 
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Runs after the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="token">The token used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task AfterProcessAsync(FileProcessingContext context, Result<bool> result, CancellationToken token)
     {
         EnsureArg.IsNotNull(context, nameof(context));

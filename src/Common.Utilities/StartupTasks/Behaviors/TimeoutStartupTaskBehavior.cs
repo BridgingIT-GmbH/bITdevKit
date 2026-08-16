@@ -11,8 +11,13 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Timeout;
 
+/// <summary>
+///     Applies a pessimistic timeout to startup tasks that supply timeout options.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
 public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupTaskBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
         if (cancellationToken.IsCancellationRequested)

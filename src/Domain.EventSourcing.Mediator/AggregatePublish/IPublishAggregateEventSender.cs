@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish;
 
 using Model;
 
+/// <summary>
+/// Defines operations for i publish aggregate event sender.
+/// </summary>
 public interface IPublishAggregateEventSender
 {
     /// <summary>

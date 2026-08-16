@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+/// <summary>
+/// Represents http header keys.
+/// </summary>
 public struct HttpHeaderKeys
 {
+    /// <summary>
+    /// Defines the location value.
+    /// </summary>
     public const string Location = "Location";
 
+    /// <summary>
+    /// Defines the entity id value.
+    /// </summary>
     public const string EntityId = "X-Entity-Id";
 }

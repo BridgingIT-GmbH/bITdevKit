@@ -29,6 +29,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the operation error. If null, a default message is used.</param>
 public class OperationError(string message = null) : ResultErrorBase(message ?? "Operation error")
 {
+    /// <summary>Initializes an operation error with the default message.</summary>
     public OperationError() : this(null)
     {
     }

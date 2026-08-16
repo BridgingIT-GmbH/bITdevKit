@@ -7,11 +7,17 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics;
 
+/// <summary>
+/// Provides module scope message publisher behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
 public class ModuleScopeMessagePublisherBehavior(
     ILoggerFactory loggerFactory,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null
     /*IEnumerable<ActivitySource> activitySources = null*/) : MessagePublisherBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Publish<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

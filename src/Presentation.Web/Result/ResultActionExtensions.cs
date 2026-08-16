@@ -8,8 +8,17 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using Common;
 using Microsoft.AspNetCore.Mvc;
 
+/// <summary>
+/// Represents result action extensions.
+/// </summary>
 public static class ResultActionExtensions
 {
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult ToOkActionResult(this Result result, IActionResultMapper actionResultMapper = null)
     {
         return actionResultMapper is not null
@@ -17,6 +26,14 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToOkActionResult<TModel>(
         this Result result,
         IMapper mapper,
@@ -30,6 +47,13 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, model);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToOkActionResult<TModel>(
         this Result<TModel> result,
         IActionResultMapper actionResultMapper = null)
@@ -39,6 +63,14 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, result.IsSuccess ? result.Value : default);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToOkActionResult<TModel>(
         this Result result,
         TModel model,
@@ -50,6 +82,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, model);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToOkActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -63,6 +104,13 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, model);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ICollection<TModel>> ToOkActionResult<TModel>(
         this Result<IEnumerable<TModel>> result,
         IActionResultMapper actionResultMapper = null)
@@ -73,6 +121,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, result.IsSuccess ? result.Value : default);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ICollection<TModel>> ToOkActionResult<TSource, TModel>(
         this Result<IEnumerable<TSource>> result,
         IMapper mapper,
@@ -86,6 +143,13 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, models);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ResultPaged<TModel>> ToOkActionResult<TModel>(
         this ResultPaged<TModel> result,
         IActionResultMapper actionResultMapper = null)
@@ -96,6 +160,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ResultPaged<TModel>> ToOkActionResult<TSource, TModel>(
         this ResultPaged<TSource> result,
         IMapper mapper,
@@ -118,6 +191,14 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(resultPaged);
     }
 
+    /// <summary>
+    /// Executes the to ok action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToOkActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -129,6 +210,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Ok(result, action);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
         this Result<TModel> result,
         string routeName = null,
@@ -141,6 +231,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -156,6 +257,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, model, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
         this Result result,
         TModel model,
@@ -169,6 +280,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, model, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -182,6 +303,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, action, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
         this Result<TModel> result,
         string actionName,
@@ -195,6 +326,18 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -211,6 +354,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, model, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
         this Result result,
         TModel model,
@@ -225,6 +379,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, model, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to created action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToCreatedActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -239,6 +404,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Created(result, action, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
         this Result<TModel> result,
         string routeName = null,
@@ -251,6 +425,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -266,6 +451,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, model, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
         this Result result,
         TModel model,
@@ -279,6 +474,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, model, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -292,6 +497,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, action, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
         this Result<TModel> result,
         string actionName,
@@ -305,6 +520,18 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -321,6 +548,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, model, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
         this Result result,
         TModel model,
@@ -335,6 +573,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, model, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to updated action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToUpdatedActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -349,6 +598,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Updated(result, action, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
         this Result<TModel> result,
         string routeName = null,
@@ -361,6 +619,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -376,6 +645,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, model, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
         this Result result,
         TModel model,
@@ -389,6 +668,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, model, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="routeName">The route name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -402,6 +691,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, action, routeName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
         this Result<TModel> result,
         string actionName,
@@ -415,6 +714,18 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -431,6 +742,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, model, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
         this Result result,
         TModel model,
@@ -445,6 +767,17 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, model, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to accepted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="actionName">The action name used by the operation.</param>
+    /// <param name="controllerName">The controller name used by the operation.</param>
+    /// <param name="routeValues">The route values used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToAcceptedActionResult<TModel>(
         this Result result,
         Action<TModel> action,
@@ -459,6 +792,12 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Accepted(result, action, actionName, controllerName, routeValues);
     }
 
+    /// <summary>
+    /// Executes the to deleted action result operation.
+    /// </summary>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult ToDeletedActionResult(this Result result, IActionResultMapper actionResultMapper = null)
     {
         return actionResultMapper is not null
@@ -466,6 +805,13 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Deleted(result);
     }
 
+    /// <summary>
+    /// Executes the to deleted action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToDeletedActionResult<TModel>(
         this Result result,
         IActionResultMapper actionResultMapper = null)
@@ -476,6 +822,13 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Deleted<TModel>(result);
     }
 
+    /// <summary>
+    /// Executes the to no content action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToNoContentActionResult<TModel>(
         this Result result,
         IActionResultMapper actionResultMapper = null)
@@ -486,6 +839,14 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().NoContent<TModel>(result);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToObjectActionResult<TModel>(
         this Result<TModel> result,
         int statusCode,
@@ -497,6 +858,15 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="model">The model used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToObjectActionResult<TModel>(
         this Result result,
         TModel model,
@@ -509,6 +879,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Object(result, model, statusCode);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<TModel> ToObjectActionResult<TSource, TModel>(
         this Result<TSource> result,
         IMapper mapper,
@@ -523,6 +903,14 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Object(result, model, statusCode);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel>(
         this Result<IEnumerable<TModel>> result,
         int statusCode,
@@ -534,6 +922,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel, TSource>(
         this Result<IEnumerable<TSource>> result,
         IMapper mapper,
@@ -548,6 +946,14 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Object(result, models, statusCode);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ICollection<TModel>> ToObjectActionResult<TModel>(
         this ResultPaged<TModel> result,
         int statusCode,
@@ -559,6 +965,16 @@ public static class ResultActionExtensions
             : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
     }
 
+    /// <summary>
+    /// Executes the to object action result operation.
+    /// </summary>
+    /// <typeparam name="TModel">The model type.</typeparam>
+    /// <typeparam name="TSource">The source type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="mapper">The mapper used to transform values.</param>
+    /// <param name="statusCode">The status code used by the operation.</param>
+    /// <param name="actionResultMapper">The action result mapper used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ActionResult<ResultPaged<TModel>> ToObjectActionResult<TModel, TSource>(
         this ResultPaged<TSource> result,
         IMapper mapper,

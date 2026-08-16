@@ -30,6 +30,17 @@ public class JobSchedulingService : BackgroundService
     private CancellationTokenSource linkedCts;
     private Task startupTask;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingService</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="schedulerFactory">The scheduler factory used by the operation.</param>
+    /// <param name="jobFactory">The job factory used by the operation.</param>
+    /// <param name="applicationLifetime">The application lifetime used by the operation.</param>
+    /// <param name="jobSchedules">The job schedules used by the operation.</param>
+    /// <param name="groupMutualExclusionListener">The group mutual exclusion listener used by the operation.</param>
+    /// <param name="jobRunlistener">The job runlistener used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public JobSchedulingService(
         ILoggerFactory loggerFactory,
         ISchedulerFactory schedulerFactory,

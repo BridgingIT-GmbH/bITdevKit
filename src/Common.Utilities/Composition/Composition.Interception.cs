@@ -12,6 +12,10 @@ using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Builds an ordered interception chain around a service contract.
+/// </summary>
+/// <typeparam name="TService">The intercepted service contract.</typeparam>
 public interface IInterceptionBuilder<TService>
     where TService : class
 {

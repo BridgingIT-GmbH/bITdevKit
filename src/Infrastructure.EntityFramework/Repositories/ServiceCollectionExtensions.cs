@@ -12,6 +12,14 @@ using Extensions;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds entity framework repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static EntityFrameworkRepositoryBuilderContext<TEntity, TContext> AddEntityFrameworkRepository<TEntity,
         TContext>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TEntity : class, IEntity
@@ -41,6 +49,12 @@ public static partial class ServiceCollectionExtensions
         return new EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(services, lifetime);
     }
 
+    /// <summary>
+    /// Represents where.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="entityMapper">The entity mapper used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
     public static EntityFrameworkRepositoryBuilderContext<TEntity, TContext> AddEntityFrameworkRepository<TEntity,
         TDatabaseEntity, TContext>(
         this IServiceCollection services,
@@ -77,6 +91,14 @@ public static partial class ServiceCollectionExtensions
         return new EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(services, lifetime);
     }
 
+    /// <summary>
+    /// Adds entity framework readonly repository.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static EntityFrameworkRepositoryBuilderContext<TEntity, TContext>
         AddEntityFrameworkReadonlyRepository<TEntity, TContext>(
             this IServiceCollection services,
@@ -108,6 +130,12 @@ public static partial class ServiceCollectionExtensions
         return new EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(services, lifetime);
     }
 
+    /// <summary>
+    /// Represents where.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="entityMapper">The entity mapper used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
     public static EntityFrameworkRepositoryBuilderContext<TEntity, TContext>
         AddEntityFrameworkReadonlyRepository<TEntity, TDatabaseEntity, TContext>(
             this IServiceCollection services,
@@ -144,6 +172,15 @@ public static partial class ServiceCollectionExtensions
         return new EntityFrameworkRepositoryBuilderContext<TEntity, TContext>(services, lifetime);
     }
 
+    /// <summary>
+    /// Adds in memory db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="name">The name of the value.</param>
+    /// <param name="inMemoryOptionsAction">The in memory options action used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static DbContextBuilderContext<TContext> AddInMemoryDbContext<TContext>(
         this IServiceCollection services,
         string name = null,
@@ -161,6 +198,13 @@ public static partial class ServiceCollectionExtensions
         return new DbContextBuilderContext<TContext>(services, lifetime, provider: Provider.InMemory);
     }
 
+    /// <summary>
+    /// Executes the with sequence number generator operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static DbContextBuilderContext<TContext> WithSequenceNumberGenerator<TContext>(
         this DbContextBuilderContext<TContext> context,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)

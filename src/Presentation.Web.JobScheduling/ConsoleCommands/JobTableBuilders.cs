@@ -9,8 +9,16 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using Spectre.Console;
 using System.Collections.Generic;
 
+/// <summary>
+/// Represents job table builders.
+/// </summary>
 public static class JobTableBuilders
 {
+    /// <summary>
+    /// Executes the build jobs table operation.
+    /// </summary>
+    /// <param name="jobs">The jobs used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Table BuildJobsTable(IEnumerable<JobInfo> jobs)
     {
         var table = new Table()
@@ -50,6 +58,11 @@ public static class JobTableBuilders
         return table;
     }
 
+    /// <summary>
+    /// Executes the build job runs table operation.
+    /// </summary>
+    /// <param name="runs">The runs used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Table BuildJobRunsTable(IEnumerable<JobRun> runs)
     {
         var table = new Table()
@@ -93,6 +106,12 @@ public static class JobTableBuilders
         return table;
     }
 
+    /// <summary>
+    /// Executes the build job stats table operation.
+    /// </summary>
+    /// <param name="stats">The stats used by the operation.</param>
+    /// <param name="job">The job used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static Table BuildJobStatsTable(JobRunStats stats, JobInfo job)
     {
         var table = new Table()

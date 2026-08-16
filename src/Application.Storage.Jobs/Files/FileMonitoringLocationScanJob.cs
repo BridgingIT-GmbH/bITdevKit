@@ -131,23 +131,71 @@ public partial class FileMonitoringLocationScanJob(
         return scanOptions;
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the start scan operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="options">The options controlling the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] job: scan started (location={LocationName}) {@Options}")]
         public static partial void LogStartScan(ILogger logger, string logKey, string locationName, FileScanOptions options);
 
+        /// <summary>
+        /// Writes a log entry for the scan completed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="eventCount">The event count used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] job: scan completed (location={LocationName}, eventCount={EventCount})")]
         public static partial void LogScanCompleted(ILogger logger, string logKey, string locationName, int eventCount);
 
+        /// <summary>
+        /// Writes a log entry for the no changes operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] job: no changes (location={LocationName})")]
         public static partial void LogNoChanges(ILogger logger, string logKey, string locationName);
 
+        /// <summary>
+        /// Writes a log entry for the event processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="eventType">The event type used by the operation.</param>
+        /// <param name="filePath">The file path used by the operation.</param>
+        /// <param name="fileSize">The file size used by the operation.</param>
+        /// <param name="detectedDate">The detected date used by the operation.</param>
         [LoggerMessage(3, LogLevel.Information, "[{LogKey}] job: event processed (location={LocationName}, eventType={EventType}, filePath={FilePath}, size={FileSize}, detected={DetectedDate})")]
         public static partial void LogEventProcessed(ILogger logger, string logKey, string locationName, string eventType, string filePath, long? fileSize, DateTimeOffset detectedDate);
 
+        /// <summary>
+        /// Writes a log entry for the progress operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="locationName">The location name used by the operation.</param>
+        /// <param name="filesScanned">The files scanned used by the operation.</param>
+        /// <param name="totalFiles">The total files used by the operation.</param>
+        /// <param name="percentageComplete">The percentage complete used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(4, LogLevel.Information, "[{LogKey}] job: progress (location={LocationName}, filesScanned={FilesScanned}, totalFiles={TotalFiles}, percentageComplete={PercentageComplete:F2}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProgress(ILogger logger, string logKey, string locationName, long filesScanned, long totalFiles, double percentageComplete, double timeElapsed);
 
+        /// <summary>
+        /// Writes a log entry for the missing location operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
         [LoggerMessage(5, LogLevel.Error, "[{LogKey}] job: missing location")]
         public static partial void LogMissingLocation(ILogger logger, string logKey);
     }

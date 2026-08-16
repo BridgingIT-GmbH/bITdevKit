@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
+/// <summary>
+///     Emits the architecture-test category and optional architecture-test identifier traits.
+/// </summary>
 public class ArchitectureTestDiscoverer : ITraitDiscoverer
 {
     /// <summary>

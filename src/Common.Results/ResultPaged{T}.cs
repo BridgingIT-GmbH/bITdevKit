@@ -569,6 +569,9 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
             this.errors.Add(error));
     }
 
+    /// <summary>Adds an error with the supplied message and marks the paged result as failed.</summary>
+    /// <param name="errorMessage">The message stored in the appended <see cref="Error"/>.</param>
+    /// <returns>A failed paged result that preserves paging metadata, values, messages, and existing errors.</returns>
     public ResultPaged<T> WithError(string errorMessage)
     {
         return new ResultPaged<T>(

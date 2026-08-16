@@ -9,13 +9,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BridgingIT.DevKit.Application.Orchestrations;
 
+/// <summary>
+/// Represents a durable orchestration signal row stored in Entity Framework persistence.
+/// </summary>
 [Table("__Orchestration_Signals")]
 [Index(nameof(InstanceId), nameof(Status), nameof(ReceivedUtc))]
 [Index(nameof(InstanceId), nameof(SignalName), nameof(ReceivedUtc))]
 [Index(nameof(InstanceId), nameof(IdempotencyKey))]
-/// <summary>
-/// Represents a durable orchestration signal row stored in Entity Framework persistence.
-/// </summary>
 public class OrchestrationSignal
 {
     /// <summary>

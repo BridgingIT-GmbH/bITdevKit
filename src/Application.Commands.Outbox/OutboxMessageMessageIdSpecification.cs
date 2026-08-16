@@ -8,6 +8,10 @@ namespace BridgingIT.DevKit.Application.Commands.Outbox;
 using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
 
+/// <summary>
+/// Represents outbox message message id specification.
+/// </summary>
+/// <param name="messageId">The message id used by the operation.</param>
 public class OutboxMessageMessageIdSpecification(Guid messageId)
     : Specification<OutboxMessage>(message => message.MessageId == messageId)
 { }

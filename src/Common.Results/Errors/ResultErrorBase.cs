@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Provides the message, extensible properties, and throwing behavior shared by result errors.</summary>
+/// <param name="message">The descriptive error message exposed through <see cref="Message"/>.</param>
 [DebuggerDisplay("Message={Message}")]
 public abstract class ResultErrorBase(string message = null) : IResultError
 {

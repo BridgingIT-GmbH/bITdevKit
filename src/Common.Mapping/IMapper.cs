@@ -19,6 +19,10 @@ public interface IMapper<in TSource, in TTarget>
     /// <param name="target">The target object to map to.</param>
     void Map(TSource source, TTarget target);
 
+    /// <summary>Maps a source into an existing target and represents mapping exceptions as result errors.</summary>
+    /// <param name="source">The source object to map from.</param>
+    /// <param name="target">The existing target object to update.</param>
+    /// <returns>A successful result when mapping completes; otherwise, a failed result containing a mapping error.</returns>
     Result MapResult(TSource source, TTarget target);
 }
 
@@ -35,6 +39,11 @@ public interface IMapper
     TTarget Map<TSource, TTarget>(TSource source)
         where TTarget : class;
 
+    /// <summary>Maps a source into a new target and represents mapping exceptions as result errors.</summary>
+    /// <typeparam name="TSource">The source object type.</typeparam>
+    /// <typeparam name="TTarget">The reference type created by the mapper.</typeparam>
+    /// <param name="source">The source object to map from.</param>
+    /// <returns>A result containing the mapped target, or a mapping error when mapping fails.</returns>
     Result<TTarget> MapResult<TSource, TTarget>(TSource source)
         where TTarget : class;
 
@@ -47,6 +56,12 @@ public interface IMapper
     TTarget Map<TSource, TTarget>(TSource source, TTarget target)
         where TTarget : class;
 
+    /// <summary>Maps a source into an existing target and represents mapping exceptions as result errors.</summary>
+    /// <typeparam name="TSource">The source object type.</typeparam>
+    /// <typeparam name="TTarget">The target reference type.</typeparam>
+    /// <param name="source">The source object to map from.</param>
+    /// <param name="target">The existing target object to update.</param>
+    /// <returns>A result containing the mapped target, or a mapping error when mapping fails.</returns>
     Result<TTarget> MapResult<TSource, TTarget>(TSource source, TTarget target)
         where TTarget : class;
 }

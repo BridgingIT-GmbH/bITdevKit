@@ -32,11 +32,13 @@ public class MetricsNotificationHandlerBehavior<TRequest, TResponse>(ILoggerFact
         return true;
     }
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return request is not null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Represents subscription details.
+/// </summary>
 public class SubscriptionDetails
 {
     /// <summary>

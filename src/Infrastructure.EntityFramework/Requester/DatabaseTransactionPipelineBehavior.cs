@@ -33,6 +33,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
         contextResolver ?? throw new ArgumentNullException(nameof(contextResolver));
     private readonly DatabaseTransactionOptions transactionOptions = options?.Value ?? new DatabaseTransactionOptions();
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         // We support either attribute style:
@@ -42,6 +43,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
             || handlerType?.GetCustomAttribute<HandlerDatabaseTransactionAttribute<DbContext>>() != null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

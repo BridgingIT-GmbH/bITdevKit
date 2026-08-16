@@ -9,6 +9,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
+/// <summary>
+///     Creates deep clones through System.Text.Json with reference preservation and runtime-derived-type discovery.
+/// </summary>
 public static class CloneHelperNew
 {
     /// <summary>

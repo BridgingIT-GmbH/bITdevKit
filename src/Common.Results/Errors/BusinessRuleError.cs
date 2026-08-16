@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class BusinessRuleError(string message = null) : ResultErrorBase(message ?? "Business rule violation")
 {
+    /// <summary>Initializes a business-rule error with the default message.</summary>
     public BusinessRuleError() : this(null)
     {
     }

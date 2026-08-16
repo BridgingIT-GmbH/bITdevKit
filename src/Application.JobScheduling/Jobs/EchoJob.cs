@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Represents echo job.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRetryJobScheduling,
     IChaosExceptionJobScheduling
 {
@@ -12,6 +16,7 @@ public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRe
 
     ChaosExceptionJobSchedulingOptions IChaosExceptionJobScheduling.Options => new() { InjectionRate = 0.10 };
 
+    /// <inheritdoc/>
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         var dataMap = context.JobDetail.JobDataMap;

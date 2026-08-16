@@ -19,8 +19,20 @@ using Logging;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Quartz;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds sql server db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <param name="sqlServerOptionsBuilder">The sql server options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
         this IServiceCollection services,
         Builder<SqlServerOptionsBuilder, SqlServerOptions> optionsBuilder,
@@ -34,6 +46,15 @@ public static class ServiceCollectionExtensions
             optionsBuilder(new SqlServerOptionsBuilder()).Build(), sqlServerOptionsBuilder, lifetime);
     }
 
+    /// <summary>
+    /// Adds sql server db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="sqlServerOptionsBuilder">The sql server options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
         this IServiceCollection services,
         SqlServerOptions options,
@@ -129,6 +150,15 @@ public static class ServiceCollectionExtensions
         }
     }
 
+    /// <summary>
+    /// Adds sql server db context.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="sqlServerOptionsBuilder">The sql server options builder used by the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqlServerDbContextBuilderContext<TContext> AddSqlServerDbContext<TContext>(
         this IServiceCollection services,
         string connectionString,
@@ -148,6 +178,14 @@ public static class ServiceCollectionExtensions
             provider: Provider.SqlServer);
     }
 
+    /// <summary>
+    /// Executes the with sequence number generator operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static SqlServerDbContextBuilderContext<TContext> WithSequenceNumberGenerator<TContext>(
         this SqlServerDbContextBuilderContext<TContext> context,
         SequenceNumberGeneratorOptions options = null,

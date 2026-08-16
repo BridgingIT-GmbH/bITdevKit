@@ -19,6 +19,14 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
     private readonly TContext context = context ?? throw new ArgumentNullException(nameof(context));
     private readonly SemaphoreSlim semaphore = new(1, 1); // Allows only one thread at a time
 
+    /// <summary>
+    /// Gets file event.
+    /// </summary>
+    /// <param name="filePath">The file path used by the operation.</param>
+    /// <param name="fromDate">The from date used by the operation.</param>
+    /// <param name="tillDate">The till date used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<FileEvent> GetFileEventAsync(
         string filePath,
         DateTimeOffset? fromDate = null,
@@ -43,6 +51,15 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
         }
     }
 
+    /// <summary>
+    /// Gets file event.
+    /// </summary>
+    /// <param name="locationName">The location name used by the operation.</param>
+    /// <param name="filePath">The file path used by the operation.</param>
+    /// <param name="fromDate">The from date used by the operation.</param>
+    /// <param name="tillDate">The till date used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<FileEvent> GetFileEventAsync(
         string locationName,
         string filePath,
@@ -68,6 +85,14 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
         }
     }
 
+    /// <summary>
+    /// Gets file events.
+    /// </summary>
+    /// <param name="filePath">The file path used by the operation.</param>
+    /// <param name="fromDate">The from date used by the operation.</param>
+    /// <param name="tillDate">The till date used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<FileEvent>> GetFileEventsAsync(
         string filePath,
         DateTimeOffset? fromDate = null,
@@ -92,6 +117,14 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
         }
     }
 
+    /// <summary>
+    /// Gets file events for location.
+    /// </summary>
+    /// <param name="locationName">The location name used by the operation.</param>
+    /// <param name="fromDate">The from date used by the operation.</param>
+    /// <param name="tillDate">The till date used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<List<FileEvent>> GetFileEventsForLocationAsync(
         string locationName,
         DateTimeOffset? fromDate = null,
@@ -116,6 +149,12 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
         }
     }
 
+    /// <summary>
+    /// Gets present files.
+    /// </summary>
+    /// <param name="locationName">The location name used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<List<string>> GetPresentFilesAsync(
         string locationName,
         CancellationToken cancellationToken = default)
@@ -141,6 +180,12 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
         }
     }
 
+    /// <summary>
+    /// Executes the store event operation.
+    /// </summary>
+    /// <param name="fileEvent">The file event used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task StoreEventAsync(
         FileEvent fileEvent,
         CancellationToken cancellationToken = default)
@@ -159,6 +204,12 @@ public class EntityFrameworkFileEventStore<TContext>(TContext context) : IFileEv
         }
     }
 
+    /// <summary>
+    /// Executes the store processing result operation.
+    /// </summary>
+    /// <param name="result">The result used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task StoreProcessingResultAsync(
         FileProcessingResult result,
         CancellationToken cancellationToken = default)

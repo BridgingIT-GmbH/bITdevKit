@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing.Model;
 
+/// <summary>
+/// Defines operations for i aggregate event.
+/// </summary>
 public interface IAggregateEvent : IDomainEventWithGuid
 {
+    /// <summary>
+    /// Gets or sets the aggregate version.
+    /// </summary>
     int AggregateVersion { get; set; }
 }

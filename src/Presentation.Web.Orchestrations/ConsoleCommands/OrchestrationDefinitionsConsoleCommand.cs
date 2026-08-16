@@ -9,11 +9,18 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
+/// <summary>
+/// Represents orchestration definitions console command.
+/// </summary>
 public class OrchestrationDefinitionsConsoleCommand : OrchestrationConsoleCommandBase
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>OrchestrationDefinitionsConsoleCommand</c> class.
+    /// </summary>
     public OrchestrationDefinitionsConsoleCommand()
         : base("definitions", "List registered orchestration definitions", "defs") { }
 
+    /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var registrations = this.GetRequired<OrchestrationRegistrationStore>(console, services);

@@ -14,11 +14,16 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
+/// <summary>
+/// Represents identity entity permission management endpoints.
+/// </summary>
+/// <param name="options">The options controlling the operation.</param>
 public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissionManagementEndpointsOptions options = null)
     : EndpointsBase
 {
     private readonly IdentityEntityPermissionManagementEndpointsOptions options = options ?? new IdentityEntityPermissionManagementEndpointsOptions();
 
+    /// <inheritdoc/>
     public override void Map(IEndpointRouteBuilder app)
     {
         if (!this.options.Enabled)

@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Presentation;
 using System.Security.Claims;
 using Common;
 
+/// <summary>
+/// Represents fake current user accessor.
+/// </summary>
 public class FakeCurrentUserAccessor : ICurrentUserAccessor
 {
     private static readonly Dictionary<string, FakeUser> UserStore = [];
@@ -21,6 +24,10 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>FakeCurrentUserAccessor</c> class.
+    /// </summary>
+    /// <param name="users">The users used by the operation.</param>
     public FakeCurrentUserAccessor(FakeUser[] users)
     {
         UserStore.Clear();
@@ -30,6 +37,10 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>FakeCurrentUserAccessor</c> class.
+    /// </summary>
+    /// <param name="userId">The user id used by the operation.</param>
     public FakeCurrentUserAccessor(string userId = null)
     {
         var user = GetUser(userId);
@@ -39,6 +50,9 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         this.Roles = user.Roles;
     }
 
+    /// <summary>
+    /// Stores the principal.
+    /// </summary>
     public ClaimsPrincipal Principal
     {
         get
@@ -61,14 +75,29 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         }
     }
 
+    /// <summary>
+    /// Gets the is authenticated.
+    /// </summary>
     public bool IsAuthenticated => !string.IsNullOrEmpty(this.UserId);
 
+    /// <summary>
+    /// Gets the user id.
+    /// </summary>
     public string UserId { get; }
 
+    /// <summary>
+    /// Gets the user name.
+    /// </summary>
     public string UserName { get; }
 
+    /// <summary>
+    /// Gets the email.
+    /// </summary>
     public string Email { get; }
 
+    /// <summary>
+    /// Gets the roles.
+    /// </summary>
     public string[] Roles { get; }
 
     private static FakeUser GetUser(string userId = null)

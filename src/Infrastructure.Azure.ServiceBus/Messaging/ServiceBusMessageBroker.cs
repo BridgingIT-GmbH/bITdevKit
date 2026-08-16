@@ -13,6 +13,9 @@ using global::Azure.Messaging.ServiceBus;
 using global::Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents service bus message broker.
+/// </summary>
 public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDisposable
 {
     private readonly ServiceBusMessageBrokerOptions options;
@@ -22,6 +25,10 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
     private readonly IDictionary<string, ServiceBusProcessor>
         processors = new Dictionary<string, ServiceBusProcessor>();
 
+    /// <summary>
+    /// Initializes a new instance of the <c>ServiceBusMessageBroker</c> class.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
     public ServiceBusMessageBroker(ServiceBusMessageBrokerOptions options)
         : base(options.LoggerFactory,
             options.HandlerFactory,
@@ -61,10 +68,17 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             this.GetType().Name);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>ServiceBusMessageBroker</c> class.
+    /// </summary>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public ServiceBusMessageBroker(
         Builder<ServiceBusMessageBrokerOptionsBuilder, ServiceBusMessageBrokerOptions> optionsBuilder)
         : this(optionsBuilder(new ServiceBusMessageBrokerOptionsBuilder()).Build()) { }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public void Dispose()
     {
 #pragma warning disable CA2012 // Use ValueTasks correctly
@@ -72,6 +86,10 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 #pragma warning restore CA2012 // Use ValueTasks correctly
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async ValueTask DisposeAsync()
     {
         if (this.processors is not null)
@@ -88,6 +106,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
         }
     }
 
+    /// <inheritdoc/>
     protected override async Task OnPublish(IMessage message, CancellationToken cancellationToken)
     {
         var messageName = message.GetType().PrettyName(false); // = topic name
@@ -119,16 +138,19 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             topicName);
     }
 
+    /// <inheritdoc/>
     protected override async Task OnProcess(IMessage message, CancellationToken cancellationToken)
     {
         await Task.Delay(this.options.ProcessDelay, cancellationToken);
     }
 
+    /// <inheritdoc/>
     protected override async Task OnSubscribe<TMessage, THandler>()
     {
         await this.OnSubscribe(typeof(TMessage), typeof(THandler));
     }
 
+    /// <inheritdoc/>
     protected override async Task OnSubscribe(Type messageType, Type handlerType)
     {
         var messageName = messageType.PrettyName(false); // = topic name

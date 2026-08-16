@@ -9,6 +9,9 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
+/// <summary>
+/// Provides expression-tree expansion, member discovery, and parameter-free string rendering helpers.
+/// </summary>
 public static class ExpressionExtensions
 {
     /// <summary>
@@ -22,6 +25,11 @@ public static class ExpressionExtensions
         return (Expression<T>)new ExpressionExpander().Visit(expression);
     }
 
+    /// <summary>Gets the referenced member name from a direct member-access expression, including a converted member access.</summary>
+    /// <typeparam name="T">The expression delegate type.</typeparam>
+    /// <param name="source">The expression whose body should be inspected.</param>
+    /// <returns>The referenced member name, or <see langword="null"/> for a null expression.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the expression body is not a supported member access.</exception>
     public static string GetMemberName<T>(this Expression<T> source)
     {
         if (source is not null)
@@ -37,6 +45,10 @@ public static class ExpressionExtensions
         return null;
     }
 
+    /// <summary>Renders a Boolean lambda body without its parameter declaration or parameter qualification.</summary>
+    /// <typeparam name="T">The lambda input type.</typeparam>
+    /// <param name="source">The expression to render.</param>
+    /// <returns>The rendered body, or <see langword="null"/> for a null expression.</returns>
     public static string ToExpressionString<T>(this Expression<Func<T, bool>> source)
     {
         if (source is not null)
@@ -51,6 +63,10 @@ public static class ExpressionExtensions
         return null;
     }
 
+    /// <summary>Renders a string-valued lambda body without its parameter declaration or parameter qualification.</summary>
+    /// <typeparam name="T">The lambda input type.</typeparam>
+    /// <param name="source">The expression to render.</param>
+    /// <returns>The rendered body, or <see langword="null"/> for a null expression.</returns>
     public static string ToExpressionString<T>(this Expression<Func<T, string>> source)
     {
         if (source is not null)
@@ -65,6 +81,10 @@ public static class ExpressionExtensions
         return null;
     }
 
+    /// <summary>Renders a double-valued lambda body without its parameter declaration or parameter qualification.</summary>
+    /// <typeparam name="T">The lambda input type.</typeparam>
+    /// <param name="source">The expression to render.</param>
+    /// <returns>The rendered body, or <see langword="null"/> for a null expression.</returns>
     public static string ToExpressionString<T>(this Expression<Func<T, double>> source)
     {
         if (source is not null)
@@ -79,6 +99,10 @@ public static class ExpressionExtensions
         return null;
     }
 
+    /// <summary>Renders an object-valued lambda body without its parameter declaration or parameter qualification.</summary>
+    /// <typeparam name="T">The lambda input type.</typeparam>
+    /// <param name="source">The expression to render.</param>
+    /// <returns>The rendered body, or <see langword="null"/> for a null expression.</returns>
     public static string ToExpressionString<T>(this Expression<Func<T, object>> source)
     {
         if (source is not null)
@@ -93,6 +117,10 @@ public static class ExpressionExtensions
         return null;
     }
 
+    /// <summary>Renders a GUID-valued lambda body without its parameter declaration or parameter qualification.</summary>
+    /// <typeparam name="T">The lambda input type.</typeparam>
+    /// <param name="source">The expression to render.</param>
+    /// <returns>The rendered body, or <see langword="null"/> for a null expression.</returns>
     public static string ToExpressionString<T>(this Expression<Func<T, Guid>> source)
     {
         if (source is not null)

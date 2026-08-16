@@ -75,6 +75,9 @@ public interface IFindOptions<TEntity>
     /// </value>
     IEnumerable<IncludeOptionBase<TEntity>> Includes { get; set; }
 
+    /// <summary>
+    /// Gets or sets the hierarchy.
+    /// </summary>
     HierarchyOption<TEntity> Hierarchy { get; set; }
 
     /// <summary>
@@ -93,5 +96,9 @@ public interface IFindOptions<TEntity>
     /// </returns>
     bool HasIncludes();
 
+    /// <summary>
+    /// Determines whether has hierarchy.
+    /// </summary>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     bool HasHierarchy();
 }

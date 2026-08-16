@@ -18,6 +18,9 @@ public class RequestLoggingOptions
 
     private const string DefaultRequestFinishedMessageTemplate = "[{LogKey}] finished HTTP {RequestMethod} {RequestPath} [{StatusCode}] -> took {TimeElapsed:0.0000} ms";
 
+    /// <summary>
+    /// Initializes a new instance of the <c>RequestLoggingOptions</c> class.
+    /// </summary>
     public RequestLoggingOptions()
     {
         this.GetLevel = DefaultGetLevel;
@@ -56,6 +59,9 @@ public class RequestLoggingOptions
     /// </summary>
     public bool IncludeRequestQuery { get; set; }
 
+    /// <summary>
+    /// Gets or sets the include request headers.
+    /// </summary>
     public bool IncludeRequestHeaders { get; set; }
 
     /// <summary>

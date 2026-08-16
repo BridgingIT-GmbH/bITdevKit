@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using NullLogger = NullLogger;
 
+/// <summary>
+/// Represents db context extensions.
+/// </summary>
 public static partial class DbContextExtensions
 {
     /// <summary>
@@ -59,8 +62,19 @@ public static partial class DbContextExtensions
         return count;
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the entity state operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="entityType">The name of the entity type.</param>
+        /// <param name="entityKeySet">The entity key set used by the operation.</param>
+        /// <param name="entityEntryState">The entity entry state used by the operation.</param>
         [LoggerMessage(2, LogLevel.Trace, "[{LogKey}] dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }

@@ -8,8 +8,15 @@ namespace BridgingIT.DevKit.Common;
 using MessagePack;
 using MessagePack.Resolvers;
 
+/// <summary>
+///     Provides the standard MessagePack options used by DevKit serializers.
+/// </summary>
 public static class MessagePackSerializerSettings
 {
+    /// <summary>
+    ///     Gets contractless resolver options that allow serialization of private members.
+    /// </summary>
+    /// <returns>The shared MessagePack serializer options.</returns>
     public static MessagePackSerializerOptions Create()
     {
         return ContractlessStandardResolverAllowPrivate.Options;

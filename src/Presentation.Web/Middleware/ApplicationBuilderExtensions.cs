@@ -9,6 +9,9 @@ using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+/// <summary>
+/// Represents application builder extensions.
+/// </summary>
 public static class ApplicationBuilderExtensions
 {
     /// <summary>

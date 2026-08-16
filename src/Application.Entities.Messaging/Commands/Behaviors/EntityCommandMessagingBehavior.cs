@@ -13,6 +13,14 @@ using Messaging;
 using Microsoft.Extensions.Logging;
 using Constants = Commands.Constants;
 
+/// <summary>
+/// Provides entity command messaging behavior.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
+/// <param name="messageBroker">The message broker used by the operation.</param>
+/// <param name="options">The options controlling the operation.</param>
 public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     IMessageBroker messageBroker = null,
@@ -24,6 +32,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     private readonly EntityCommandMessagingBehaviorOptions options =
         options ?? new EntityCommandMessagingBehaviorOptions();
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request)
     {
         if (!this.options.Enabled)
@@ -49,6 +58,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
         return false;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,

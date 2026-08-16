@@ -15,6 +15,13 @@ using Logging;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with cosmos document store provider operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static CachingBuilderContext WithCosmosDocumentStoreProvider(
         this CachingBuilderContext context,
         DocumentStoreCacheProviderConfiguration configuration = null,

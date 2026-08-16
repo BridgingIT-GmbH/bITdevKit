@@ -71,17 +71,41 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the auth handler operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="permissions">The permissions used by the operation.</param>
         [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "[{LogKey}] auth handler (instance) - check permission requirement: permissions={Permissions}")]
         public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
+        /// <summary>
+        /// Writes a log entry for the no user identified operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
         [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no user identified for permission requirement check")]
         public static partial void LogNoUserIdentified(ILogger logger, string logKey);
 
+        /// <summary>
+        /// Writes a log entry for the no requirement operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
         [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no requirement specified for permission requirement check")]
         public static partial void LogNoRequirement(ILogger logger, string logKey);
 
+        /// <summary>
+        /// Writes a log entry for the no entity operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
         [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no entity specified for permission requirement check")]
         public static partial void LogNoEntity(ILogger logger, string logKey);
     }

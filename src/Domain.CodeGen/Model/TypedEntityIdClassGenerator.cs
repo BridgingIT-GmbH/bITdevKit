@@ -63,6 +63,10 @@ public class TypedEntityIdClassGenerator : ISourceGenerator
         }
     }
 
+    /// <summary>
+    /// Executes the initialize operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
     public void Initialize(GeneratorInitializationContext context)
     {
         // No initialization required

@@ -12,6 +12,13 @@ using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with outbox operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithOutbox<TContext>(
         this MessagingBuilderContext context,
         Builder<OutboxMessageOptionsBuilder, OutboxMessageOptions> optionsBuilder)
@@ -23,6 +30,13 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Executes the with outbox operation.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithOutbox<TContext>(
         this MessagingBuilderContext context,
         OutboxMessageOptions options = null)
@@ -34,6 +48,13 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Adds outbox message service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddOutboxMessageService<TContext>(
         this IServiceCollection services,
         Builder<OutboxMessageOptionsBuilder, OutboxMessageOptions> optionsBuilder)
@@ -42,6 +63,13 @@ public static partial class ServiceCollectionExtensions
         return services.AddOutboxMessageService<TContext>(optionsBuilder(new OutboxMessageOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Adds outbox message service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddOutboxMessageService<TContext>(
         this IServiceCollection services,
         OutboxMessageOptions options = null)
@@ -64,6 +92,14 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Adds outbox message service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <typeparam name="TWorker">The worker type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddOutboxMessageService<TContext, TWorker>(
         this IServiceCollection services,
         Builder<OutboxMessageOptionsBuilder, OutboxMessageOptions> optionsBuilder)
@@ -73,6 +109,14 @@ public static partial class ServiceCollectionExtensions
         return services.AddOutboxMessageService<TContext, TWorker>(optionsBuilder(new OutboxMessageOptionsBuilder()).Build());
     }
 
+    /// <summary>
+    /// Adds outbox message service.
+    /// </summary>
+    /// <typeparam name="TContext">The context type.</typeparam>
+    /// <typeparam name="TWorker">The worker type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddOutboxMessageService<TContext, TWorker>(
         this IServiceCollection services,
         OutboxMessageOptions options)

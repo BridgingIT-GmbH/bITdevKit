@@ -7,8 +7,13 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 // generate a xunit test for this class and its methods, use nsubstitute and shoulpublic class DummyMessagePublisherBehaviorTests
 
+/// <summary>
+/// Provides dummy message publisher behavior.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create loggers.</param>
 public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : MessagePublisherBehaviorBase(loggerFactory)
 {
+    /// <inheritdoc/>
     public override async Task Publish<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,

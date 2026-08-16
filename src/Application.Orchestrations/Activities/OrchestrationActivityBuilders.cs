@@ -29,14 +29,40 @@ public interface IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> :
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
 
+    /// <summary>
+    /// Executes the request operation.
+    /// </summary>
+    /// <param name="requestFactory">The request factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> Request(Func<OrchestrationContext<TData>, TRequest> requestFactory);
 
+    /// <summary>
+    /// Executes the map result operation.
+    /// </summary>
+    /// <param name="mapResult">The map result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> MapResult(Action<OrchestrationContext<TData>, TValue> mapResult);
 
+    /// <summary>
+    /// Executes the configure options operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> ConfigureOptions(Action<OrchestrationContext<TData>, SendOptions> configure);
 
+    /// <summary>
+    /// Executes the correlation id operation.
+    /// </summary>
+    /// <param name="correlationIdFactory">The correlation id factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> CorrelationId(Func<OrchestrationContext<TData>, string> correlationIdFactory);
 
+    /// <summary>
+    /// Executes the context property operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> ContextProperty(string key, Func<OrchestrationContext<TData>, string> valueFactory);
 }
 
@@ -61,14 +87,40 @@ public interface IOrchestrationNotificationActivityBuilder<TData, TNotification>
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
 
+    /// <summary>
+    /// Executes the notification operation.
+    /// </summary>
+    /// <param name="notificationFactory">The notification factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationNotificationActivityBuilder<TData, TNotification> Notification(Func<OrchestrationContext<TData>, TNotification> notificationFactory);
 
+    /// <summary>
+    /// Executes the configure options operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationNotificationActivityBuilder<TData, TNotification> ConfigureOptions(Action<OrchestrationContext<TData>, PublishOptions> configure);
 
+    /// <summary>
+    /// Executes the execution mode operation.
+    /// </summary>
+    /// <param name="mode">The mode used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationNotificationActivityBuilder<TData, TNotification> ExecutionMode(ExecutionMode mode);
 
+    /// <summary>
+    /// Executes the correlation id operation.
+    /// </summary>
+    /// <param name="correlationIdFactory">The correlation id factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationNotificationActivityBuilder<TData, TNotification> CorrelationId(Func<OrchestrationContext<TData>, string> correlationIdFactory);
 
+    /// <summary>
+    /// Executes the context property operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationNotificationActivityBuilder<TData, TNotification> ContextProperty(string key, Func<OrchestrationContext<TData>, string> valueFactory);
 }
 
@@ -93,14 +145,40 @@ public interface IOrchestrationMessageActivityBuilder<TData, TMessage> : IOrches
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
 
+    /// <summary>
+    /// Executes the message operation.
+    /// </summary>
+    /// <param name="messageFactory">The message factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationMessageActivityBuilder<TData, TMessage> Message(Func<OrchestrationContext<TData>, TMessage> messageFactory);
 
+    /// <summary>
+    /// Executes the configure message operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationMessageActivityBuilder<TData, TMessage> ConfigureMessage(Action<OrchestrationContext<TData>, TMessage> configure);
 
+    /// <summary>
+    /// Executes the correlation id operation.
+    /// </summary>
+    /// <param name="correlationIdFactory">The correlation id factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationMessageActivityBuilder<TData, TMessage> CorrelationId(Func<OrchestrationContext<TData>, string> correlationIdFactory);
 
+    /// <summary>
+    /// Executes the flow id operation.
+    /// </summary>
+    /// <param name="flowIdFactory">The flow id factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationMessageActivityBuilder<TData, TMessage> FlowId(Func<OrchestrationContext<TData>, string> flowIdFactory);
 
+    /// <summary>
+    /// Executes the property operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationMessageActivityBuilder<TData, TMessage> Property(string key, Func<OrchestrationContext<TData>, object> valueFactory);
 }
 
@@ -125,14 +203,40 @@ public interface IOrchestrationQueueActivityBuilder<TData, TMessage> : IOrchestr
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
 
+    /// <summary>
+    /// Executes the message operation.
+    /// </summary>
+    /// <param name="messageFactory">The message factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationQueueActivityBuilder<TData, TMessage> Message(Func<OrchestrationContext<TData>, TMessage> messageFactory);
 
+    /// <summary>
+    /// Executes the configure message operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationQueueActivityBuilder<TData, TMessage> ConfigureMessage(Action<OrchestrationContext<TData>, TMessage> configure);
 
+    /// <summary>
+    /// Executes the correlation id operation.
+    /// </summary>
+    /// <param name="correlationIdFactory">The correlation id factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationQueueActivityBuilder<TData, TMessage> CorrelationId(Func<OrchestrationContext<TData>, string> correlationIdFactory);
 
+    /// <summary>
+    /// Executes the flow id operation.
+    /// </summary>
+    /// <param name="flowIdFactory">The flow id factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationQueueActivityBuilder<TData, TMessage> FlowId(Func<OrchestrationContext<TData>, string> flowIdFactory);
 
+    /// <summary>
+    /// Executes the property operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationQueueActivityBuilder<TData, TMessage> Property(string key, Func<OrchestrationContext<TData>, object> valueFactory);
 }
 
@@ -157,16 +261,47 @@ public interface IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> 
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
 
+    /// <summary>
+    /// Executes the pipeline operation.
+    /// </summary>
+    /// <param name="pipelineName">The pipeline name used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> Pipeline(string pipelineName);
 
+    /// <summary>
+    /// Executes the context operation.
+    /// </summary>
+    /// <param name="contextFactory">The context factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> Context(Func<OrchestrationContext<TData>, TPipelineContext> contextFactory);
 
+    /// <summary>
+    /// Executes the map to context operation.
+    /// </summary>
+    /// <param name="map">The map used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> MapToContext(Action<OrchestrationContext<TData>, TPipelineContext> map);
 
+    /// <summary>
+    /// Executes the map from context operation.
+    /// </summary>
+    /// <param name="map">The map used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> MapFromContext(Action<OrchestrationContext<TData>, TPipelineContext> map);
 
+    /// <summary>
+    /// Executes the configure options operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> ConfigureOptions(Action<OrchestrationContext<TData>, PipelineExecutionOptions> configure);
 
+    /// <summary>
+    /// Executes the item operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> Item(string key, Func<OrchestrationContext<TData>, object> valueFactory);
 }
 

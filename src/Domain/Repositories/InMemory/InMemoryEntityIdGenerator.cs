@@ -10,11 +10,21 @@ using BridgingIT.DevKit.Domain.Model;
 using System;
 using System.Reflection;
 
+/// <summary>
+/// Represents in memory entity id generator.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="context">The context for the operation.</param>
 public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context) : IEntityIdGenerator<TEntity>
     where TEntity : class, IEntity
 {
     private readonly InMemoryContext<TEntity> context = context;
 
+    /// <summary>
+    /// Determines whether is new.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool IsNew(object id)
     {
         return id switch
@@ -34,6 +44,10 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
         };
     }
 
+    /// <summary>
+    /// Executes the set new operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
     public void SetNew(TEntity entity)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));

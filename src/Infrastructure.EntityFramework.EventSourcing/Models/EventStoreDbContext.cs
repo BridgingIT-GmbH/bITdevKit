@@ -9,10 +9,18 @@ using Infrastructure.EventSourcing;
 using Microsoft.EntityFrameworkCore;
 using Outbox.Models;
 
+/// <summary>
+/// Represents event store db context.
+/// </summary>
 public class EventStoreDbContext : DbContext
 {
     private readonly IEventStoreConfiguration eventStoreConfiguration;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EventStoreDbContext</c> class.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="eventStoreConfiguration">The event store configuration used by the operation.</param>
     public EventStoreDbContext(
         DbContextOptions<EventStoreDbContext> options,
         IEventStoreConfiguration eventStoreConfiguration)
@@ -31,10 +39,17 @@ public class EventStoreDbContext : DbContext
         this.eventStoreConfiguration = eventStoreConfiguration;
     }
 
+    /// <summary>
+    /// Gets or sets the aggregate event.
+    /// </summary>
     public DbSet<EventStoreAggregateEvent> AggregateEvent { get; set; }
 
+    /// <summary>
+    /// Gets or sets the snapshot.
+    /// </summary>
     public DbSet<EventStoreSnapshot> Snapshot { get; set; }
 
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

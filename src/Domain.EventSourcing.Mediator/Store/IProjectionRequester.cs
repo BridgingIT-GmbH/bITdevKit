@@ -7,6 +7,10 @@ namespace BridgingIT.DevKit.Domain.EventSourcing.Store;
 
 using Model;
 
+/// <summary>
+/// Defines operations for i projection requester.
+/// </summary>
+/// <typeparam name="TAggregate">The aggregate type.</typeparam>
 public interface IProjectionRequester<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {

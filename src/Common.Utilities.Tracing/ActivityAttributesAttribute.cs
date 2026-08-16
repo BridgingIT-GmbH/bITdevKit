@@ -5,9 +5,17 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Adds custom key-value tags to activities created for a class or method.
+/// </summary>
+/// <param name="extraAttributes">Tags in <c>key:value</c> form; keys must be unique.</param>
+/// <exception cref="ArgumentException">A tag does not contain exactly one separator or a key is duplicated.</exception>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
 public class ActivityAttributesAttribute(params string[] extraAttributes) : Attribute
 {
+    /// <summary>
+    ///     Gets the parsed activity tags keyed by tag name.
+    /// </summary>
     public IDictionary<string, string> Attributes { get; } =
         TraceAttributesInputsFormat.ActivityAttributesStringsToDictionary(extraAttributes);
 }

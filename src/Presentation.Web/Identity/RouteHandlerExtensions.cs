@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
+/// <summary>
+/// Represents authorization extensions.
+/// </summary>
 public static class AuthorizationExtensions
 {
     ///// <summary>
@@ -73,6 +76,12 @@ public static class AuthorizationExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds entity requirement permission.
+    /// </summary>
+    /// <param name="builder">The builder to configure.</param>
+    /// <param name="entityType">The name of the entity type.</param>
+    /// <param name="permissions">The permissions used by the operation.</param>
     public static void AddEntityRequirementPermission(
         this AuthorizationPolicyBuilder builder,
         Type entityType,

@@ -15,7 +15,9 @@ public class ValidationError(string message, string propertyName = null, object 
     // {
     // }
 
+    /// <summary>Gets the name of the property that failed validation, when supplied.</summary>
     public string PropertyName { get; } = propertyName;
 
+    /// <summary>Gets the value rejected by validation, when supplied.</summary>
     public object AttemptedValue { get; } = attemptedValue;
 }

@@ -16,17 +16,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Represents generic entity merge strategy.
+/// </summary>
 public static class GenericEntityMergeStrategy
 {
+    /// <summary>
+    /// Configures navigation exclusions, recursion depth, and optional logging for entity merges.
+    /// </summary>
     public class Options
     {
+        /// <summary>
+        /// Gets or sets the ignored navigations.
+        /// </summary>
         public HashSet<string> IgnoredNavigations { get; set; } = [];
 
+        /// <summary>
+        /// Gets or sets the max depth.
+        /// </summary>
         public int? MaxDepth { get; set; } = null; // null = unlimited
 
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
         public ILogger Logger { get; set; } = null; // optional ILogger
     }
 
+    /// <summary>
+    /// Executes the merge operation.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="incoming">The incoming used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async Task<TEntity> MergeAsync<TEntity>(
         DbContext context,
         TEntity incoming,
@@ -36,6 +59,14 @@ public static class GenericEntityMergeStrategy
         return await MergeInternalAsync(context, incoming, new Options(), [], 0, cancellationToken);
     }
 
+    /// <summary>
+    /// Merges an incoming entity graph using the supplied merge options.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="incoming">The incoming used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public static async Task<TEntity> MergeAsync<TEntity>(
         DbContext context,
         TEntity incoming,

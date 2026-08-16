@@ -13,6 +13,9 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
 {
     private int? hashCode;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>DomainEventBase</c> class.
+    /// </summary>
     protected DomainEventBase() // for json deserialization
     {
     }
@@ -27,6 +30,9 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
     /// </remarks>
     public virtual Guid EventId { get; protected set; } = GuidGenerator.CreateSequential();
 
+    /// <summary>
+    /// Gets the notification id.
+    /// </summary>
     public Guid NotificationId
     {
         get => this.EventId;
@@ -41,6 +47,9 @@ public abstract class DomainEventBase : IDomainEvent, IEquatable<DomainEventBase
     /// </remarks>
     public virtual DateTimeOffset Timestamp { get; protected set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Gets the notification timestamp.
+    /// </summary>
     public DateTimeOffset NotificationTimestamp
     {
         get => this.Timestamp;

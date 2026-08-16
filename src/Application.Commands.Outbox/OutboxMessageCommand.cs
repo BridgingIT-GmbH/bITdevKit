@@ -6,6 +6,9 @@
 namespace BridgingIT.DevKit.Application.Commands.Outbox;
 
 #pragma warning disable CS0618 // Type or member is obsolete
+/// <summary>
+/// Represents outbox message command.
+/// </summary>
 public class OutboxMessageCommand : CommandRequestBase<OutboxMessageCommandResult>
 #pragma warning restore CS0618 // Type or member is obsolete
 {
@@ -14,15 +17,33 @@ public class OutboxMessageCommand : CommandRequestBase<OutboxMessageCommandResul
         this.MessageId = Guid.NewGuid(); // TODO: use GuidGenerator.CreateSequential() here
     }
 
+    /// <summary>
+    /// Gets or sets the aggregate id.
+    /// </summary>
     public Guid AggregateId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the message id.
+    /// </summary>
     public Guid MessageId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the aggregate type.
+    /// </summary>
     public string AggregateType { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the event type.
+    /// </summary>
     public string EventType { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the aggregate.
+    /// </summary>
     public string Aggregate { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the aggregate event.
+    /// </summary>
     public string AggregateEvent { get; set; } = string.Empty;
 }

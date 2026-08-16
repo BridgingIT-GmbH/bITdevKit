@@ -10,14 +10,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using BridgingIT.DevKit.Application.Queueing;
 
+/// <summary>
+/// Represents a durable queue row stored in Entity Framework persistence.
+/// </summary>
 [Table("__Queueing_BrokerMessages")]
 [Index(nameof(MessageId), IsUnique = true)]
 [Index(nameof(Status), nameof(LockedUntil), nameof(CreatedDate))]
 [Index(nameof(Type), nameof(Status), nameof(CreatedDate))]
 [Index(nameof(QueueName), nameof(Status), nameof(CreatedDate))]
-/// <summary>
-/// Represents a durable queue row stored in Entity Framework persistence.
-/// </summary>
 public class QueueMessage
 {
     /// <summary>

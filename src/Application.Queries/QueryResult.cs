@@ -234,13 +234,27 @@ public static class QueryResult
     }
 }
 
+/// <summary>
+/// Represents query response.
+/// </summary>
 public static class QueryResponse
 {
+    /// <summary>
+    /// Executes the for operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <returns>The result of the operation.</returns>
     public static QueryResponse<TResult> For<TResult>()
     {
         return new QueryResponse<TResult>();
     }
 
+    /// <summary>
+    /// Executes the for operation.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="result">The result used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static QueryResponse<TResult> For<TResult>(TResult result)
     {
         return new QueryResponse<TResult> { Result = result };

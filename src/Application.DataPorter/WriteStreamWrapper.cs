@@ -42,62 +42,75 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         }
     }
 
+    /// <inheritdoc/>
     public override bool CanRead => this.innerStream.CanRead;
 
+    /// <inheritdoc/>
     public override bool CanSeek => this.innerStream.CanSeek;
 
+    /// <inheritdoc/>
     public override bool CanWrite => this.innerStream.CanWrite;
 
+    /// <inheritdoc/>
     public override long Length => this.innerStream.Length;
 
+    /// <inheritdoc/>
     public override long Position
     {
         get => this.innerStream.Position;
         set => this.innerStream.Position = value;
     }
 
+    /// <inheritdoc/>
     public override void Flush()
     {
         this.ThrowIfDisposed();
         this.innerStream.Flush();
     }
 
+    /// <inheritdoc/>
     public override Task FlushAsync(CancellationToken cancellationToken)
     {
         this.ThrowIfDisposed();
         return this.innerStream.FlushAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
         this.ThrowIfDisposed();
         return this.innerStream.Read(buffer, offset, count);
     }
 
+    /// <inheritdoc/>
     public override int Read(Span<byte> buffer)
     {
         this.ThrowIfDisposed();
         return this.innerStream.Read(buffer);
     }
 
+    /// <inheritdoc/>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         this.ThrowIfDisposed();
         return this.innerStream.ReadAsync(buffer, offset, count, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         this.ThrowIfDisposed();
         return this.innerStream.ReadAsync(buffer, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin)
     {
         this.ThrowIfDisposed();
         return this.innerStream.Seek(offset, origin);
     }
 
+    /// <inheritdoc/>
     public override void SetLength(long value)
     {
         this.ThrowIfDisposed();
@@ -109,6 +122,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         }
     }
 
+    /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
         this.ThrowIfDisposed();
@@ -116,6 +130,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         this.bytesWritten += count;
     }
 
+    /// <inheritdoc/>
     public override void Write(ReadOnlySpan<byte> buffer)
     {
         this.ThrowIfDisposed();
@@ -123,6 +138,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         this.bytesWritten += buffer.Length;
     }
 
+    /// <inheritdoc/>
     public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         this.ThrowIfDisposed();
@@ -130,6 +146,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         this.bytesWritten += count;
     }
 
+    /// <inheritdoc/>
     public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         this.ThrowIfDisposed();
@@ -137,6 +154,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         this.bytesWritten += buffer.Length;
     }
 
+    /// <inheritdoc/>
     public override void WriteByte(byte value)
     {
         this.ThrowIfDisposed();
@@ -144,6 +162,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         this.bytesWritten++;
     }
 
+    /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if (this.disposed)
@@ -160,6 +179,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
         base.Dispose(disposing);
     }
 
+    /// <inheritdoc/>
     public override async ValueTask DisposeAsync()
     {
         if (this.disposed)

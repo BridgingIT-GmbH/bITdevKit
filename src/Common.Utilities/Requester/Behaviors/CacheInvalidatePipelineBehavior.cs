@@ -8,6 +8,14 @@ namespace BridgingIT.DevKit.Common;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+///     Removes cache entries by configured key prefix after a matching request handler completes.
+/// </summary>
+/// <typeparam name="TRequest">The request type.</typeparam>
+/// <typeparam name="TResponse">The result response type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
+/// <param name="policyCache">The handler policy cache.</param>
+/// <param name="provider">The cache provider used for invalidation.</param>
 public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ConcurrentDictionary<Type, PolicyConfig> policyCache,
@@ -18,11 +26,13 @@ public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly ICacheProvider provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
+    /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
         return handlerType != null && this.policyCache.TryGetValue(handlerType, out var policyConfig) && policyConfig.CacheInvalidate != null;
     }
 
+    /// <inheritdoc/>
     protected override async Task<TResponse> Process(
         TRequest request,
         Type handlerType,

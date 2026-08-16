@@ -32,11 +32,21 @@ public class ComponentScopedStateStoreProvider : IAppStateStoreProvider
         return Task.FromResult(default(T));
     }
 
+    /// <summary>
+    /// Executes the clear operation.
+    /// </summary>
+    /// <param name="stateId">The state id used by the operation.</param>
+    /// <param name="userContextId">The user context id used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ClearAsync(string stateId, string userContextId)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Executes the clear all operation.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ClearAllAsync()
     {
         return Task.CompletedTask;

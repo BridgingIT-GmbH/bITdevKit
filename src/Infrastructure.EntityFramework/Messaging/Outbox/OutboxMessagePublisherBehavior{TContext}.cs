@@ -7,6 +7,10 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
 using Application.Messaging;
 
+/// <summary>
+/// Provides outbox message publisher behavior.
+/// </summary>
+/// <typeparam name="TContext">The context type.</typeparam>
 public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisherBehaviorBase
     where TContext : DbContext, IOutboxMessageContext
 {
@@ -16,6 +20,13 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
     private readonly IOutboxMessageQueue messageQueue;
     private readonly OutboxMessageOptions options;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>OutboxMessagePublisherBehavior</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="serviceProvider">The service provider used by the operation.</param>
+    /// <param name="messageQueue">The message queue used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public OutboxMessagePublisherBehavior(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
@@ -46,6 +57,7 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
 
+    /// <inheritdoc/>
     public override async Task Publish<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,
@@ -141,8 +153,18 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
         //}
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the publish operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
+        /// <param name="messageId">The message id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] outbox message store (type={MessageType}, id={MessageId})")]
         public static partial void LogPublish(ILogger logger, string logKey, string messageType, string messageId);
     }

@@ -60,6 +60,11 @@ public class AppStateDebugger(ILogger<AppStateDebugger> logger, IJSRuntime jsRun
         }
     }
 
+    /// <summary>
+    /// Executes the console log operation.
+    /// </summary>
+    /// <param name="args">The args used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ConsoleLogAsync(params object[] args)
     {
         if (this.options.LoggingEnabled)
@@ -79,6 +84,11 @@ public class AppStateDebugger(ILogger<AppStateDebugger> logger, IJSRuntime jsRun
         }
     }
 
+    /// <summary>
+    /// Executes the console info operation.
+    /// </summary>
+    /// <param name="args">The args used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ConsoleInfoAsync(params object[] args)
     {
         if (this.options.LoggingEnabled)
@@ -98,6 +108,11 @@ public class AppStateDebugger(ILogger<AppStateDebugger> logger, IJSRuntime jsRun
         }
     }
 
+    /// <summary>
+    /// Executes the console warn operation.
+    /// </summary>
+    /// <param name="args">The args used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ConsoleWarnAsync(params object[] args)
     {
         if (this.options.LoggingEnabled)
@@ -117,6 +132,11 @@ public class AppStateDebugger(ILogger<AppStateDebugger> logger, IJSRuntime jsRun
         }
     }
 
+    /// <summary>
+    /// Executes the console error operation.
+    /// </summary>
+    /// <param name="args">The args used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ConsoleErrorAsync(params object[] args)
     {
         try

@@ -9,10 +9,10 @@ using BridgingIT.DevKit.Common;
 using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
 
-[Obsolete("Use RepositoryOutboxDomainEventBehavior instead")]
 /// <summary>
 /// Backwards-compatible alias for <see cref="RepositoryOutboxDomainEventBehavior{TEntity,TContext}" />.
 /// </summary>
+[Obsolete("Use RepositoryOutboxDomainEventBehavior instead")]
 public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext>(
     ILoggerFactory loggerFactory,
     TContext context,
@@ -35,6 +35,14 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     private readonly OutboxDomainEventOptions options;
     private readonly OutboxDomainEventCollector collector;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>RepositoryOutboxDomainEventBehavior</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="inner">The inner used by the operation.</param>
+    /// <param name="eventQueue">The event queue used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public RepositoryOutboxDomainEventBehavior(
         ILoggerFactory loggerFactory,
         TContext context,
@@ -99,6 +107,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.UpdateSetAsync(specifications, set, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         var existingEntity = await this.Inner
@@ -111,6 +125,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.DeleteAsync(existingEntity, cancellationToken);
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -150,6 +170,13 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.DeleteSetAsync(specifications, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -158,6 +185,13 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -166,6 +200,13 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -174,11 +215,23 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the exists operation.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -186,6 +239,13 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.FindAllAsync(options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -194,6 +254,13 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.FindAllAsync(specification, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -202,6 +269,14 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         Expression<Func<TEntity, TProjection>> projection,
         IFindOptions<TEntity> options = null,
@@ -210,6 +285,15 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
@@ -219,6 +303,15 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         IEnumerable<ISpecification<TEntity>> specifications,
         Expression<Func<TEntity, TProjection>> projection,
@@ -228,6 +321,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the insert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -241,6 +340,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return result;
     }
 
+    /// <summary>
+    /// Executes the insert set operation.
+    /// </summary>
+    /// <param name="entities">The entities involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> InsertSetAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
@@ -257,6 +362,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return result;
     }
 
+    /// <summary>
+    /// Executes the update operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(entity, nameof(entity));
@@ -270,6 +381,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return result;
     }
 
+    /// <summary>
+    /// Executes the upsert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)
@@ -285,6 +402,12 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return result;
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         ISpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
@@ -292,11 +415,22 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
@@ -333,8 +467,18 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the domain event operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="domainEventId">The domain event id used by the operation.</param>
+        /// <param name="domainEventType">The domain event type used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] repository outbox domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogDomainEvent(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
     }

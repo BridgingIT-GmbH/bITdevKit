@@ -8,15 +8,26 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Builds fake identity provider endpoints options configuration.
+/// </summary>
 public class FakeIdentityProviderEndpointsOptionsBuilder
 {
     private readonly FakeIdentityProviderEndpointsOptions options;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>FakeIdentityProviderEndpointsOptionsBuilder</c> class.
+    /// </summary>
     public FakeIdentityProviderEndpointsOptionsBuilder()
     {
         this.options = new FakeIdentityProviderEndpointsOptions();
     }
 
+    /// <summary>
+    /// Executes the enabled operation.
+    /// </summary>
+    /// <param name="enabled">The enabled used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public FakeIdentityProviderEndpointsOptionsBuilder Enabled(bool enabled = true)
     {
         this.options.Enabled = enabled;
@@ -24,6 +35,11 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the with group path operation.
+    /// </summary>
+    /// <param name="path">The path used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public FakeIdentityProviderEndpointsOptionsBuilder WithGroupPath(string path)
     {
         this.options.GroupPath = path;
@@ -31,6 +47,11 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the with group tag operation.
+    /// </summary>
+    /// <param name="tag">The tag used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public FakeIdentityProviderEndpointsOptionsBuilder WithGroupTag(string tag)
     {
         this.options.GroupTag = tag;
@@ -213,6 +234,11 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
         return this;
     }
 
+    /// <summary>
+    /// Executes the with client id operation.
+    /// </summary>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public FakeIdentityProviderEndpointsOptionsBuilder WithClientId(string clientId)
     {
         this.options.ClientId = clientId;

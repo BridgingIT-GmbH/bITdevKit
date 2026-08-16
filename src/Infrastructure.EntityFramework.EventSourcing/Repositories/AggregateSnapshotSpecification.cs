@@ -9,11 +9,17 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain;
 using Infrastructure.EventSourcing;
 
+/// <summary>
+/// Represents aggregate snapshot specification.
+/// </summary>
+/// <param name="aggregateId">The aggregate id used by the operation.</param>
+/// <param name="aggregateType">The aggregate type used by the operation.</param>
 public class AggregateSnapshotSpecification(Guid aggregateId, string aggregateType) : Specification<EventStoreSnapshot>
 {
     private readonly Guid aggregateId = aggregateId;
     private readonly string aggregateType = aggregateType;
 
+    /// <inheritdoc/>
     public override Expression<Func<EventStoreSnapshot, bool>> ToExpression()
     {
         return s => s.Id == this.aggregateId && s.AggregateType == this.aggregateType;

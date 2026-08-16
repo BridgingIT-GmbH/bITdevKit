@@ -33,20 +33,26 @@ public class OpenWriteFileStream(
     private bool faulted;
     private long bytesWritten;
 
+    /// <inheritdoc/>
     public override bool CanRead => this.innerStream.CanRead;
 
+    /// <inheritdoc/>
     public override bool CanSeek => this.innerStream.CanSeek;
 
+    /// <inheritdoc/>
     public override bool CanWrite => this.innerStream.CanWrite;
 
+    /// <inheritdoc/>
     public override long Length => this.innerStream.Length;
 
+    /// <inheritdoc/>
     public override long Position
     {
         get => this.innerStream.Position;
         set => this.innerStream.Position = value;
     }
 
+    /// <inheritdoc/>
     public override void Flush()
     {
         this.ThrowIfDisposed();
@@ -63,6 +69,7 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     public override async Task FlushAsync(CancellationToken cancellationToken)
     {
         this.ThrowIfDisposed();
@@ -79,36 +86,42 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
         this.ThrowIfDisposed();
         return this.innerStream.Read(buffer, offset, count);
     }
 
+    /// <inheritdoc/>
     public override int Read(Span<byte> buffer)
     {
         this.ThrowIfDisposed();
         return this.innerStream.Read(buffer);
     }
 
+    /// <inheritdoc/>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         this.ThrowIfDisposed();
         return this.innerStream.ReadAsync(buffer, offset, count, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         this.ThrowIfDisposed();
         return this.innerStream.ReadAsync(buffer, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin)
     {
         this.ThrowIfDisposed();
         return this.innerStream.Seek(offset, origin);
     }
 
+    /// <inheritdoc/>
     public override void SetLength(long value)
     {
         this.ThrowIfDisposed();
@@ -117,6 +130,7 @@ public class OpenWriteFileStream(
         this.ReportProgress();
     }
 
+    /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
         this.ThrowIfDisposed();
@@ -134,6 +148,7 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     public override void Write(ReadOnlySpan<byte> buffer)
     {
         this.ThrowIfDisposed();
@@ -151,6 +166,7 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         this.ThrowIfDisposed();
@@ -168,6 +184,7 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         this.ThrowIfDisposed();
@@ -185,6 +202,7 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     public override void WriteByte(byte value)
     {
         this.ThrowIfDisposed();
@@ -202,6 +220,7 @@ public class OpenWriteFileStream(
         }
     }
 
+    /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if (this.disposed)
@@ -218,6 +237,7 @@ public class OpenWriteFileStream(
         base.Dispose(disposing);
     }
 
+    /// <inheritdoc/>
     public override async ValueTask DisposeAsync()
     {
         if (this.disposed)

@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Defines the log key value.
+    /// </summary>
     public const string LogKey = "QRY";
 
+    /// <summary>
+    /// Defines the trace operation handle name value.
+    /// </summary>
     public const string TraceOperationHandleName = "QUERY_HANDLE";
 }

@@ -27,6 +27,7 @@ namespace BridgingIT.DevKit.Common;
 /// </example>
 public static partial class Rule
 {
+    /// <summary>Gets the global rule-error factories, throwing policy, and logger configuration.</summary>
     public static RuleSettings Settings { get; private set; }
 
     static Rule()

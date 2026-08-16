@@ -74,11 +74,26 @@ public partial class OutboxDomainEventQueue : IOutboxDomainEventQueue
         this.eventIds.Post(eventId);
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the queue operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="eventId">The event id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] outbox domain event queued (id={EventId})")]
         public static partial void LogQueue(ILogger logger, string logKey, string eventId);
 
+        /// <summary>
+        /// Writes a log entry for the dequeued operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="eventId">The event id used by the operation.</param>
         [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] outbox domain event dequeued (id={EventId})")]
         public static partial void LogDequeued(ILogger logger, string logKey, string eventId);
     }

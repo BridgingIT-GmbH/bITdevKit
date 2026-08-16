@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Provides general-purpose utility extension methods.
+/// </summary>
 public static partial class UtilitiesExtensions
 {
     /// <summary>

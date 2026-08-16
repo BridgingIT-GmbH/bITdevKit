@@ -21,6 +21,9 @@ public class AggregateEventOccuredCommand<TAggregate>(TAggregate aggregate, Aggr
 #pragma warning restore CS0618 // Type or member is obsolete
     where TAggregate : EventSourcingAggregateRoot
 {
+    /// <summary>
+    /// Gets or sets the aggregate.
+    /// </summary>
     public TAggregate Aggregate { get; private set; } = aggregate;
 
     /// <summary>

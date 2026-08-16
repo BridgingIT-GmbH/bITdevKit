@@ -19,20 +19,35 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 [Generator]
 public sealed class PipelineSourceGenerator : IIncrementalGenerator
 {
+    /// <summary>Gets the metadata name of the pipeline attribute.</summary>
     public const string PipelineAttributeName = "BridgingIT.DevKit.Common.PipelineAttribute";
+    /// <summary>Gets the metadata name of the pipeline-step attribute.</summary>
     public const string PipelineStepAttributeName = "BridgingIT.DevKit.Common.PipelineStepAttribute";
+    /// <summary>Gets the metadata name of the pipeline-hook attribute.</summary>
     public const string PipelineHookAttributeName = "BridgingIT.DevKit.Common.PipelineHookAttribute";
+    /// <summary>Gets the metadata name of the pipeline-behavior attribute.</summary>
     public const string PipelineBehaviorAttributeName = "BridgingIT.DevKit.Common.PipelineBehaviorAttribute";
+    /// <summary>Gets the metadata name of the non-generic pipeline definition.</summary>
     public const string PipelineDefinitionName = "BridgingIT.DevKit.Common.PipelineDefinition";
+    /// <summary>Gets the metadata name of the generic pipeline definition.</summary>
     public const string PipelineDefinitionOfTName = "BridgingIT.DevKit.Common.PipelineDefinition`1";
+    /// <summary>Gets the metadata name of the pipeline context base type.</summary>
     public const string PipelineContextBaseName = "BridgingIT.DevKit.Common.PipelineContextBase";
+    /// <summary>Gets the metadata name of the null pipeline context.</summary>
     public const string NullPipelineContextName = "BridgingIT.DevKit.Common.NullPipelineContext";
+    /// <summary>Gets the metadata name of the non-generic result type.</summary>
     public const string ResultName = "BridgingIT.DevKit.Common.Result";
+    /// <summary>Gets the metadata name of the pipeline-control type.</summary>
     public const string PipelineControlName = "BridgingIT.DevKit.Common.PipelineControl";
+    /// <summary>Gets the metadata name of the generic pipeline-hook interface.</summary>
     public const string PipelineHookOfTName = "BridgingIT.DevKit.Common.IPipelineHook`1";
+    /// <summary>Gets the metadata name of the generic pipeline-behavior interface.</summary>
     public const string PipelineBehaviorOfTName = "BridgingIT.DevKit.Common.IPipelineBehavior`1";
+    /// <summary>Gets the metadata name of <see cref="CancellationToken"/>.</summary>
     public const string CancellationTokenName = "System.Threading.CancellationToken";
+    /// <summary>Gets the metadata name of the non-generic task type.</summary>
     public const string TaskName = "System.Threading.Tasks.Task";
+    /// <summary>Gets the metadata name of the generic task type.</summary>
     public const string TaskOfTName = "System.Threading.Tasks.Task`1";
 
     /// <inheritdoc />

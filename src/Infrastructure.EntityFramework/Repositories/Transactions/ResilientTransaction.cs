@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+/// <summary>
+/// Represents resilient transaction.
+/// </summary>
 public class ResilientTransaction
 {
     private readonly DbContext context;
@@ -16,11 +19,22 @@ public class ResilientTransaction
         this.context = context;
     }
 
+    /// <summary>
+    /// Creates .
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static ResilientTransaction Create(DbContext context)
     {
         return new ResilientTransaction(context);
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(Func<Task> action, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(action, nameof(action));
@@ -53,6 +67,13 @@ public class ResilientTransaction
         }
     }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="action">The action to invoke.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> ExecuteAsync<TEntity>(Func<Task<TEntity>> action, CancellationToken cancellationToken = default)
         where TEntity : class, IEntity
     {

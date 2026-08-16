@@ -19,6 +19,11 @@ public sealed class JobSchedulerNotifierAcceptedEventBehavior<TNotification, TRe
     private readonly IJobEventIngress ingress;
     private readonly ILogger<JobSchedulerNotifierAcceptedEventBehavior<TNotification, TResult>> logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulerNotifierAcceptedEventBehavior</c> class.
+    /// </summary>
+    /// <param name="ingress">The ingress used by the operation.</param>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
     public JobSchedulerNotifierAcceptedEventBehavior(
         IJobEventIngress ingress,
         ILoggerFactory loggerFactory = null)
@@ -27,6 +32,15 @@ public sealed class JobSchedulerNotifierAcceptedEventBehavior<TNotification, TRe
         this.logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<JobSchedulerNotifierAcceptedEventBehavior<TNotification, TResult>>();
     }
 
+    /// <summary>
+    /// Handles .
+    /// </summary>
+    /// <param name="request">The request used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="handlerType">The handler type used by the operation.</param>
+    /// <param name="next">The next used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TResult> HandleAsync(TNotification request, object options, Type handlerType, Func<Task<TResult>> next, CancellationToken cancellationToken = default)
     {
         var result = await next().ConfigureAwait(false);
@@ -51,6 +65,10 @@ public sealed class JobSchedulerNotifierAcceptedEventBehavior<TNotification, TRe
         return result;
     }
 
+    /// <summary>
+    /// Determines whether is handler specific.
+    /// </summary>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool IsHandlerSpecific() => false;
 
     private static JobAcceptedEventOptions BuildOptions(PublishOptions options)

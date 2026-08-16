@@ -12,8 +12,13 @@ using System.Security.Claims;
 using System.Text.Json;
 using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Represents default token service.
+/// </summary>
+/// <param name="options">The options controlling the operation.</param>
 public class DefaultTokenService(FakeIdentityProviderEndpointsOptions options) : TokenServiceBase(options)
 {
+    /// <inheritdoc/>
     public override string GenerateAccessToken(FakeUser user, string clientId, string scope) // https://cloudentity.com/developers/basics/tokens/access-token/
     {
         var now = DateTime.UtcNow;
@@ -51,6 +56,7 @@ public class DefaultTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, this.options.AccessTokenLifetime);
     }
 
+    /// <inheritdoc/>
     public override string GenerateRefreshToken(FakeUser user, string clientId, string scope) // https://cloudentity.com/developers/basics/tokens/refresh-token/
     {
         var claims = new[]
@@ -66,6 +72,7 @@ public class DefaultTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, this.options.RefreshTokenLifetime);
     }
 
+    /// <inheritdoc/>
     public override string GenerateIdToken(FakeUser user, string clientId, string nonce = null) // https://cloudentity.com/developers/basics/tokens/id-token/
     {
         var now = DateTime.UtcNow;
@@ -107,6 +114,7 @@ public class DefaultTokenService(FakeIdentityProviderEndpointsOptions options) :
         return this.CreateJwtToken(claims, this.options.AccessTokenLifetime);
     }
 
+    /// <inheritdoc/>
     public override string GenerateServiceToken(string clientId, string scope)
     {
         var now = DateTime.UtcNow;

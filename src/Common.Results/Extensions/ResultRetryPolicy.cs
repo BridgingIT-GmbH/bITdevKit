@@ -135,9 +135,12 @@ public class RetryPolicy
 /// </summary>
 public class RetryContext(Exception exception, int attempt, TimeSpan delay)
 {
+    /// <summary>Gets the exception that caused the current retry.</summary>
     public Exception Exception { get; } = exception;
 
+    /// <summary>Gets the one-based retry attempt number.</summary>
     public int Attempt { get; } = attempt;
 
+    /// <summary>Gets the delay scheduled before the next attempt.</summary>
     public TimeSpan Delay { get; } = delay;
 }

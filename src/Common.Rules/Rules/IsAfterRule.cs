@@ -12,8 +12,11 @@ public class IsAfterRule(DateTime value, DateTime comparisonDate, string message
 {
     private readonly string message = message ?? $"Value must be after {comparisonDate}";
 
+    /// <summary>Gets the configured message or a default naming the exclusive lower date boundary.</summary>
     public override string Message => this.message;
 
+    /// <summary>Returns success only when the value is strictly later than the comparison date.</summary>
+    /// <returns>A result representing the exclusive date comparison.</returns>
     public override Result Execute() =>
         Result.SuccessIf(value > comparisonDate);
 }

@@ -9,6 +9,9 @@ using System.Collections.Concurrent;
 using System.Dynamic;
 using System.Reflection;
 
+/// <summary>
+///     Exposes public and non-public instance fields, properties, indexers, and methods through dynamic dispatch.
+/// </summary>
 public class PrivateReflectionDynamicObject : DynamicObject
 {
     private const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -18,6 +21,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
 
     private object RealObject { get; set; }
 
+    /// <inheritdoc/>
     public override bool TryGetMember(GetMemberBinder binder, out object result)
     {
         var prop = this.GetProperty(binder.Name);
@@ -27,6 +31,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         return true;
     }
 
+    /// <inheritdoc/>
     public override bool TrySetMember(SetMemberBinder binder, object value)
     {
         var prop = this.GetProperty(binder.Name);
@@ -35,6 +40,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         return true;
     }
 
+    /// <inheritdoc/>
     public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
     {
         var prop = this.GetIndexProperty();
@@ -44,6 +50,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         return true;
     }
 
+    /// <inheritdoc/>
     public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
     {
         var prop = this.GetIndexProperty();
@@ -52,6 +59,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         return true;
     }
 
+    /// <inheritdoc/>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
     {
         result = InvokeMemberOnType(this.RealObject.GetType(), this.RealObject, binder.Name, args);
@@ -60,6 +68,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         return true;
     }
 
+    /// <inheritdoc/>
     public override bool TryConvert(ConvertBinder binder, out object result)
     {
         result = Convert.ChangeType(this.RealObject, binder.Type);
@@ -67,6 +76,7 @@ public class PrivateReflectionDynamicObject : DynamicObject
         return true;
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.RealObject.ToString();

@@ -8,6 +8,11 @@ namespace BridgingIT.DevKit.Domain.Model;
 using System.Reflection;
 
 // Better use the new Enumeration (non ValueObject) implementation
+/// <summary>
+/// Represents enumeration value object.
+/// </summary>
+/// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+/// <typeparam name="TKey">The key type.</typeparam>
 public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
     where TEnumeration : EnumerationValueObject<TEnumeration, TKey>
     where TKey : struct
@@ -19,9 +24,17 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
     private int? cachedHashCode;
 
 #pragma warning disable SA1202 // Elements should be ordered by access
+    /// <summary>
+    /// Stores the all.
+    /// </summary>
     public static IReadOnlyCollection<TEnumeration> All = ByKey.Values.OfType<TEnumeration>().ToList();
 #pragma warning restore SA1202 // Elements should be ordered by access
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EnumerationValueObject</c> class.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="name">The name of the value.</param>
     protected EnumerationValueObject(TKey key, string name)
     {
         EnsureArg.IsNotDefault(key, nameof(key));
@@ -31,10 +44,24 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
         this.Name = name;
     }
 
+    /// <summary>
+    /// Gets or sets the key.
+    /// </summary>
     public TKey Key { get; protected set; }
 
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
     public string Name { get; protected set; }
 
+    /// <summary>
+    /// Executes the operator == operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(EnumerationValueObject<TEnumeration, TKey> left, TKey right)
     {
         if (left is null)
@@ -45,41 +72,86 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
         return left.Key.Equals(right);
     }
 
+    /// <summary>
+    /// Executes the operator != operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(EnumerationValueObject<TEnumeration, TKey> left, TKey right)
     {
         return !(left == right);
     }
 
+    /// <summary>
+    /// Executes the operator == operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(TKey left, EnumerationValueObject<TEnumeration, TKey> right)
     {
         return right == left;
     }
 
+    /// <summary>
+    /// Executes the operator != operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(TKey left, EnumerationValueObject<TEnumeration, TKey> right)
     {
         return !(right == left);
     }
 
+    /// <summary>
+    /// Creates .
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TEnumeration Create(TKey key)
     {
         return ByKey.ContainsKey(key) ? ByKey[key] : default;
     }
 
+    /// <summary>
+    /// Creates .
+    /// </summary>
+    /// <param name="name">The name of the value.</param>
+    /// <returns>The result of the operation.</returns>
     public static TEnumeration Create(string name)
     {
         return ByName.ContainsKey(name) ? ByName[name] : default;
     }
 
+    /// <summary>
+    /// Determines whether is.
+    /// </summary>
+    /// <param name="name">The name of the value.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool Is(string name)
     {
         return All.Select(e => e.Name).Contains(name);
     }
 
+    /// <summary>
+    /// Determines whether is.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool Is(TKey key)
     {
         return All.Select(e => e.Key).Contains(key);
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj)
     {
         if (obj is null)
@@ -109,11 +181,13 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.Name;
     }
 
+    /// <inheritdoc/>
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return this.Key;
@@ -128,6 +202,10 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
     }
 }
 
+/// <summary>
+/// Represents enumeration value object.
+/// </summary>
+/// <typeparam name="TEnumeration">The enumeration type.</typeparam>
 public abstract class EnumerationValueObject<TEnumeration> : ValueObject
     where TEnumeration : EnumerationValueObject<TEnumeration>
 {
@@ -136,9 +214,16 @@ public abstract class EnumerationValueObject<TEnumeration> : ValueObject
     private int? cachedHashCode;
 
 #pragma warning disable SA1202 // Elements should be ordered by access
+    /// <summary>
+    /// Stores the all.
+    /// </summary>
     public static IReadOnlyCollection<TEnumeration> All = Enumerations.Values.OfType<TEnumeration>().ToList();
 #pragma warning restore SA1202 // Elements should be ordered by access
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EnumerationValueObject</c> class.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
     protected EnumerationValueObject(string key)
     {
         if (string.IsNullOrWhiteSpace(key))
@@ -149,8 +234,18 @@ public abstract class EnumerationValueObject<TEnumeration> : ValueObject
         this.Key = key;
     }
 
+    /// <summary>
+    /// Gets or sets the key.
+    /// </summary>
     public virtual string Key { get; protected set; }
 
+    /// <summary>
+    /// Executes the operator == operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(EnumerationValueObject<TEnumeration> left, string right)
     {
         if (left is null && right is null)
@@ -166,31 +261,63 @@ public abstract class EnumerationValueObject<TEnumeration> : ValueObject
         return left.Key.Equals(right);
     }
 
+    /// <summary>
+    /// Executes the operator != operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(EnumerationValueObject<TEnumeration> left, string right)
     {
         return !(left == right);
     }
 
+    /// <summary>
+    /// Executes the operator == operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(string left, EnumerationValueObject<TEnumeration> right)
     {
         return right == left;
     }
 
+    /// <summary>
+    /// Executes the operator != operation.
+    /// </summary>
+    /// <typeparam name="TEnumeration">The enumeration type.</typeparam>
+    /// <param name="left">The left used by the operation.</param>
+    /// <param name="right">The right used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(string left, EnumerationValueObject<TEnumeration> right)
     {
         return !(right == left);
     }
 
+    /// <summary>
+    /// Determines whether is.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static bool Is(string key)
     {
         return All.Select(e => e.Key).Contains(key);
     }
 
+    /// <summary>
+    /// Executes the from key operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static TEnumeration FromKey(string key)
     {
         return Enumerations.ContainsKey(key) ? Enumerations[key] : default;
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj)
     {
         if (obj is null)
@@ -206,6 +333,7 @@ public abstract class EnumerationValueObject<TEnumeration> : ValueObject
         return this.GetAtomicValues().SequenceEqual(((EnumerationValueObject<TEnumeration>)obj).GetAtomicValues());
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         return this.cachedHashCode ??= this.GetAtomicValues()
@@ -213,11 +341,13 @@ public abstract class EnumerationValueObject<TEnumeration> : ValueObject
             .Aggregate((x, y) => x ^ y);
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.Key;
     }
 
+    /// <inheritdoc/>
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return this.Key;

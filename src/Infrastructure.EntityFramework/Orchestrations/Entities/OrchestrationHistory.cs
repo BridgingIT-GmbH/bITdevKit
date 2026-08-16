@@ -8,11 +8,11 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("__Orchestration_History")]
-[Index(nameof(InstanceId), nameof(RecordedAt))]
 /// <summary>
 /// Represents an append-only orchestration history row stored in Entity Framework persistence.
 /// </summary>
+[Table("__Orchestration_History")]
+[Index(nameof(InstanceId), nameof(RecordedAt))]
 public class OrchestrationHistory
 {
     /// <summary>

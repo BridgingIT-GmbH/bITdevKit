@@ -13,11 +13,6 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using BridgingIT.DevKit.Application.Notifications;
 
-[Table("__Notifications_Emails")]
-[Index(nameof(IsArchived), nameof(Status), nameof(LockedUntil), nameof(CreatedAt))]
-[Index(nameof(IsArchived), nameof(Priority), nameof(CreatedAt))]
-[Index(nameof(IsArchived), nameof(SentAt))]
-[Index(nameof(IsArchived), nameof(ArchivedDate))]
 /// <summary>
 /// Represents a persisted notification email row managed by the Entity Framework outbox.
 /// </summary>
@@ -25,18 +20,23 @@ using BridgingIT.DevKit.Application.Notifications;
 /// The entity stores transport metadata, serialized recipient/header collections, attachments, lease state,
 /// and soft-archive information so operators can remove rows from the active working set without purging them.
 /// </remarks>
+[Table("__Notifications_Emails")]
+[Index(nameof(IsArchived), nameof(Status), nameof(LockedUntil), nameof(CreatedAt))]
+[Index(nameof(IsArchived), nameof(Priority), nameof(CreatedAt))]
+[Index(nameof(IsArchived), nameof(SentAt))]
+[Index(nameof(IsArchived), nameof(ArchivedDate))]
 public class EmailMessageEntity
 {
-    [Key]
     /// <summary>
     /// Gets or sets the primary key for the persisted notification email.
     /// </summary>
+    [Key]
     public Guid Id { get; set; }
 
-    [Required]
     /// <summary>
     /// Gets or sets the serialized primary-recipient collection.
     /// </summary>
+    [Required]
     public string To
     {
         get => JsonSerializer.Serialize(this.to, DefaultJsonSerializerOptions.Create());
@@ -67,10 +67,10 @@ public class EmailMessageEntity
 
     private List<string> bcc = [];
 
-    [Required]
     /// <summary>
     /// Gets or sets the serialized sender identity.
     /// </summary>
+    [Required]
     public string From
     {
         get => JsonSerializer.Serialize(this.from, DefaultJsonSerializerOptions.Create());
@@ -90,17 +90,17 @@ public class EmailMessageEntity
 
     private EmailAddress replyTo;
 
-    [Required]
-    [MaxLength(500)]
     /// <summary>
     /// Gets or sets the message subject line.
     /// </summary>
+    [Required]
+    [MaxLength(500)]
     public string Subject { get; set; }
 
-    [Required]
     /// <summary>
     /// Gets or sets the persisted email body.
     /// </summary>
+    [Required]
     public string Body { get; set; }
 
     /// <summary>
@@ -119,10 +119,10 @@ public class EmailMessageEntity
 
     private Dictionary<string, string> headers = [];
 
-    [Column("Properties")]
     /// <summary>
     /// Gets or sets the JSON persistence column for arbitrary email properties.
     /// </summary>
+    [Column("Properties")]
     public string PropertiesJson
     {
         get => this.properties.IsNullOrEmpty() ? null : JsonSerializer.Serialize(this.properties, DefaultJsonSerializerOptions.Create());
@@ -146,10 +146,10 @@ public class EmailMessageEntity
     /// </summary>
     public int RetryCount { get; set; }
 
-    [Required]
     /// <summary>
     /// Gets or sets the timestamp when the email row was created.
     /// </summary>
+    [Required]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
@@ -167,10 +167,10 @@ public class EmailMessageEntity
     /// </summary>
     public DateTimeOffset? ArchivedDate { get; set; }
 
-    [MaxLength(256)]
     /// <summary>
     /// Gets or sets the worker instance that currently owns the outbox lease.
     /// </summary>
+    [MaxLength(256)]
     public string LockedBy { get; set; }
 
     /// <summary>
@@ -178,11 +178,11 @@ public class EmailMessageEntity
     /// </summary>
     public DateTimeOffset? LockedUntil { get; set; }
 
-    [Required]
-    [ConcurrencyCheck]
     /// <summary>
     /// Gets or sets the provider-neutral optimistic concurrency token.
     /// </summary>
+    [Required]
+    [ConcurrencyCheck]
     public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
 
     /// <summary>

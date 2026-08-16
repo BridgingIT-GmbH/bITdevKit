@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Provides resilient asynchronous execution helpers that represent operational failures as <see cref="Result"/> values.</summary>
 public static class ResultAsyncExtensions
 {
     /// <summary>

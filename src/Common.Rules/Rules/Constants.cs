@@ -5,7 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>Defines shared identifiers used by the rule subsystem.</summary>
 public struct Constants
 {
+    /// <summary>The structured logging key used for rule-processing events.</summary>
     public const string LogKey = "RUL";
 }

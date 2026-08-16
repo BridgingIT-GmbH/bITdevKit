@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Configures database creator.
+/// </summary>
 public class DatabaseCreatorOptions : OptionsBase
 {
     /// <summary>

@@ -16,6 +16,11 @@ using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Provides active entity logging behavior.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="loggerFactory">The factory used to create the behavior logger.</param>
 public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerFactory) : ActiveEntityBehaviorBase<TEntity>
     where TEntity : class, IEntity
 {
@@ -23,6 +28,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         NullLoggerFactory.Instance.CreateLogger<ActiveEntityLoggingBehavior<TEntity>>();
     private readonly string type = typeof(TEntity).Name;
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeInsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity != null)
@@ -33,6 +39,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeUpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity != null)
@@ -43,6 +50,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeUpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity != null)
@@ -53,6 +61,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeDeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         if (entity != null)
@@ -63,6 +72,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeDeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogDelete(this.logger, Constants.LogKey, this.type, id);
@@ -70,6 +80,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(object id, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindOneId(this.logger, Constants.LogKey, this.type, id);
@@ -78,6 +89,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindOne(this.logger, Constants.LogKey, this.type);
@@ -87,6 +99,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindOne(this.logger, Constants.LogKey, this.type);
@@ -100,6 +113,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindOneAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindOne(this.logger, Constants.LogKey, this.type);
@@ -108,6 +122,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAll(this.logger, Constants.LogKey, this.type);
@@ -116,6 +131,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAll(this.logger, Constants.LogKey, this.type);
@@ -125,6 +141,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllPagedAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllPaged(this.logger, Constants.LogKey, this.type);
@@ -133,6 +150,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAll(this.logger, Constants.LogKey, this.type);
@@ -146,6 +164,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAll(this.logger, Constants.LogKey, this.type);
@@ -160,6 +179,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAll(this.logger, Constants.LogKey, this.type);
@@ -178,6 +198,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAllPaged(this.logger, Constants.LogKey, this.type);
@@ -191,6 +212,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.type);
@@ -198,6 +220,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExistsId(this.logger, Constants.LogKey, this.type, id);
@@ -205,6 +228,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.type);
@@ -213,6 +237,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.type);
@@ -224,6 +249,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeExistsAsync(FilterModel filter, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.type);
@@ -231,6 +257,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeCountAsync(CancellationToken cancellationToken = default)
     {
         TypedLogger.LogCount(this.logger, Constants.LogKey, this.type);
@@ -238,6 +265,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeCountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogCount(this.logger, Constants.LogKey, this.type);
@@ -246,6 +274,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIds(this.logger, Constants.LogKey, this.type);
@@ -254,6 +283,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIds(this.logger, Constants.LogKey, this.type);
@@ -263,6 +293,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIds(this.logger, Constants.LogKey, this.type);
@@ -276,6 +307,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIds(this.logger, Constants.LogKey, this.type);
@@ -284,6 +316,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsPagedAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIdsPaged(this.logger, Constants.LogKey, this.type);
@@ -292,6 +325,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIdsPaged(this.logger, Constants.LogKey, this.type);
@@ -301,6 +335,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIdsPaged(this.logger, Constants.LogKey, this.type);
@@ -314,6 +349,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeFindAllIdsPagedAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIdsPaged(this.logger, Constants.LogKey, this.type);
@@ -322,6 +358,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         return Task.FromResult(Result.Success());
     }
 
+    /// <inheritdoc/>
     public override Task<Result> BeforeTransactionAsync(CancellationToken cancellationToken = default)
     {
         TypedLogger.LogTransaction(this.logger, Constants.LogKey, this.type);
@@ -365,53 +402,158 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         }
     }
 
+    /// <summary>
+    /// Gets the typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Executes the log count operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] active entity: count (type={EntityType})")]
         public static partial void LogCount(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log exists operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] active entity: exists (type={EntityType})")]
         public static partial void LogExists(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log exists id operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
+        /// <param name="entityId">The entity id used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] active entity: exists (type={EntityType}, id={EntityId})")]
         public static partial void LogExistsId(ILogger logger, string logKey, string entityType, object entityId);
 
+        /// <summary>
+        /// Executes the log find all operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(3, LogLevel.Information, "[{LogKey}] active entity: findall (type={EntityType})")]
         public static partial void LogFindAll(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log find all paged operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(4, LogLevel.Information, "[{LogKey}] active entity: findall paged (type={EntityType})")]
         public static partial void LogFindAllPaged(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log project all operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(5, LogLevel.Information, "[{LogKey}] active entity: projectall (type={EntityType})")]
         public static partial void LogProjectAll(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log project all paged operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(6, LogLevel.Information, "[{LogKey}] active entity: projectall paged (type={EntityType})")]
         public static partial void LogProjectAllPaged(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log find one id operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
+        /// <param name="entityId">The entity id used by the operation.</param>
         [LoggerMessage(7, LogLevel.Information, "[{LogKey}] active entity: findone (type={EntityType}, id={EntityId})")]
         public static partial void LogFindOneId(ILogger logger, string logKey, string entityType, object entityId);
 
+        /// <summary>
+        /// Executes the log find one operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(8, LogLevel.Information, "[{LogKey}] active entity: findone (type={EntityType})")]
         public static partial void LogFindOne(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log insert operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
+        /// <param name="entityId">The entity id used by the operation.</param>
         [LoggerMessage(9, LogLevel.Information, "[{LogKey}] active entity: insert (type={EntityType}, id={EntityId})")]
         public static partial void LogInsert(ILogger logger, string logKey, string entityType, object entityId);
 
+        /// <summary>
+        /// Executes the log update operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
+        /// <param name="entityId">The entity id used by the operation.</param>
         [LoggerMessage(10, LogLevel.Information, "[{LogKey}] active entity: update (type={EntityType}, id={EntityId})")]
         public static partial void LogUpdate(ILogger logger, string logKey, string entityType, object entityId);
 
+        /// <summary>
+        /// Executes the log upsert operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
+        /// <param name="entityId">The entity id used by the operation.</param>
         [LoggerMessage(11, LogLevel.Information, "[{LogKey}] active entity: upsert (type={EntityType}, id={EntityId})")]
         public static partial void LogUpsert(ILogger logger, string logKey, string entityType, object entityId);
 
+        /// <summary>
+        /// Executes the log delete operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
+        /// <param name="entityId">The entity id used by the operation.</param>
         [LoggerMessage(12, LogLevel.Information, "[{LogKey}] active entity: delete (type={EntityType}, id={EntityId})")]
         public static partial void LogDelete(ILogger logger, string logKey, string entityType, object entityId);
 
+        /// <summary>
+        /// Executes the log find all ids operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(13, LogLevel.Information, "[{LogKey}] active entity: findall ids (type={EntityType})")]
         public static partial void LogFindAllIds(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log find all ids paged operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(14, LogLevel.Information, "[{LogKey}] active entity: findall ids paged (type={EntityType})")]
         public static partial void LogFindAllIdsPaged(ILogger logger, string logKey, string entityType);
 
+        /// <summary>
+        /// Executes the log transaction operation.
+        /// </summary>
+        /// <param name="logger">The logger used by the operation.</param>
+        /// <param name="logKey">The log key used by the operation.</param>
+        /// <param name="entityType">The entity type used by the operation.</param>
         [LoggerMessage(15, LogLevel.Information, "[{LogKey}] active entity: transaction (type={EntityType})")]
         public static partial void LogTransaction(ILogger logger, string logKey, string entityType);
     }

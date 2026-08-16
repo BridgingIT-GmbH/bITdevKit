@@ -7,8 +7,13 @@ namespace BridgingIT.DevKit.Application.Jobs;
 
 using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Represents jobs archive occurrences job.
+/// </summary>
+/// <param name="maintenance">The maintenance used by the operation.</param>
 public sealed class JobsArchiveOccurrencesJob(IJobSchedulerMaintenanceService maintenance) : JobBase<JobArchiveOccurrencesJobData>
 {
+    /// <inheritdoc/>
     public override async Task<Result> ExecuteAsync(IJobExecutionContext<JobArchiveOccurrencesJobData> context, CancellationToken cancellationToken = default)
     {
         var report = await maintenance.ArchiveOccurrencesAsync(context.Data ?? new JobArchiveOccurrencesJobData(), cancellationToken).ConfigureAwait(false);

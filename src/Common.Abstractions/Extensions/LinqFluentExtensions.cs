@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Provides null-safe fluent operators for lookup, conditional actions and transformations, validation, matching, and fallback values.
+/// </summary>
 public static class LinqFluentExtensions
 {
     #region Find - Fluent FirstOrDefault alternative
@@ -1176,7 +1179,7 @@ public static class LinqFluentExtensions
     /// <param name="value">The value to transform.</param>
     /// <param name="predicate">The condition to evaluate. Can be null.</param>
     /// <param name="then">The transformation if true. Can be null.</param>
-    /// <param name="@else">The transformation if false. Can be null.</param>
+    /// <param name="else">The transformation if false. Can be null.</param>
     /// <returns>The transformed value based on predicate, or default if transformations are null.</returns>
     /// <example>
     /// <code>
@@ -1219,15 +1222,15 @@ public static class LinqFluentExtensions
     /// <param name="value">The nullable value to transform.</param>
     /// <param name="predicate">The condition to evaluate. Can be null.</param>
     /// <param name="then">The transformation if true. Can be null.</param>
-    /// <param name="@else">The transformation if false. Can be null.</param>
+    /// <param name="else">The transformation if false. Can be null.</param>
     /// <returns>The transformed value based on predicate, or default if transformations are null.</returns>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// string status = order.ShippedDate.When(
     ///     d => d < DateTime.Now,
     ///     d => $"Shipped on {d:d}",
     ///     d => "Not yet shipped");
-    /// </code>
+    /// ]]></code>
     /// </example>
     public static TOut When<TIn, TOut>(this TIn? value, Func<TIn, bool> predicate,
         Func<TIn, TOut> then, Func<TIn, TOut> @else)
@@ -1287,10 +1290,10 @@ public static class LinqFluentExtensions
     /// <param name="action">The action to execute. Can be null.</param>
     /// <returns>The original nullable value for method chaining.</returns>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// DateTime? deadline = task.DueDate
     ///     .Unless(d => d < DateTime.Now, d => SendOverdueWarning(d));
-    /// </code>
+    /// ]]></code>
     /// </example>
     public static T? Unless<T>(this T? value, Func<T, bool> predicate, Action<T> action)
         where T : struct
@@ -1346,10 +1349,10 @@ public static class LinqFluentExtensions
     /// <param name="then">The transformation function. Can be null.</param>
     /// <returns>The transformed value or original value if condition is true.</returns>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// decimal price = basePrice
     ///     .Unless(p => p < 50, p => p + 10m);  // Add shipping unless under 50
-    /// </code>
+    /// ]]></code>
     /// </example>
     public static T? Unless<T>(this T? value, Func<T, bool> predicate, Func<T, T> then)
         where T : struct
@@ -1371,7 +1374,7 @@ public static class LinqFluentExtensions
     /// <param name="value">The value to transform.</param>
     /// <param name="predicate">The condition to negate. Can be null.</param>
     /// <param name="then">The transformation if false. Can be null.</param>
-    /// <param name="@else">The transformation if true. Can be null.</param>
+    /// <param name="else">The transformation if true. Can be null.</param>
     /// <returns>The transformed value based on negated predicate, or default if transformations are null.</returns>
     /// <example>
     /// <code>
@@ -1408,15 +1411,15 @@ public static class LinqFluentExtensions
     /// <param name="value">The nullable value to transform.</param>
     /// <param name="predicate">The condition to negate. Can be null.</param>
     /// <param name="then">The transformation if false. Can be null.</param>
-    /// <param name="@else">The transformation if true. Can be null.</param>
+    /// <param name="else">The transformation if true. Can be null.</param>
     /// <returns>The transformed value based on negated predicate, or default if transformations are null.</returns>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// string message = order.ProcessedAt.Unless(
     ///     d => d < DateTime.Now,
     ///     d => "Not yet processed",
     ///     d => $"Processed on {d:d}");
-    /// </code>
+    /// ]]></code>
     /// </example>
     public static TOut Unless<TIn, TOut>(this TIn? value, Func<TIn, bool> predicate,
         Func<TIn, TOut> then, Func<TIn, TOut> @else)
@@ -1618,7 +1621,7 @@ public static class LinqFluentExtensions
     /// <param name="action">The action to execute. Can be null.</param>
     /// <returns>The original condition for method chaining.</returns>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// // Simple condition check
     /// user.IsAdmin
     ///     .When(() => logger.LogInfo("Admin access granted"));
@@ -1632,7 +1635,7 @@ public static class LinqFluentExtensions
     /// (items.Count > 0 && user.HasPermission("edit"))
     ///     .When(() => EnableEditMode())
     ///     .Otherwise(() => DisableEditMode());
-    /// </code>
+    /// ]]></code>
     /// </example>
     public static bool When(this bool condition, Action action)
     {
@@ -2111,40 +2114,6 @@ public static class LinqFluentExtensions
 
     #region Select - Transform value (bridge sync and async chains)
 
-    /// <summary>
-    /// Applies a synchronous transformation to a value.
-    /// Alias for projection, provides fluent chaining with optional methods.
-    /// Returns default if selector is null.
-    /// </summary>
-    /// <typeparam name="TIn">The input type.</typeparam>
-    /// <typeparam name="TOut">The output type.</typeparam>
-    /// <param name="source">The value to transform.</param>
-    /// <param name="selector">The transformation function. Can be null.</param>
-    /// <returns>The transformed value, or default if selector is null.</returns>
-    /// <example>
-    /// <code>
-    /// // Simple transformation
-    /// var email = user
-    ///     .Select(u => u.Email);
-    /// 
-    /// // Bridge sync to async
-    /// var profile = user
-    ///     .Select(u => new { u.Id, u.Name })
-    ///     .SelectAsync(async data => new
-    ///     {
-    ///         data.Id,
-    ///         data.Name,
-    ///         Permissions = await permissionService.GetAsync(data.Id)
-    ///     });
-    /// 
-    /// // With LINQ
-    /// var report = orders
-    ///     .Select(o => o.Items)
-    ///     .When(items => items.Any(),
-    ///         items => items.Where(i => i.IsActive))
-    ///     .ToList();
-    /// </code>
-    /// </example>
     //public static TOut Select<TIn, TOut>(this TIn source, Func<TIn, TOut> selector)
     //{
     //    if (selector == null)
@@ -2531,13 +2500,13 @@ public static class LinqFluentExtensions
     /// <param name="exceptionFactory">Factory function to create exception. Can be null.</param>
     /// <returns>The original value if condition is false.</returns>
     /// <example>
-    /// <code>
+    /// <code><![CDATA[
     /// int? quantity = order.Quantity
     ///     .ThrowWhen(q => q <= 0, q => new InvalidQuantityException(q));
     /// 
     /// DateTime? date = appointment.ScheduledAt
     ///     .ThrowWhen(d => d < DateTime.Now, d => new PastDateException(d));
-    /// </code>
+    /// ]]></code>
     /// </example>
     public static T? ThrowWhen<T>(this T? value, Func<T, bool> condition,
         Func<T, Exception> exceptionFactory)

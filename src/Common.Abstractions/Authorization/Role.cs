@@ -17,6 +17,11 @@ public readonly struct Role : IEquatable<Role>
         this.value = value;
     }
 
+    /// <summary>
+    /// Creates a role value from an application-defined group name.
+    /// </summary>
+    /// <param name="group">The group name to preserve in the role value.</param>
+    /// <returns>A role backed by <paramref name="group"/>.</returns>
     public static Role For(string group)
     {
         return new Role(group);
@@ -52,6 +57,7 @@ public readonly struct Role : IEquatable<Role>
     /// </summary>
     public static Role Guests => new("Guests");
 
+    /// <inheritdoc/>
     public bool Equals(Role other)
     {
         return this.value == other.value;

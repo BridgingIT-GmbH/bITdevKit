@@ -41,6 +41,8 @@ public class ExceptionError : IResultError
     /// </summary>
     public string Message { get; init; }
 
+    /// <summary>Throws the encapsulated exception.</summary>
+    /// <exception cref="Exception">Always throws the value exposed by <see cref="Exception"/>.</exception>
     public void Throw()
     {
         throw this.Exception;

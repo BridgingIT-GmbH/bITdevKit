@@ -7,8 +7,16 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.EventSourcing.Outbox;
 
+/// <summary>
+/// Represents service collection extension.
+/// </summary>
 public static class ServiceCollectionExtension
 {
+    /// <summary>
+    /// Adds ef outbox worker.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddEfOutboxWorker(this IServiceCollection services)
     {
         services.AddTransient<IOutboxWorkerService, OutboxWorkerService>();

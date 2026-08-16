@@ -7,18 +7,33 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Configures entity framework active entity provider.
+/// </summary>
+/// <typeparam name="TContext">The context type.</typeparam>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public class EntityFrameworkActiveEntityProviderOptions<TContext, TEntity> : OptionsBase
     where TEntity : class, IEntity
     where TContext : DbContext
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityFrameworkActiveEntityProviderOptions</c> class.
+    /// </summary>
     public EntityFrameworkActiveEntityProviderOptions()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityFrameworkActiveEntityProviderOptions</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
     public EntityFrameworkActiveEntityProviderOptions(ILoggerFactory loggerFactory) : base(loggerFactory)
     {
     }
 
+    /// <summary>
+    /// Gets or sets the publish events.
+    /// </summary>
     public bool PublishEvents { get; set; } = true;
 
     /// <summary>

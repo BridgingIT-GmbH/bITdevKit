@@ -5,4 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+/// <summary>
+///     Identifies an <see cref="ISerializer"/> whose serialized representation is text.
+/// </summary>
 public interface ITextSerializer : ISerializer;

@@ -5,6 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Identity;
 
+/// <summary>
+/// Builds entity permission provider configuration.
+/// </summary>
+/// <param name="provider">The provider used by the operation.</param>
 public class EntityPermissionProviderBuilder(IEntityPermissionProvider provider)
 {
     /// <summary>

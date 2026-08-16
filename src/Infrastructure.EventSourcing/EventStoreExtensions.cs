@@ -9,8 +9,17 @@ using Common;
 using Domain.EventSourcing.Model;
 using Domain.EventSourcing.Store;
 
+/// <summary>
+/// Represents event store extensions.
+/// </summary>
 public static class EventStoreExtensions
 {
+    /// <summary>
+    /// Executes the convert to blob operation.
+    /// </summary>
+    /// <param name="event">The event used by the operation.</param>
+    /// <param name="serializer">The serializer used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static EventBlob ConvertToBlob(this IAggregateEvent @event, ISerializer serializer)
     {
         EnsureArg.IsNotNull(serializer, nameof(serializer));
@@ -18,6 +27,14 @@ public static class EventStoreExtensions
         return new EventBlob(@event.GetType(), serializer.SerializeToBytes(@event));
     }
 
+    /// <summary>
+    /// Executes the convert from blob operation.
+    /// </summary>
+    /// <param name="data">The data used by the operation.</param>
+    /// <param name="typename">The typename used by the operation.</param>
+    /// <param name="serializer">The serializer used by the operation.</param>
+    /// <param name="typeSelector">The type selector used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IAggregateEvent ConvertFromBlob(
         this byte[] data,
         string typename,
@@ -34,6 +51,14 @@ public static class EventStoreExtensions
         return @event as IAggregateEvent;
     }
 
+    /// <summary>
+    /// Executes the convert from blob operation.
+    /// </summary>
+    /// <param name="data">The data used by the operation.</param>
+    /// <param name="typename">The typename used by the operation.</param>
+    /// <param name="serializer">The serializer used by the operation.</param>
+    /// <param name="typeSelector">The type selector used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static EventSourcingAggregateRoot ConvertFromBlob(
         this byte[] data,
         string typename,
@@ -50,6 +75,12 @@ public static class EventStoreExtensions
         return @event as EventSourcingAggregateRoot;
     }
 
+    /// <summary>
+    /// Executes the convert to blob operation.
+    /// </summary>
+    /// <param name="aggregate">The aggregate used by the operation.</param>
+    /// <param name="serializer">The serializer used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static EventBlob ConvertToBlob(this EventSourcingAggregateRoot aggregate, ISerializer serializer)
     {
         EnsureArg.IsNotNull(serializer, nameof(serializer));

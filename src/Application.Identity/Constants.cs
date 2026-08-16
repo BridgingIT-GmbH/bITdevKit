@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.Identity;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Defines the log key value.
+    /// </summary>
     public const string LogKey = "AUT";
 }

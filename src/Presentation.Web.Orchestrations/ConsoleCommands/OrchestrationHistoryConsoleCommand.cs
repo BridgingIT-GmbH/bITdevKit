@@ -8,14 +8,24 @@ namespace BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Spectre.Console;
 
+/// <summary>
+/// Represents orchestration history console command.
+/// </summary>
 public class OrchestrationHistoryConsoleCommand : OrchestrationConsoleCommandBase
 {
+    /// <summary>
+    /// Gets or sets the instance id.
+    /// </summary>
     [ConsoleCommandArgument(0, Description = "Orchestration instance id", Required = true)]
     public Guid InstanceId { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>OrchestrationHistoryConsoleCommand</c> class.
+    /// </summary>
     public OrchestrationHistoryConsoleCommand()
         : base("history", "Show orchestration instance history", "hist") { }
 
+    /// <inheritdoc/>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.GetRequired<IOrchestrationQueryService>(console, services);

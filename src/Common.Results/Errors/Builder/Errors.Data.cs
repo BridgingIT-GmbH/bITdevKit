@@ -49,6 +49,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the data error. If null, a default message is used.</param>
 public class DataError(string message = null) : ResultErrorBase(message ?? "Data error")
 {
+    /// <summary>Initializes a data error with the default message.</summary>
     public DataError() : this(null)
     {
     }

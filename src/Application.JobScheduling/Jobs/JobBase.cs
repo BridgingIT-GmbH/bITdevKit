@@ -7,22 +7,38 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 
 using System.Collections.Generic;
 
+/// <summary>
+/// Provides the base execution pipeline for scheduled jobs.
+/// </summary>
 [DisallowConcurrentExecution]
 [PersistJobDataAfterExecution]
 public abstract partial class JobBase : IJob
 {
     private const string JobIdKey = "JobId";
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
     protected JobBase(ILoggerFactory loggerFactory)
     {
         this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
             NullLoggerFactory.Instance.CreateLogger(this.GetType());
     }
 
+    /// <summary>
+    /// Gets the logger.
+    /// </summary>
     public ILogger Logger { get; }
 
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
     public string Name { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the data.
+    /// </summary>
     public Dictionary<string, string> Data { get; private set; }
 
     /// <summary>
@@ -50,6 +66,11 @@ public abstract partial class JobBase : IJob
     /// </summary>
     public string ErrorMessage { get; set; }
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Execute(IJobExecutionContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -193,16 +214,50 @@ public abstract partial class JobBase : IJob
         }
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public abstract Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Represents base typed logger.
+    /// </summary>
     public static partial class BaseTypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobType">The job type used by the operation.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobId">The job id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Information, "[{LogKey}] processing (type={JobType}, name={JobName}, id={JobId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string jobType, string jobName, string jobId);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobType">The job type used by the operation.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobId">The job id used by the operation.</param>
+        /// <param name="timeElapsed">The time elapsed used by the operation.</param>
         [LoggerMessage(1, LogLevel.Information, "[{LogKey}] processed (type={JobType}, name={JobName}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobName, string jobId, long timeElapsed);
 
+        /// <summary>
+        /// Writes a log entry for the interrupted operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="jobType">The job type used by the operation.</param>
+        /// <param name="jobName">The job name used by the operation.</param>
+        /// <param name="jobId">The job id used by the operation.</param>
         [LoggerMessage(2, LogLevel.Warning, "[{LogKey}] interrupted (type={JobType}, name={JobName}, id={JobId})")]
         public static partial void LogInterrupted(ILogger logger, string logKey, string jobType, string jobName, string jobId);
     }

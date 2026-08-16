@@ -5,7 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain.EventSourcing;
 
+/// <summary>
+/// Defines operations for i domain event.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
 public interface IDomainEvent<out TId> : IDomainEvent
 {
+    /// <summary>
+    /// Gets the aggregate id.
+    /// </summary>
     TId AggregateId { get; }
 }

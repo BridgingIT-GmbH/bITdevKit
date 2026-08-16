@@ -11,13 +11,18 @@ namespace BridgingIT.DevKit.Common;
 public class HttpError(string message = null, int? statusCode = null, string statusText = null, string url = null, string method = null, Exception innerException = null)
     : ResultErrorBase(message ?? "HTTP request failed")
 {
+    /// <summary>Gets the HTTP status code returned by the remote endpoint, when available.</summary>
     public int? StatusCode { get; } = statusCode;
 
+    /// <summary>Gets the HTTP reason phrase or status text, when available.</summary>
     public string StatusText { get; } = statusText;
 
+    /// <summary>Gets the request URL associated with the failure, when supplied.</summary>
     public string Url { get; } = url;
 
+    /// <summary>Gets the HTTP method associated with the failed request, when supplied.</summary>
     public string Method { get; } = method;
 
+    /// <summary>Gets the exception that caused or describes the HTTP failure, when available.</summary>
     public Exception InnerException { get; } = innerException;
 }

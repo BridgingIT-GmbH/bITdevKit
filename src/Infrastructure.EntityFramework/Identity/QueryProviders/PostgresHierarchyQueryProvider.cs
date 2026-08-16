@@ -5,8 +5,20 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Represents postgres hierarchy query provider.
+/// </summary>
 public class PostgresHierarchyQueryProvider : IHierarchyQueryProvider
 {
+    /// <summary>
+    /// Creates path query.
+    /// </summary>
+    /// <param name="schema">The schema used by the operation.</param>
+    /// <param name="tableName">The table name used by the operation.</param>
+    /// <param name="idColumn">The id column used by the operation.</param>
+    /// <param name="parentIdColumn">The parent id column used by the operation.</param>
+    /// <param name="idType">The id type used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public string CreatePathQuery(string schema, string tableName, string idColumn, string parentIdColumn, Type idType)
     {
         var paramCast = idType switch

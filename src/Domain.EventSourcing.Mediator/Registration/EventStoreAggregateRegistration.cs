@@ -52,6 +52,11 @@ public class EventStoreAggregateRegistration : IEventStoreAggregateRegistration
         throw new AggregateIsNotRegisteredException();
     }
 
+    /// <summary>
+    /// Gets type on immutable name.
+    /// </summary>
+    /// <param name="immutableName">The immutable name used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public string GetTypeOnImmutableName(string immutableName)
     {
         var found = this.registration.FirstOrDefault(pair => pair.Value == immutableName);

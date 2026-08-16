@@ -9,6 +9,11 @@ using System;
 using System.Collections.Generic;
 using BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Builds job schedule configuration.
+/// </summary>
+/// <typeparam name="TJob">The job type.</typeparam>
+/// <param name="services">The service collection to configure.</param>
 public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : class, IJob
 {
     private readonly IServiceCollection services = services ?? throw new ArgumentNullException(nameof(services));

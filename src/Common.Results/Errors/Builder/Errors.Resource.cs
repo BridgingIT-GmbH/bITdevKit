@@ -33,6 +33,7 @@ public static partial class Errors
 /// <param name="message">The error message that describes the resource error. If null, a default message is used.</param>
 public class ResourceError(string message = null) : ResultErrorBase(message ?? "Resource error")
 {
+    /// <summary>Initializes a resource error with the default message.</summary>
     public ResourceError() : this(null)
     {
     }

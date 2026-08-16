@@ -29,25 +29,34 @@ public class HandlerCache : IHandlerCache
 {
     private readonly ConcurrentDictionary<Type, Type> cache;
 
+    /// <summary>Initializes an empty handler cache.</summary>
     public HandlerCache()
     {
         this.cache = [];
     }
 
+    /// <inheritdoc/>
     public Type this[Type key] => this.cache[key];
 
+    /// <inheritdoc/>
     public IEnumerable<Type> Keys => this.cache.Keys;
 
+    /// <inheritdoc/>
     public IEnumerable<Type> Values => this.cache.Values;
 
+    /// <inheritdoc/>
     public int Count => this.cache.Count;
 
+    /// <inheritdoc/>
     public bool ContainsKey(Type key) => this.cache.ContainsKey(key);
 
+    /// <inheritdoc/>
     public bool TryGetValue(Type key, out Type value) => this.cache.TryGetValue(key, out value);
 
+    /// <inheritdoc/>
     public bool TryAdd(Type key, Type value) => this.cache.TryAdd(key, value);
 
+    /// <inheritdoc/>
     public IEnumerator<KeyValuePair<Type, Type>> GetEnumerator() => this.cache.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();

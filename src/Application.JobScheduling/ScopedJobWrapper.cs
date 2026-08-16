@@ -5,11 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Represents scoped job wrapper.
+/// </summary>
+/// <param name="scope">The scope used by the operation.</param>
+/// <param name="innerJob">The inner job used by the operation.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
 public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IModuleContextAccessor> moduleAccessors)
     : JobWrapper(null, innerJob, moduleAccessors)
 {
     private readonly IServiceScope scope = scope;
 
+    /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -49,6 +56,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
         }
     }
 
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.scope?.Dispose();

@@ -5,11 +5,20 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Defines operations for i chaos exception job scheduling.
+/// </summary>
 public interface IChaosExceptionJobScheduling
 {
+    /// <summary>
+    /// Gets the options.
+    /// </summary>
     ChaosExceptionJobSchedulingOptions Options { get; }
 }
 
+/// <summary>
+/// Configures chaos exception job scheduling.
+/// </summary>
 public class ChaosExceptionJobSchedulingOptions
 {
     /// <summary>
@@ -18,5 +27,8 @@ public class ChaosExceptionJobSchedulingOptions
     /// </summary>
     public double InjectionRate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the fault.
+    /// </summary>
     public Exception Fault { get; set; } = new ChaosException();
 }

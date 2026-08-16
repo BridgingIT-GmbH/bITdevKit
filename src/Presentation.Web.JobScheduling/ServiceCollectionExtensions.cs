@@ -10,6 +10,9 @@ using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
@@ -79,6 +82,12 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Adds console commands.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="enabled">The enabled used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static JobSchedulingBuilderContext AddConsoleCommands(
         this JobSchedulingBuilderContext context,
         bool enabled = true)

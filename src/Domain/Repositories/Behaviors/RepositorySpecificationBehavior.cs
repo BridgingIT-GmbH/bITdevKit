@@ -5,6 +5,12 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+/// <summary>
+/// Represents generic repository specification decorator.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="specification">The specification used to filter entities.</param>
+/// <param name="inner">The inner used by the operation.</param>
 [Obsolete("Use GenericRepositorySpecificationBehavior instead")]
 public class GenericRepositorySpecificationDecorator<TEntity>(
     ISpecification<TEntity> specification,
@@ -27,6 +33,11 @@ public class GenericRepositorySpecificationDecorator<TEntity>(
 public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>RepositorySpecificationBehavior</c> class.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="inner">The inner used by the operation.</param>
     public RepositorySpecificationBehavior(ISpecification<TEntity> specification, IGenericRepository<TEntity> inner)
     {
         EnsureArg.IsNotNull(specification, nameof(specification));
@@ -35,8 +46,14 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         this.Inner = inner;
     }
 
+    /// <summary>
+    /// Gets the inner.
+    /// </summary>
     protected IGenericRepository<TEntity> Inner { get; }
 
+    /// <summary>
+    /// Gets the specification.
+    /// </summary>
     protected ISpecification<TEntity> Specification { get; }
 
     /// <inheritdoc />
@@ -68,11 +85,23 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.UpdateSetAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), set, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.DeleteAsync(id, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
@@ -104,11 +133,23 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.DeleteSetAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the exists operation.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
         return await this.Inner.ExistsAsync(id, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -116,6 +157,13 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.FindAllAsync(new List<ISpecification<TEntity>>(), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -124,6 +172,13 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.FindAllAsync(new List<ISpecification<TEntity>>([specification]), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds all.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -132,6 +187,14 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.FindAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         Expression<Func<TEntity, TProjection>> projection,
         IFindOptions<TEntity> options = null,
@@ -140,6 +203,15 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.ProjectAllAsync(new List<ISpecification<TEntity>>(), projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         ISpecification<TEntity> specification,
         Expression<Func<TEntity, TProjection>> projection,
@@ -153,6 +225,15 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
             .AnyContext();
     }
 
+    /// <summary>
+    /// Executes the project all operation.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TProjection>> ProjectAllAsync<TProjection>(
         IEnumerable<ISpecification<TEntity>> specifications,
         Expression<Func<TEntity, TProjection>> projection,
@@ -162,6 +243,13 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.ProjectAllAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), projection, options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         object id,
         IFindOptions<TEntity> options = null,
@@ -172,6 +260,13 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : null;
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         ISpecification<TEntity> specification,
         IFindOptions<TEntity> options = null,
@@ -180,6 +275,13 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.FindOneAsync(this.Specification.And(specification), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Finds one.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> FindOneAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         IFindOptions<TEntity> options = null,
@@ -188,11 +290,23 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.FindOneAsync(new[] { this.Specification }.Concat(specifications.SafeNull()), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the insert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await this.Inner.InsertAsync(entity, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the insert set operation.
+    /// </summary>
+    /// <param name="entities">The entities involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<TEntity>> InsertSetAsync(
         IEnumerable<TEntity> entities,
         CancellationToken cancellationToken = default)
@@ -200,26 +314,55 @@ public class RepositorySpecificationBehavior<TEntity> : IGenericRepository<TEnti
         return await this.Inner.InsertSetAsync(entities, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the update operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpdateAsync(entity, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the upsert operation.
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         return await this.Inner.UpsertAsync(entity, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([specification], cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Executes the count operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)

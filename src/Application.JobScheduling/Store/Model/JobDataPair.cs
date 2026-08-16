@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Represents job data pair.
+/// </summary>
 public class JobDataPair
 {
+    /// <summary>
+    /// Gets or sets the key.
+    /// </summary>
     public string Key { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the value.
+    /// </summary>
     public string Value { get; set; } = string.Empty;
 }

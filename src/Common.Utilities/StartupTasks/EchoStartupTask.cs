@@ -8,6 +8,10 @@ namespace BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+///     Provides a sample startup task that emits an informational echo and opts into resilience behaviors.
+/// </summary>
+/// <param name="loggerFactory">The factory used to create the task logger, or <see langword="null"/> to use a null logger.</param>
 public class EchoStartupTask(ILoggerFactory loggerFactory) : IStartupTask, IChaosExceptionStartupTask,
     IRetryStartupTask, ITimeoutStartupTask
 {
@@ -20,6 +24,7 @@ public class EchoStartupTask(ILoggerFactory loggerFactory) : IStartupTask, IChao
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 60) };
 
+    /// <inheritdoc/>
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         await Task.Delay(0, cancellationToken);

@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Represents null job store provider.
+/// </summary>
 public class NullJobStoreProvider : IJobStoreProvider
 {
     /// <summary>

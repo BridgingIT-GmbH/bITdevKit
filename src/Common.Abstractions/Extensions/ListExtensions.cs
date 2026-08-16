@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
 
+/// <summary>
+/// Provides collection replacement helpers that remove an equal item before appending its replacement.
+/// </summary>
 public static class ListExtensions
 {
     /// <summary>

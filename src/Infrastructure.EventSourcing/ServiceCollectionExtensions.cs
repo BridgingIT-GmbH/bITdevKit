@@ -15,8 +15,17 @@ using BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing;
 using Logging;
 using MediatR;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds event store.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="eventStorePublishingModes">The event store publishing modes used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddEventStore(
         this IServiceCollection services,
         EventStorePublishingModes eventStorePublishingModes)
@@ -42,6 +51,13 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IEventStoreAggregateEventRegistration, EventStoreAggregateEventRegistration>();
     }
 
+    /// <summary>
+    /// Executes the register aggregate and projection request for event store operation.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="projectionRequestPublishingModes">The projection request publishing modes used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     [Obsolete("Please use overload")]
     public static IServiceCollection RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(
         this IServiceCollection services,
@@ -53,6 +69,14 @@ public static class ServiceCollectionExtensions
             false);
     }
 
+    /// <summary>
+    /// Executes the register aggregate and projection request for event store operation.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type.</typeparam>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="projectionRequestPublishingModes">The projection request publishing modes used by the operation.</param>
+    /// <param name="isSnapshotEnabled">The is snapshot enabled used by the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public static IServiceCollection RegisterAggregateAndProjectionRequestForEventStore<TAggregate>(
         this IServiceCollection services,
         EventStorePublishingModes projectionRequestPublishingModes,

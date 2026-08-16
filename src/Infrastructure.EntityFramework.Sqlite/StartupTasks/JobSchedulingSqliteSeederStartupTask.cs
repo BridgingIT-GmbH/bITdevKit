@@ -12,18 +12,32 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Represents job scheduling sqlite seeder startup task.
+/// </summary>
 public class JobSchedulingSqliteSeederStartupTask : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
     private readonly ILogger<JobSchedulingSqliteSeederStartupTask> logger;
     private readonly string connectionString;
     private readonly string tablePrefix;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingSqliteSeederStartupTask</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="configuration">The configuration to apply.</param>
     public JobSchedulingSqliteSeederStartupTask(ILoggerFactory loggerFactory, IConfiguration configuration)
         : this(loggerFactory,
             configuration["JobScheduling:Quartz:quartz.dataSource.default.connectionString"],
             configuration["JobScheduling:Quartz:quartz.jobStore.tablePrefix"])
     { }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingSqliteSeederStartupTask</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
     public JobSchedulingSqliteSeederStartupTask(
         ILoggerFactory loggerFactory,
         string connectionString,
@@ -41,6 +55,11 @@ public class JobSchedulingSqliteSeederStartupTask : IStartupTask, IRetryStartupT
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 30) };
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         // https://github.com/akifmt/DotNetCoding/blob/3e2df14f3ac2eb227897c90377cc9bd76c7fce25/src/BlazorAppQuartzNETScheduler/BlazorAppQuartzNETScheduler/Program.cs#L89

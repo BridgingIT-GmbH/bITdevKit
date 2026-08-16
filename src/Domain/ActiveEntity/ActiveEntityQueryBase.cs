@@ -22,6 +22,9 @@ public abstract class ActiveEntityQueryBase<TEntity, TId>
     where TEntity : ActiveEntity<TEntity, TId>
 {
     private readonly List<ISpecification<TEntity>> specifications = [];
+    /// <summary>
+    /// Stores the options accumulated by this active-entity query.
+    /// </summary>
     protected readonly FindOptions<TEntity> options = new();
 
     /// <summary>
@@ -207,37 +210,90 @@ public abstract class ActiveEntityQueryBase<TEntity, TId>
 
     // --- Abstract methods to be implemented by generated per-entity query classes ---
 
+    /// <summary>
+    /// Finds all entities matching the supplied specifications.
+    /// </summary>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<Result<IEnumerable<TEntity>>> FindAllInternal(
         IEnumerable<ISpecification<TEntity>> specs,
         FindOptions<TEntity> options,
         CancellationToken ct);
 
+    /// <summary>
+    /// Finds a page of entities matching the supplied specifications.
+    /// </summary>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<ResultPaged<TEntity>> FindAllPagedInternal(
         IEnumerable<ISpecification<TEntity>> specs,
         FindOptions<TEntity> options,
         CancellationToken ct);
 
+    /// <summary>
+    /// Finds one entity matching the supplied specifications.
+    /// </summary>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<Result<TEntity>> FindOneInternal(
         IEnumerable<ISpecification<TEntity>> specs,
         FindOptions<TEntity> options,
         CancellationToken ct);
 
+    /// <summary>
+    /// Determines whether an entity matches the supplied specifications.
+    /// </summary>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<Result<bool>> ExistsInternal(
         IEnumerable<ISpecification<TEntity>> specs,
         FindOptions<TEntity> options,
         CancellationToken ct);
 
+    /// <summary>
+    /// Counts entities matching the supplied specifications.
+    /// </summary>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<Result<long>> CountInternal(
         IEnumerable<ISpecification<TEntity>> specs,
         FindOptions<TEntity> options,
         CancellationToken ct);
 
+    /// <summary>
+    /// Projects all entities matching the supplied specifications.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="selector">The expression that projects each matching entity.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<Result<IEnumerable<TProjection>>> ProjectAllInternal<TProjection>(
         IEnumerable<ISpecification<TEntity>> specs,
         Expression<Func<TEntity, TProjection>> selector,
         FindOptions<TEntity> options,
         CancellationToken ct);
 
+    /// <summary>
+    /// Projects a page of entities matching the supplied specifications.
+    /// </summary>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="specs">The specifications used to filter entities.</param>
+    /// <param name="selector">The expression that projects each matching entity.</param>
+    /// <param name="options">The options controlling the operation.</param>
+    /// <param name="ct">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that returns the operation result.</returns>
     protected abstract Task<ResultPaged<TProjection>> ProjectAllPagedInternal<TProjection>(
         IEnumerable<ISpecification<TEntity>> specs,
         Expression<Func<TEntity, TProjection>> selector,

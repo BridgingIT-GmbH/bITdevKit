@@ -7,20 +7,46 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using FluentValidation.Results;
 
+/// <summary>
+/// Defines operations for i command request.
+/// </summary>
 public interface ICommandRequest : MediatR.IRequest
 {
+    /// <summary>
+    /// Gets the request id.
+    /// </summary>
     Guid RequestId { get; }
 
+    /// <summary>
+    /// Gets the request timestamp.
+    /// </summary>
     DateTimeOffset RequestTimestamp { get; }
 
+    /// <summary>
+    /// Validates .
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     ValidationResult Validate();
 }
 
+/// <summary>
+/// Defines operations for i command request.
+/// </summary>
 public interface ICommandRequest<out TResult> : MediatR.IRequest<TResult>
 {
+    /// <summary>
+    /// Gets the request id.
+    /// </summary>
     Guid RequestId { get; }
 
+    /// <summary>
+    /// Gets the request timestamp.
+    /// </summary>
     DateTimeOffset RequestTimestamp { get; }
 
+    /// <summary>
+    /// Validates .
+    /// </summary>
+    /// <returns>The result of the operation.</returns>
     ValidationResult Validate();
 }

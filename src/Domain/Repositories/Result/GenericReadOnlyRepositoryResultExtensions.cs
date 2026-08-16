@@ -9,6 +9,13 @@ namespace BridgingIT.DevKit.Domain.Repositories;
 /// </summary>
 public static class GenericReadOnlyRepositoryResultExtensions
 {
+    /// <summary>
+    /// Represents exists result.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<Result<bool>> ExistsResultAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         object id,
@@ -297,6 +304,14 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
     }
 
+    /// <summary>
+    /// Represents find one result.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filterModel">The filter model used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<Result<TEntity>> FindOneResultAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,
@@ -363,6 +378,14 @@ public static class GenericReadOnlyRepositoryResultExtensions
         return await source.FindAllResultAsync(new Specification<TEntity>(expression), options, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Represents find all result.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filter">The filter used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<Result<IEnumerable<TEntity>>> FindAllResultAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filter,
@@ -751,6 +774,14 @@ public static class GenericReadOnlyRepositoryResultExtensions
             includePath, cancellationToken).AnyContext();
     }
 
+    /// <summary>
+    /// Represents find all result paged.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filter">The filter used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<ResultPaged<TEntity>> FindAllResultPagedAsync<TEntity>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filter,
@@ -1079,6 +1110,16 @@ public static class GenericReadOnlyRepositoryResultExtensions
         }
     }
 
+    /// <summary>
+    /// Represents project all result paged.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TProjection">The projection type.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="filterModel">The filter model used by the operation.</param>
+    /// <param name="projection">The projection used by the operation.</param>
+    /// <param name="specifications">The specifications used to filter entities.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public static async Task<ResultPaged<TProjection>> ProjectAllResultPagedAsync<TEntity, TProjection>(
         this IGenericReadOnlyRepository<TEntity> source,
         FilterModel filterModel,

@@ -13,10 +13,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
+/// <summary>
+/// Represents dashboard endpoints.
+/// </summary>
+/// <param name="options">The options controlling the operation.</param>
 public class DashboardEndpoints(
     //ILogger<DashboardEndpoints> logger,
     DashboardEndpointsOptions options) : EndpointsBase, IDashboardEndpoints
 {
+    /// <inheritdoc/>
     public override void Map(IEndpointRouteBuilder app)
     {
         options ??= new DashboardEndpointsOptions();

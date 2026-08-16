@@ -7,6 +7,13 @@ namespace Microsoft.AspNetCore.Mvc;
 
 using Infrastructure;
 
+/// <summary>
+/// Represents updated at action result.
+/// </summary>
+/// <param name="actionName">The action name used by the operation.</param>
+/// <param name="controllerName">The controller name used by the operation.</param>
+/// <param name="routeValues">The route values used by the operation.</param>
+/// <param name="value">The value used by the operation.</param>
 public class UpdatedAtActionResult(
     string actionName,
     string controllerName,

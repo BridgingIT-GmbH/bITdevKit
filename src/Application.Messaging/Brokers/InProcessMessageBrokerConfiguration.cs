@@ -5,9 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Represents in process message broker configuration.
+/// </summary>
 public class InProcessMessageBrokerConfiguration
 {
+    /// <summary>
+    /// Gets or sets the process delay.
+    /// </summary>
     public int ProcessDelay { get; set; }
 
+    /// <summary>
+    /// Gets or sets the message expiration.
+    /// </summary>
     public TimeSpan? MessageExpiration { get; set; }
 }

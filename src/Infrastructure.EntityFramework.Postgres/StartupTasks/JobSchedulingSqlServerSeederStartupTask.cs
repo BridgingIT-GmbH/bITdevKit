@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Npgsql;
 
+/// <summary>
+/// Represents job scheduling postgres seeder startup task.
+/// </summary>
 public class JobSchedulingPostgresSeederStartupTask
     : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
@@ -21,6 +24,12 @@ public class JobSchedulingPostgresSeederStartupTask
     private readonly string tablePrefix;
     private readonly IDatabaseReadyService databaseReadyService;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingPostgresSeederStartupTask</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="databaseReadyService">The database ready service used by the operation.</param>
     public JobSchedulingPostgresSeederStartupTask(
         ILoggerFactory loggerFactory,
         IConfiguration configuration,
@@ -32,6 +41,12 @@ public class JobSchedulingPostgresSeederStartupTask
         this.databaseReadyService = databaseReadyService;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobSchedulingPostgresSeederStartupTask</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="connectionString">The connection string used by the operation.</param>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
     public JobSchedulingPostgresSeederStartupTask(
         ILoggerFactory loggerFactory,
         string connectionString,
@@ -49,6 +64,11 @@ public class JobSchedulingPostgresSeederStartupTask
 
     TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new() { Timeout = new TimeSpan(0, 0, 30) };
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         try

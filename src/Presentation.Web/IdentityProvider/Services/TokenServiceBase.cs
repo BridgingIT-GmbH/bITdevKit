@@ -13,18 +13,57 @@ using System.Text;
 using BridgingIT.DevKit.Common;
 using Microsoft.IdentityModel.Tokens;
 
+/// <summary>
+/// Represents token service base.
+/// </summary>
+/// <param name="options">The options controlling the operation.</param>
 public abstract class TokenServiceBase(FakeIdentityProviderEndpointsOptions options) : ITokenService
 {
+    /// <summary>
+    /// Stores the options.
+    /// </summary>
     protected readonly FakeIdentityProviderEndpointsOptions options = options;
 
+    /// <summary>
+    /// Executes the generate access token operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public abstract string GenerateAccessToken(FakeUser user, string clientId, string scope);
 
+    /// <summary>
+    /// Executes the generate id token operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="nonce">The nonce used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public abstract string GenerateIdToken(FakeUser user, string clientId, string nonce = null);
 
+    /// <summary>
+    /// Executes the generate refresh token operation.
+    /// </summary>
+    /// <param name="user">The user used by the operation.</param>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public abstract string GenerateRefreshToken(FakeUser user, string clientId, string scope);
 
+    /// <summary>
+    /// Executes the generate service token operation.
+    /// </summary>
+    /// <param name="clientId">The client id used by the operation.</param>
+    /// <param name="scope">The scope used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public abstract string GenerateServiceToken(string clientId, string scope);
 
+    /// <summary>
+    /// Validates token.
+    /// </summary>
+    /// <param name="token">The token used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual TokenValidationResult ValidateToken(string token)
     {
         try
@@ -100,6 +139,11 @@ public abstract class TokenServiceBase(FakeIdentityProviderEndpointsOptions opti
         }
     }
 
+    /// <summary>
+    /// Validates refresh token.
+    /// </summary>
+    /// <param name="refreshToken">The refresh token used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual TokenValidationResult ValidateRefreshToken(string refreshToken)
     {
         try
@@ -174,6 +218,12 @@ public abstract class TokenServiceBase(FakeIdentityProviderEndpointsOptions opti
         }
     }
 
+    /// <summary>
+    /// Creates jwt token.
+    /// </summary>
+    /// <param name="claims">The claims used by the operation.</param>
+    /// <param name="expiration">The expiration used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     protected string CreateJwtToken(IEnumerable<Claim> claims, TimeSpan? expiration = null) // https://cloudentity.com/developers/basics/tokens/json-web-tokens/
     {
         var now = DateTime.UtcNow;

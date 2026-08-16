@@ -5,13 +5,26 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+/// <summary>
+/// Defines operations for i entity update command.
+/// </summary>
 public interface IEntityUpdateCommand
 {
+    /// <summary>
+    /// Gets the entity.
+    /// </summary>
     object Entity { get; }
 }
 
+/// <summary>
+/// Defines operations for i entity update command.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 public interface IEntityUpdateCommand<TEntity> : IEntityUpdateCommand
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Gets the entity.
+    /// </summary>
     new TEntity Entity { get; }
 }

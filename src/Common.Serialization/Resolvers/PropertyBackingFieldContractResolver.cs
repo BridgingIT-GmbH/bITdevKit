@@ -11,6 +11,9 @@ using Newtonsoft.Json.Serialization;
 
 // TODO: get rid of Newtonsoft dependency
 
+/// <summary>
+///     Extends Newtonsoft.Json contract resolution to populate private setters and conventionally named backing fields.
+/// </summary>
 public class PropertyBackingFieldContractResolver : DefaultContractResolver
 {
     /// <summary>

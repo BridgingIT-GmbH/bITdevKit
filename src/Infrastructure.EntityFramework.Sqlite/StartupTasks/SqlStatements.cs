@@ -5,8 +5,16 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Represents sql statements.
+/// </summary>
 public static class SqlStatements
 {
+    /// <summary>
+    /// Creates quartz tables.
+    /// </summary>
+    /// <param name="tablePrefix">The table prefix used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static string CreateQuartzTables(string tablePrefix)
     {
         // source: https://github.com/quartznet/quartznet/blob/main/database/tables/tables_sqlite.sql

@@ -12,11 +12,16 @@ using FluentValidation.Results;
 /// </summary>
 public interface IQueueMessage
 {
+    /// <summary>Gets the identifier used to correlate and distinguish the queued message.</summary>
     string MessageId { get; }
 
+    /// <summary>Gets the time associated with creation of the queued message.</summary>
     DateTimeOffset Timestamp { get; }
 
+    /// <summary>Gets extensible metadata that travels with the queued message.</summary>
     IDictionary<string, object> Properties { get; }
 
+    /// <summary>Validates the message before it is enqueued or handled.</summary>
+    /// <returns>A result containing any validation failures.</returns>
     ValidationResult Validate();
 }

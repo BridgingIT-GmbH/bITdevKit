@@ -22,6 +22,7 @@ using System.Text;
 /// </example>
 public static class Metrics
 {
+    /// <summary>Gets the meter name used for DevKit metrics.</summary>
     public const string MeterName = "bdk";
 
     /// <summary>

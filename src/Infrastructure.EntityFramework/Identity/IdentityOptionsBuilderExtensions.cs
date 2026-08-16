@@ -9,6 +9,9 @@ using BridgingIT.DevKit.Application.Identity;
 
 using Microsoft.AspNetCore.Authorization;
 
+/// <summary>
+/// Represents identity options builder extensions.
+/// </summary>
 public static class IdentityOptionsBuilderExtensions
 {
     /// <summary>
@@ -46,6 +49,11 @@ public static class IdentityOptionsBuilderExtensions
     }
 }
 
+/// <summary>
+/// Builds entity permission options configuration.
+/// </summary>
+/// <typeparam name="TContext">The context type.</typeparam>
+/// <param name="services">The service collection to configure.</param>
 public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection services)
     where TContext : DbContext, IEntityPermissionContext
 {
@@ -210,6 +218,9 @@ public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection service
         return this;
     }
 
+    /// <summary>
+    /// Executes the build operation.
+    /// </summary>
     public void Build()
     {
         services.AddSingleton(this.options);

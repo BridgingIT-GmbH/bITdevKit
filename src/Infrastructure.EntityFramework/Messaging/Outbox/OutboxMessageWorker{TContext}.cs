@@ -10,6 +10,10 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Data.SqlClient;
 using Constants = Constants;
 
+/// <summary>
+/// Represents outbox message worker.
+/// </summary>
+/// <typeparam name="TContext">The context type.</typeparam>
 public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
     where TContext : DbContext, IOutboxMessageContext
 {
@@ -19,6 +23,13 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
     private readonly string contextTypeName;
     private readonly OutboxMessageOptions options;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>OutboxMessageWorker</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="serviceProvider">The service provider used by the operation.</param>
+    /// <param name="messageBroker">The message broker used by the operation.</param>
+    /// <param name="options">The options controlling the operation.</param>
     public OutboxMessageWorker(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
@@ -37,6 +48,12 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         this.contextTypeName = typeof(TContext).Name;
     }
 
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="messageId">The message id used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ProcessAsync(string messageId = null, CancellationToken cancellationToken = default)
     {
         // TODO: use a lock here, because ProcessAsync can also be triggered through the OutboxMessageQueue, not just the backgroundservice with it's timer
@@ -63,6 +80,12 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         TypedLogger.LogProcessed(this.logger, "MSG", this.contextTypeName, count);
     }
 
+    /// <summary>
+    /// Executes the purge operation.
+    /// </summary>
+    /// <param name="processedOnly">The processed only used by the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task PurgeAsync(bool processedOnly = false, CancellationToken cancellationToken = default)
     {
         using var scope = this.serviceProvider.CreateScope();
@@ -193,17 +216,47 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         }
     }
 
+    /// <summary>
+    /// Represents typed logger.
+    /// </summary>
     public static partial class TypedLogger
     {
+        /// <summary>
+        /// Writes a log entry for the processing operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
+        /// <param name="messageId">The message id used by the operation.</param>
         [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] outbox messages processing (context={DbContextType}, messageId={MessageId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string messageId);
 
+        /// <summary>
+        /// Writes a log entry for the processed operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
+        /// <param name="outboxMessageProcessedCount">The outbox message processed count used by the operation.</param>
         [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
         public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxMessageProcessedCount);
 
+        /// <summary>
+        /// Writes a log entry for the purging operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="dbContextType">The db context type used by the operation.</param>
         [LoggerMessage(2, LogLevel.Information, "[{LogKey}] outbox messages purging (context={DbContextType})")]
         public static partial void LogPurging(ILogger logger, string logKey, string dbContextType);
 
+        /// <summary>
+        /// Writes a log entry for the message type not resolved operation.
+        /// </summary>
+        /// <param name="logger">The logger that receives diagnostic events.</param>
+        /// <param name="logKey">The structured logging key.</param>
+        /// <param name="messageId">The message id used by the operation.</param>
+        /// <param name="messageType">The message type used by the operation.</param>
         [LoggerMessage(3, LogLevel.Error, "[{LogKey}] outbox message type could not be resolved (eventId={MessageId}, eventType={MessageType})")]
         public static partial void LogMessageTypeNotResolved(ILogger logger, string logKey, string messageId, string messageType);
     }

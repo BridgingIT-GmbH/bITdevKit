@@ -16,6 +16,11 @@ using System.Linq;
 public class DefaultUserInfoService(ITokenService tokenService, FakeIdentityProviderEndpointsOptions options)
     : IUserInfoService
 {
+    /// <summary>
+    /// Gets user info.
+    /// </summary>
+    /// <param name="accessToken">The access token used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public UserInfoResponse GetUserInfo(string accessToken)
     {
         var validationResult = tokenService.ValidateToken(accessToken);

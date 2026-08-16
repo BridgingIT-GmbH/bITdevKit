@@ -10,6 +10,9 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 
+/// <summary>
+/// Represents authorization extensions.
+/// </summary>
 public static class AuthorizationExtensions
 {
     /// <summary>

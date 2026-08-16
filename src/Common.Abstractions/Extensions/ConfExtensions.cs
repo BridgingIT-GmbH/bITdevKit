@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 
+/// <summary>
+/// Provides configuration access with optional <c>{{key}}</c> placeholder expansion in section values.
+/// </summary>
 public static class ConfExtensions // name deliberately chosen to avoid conflict with ConfigurationExtensions
 {
     /// <summary>

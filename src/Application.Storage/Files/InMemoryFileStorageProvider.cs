@@ -20,10 +20,15 @@ public class InMemoryFileStorageProvider(string locationName)
     private readonly HashSet<string> directories = [];
     private readonly SemaphoreSlim semaphore = new(1, 1);
 
+    /// <summary>
+    /// Stores the on file event.
+    /// </summary>
     public event EventHandler<FileEventArgs> OnFileEvent;
 
+    /// <inheritdoc/>
     public override bool SupportsNotifications { get; } = true;
 
+    /// <inheritdoc/>
     public override async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -81,6 +86,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<Stream>> ReadFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -140,6 +146,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -232,6 +239,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -292,6 +300,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -373,6 +382,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<string>> GetChecksumAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -432,6 +442,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<FileMetadata>> GetFileMetadataAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -503,6 +514,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -567,6 +579,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<FileMetadata>> UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -651,6 +664,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default)
     {
@@ -715,6 +729,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CopyFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
@@ -800,6 +815,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
@@ -894,6 +910,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(destinationPath))
@@ -989,6 +1006,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (filePairs?.Any() != true)
@@ -1077,6 +1095,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (filePairs?.Any() != true)
@@ -1168,6 +1187,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (paths?.Any() != true)
@@ -1256,6 +1276,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1313,6 +1334,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CreateDirectoryAsync(string path, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1382,6 +1404,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> DeleteDirectoryAsync(string path, bool recursive, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1478,6 +1501,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result<IEnumerable<string>>> ListDirectoriesAsync(
         string path, string searchPattern = null, bool recursive = false, CancellationToken cancellationToken = default)
     {
@@ -1543,6 +1567,7 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         if (cancellationToken.IsCancellationRequested)

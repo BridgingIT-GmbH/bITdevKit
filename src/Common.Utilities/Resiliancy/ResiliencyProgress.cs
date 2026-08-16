@@ -27,8 +27,11 @@ public abstract class ResiliencyProgress(string status)
 /// </summary>
 public class RetryProgress(int currentAttempt, int maxAttempts, TimeSpan delay, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the current attempt number.</summary>
     public int CurrentAttempt { get; set; } = currentAttempt;
+    /// <summary>Gets or sets the maximum number of attempts.</summary>
     public int MaxAttempts { get; set; } = maxAttempts;
+    /// <summary>Gets or sets the delay before the next attempt.</summary>
     public TimeSpan Delay { get; set; } = delay;
 }
 
@@ -37,7 +40,9 @@ public class RetryProgress(int currentAttempt, int maxAttempts, TimeSpan delay, 
 /// </summary>
 public class DebouncerProgress(TimeSpan remainingDelay, bool isThrottling, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the remaining debounce delay.</summary>
     public TimeSpan RemainingDelay { get; set; } = remainingDelay;
+    /// <summary>Gets or sets whether calls are currently being throttled.</summary>
     public bool IsThrottling { get; set; } = isThrottling;
 }
 
@@ -46,6 +51,7 @@ public class DebouncerProgress(TimeSpan remainingDelay, bool isThrottling, strin
 /// </summary>
 public class ThrottlerProgress(TimeSpan remainingInterval, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the time remaining in the throttle interval.</summary>
     public TimeSpan RemainingInterval { get; set; } = remainingInterval;
 }
 
@@ -54,8 +60,11 @@ public class ThrottlerProgress(TimeSpan remainingInterval, string status) : Resi
 /// </summary>
 public class CircuitBreakerProgress(CircuitBreakerState state, int failureCount, TimeSpan resetTimeout, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the current circuit state.</summary>
     public CircuitBreakerState State { get; set; } = state;
+    /// <summary>Gets or sets the consecutive failure count.</summary>
     public int FailureCount { get; set; } = failureCount;
+    /// <summary>Gets or sets the duration before an open circuit can become half-open.</summary>
     public TimeSpan ResetTimeout { get; set; } = resetTimeout;
 }
 
@@ -64,8 +73,11 @@ public class CircuitBreakerProgress(CircuitBreakerState state, int failureCount,
 /// </summary>
 public class RateLimiterProgress(int currentOperations, int maxOperations, TimeSpan window, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the current operation count.</summary>
     public int CurrentOperations { get; set; } = currentOperations;
+    /// <summary>Gets or sets the maximum operations permitted in the window.</summary>
     public int MaxOperations { get; set; } = maxOperations;
+    /// <summary>Gets or sets the rate-limit window.</summary>
     public TimeSpan Window { get; set; } = window;
 }
 
@@ -74,7 +86,9 @@ public class RateLimiterProgress(int currentOperations, int maxOperations, TimeS
 /// </summary>
 public class SimpleNotifierProgress(int handlersProcessed, int totalHandlers, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the number of handlers processed.</summary>
     public int HandlersProcessed { get; set; } = handlersProcessed;
+    /// <summary>Gets or sets the total number of handlers.</summary>
     public int TotalHandlers { get; set; } = totalHandlers;
 }
 
@@ -83,6 +97,7 @@ public class SimpleNotifierProgress(int handlersProcessed, int totalHandlers, st
 /// </summary>
 public class BackgroundWorkerProgress(int progressPercentage, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the completion percentage.</summary>
     public int ProgressPercentage { get; set; } = progressPercentage;
 }
 
@@ -91,6 +106,7 @@ public class BackgroundWorkerProgress(int progressPercentage, string status) : R
 /// </summary>
 public class SimpleRequesterProgress(string requestType, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the request type name.</summary>
     public string RequestType { get; set; } = requestType;
 }
 
@@ -99,6 +115,7 @@ public class SimpleRequesterProgress(string requestType, string status) : Resili
 /// </summary>
 public class TimeoutHandlerProgress(TimeSpan remainingTime, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the time remaining before timeout.</summary>
     public TimeSpan RemainingTime { get; set; } = remainingTime;
 }
 
@@ -107,7 +124,10 @@ public class TimeoutHandlerProgress(TimeSpan remainingTime, string status) : Res
 /// </summary>
 public class BulkheadProgress(int currentConcurrency, int maxConcurrency, int queuedTasks, string status) : ResiliencyProgress(status)
 {
+    /// <summary>Gets or sets the current number of concurrent operations.</summary>
     public int CurrentConcurrency { get; set; } = currentConcurrency;
+    /// <summary>Gets or sets the maximum permitted concurrency.</summary>
     public int MaxConcurrency { get; set; } = maxConcurrency;
+    /// <summary>Gets or sets the number of queued operations.</summary>
     public int QueuedTasks { get; set; } = queuedTasks;
 }

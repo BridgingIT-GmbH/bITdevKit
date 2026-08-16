@@ -7,6 +7,9 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Domain;
 
+/// <summary>
+/// Represents active entity configurator extensions.
+/// </summary>
 public static class ActiveEntityConfiguratorExtensions
 {
     /// <summary>

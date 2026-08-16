@@ -8,6 +8,11 @@ namespace BridgingIT.DevKit.Application.Entities;
 using Microsoft.Extensions.Localization;
 using Constants = Commands.Constants;
 
+/// <summary>
+/// Represents entity delete command handler base.
+/// </summary>
+/// <typeparam name="TCommand">The command type.</typeparam>
+/// <typeparam name="TEntity">The entity type.</typeparam>
 [Obsolete("Use the new Requester from now on")]
 public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     : CommandHandlerBase<TCommand, Result<EntityDeletedCommandResult>>
@@ -19,6 +24,13 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     private List<IEntityDeleteCommandRule<TEntity>> rules;
     private List<Func<TCommand, IEntityDeleteCommandRule<TEntity>>> rulesFuncs;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>EntityDeleteCommandHandlerBase</c> class.
+    /// </summary>
+    /// <param name="loggerFactory">The factory used to create loggers.</param>
+    /// <param name="repository">The repository used by the operation.</param>
+    /// <param name="rules">The rules used by the operation.</param>
+    /// <param name="localizer">The localizer used by the operation.</param>
     protected EntityDeleteCommandHandlerBase(
         ILoggerFactory loggerFactory,
         IGenericRepository<TEntity> repository,
@@ -33,6 +45,11 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
         this.localizer = localizer;
     }
 
+    /// <summary>
+    /// Adds rule.
+    /// </summary>
+    /// <param name="rule">The rule used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(IEntityDeleteCommandRule<TEntity> rule)
     {
         (this.rules ??= []).AddOrUpdate(rule);
@@ -40,12 +57,21 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Represents add rule.
+    /// </summary>
+    /// <typeparam name="TRule">The rule type.</typeparam>
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule<TRule>()
         where TRule : class, IEntityDeleteCommandRule<TEntity>
     {
         return this.AddRule(Factory<TRule>.Create());
     }
 
+    /// <summary>
+    /// Adds rule.
+    /// </summary>
+    /// <param name="rule">The rule used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual EntityDeleteCommandHandlerBase<TCommand, TEntity> AddRule(
         Func<TCommand, IEntityDeleteCommandRule<TEntity>> rule)
     {
@@ -54,11 +80,17 @@ public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
         return this;
     }
 
+    /// <summary>
+    /// Adds rules.
+    /// </summary>
+    /// <param name="command">The command used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public virtual IEnumerable<IEntityDeleteCommandRule<TEntity>> AddRules(TCommand command)
     {
         return [];
     }
 
+    /// <inheritdoc/>
     public override async Task<CommandResponse<Result<EntityDeletedCommandResult>>> Process(
         TCommand command,
         CancellationToken cancellationToken)

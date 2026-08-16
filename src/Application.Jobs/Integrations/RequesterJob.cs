@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Executes a Requester-backed outbound job registered through <see cref="JobSchedulerIntegrationExtensions.WithRequesterJob{TData, TRequest, TValue}(Microsoft.Extensions.DependencyInjection.JobSchedulerBuilderContext, string, Action{JobRequesterDefinitionBuilder{TData, TRequest, TValue}})"/>.
+/// Executes a Requester-backed outbound job registered through <c>WithRequesterJob</c>.
 /// </summary>
 /// <typeparam name="TData">The typed job data contract.</typeparam>
 /// <typeparam name="TRequest">The dispatched request type.</typeparam>
@@ -28,6 +28,7 @@ public sealed class RequesterJob<TData, TRequest, TValue> : JobBase<TData>
         this.registrations = registrations;
     }
 
+    /// <inheritdoc/>
     public override async Task<Result> ExecuteAsync(
         IJobExecutionContext<TData> context,
         CancellationToken cancellationToken = default)

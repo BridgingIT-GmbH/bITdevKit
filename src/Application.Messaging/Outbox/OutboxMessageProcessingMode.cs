@@ -5,8 +5,17 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
+/// <summary>
+/// Defines the supported outbox message processing mode values.
+/// </summary>
 public enum OutboxMessageProcessingMode
 {
+    /// <summary>
+    /// Represents the interval value.
+    /// </summary>
     Interval = 0,
+    /// <summary>
+    /// Represents the immediate value.
+    /// </summary>
     Immediate = 1
 }

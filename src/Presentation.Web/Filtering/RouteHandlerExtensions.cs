@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
 using System.Text.Json.Nodes;
 
+/// <summary>
+/// Represents route handler extensions.
+/// </summary>
 public static class RouteHandlerExtensions
 {
     /// <summary>

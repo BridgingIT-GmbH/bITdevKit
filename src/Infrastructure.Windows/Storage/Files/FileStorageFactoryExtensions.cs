@@ -8,6 +8,9 @@ namespace BridgingIT.DevKit.Infrastructure.Windows.Storage;
 using BridgingIT.DevKit.Application.Storage;
 using static BridgingIT.DevKit.Application.Storage.FileStorageProviderFactory;
 
+/// <summary>
+/// Represents file storage factory extensions.
+/// </summary>
 public static class FileStorageFactoryExtensions
 {
     /// <summary>

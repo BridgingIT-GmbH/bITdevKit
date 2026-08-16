@@ -9,11 +9,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 
-[Table("__Outbox_DomainEvents")]
-[Index(nameof(IsArchived), nameof(ProcessedDate), nameof(LockedUntil), nameof(CreatedDate))]
-[Index(nameof(IsArchived), nameof(Type), nameof(ProcessedDate), nameof(CreatedDate))]
-[Index(nameof(EventId))]
-[Index(nameof(IsArchived), nameof(ArchivedDate))]
 /// <summary>
 /// Represents a persisted domain event row in the Entity Framework outbox.
 /// </summary>
@@ -21,6 +16,11 @@ using System.Text.Json;
 /// The entity stores the serialized domain event payload together with worker lease metadata so multiple hosts can
 /// safely compete for the same outbox rows without publishing a domain event more than once at a time.
 /// </remarks>
+[Table("__Outbox_DomainEvents")]
+[Index(nameof(IsArchived), nameof(ProcessedDate), nameof(LockedUntil), nameof(CreatedDate))]
+[Index(nameof(IsArchived), nameof(Type), nameof(ProcessedDate), nameof(CreatedDate))]
+[Index(nameof(EventId))]
+[Index(nameof(IsArchived), nameof(ArchivedDate))]
 public class OutboxDomainEvent
 {
     /// <summary>

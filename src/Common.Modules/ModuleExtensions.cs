@@ -14,12 +14,21 @@ using Serilog;
 using System.Diagnostics;
 using System.Reflection;
 
+/// <summary>
+///     Provides discovery, registration, activation, and configuration helpers for application modules.
+/// </summary>
 public static class ModuleExtensions
 {
     private static List<IModule> modules;
 
+    /// <summary>
+    ///     Gets the modules discovered by the first module-registration call.
+    /// </summary>
     public static IEnumerable<IModule> Modules => modules;
 
+    /// <summary>
+    ///     Gets the name of the assembly that contains the module extensions.
+    /// </summary>
     public static string ServiceName { get; } = Assembly.GetExecutingAssembly().GetName().Name;
 
     /// <summary>
@@ -200,22 +209,48 @@ public static class ModuleExtensions
         return context;
     }
 
+    /// <summary>
+    ///     Registers a discovered module by its type if it has not already been registered.
+    /// </summary>
+    /// <typeparam name="T">The module type to register.</typeparam>
+    /// <param name="context">The module builder context.</param>
+    /// <returns>The same builder context.</returns>
     public static ModuleBuilderContext WithModule<T>(this ModuleBuilderContext context)
         where T : class, IModule
     {
         return AddModule<T>(context);
     }
 
+    /// <summary>
+    ///     Registers a specified module instance if it has not already been registered.
+    /// </summary>
+    /// <param name="context">The module builder context.</param>
+    /// <param name="module">The module instance to register.</param>
+    /// <returns>The same builder context.</returns>
     public static ModuleBuilderContext WithModule(this ModuleBuilderContext context, IModule module)
     {
         return AddModule(context, module);
     }
 
+    /// <summary>
+    ///     Registers a discovered module by runtime type if it has not already been registered.
+    /// </summary>
+    /// <param name="context">The module builder context.</param>
+    /// <param name="type">The module type to register.</param>
+    /// <returns>The same builder context.</returns>
     public static ModuleBuilderContext WithModule(this ModuleBuilderContext context, Type type)
     {
         return AddModule(context, type);
     }
 
+    /// <summary>
+    ///     Applies every discovered module to the application pipeline in module order.
+    /// </summary>
+    /// <param name="app">The application builder to configure.</param>
+    /// <param name="configuration">Configuration supplied to each module.</param>
+    /// <param name="environment">The hosting environment supplied to each module.</param>
+    /// <returns>The same application builder.</returns>
+    /// <exception cref="Exception">Modules have not first been discovered with <c>AddModules</c>.</exception>
     public static IApplicationBuilder UseModules(
         this IApplicationBuilder app,
         IConfiguration configuration = null,
@@ -255,6 +290,15 @@ public static class ModuleExtensions
         return app;
     }
 
+    /// <summary>
+    ///     Binds and registers a module options type from the module's configuration section.
+    /// </summary>
+    /// <typeparam name="TOptions">The options type to configure.</typeparam>
+    /// <param name="module">The module that identifies the configuration section.</param>
+    /// <param name="services">The service collection receiving the options registration.</param>
+    /// <param name="configuration">The configuration source.</param>
+    /// <param name="validateOnStart">Whether registered validation runs during application startup.</param>
+    /// <returns>The bound options, or <see langword="null"/> when services or configuration are unavailable.</returns>
     public static TOptions Configure<TOptions>(
         this IModule module,
         IServiceCollection services,
@@ -270,6 +314,16 @@ public static class ModuleExtensions
         return services.Configure<TOptions>(configuration, module, validateOnStart);
     }
 
+    /// <summary>
+    ///     Binds and registers module options with a predicate used for validation.
+    /// </summary>
+    /// <typeparam name="TOptions">The options type to configure.</typeparam>
+    /// <param name="module">The module that identifies the configuration section.</param>
+    /// <param name="services">The service collection receiving the options registration.</param>
+    /// <param name="configuration">The configuration source.</param>
+    /// <param name="validationOptions">The validation predicate applied to the bound options.</param>
+    /// <param name="validateOnStart">Whether registered validation runs during application startup.</param>
+    /// <returns>The bound options, or <see langword="null"/> when services or configuration are unavailable.</returns>
     public static TOptions Configure<TOptions>(
         this IModule module,
         IServiceCollection services,
@@ -286,6 +340,16 @@ public static class ModuleExtensions
         return services.Configure(configuration, module, validationOptions, validateOnStart);
     }
 
+    /// <summary>
+    ///     Binds and registers module options with a FluentValidation validator outside build-time OpenAPI generation.
+    /// </summary>
+    /// <typeparam name="TOptions">The options type to configure.</typeparam>
+    /// <typeparam name="TValidator">The validator type to register.</typeparam>
+    /// <param name="module">The module that identifies the configuration section.</param>
+    /// <param name="services">The service collection receiving the options registration.</param>
+    /// <param name="configuration">The configuration source.</param>
+    /// <param name="validateOnStart">Whether registered validation runs during application startup.</param>
+    /// <returns>The bound options, or <see langword="null"/> when services or configuration are unavailable.</returns>
     public static TOptions Configure<TOptions, TValidator>(
         this IModule module,
         IServiceCollection services,

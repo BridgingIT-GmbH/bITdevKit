@@ -8,7 +8,13 @@ namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 using Common.Options;
 using Domain.Repositories;
 
+/// <summary>
+/// Defines operations for i lite db repository options.
+/// </summary>
 public interface ILiteDbRepositoryOptions : IRepositoryOptions, ILoggerOptions
 {
+    /// <summary>
+    /// Gets or sets the db context.
+    /// </summary>
     ILiteDbContext DbContext { get; set; }
 }

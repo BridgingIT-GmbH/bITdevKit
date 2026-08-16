@@ -11,8 +11,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
+/// <summary>
+///     Provides reflection-driven FluentValidation rule construction helpers.
+/// </summary>
 public static class FluentValidatorExtensions
 {
+    /// <summary>
+    ///     Adds an inclusive range rule for a comparable property when its bounds can be converted to the property type.
+    /// </summary>
+    /// <typeparam name="T">The validated object type.</typeparam>
+    /// <param name="validator">The validator receiving the rule.</param>
+    /// <param name="prop">The property selected for validation.</param>
+    /// <param name="minValue">The inclusive lower bound.</param>
+    /// <param name="maxValue">The inclusive upper bound.</param>
+    /// <param name="errorMessage">An optional validation message.</param>
     public static void AddRangeRule<T>(this AbstractValidator<T> validator, PropertyInfo prop, object minValue, object maxValue, string errorMessage = null)
     {
         if (!typeof(IComparable).IsAssignableFrom(prop.PropertyType))

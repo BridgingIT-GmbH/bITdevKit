@@ -10,7 +10,9 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class FileSystemPermissionError(string message, string path, Exception innerException = null) : ResultErrorBase(message ?? "Permission denied")
 {
+    /// <summary>Gets the file-system path for which permission was denied.</summary>
     public string Path { get; } = path;
 
+    /// <summary>Gets the message from the supplied exception, when available.</summary>
     public string Details { get; } = innerException?.Message;
 }

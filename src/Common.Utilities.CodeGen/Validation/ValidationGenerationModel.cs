@@ -13,27 +13,49 @@ using Microsoft.CodeAnalysis;
 /// </summary>
 public enum ValidationRuleKind
 {
+    /// <summary>Requires a non-null value.</summary>
     NotNull,
+    /// <summary>Requires a non-empty value.</summary>
     NotEmpty,
+    /// <summary>Requires an empty value.</summary>
     Empty,
+    /// <summary>Requires a value within an inclusive length range.</summary>
     Length,
+    /// <summary>Requires a minimum length.</summary>
     MinLength,
+    /// <summary>Requires a maximum length.</summary>
     MaxLength,
+    /// <summary>Requires a value greater than a comparison value.</summary>
     GreaterThan,
+    /// <summary>Requires a value greater than or equal to a comparison value.</summary>
     GreaterThanOrEqualTo,
+    /// <summary>Requires a value less than a comparison value.</summary>
     LessThan,
+    /// <summary>Requires a value less than or equal to a comparison value.</summary>
     LessThanOrEqualTo,
+    /// <summary>Requires equality with a comparison value.</summary>
     Equal,
+    /// <summary>Requires inequality with a comparison value.</summary>
     NotEqual,
+    /// <summary>Requires a value within an inclusive range.</summary>
     InclusiveBetween,
+    /// <summary>Requires a value within an exclusive range.</summary>
     ExclusiveBetween,
+    /// <summary>Requires a non-empty GUID.</summary>
     NotEmptyGuid,
+    /// <summary>Requires a GUID that is neither default nor empty.</summary>
     NotDefaultOrEmptyGuid,
+    /// <summary>Requires a valid GUID value.</summary>
     ValidGuid,
+    /// <summary>Requires an empty GUID.</summary>
     EmptyGuid,
+    /// <summary>Allows only a default or empty GUID.</summary>
     DefaultOrEmptyGuid,
+    /// <summary>Requires a GUID in a specified format.</summary>
     GuidFormat,
+    /// <summary>Requires a valid email address.</summary>
     Email,
+    /// <summary>Requires a value matching a regular expression.</summary>
     Matches,
 }
 
@@ -42,7 +64,9 @@ public enum ValidationRuleKind
 /// </summary>
 public enum ValidationRuleTargetKind
 {
+    /// <summary>Applies the rule to the property value.</summary>
     Property,
+    /// <summary>Applies the rule to each element of a collection property.</summary>
     EachElement,
 }
 

@@ -12,6 +12,9 @@ using Spectre.Console;
 using System.Diagnostics;
 using System.Linq;
 
+/// <summary>
+/// Represents restart console command.
+/// </summary>
 public class RestartConsoleCommand : ConsoleCommandBase
 {
     /// <summary>

@@ -9,10 +9,18 @@ using System.Text.Json;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+/// <summary>
+/// Represents from body filter model binder.
+/// </summary>
 public class FromBodyFilterModelBinder : IModelBinder
 {
     private static readonly ISerializer Serializer = new SystemTextJsonSerializer();
 
+    /// <summary>
+    /// Executes the bind model operation.
+    /// </summary>
+    /// <param name="bindingContext">The binding context used by the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
         using var reader = new StreamReader(bindingContext.HttpContext.Request.Body);

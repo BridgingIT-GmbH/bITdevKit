@@ -24,6 +24,14 @@ public static class JobSchedulerMessagingIntegrationExtensions
         where TMessage : class, IMessage
         => context.WithMessagePublishJob<TData, TMessage>(jobName, configure);
 
+    /// <summary>
+    /// Represents with message publish job.
+    /// </summary>
+    /// <typeparam name="TData">The data type.</typeparam>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="jobName">The job name used by the operation.</param>
+    /// <param name="configure">The delegate used to configure the component.</param>
     public static JobBuilderContext WithMessagePublishJob<TData, TMessage>(
         this JobBuilderContext context,
         string jobName,
@@ -96,32 +104,64 @@ public sealed class JobMessagePublishDefinitionBuilder<TData, TMessage>
     private Func<IJobExecutionContext<TData>, TMessage> messageFactory;
     private Action<IJobExecutionContext<TData>, TMessage> messageConfigurator;
 
+    /// <summary>
+    /// Initializes a new instance of the <c>JobMessagePublishDefinitionBuilder</c> class.
+    /// </summary>
+    /// <param name="jobName">The job name used by the operation.</param>
     public JobMessagePublishDefinitionBuilder(string jobName)
         : base(jobName)
     {
     }
 
+    /// <summary>
+    /// Executes the with message operation.
+    /// </summary>
+    /// <param name="factory">The factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public JobMessagePublishDefinitionBuilder<TData, TMessage> WithMessage(Func<IJobExecutionContext<TData>, TMessage> factory)
     {
         this.messageFactory = factory ?? throw new ArgumentNullException(nameof(factory));
         return this;
     }
 
+    /// <summary>
+    /// Executes the configure message operation.
+    /// </summary>
+    /// <param name="configure">The delegate used to configure the component.</param>
+    /// <returns>The result of the operation.</returns>
     public JobMessagePublishDefinitionBuilder<TData, TMessage> ConfigureMessage(Action<IJobExecutionContext<TData>, TMessage> configure)
     {
         this.messageConfigurator = configure ?? throw new ArgumentNullException(nameof(configure));
         return this;
     }
 
+    /// <summary>
+    /// Executes the map property operation.
+    /// </summary>
+    /// <param name="key">The key used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public JobMessagePublishDefinitionBuilder<TData, TMessage> MapProperty(string key, Func<IJobExecutionContext<TData>, object> valueFactory)
     {
         this.properties.Add(new KeyValuePair<string, Func<IJobExecutionContext<TData>, object>>(key, valueFactory));
         return this;
     }
 
+    /// <summary>
+    /// Executes the map context property operation.
+    /// </summary>
+    /// <param name="propertyKey">The property key used by the operation.</param>
+    /// <param name="propertyName">The property name used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public JobMessagePublishDefinitionBuilder<TData, TMessage> MapContextProperty(string propertyKey, string propertyName = null)
         => this.MapProperty(string.IsNullOrWhiteSpace(propertyName) ? propertyKey : propertyName, (Func<IJobExecutionContext<TData>, object>)(context => (object)(context.Properties.TryGetValue(propertyKey, out var value) ? value : null)));
 
+    /// <summary>
+    /// Executes the map correlation id operation.
+    /// </summary>
+    /// <param name="propertyName">The property name used by the operation.</param>
+    /// <param name="valueFactory">The value factory used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public JobMessagePublishDefinitionBuilder<TData, TMessage> MapCorrelationId(string propertyName = "CorrelationId", Func<IJobExecutionContext<TData>, string> valueFactory = null)
         => this.MapProperty(propertyName, context => valueFactory is null ? context.CorrelationId : valueFactory(context));
 

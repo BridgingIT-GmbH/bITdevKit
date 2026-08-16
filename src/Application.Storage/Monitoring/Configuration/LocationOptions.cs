@@ -32,8 +32,14 @@ public class LocationOptions(string name)
     /// </summary>
     public string[] FileBlackListFilter { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the use on demand only.
+    /// </summary>
     public bool UseOnDemandOnly { get; set; }
 
+    /// <summary>
+    /// Gets or sets the scan on start.
+    /// </summary>
     public bool ScanOnStart { get; set; }
 
     /// <summary>

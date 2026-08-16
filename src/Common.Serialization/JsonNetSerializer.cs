@@ -11,6 +11,10 @@ using Newtonsoft.Json.Serialization;
 
 // TODO: get rid of Newtonsoft dependency
 
+/// <summary>
+///     Serializes values with Newtonsoft.Json while leaving caller-provided streams open.
+/// </summary>
+/// <param name="settings">The serializer settings to use, or <see langword="null"/> to use the DevKit defaults.</param>
 public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerializer, ITextSerializer
 {
     private readonly JsonSerializer serializer =
@@ -91,8 +95,12 @@ public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerial
     }
 }
 
+/// <summary>
+///     Extends Newtonsoft.Json contract resolution so properties with private setters can be deserialized.
+/// </summary>
 public class JsonNetPrivateResolver : DefaultContractResolver
 {
+    /// <inheritdoc/>
     protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
     {
         var property = base.CreateProperty(member, memberSerialization);

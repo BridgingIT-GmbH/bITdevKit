@@ -5,6 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+/// <summary>
+/// Represents job wrapper.
+/// </summary>
+/// <param name="serviceProvider">The service provider used by the operation.</param>
+/// <param name="innerJob">The inner job used by the operation.</param>
+/// <param name="moduleAccessors">The module accessors used by the operation.</param>
 public class JobWrapper(
     IServiceProvider serviceProvider,
     IJob innerJob,
@@ -16,10 +22,21 @@ public class JobWrapper(
     private const string JobTypeKey = "JobType";
     private readonly IServiceProvider serviceProvider = serviceProvider;
 
+    /// <summary>
+    /// Gets or sets the inner job.
+    /// </summary>
     public IJob InnerJob { get; set; } = innerJob;
 
+    /// <summary>
+    /// Gets or sets the module accessors.
+    /// </summary>
     public IEnumerable<IModuleContextAccessor> ModuleAccessors { get; set; } = moduleAccessors;
 
+    /// <summary>
+    /// Executes the execute operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task Execute(IJobExecutionContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
@@ -60,6 +77,9 @@ public class JobWrapper(
         }
     }
 
+    /// <summary>
+    /// Executes the dispose operation.
+    /// </summary>
     public virtual void Dispose()
     {
         (this.InnerJob as IDisposable)?.Dispose();

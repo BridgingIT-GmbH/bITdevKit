@@ -288,6 +288,10 @@ public class SimpleNotifier(
 /// </summary>
 public interface ISimpleNotificationHandler
 {
+    /// <summary>Handles a notification supplied through the non-generic dispatch path.</summary>
+    /// <param name="notification">The notification to handle.</param>
+    /// <param name="cancellationToken">A token that can cancel handling.</param>
+    /// <returns>A value task representing handler completion.</returns>
     ValueTask HandleAsync(object notification, CancellationToken cancellationToken = default);
 }
 
@@ -298,6 +302,10 @@ public interface ISimpleNotificationHandler
 public interface ISimpleNotificationHandler<in TNotification> : ISimpleNotificationHandler
     where TNotification : ISimpleNotification
 {
+    /// <summary>Handles a strongly typed notification.</summary>
+    /// <param name="notification">The notification to handle.</param>
+    /// <param name="cancellationToken">A token that can cancel handling.</param>
+    /// <returns>A value task representing handler completion.</returns>
     ValueTask HandleAsync(TNotification notification, CancellationToken cancellationToken = default);
 
 #pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
@@ -322,6 +330,7 @@ public class SimpleNotificationHandler<TNotification>(Func<TNotification, Cancel
 {
     private readonly Func<TNotification, CancellationToken, ValueTask> handler = handler;
 
+    /// <inheritdoc/>
     public ValueTask HandleAsync(TNotification notification, CancellationToken cancellationToken = default)
     {
         return this.handler(notification, cancellationToken);
@@ -337,6 +346,7 @@ public class SimpleNotificationHandler<TNotification>(Func<TNotification, Cancel
         throw new InvalidOperationException($"Notification type {notification.GetType().Name} does not match expected type {typeof(TNotification).Name}.");
     }
 
+    /// <inheritdoc/>
     public bool Equals(SimpleNotificationHandler<TNotification> other)
     {
         if (other == null)
@@ -347,8 +357,10 @@ public class SimpleNotificationHandler<TNotification>(Func<TNotification, Cancel
         return ReferenceEquals(this.handler, other.handler);
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj) => this.Equals(obj as SimpleNotificationHandler<TNotification>);
 
+    /// <inheritdoc/>
     public override int GetHashCode() => this.handler.GetHashCode();
 }
 
@@ -357,6 +369,11 @@ public class SimpleNotificationHandler<TNotification>(Func<TNotification, Cancel
 /// </summary>
 public interface ISimpleNotificationPipelineBehavior
 {
+    /// <summary>Executes behavior logic around the next notification handler.</summary>
+    /// <param name="notification">The notification being handled.</param>
+    /// <param name="next">The next handler delegate.</param>
+    /// <param name="cancellationToken">A token that can cancel processing.</param>
+    /// <returns>A value task representing pipeline completion.</returns>
     ValueTask HandleAsync(ISimpleNotification notification, MessageHandlerDelegate next, CancellationToken cancellationToken = default);
 }
 
@@ -370,6 +387,7 @@ public delegate ValueTask MessageHandlerDelegate();
 /// </summary>
 public class LoggingNotificationPipelineBehavior(ILogger logger) : ISimpleNotificationPipelineBehavior
 {
+    /// <inheritdoc/>
     public async ValueTask HandleAsync(ISimpleNotification notification, MessageHandlerDelegate next, CancellationToken cancellationToken = default)
     {
         logger?.LogInformation($"Handling notification of type {notification.GetType().Name}");

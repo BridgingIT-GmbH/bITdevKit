@@ -10,8 +10,16 @@ using Microsoft.AspNetCore.Authorization;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
+/// <summary>
+/// Represents authorize roles summary operation processor.
+/// </summary>
 public class AuthorizeRolesSummaryOperationProcessor : IOperationProcessor
 {
+    /// <summary>
+    /// Executes the process operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool Process(OperationProcessorContext context)
     {
         var attribute = context.MethodInfo.GetCustomAttribute<AuthorizeAttribute>();

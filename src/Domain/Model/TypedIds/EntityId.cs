@@ -5,11 +5,19 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
+/// <summary>
+/// Represents entity id.
+/// </summary>
+/// <typeparam name="TId">The id type.</typeparam>
 [DebuggerDisplay("{Value}")]
 public abstract class EntityId<TId> : ValueObject
 {
+    /// <summary>
+    /// Gets or sets the value.
+    /// </summary>
     public abstract TId Value { get; protected set; }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return this.Value?.ToString();

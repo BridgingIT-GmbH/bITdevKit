@@ -10,6 +10,7 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class StateTransitionError(string message = null) : ResultErrorBase(message ?? "Invalid state transition")
 {
+    /// <summary>Initializes a state-transition error with the default message.</summary>
     public StateTransitionError() : this(null)
     {
     }

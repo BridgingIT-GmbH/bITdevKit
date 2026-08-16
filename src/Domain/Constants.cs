@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Domain;
 
+/// <summary>
+/// Represents constants.
+/// </summary>
 public struct Constants
 {
+    /// <summary>
+    /// Gets the log key.
+    /// </summary>
     public const string LogKey = "DOM";
 }

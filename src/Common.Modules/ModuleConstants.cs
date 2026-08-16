@@ -10,13 +10,28 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public struct ModuleConstants
 {
+    /// <summary>
+    ///     The structured-log key used by the module subsystem.
+    /// </summary>
     public const string LogKey = "MOD";
 
+    /// <summary>
+    ///     The context key that stores the active module name.
+    /// </summary>
     public const string ModuleNameKey = "ModuleName";
 
+    /// <summary>
+    ///     The context key that stores the origin of a module name.
+    /// </summary>
     public const string ModuleNameOriginKey = "ModuleNameOrigin";
 
+    /// <summary>
+    ///     The context key that stores a parent activity identifier.
+    /// </summary>
     public const string ActivityParentIdKey = "ActivityParentId";
 
+    /// <summary>
+    ///     The empty fallback value used when no module name is known.
+    /// </summary>
     public const string UnknownModuleName = "";
 }

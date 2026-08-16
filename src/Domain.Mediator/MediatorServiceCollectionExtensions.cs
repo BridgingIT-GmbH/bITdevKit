@@ -14,6 +14,13 @@ using MediatR.Registration;
 /// </summary>
 public static class MediatorServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds mediat r.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="lifetime">The lifetime used by the operation.</param>
+    /// <param name="assemblyExcludePatterns">The assembly exclude patterns used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddMediatR(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Transient,

@@ -8,11 +8,15 @@ namespace BridgingIT.DevKit.Common;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
+/// <summary>
+///     Emits a category trait from a <see cref="CategoryAttribute"/>.
+/// </summary>
 public class CategoryDiscoverer : ITraitDiscoverer
 {
     internal const string TypeName = "BridgingIT.DevKit.Common." + nameof(CategoryDiscoverer);
     internal const string AssemblyName = "BridgingIT.DevKit.Common.Utilities.Xunit";
 
+    /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
     {
         var categoryName = traitAttribute.GetNamedArgument<string>("Name");

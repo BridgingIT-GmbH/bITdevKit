@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Common;
 using System;
 using System.Collections.Generic;
 
+/// <summary>Provides collection-oriented conversion and bind operations for result pipelines.</summary>
 public static class ResultLinqExtensions
 {
     /// <summary>

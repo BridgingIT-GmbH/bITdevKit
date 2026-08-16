@@ -12,10 +12,19 @@ using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Constants = Domain.Constants;
 
+/// <summary>
+/// Represents lite db generic repository.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <param name="options">The options controlling the operation.</param>
 public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
     : LiteDbReadOnlyGenericRepository<TEntity>(options), IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
+    /// <summary>
+    /// Initializes a new instance of the <c>LiteDbGenericRepository</c> class.
+    /// </summary>
+    /// <param name="optionsBuilder">The options builder used by the operation.</param>
     public LiteDbGenericRepository(Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build()) { }
 
@@ -129,6 +138,12 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
         return isNew ? (entity, RepositoryActionResult.Inserted) : (entity, RepositoryActionResult.Updated);
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="id">The entity identifier.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         object id,
         CancellationToken cancellationToken = default)
@@ -153,6 +168,12 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
         return RepositoryActionResult.None;
     }
 
+    /// <summary>
+    /// Deletes .
+    /// </summary>
+    /// <param name="entity">The entity involved in the operation.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

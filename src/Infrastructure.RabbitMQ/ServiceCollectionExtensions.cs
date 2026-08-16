@@ -14,8 +14,18 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using RabbitMQ;
 
+/// <summary>
+/// Represents service collection extensions.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Executes the with rabbit mq broker operation.
+    /// </summary>
+    /// <param name="context">The context for the operation.</param>
+    /// <param name="configuration">The configuration to apply.</param>
+    /// <param name="section">The section used by the operation.</param>
+    /// <returns>The result of the operation.</returns>
     public static MessagingBuilderContext WithRabbitMQBroker(
         this MessagingBuilderContext context,
         RabbitMQMessageBrokerConfiguration configuration = null,

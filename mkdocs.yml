@@ -1,5 +1,5 @@
 site_name: bITdevKit
-site_description: Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles
+site_description: Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.
 site_url: https://bridgingit-gmbh.github.io/bITdevKit/
 repo_url: https://github.com/bridgingIT/bITdevKit
 repo_name: bridgingIT/bITdevKit
@@ -9,90 +9,95 @@ use_directory_urls: true
 
 nav:
   - Home: index.md
-  - Getting Started:
-      - Overview: getting-started.md
-      - DDD Introduction: reference/introduction-ddd-guide.md
+  - Get Started:
+      - Quickstart: getting-started.md
       - Templates: templates.md
-  - AI Agent Support: agent-support.md
-  - Developer Dashboards: developer-dashboards.md
-  - Why bITdevKit: why.md
-  - Architecture: architecture.md
-  - Packages: packages.md
-  - API Reference: api/index.md
+  - Docs:
+      - Documentation Overview: docs.md
+      - Feature Guides:
+          - Complete Feature Index: reference/index.md
+          - Common Infrastructure:
+              - Common Extensions: reference/common-extensions.md
+              - Common Utilities: reference/common-utilities.md
+              - Common Serialization: reference/common-serialization.md
+              - Common Options Builders: reference/common-options-builders.md
+              - Common Mapping: reference/common-mapping.md
+              - Common Caching: reference/common-caching.md
+              - Common Observability Tracing: reference/common-observability-tracing.md
+              - Metrics: reference/features-metrics.md
+              - Profiling: reference/features-profiling.md
+              - Utilities: reference/features-utilities.md
+          - Core Domain and Application:
+              - Domain: reference/features-domain.md
+              - Domain Events: reference/features-domain-events.md
+              - Domain Change History: reference/features-domain-change-history.md
+              - Domain Repositories: reference/features-domain-repositories.md
+              - Domain Specifications: reference/features-domain-specifications.md
+              - Active Entity: reference/features-domain-activeentity.md
+              - Domain Policies: reference/features-domain-policies.md
+              - Rules: reference/features-rules.md
+              - Results: reference/features-results.md
+              - Application Commands and Queries: reference/features-application-commands-queries.md
+              - Application Events: reference/features-application-events.md
+              - DataPorter: reference/features-application-dataporter.md
+              - Event Sourcing: reference/features-event-sourcing.md
+          - Execution, Messaging and Modularity:
+              - Requester and Notifier: reference/features-requester-notifier.md
+              - Messaging: reference/features-messaging.md
+              - Queueing: reference/features-queueing.md
+              - Broadcasting: reference/features-broadcasting.md
+              - Notifications: reference/features-notifications.md
+              - Modules: reference/features-modules.md
+              - Pipelines: reference/features-pipelines.md
+              - Orchestrations: reference/features-orchestrations.md
+              - Filtering: reference/features-filtering.md
+              - Extensions: reference/features-extensions.md
+          - Security and Access:
+              - Presentation Authentication: reference/features-presentation-authentication.md
+              - Entity Permissions: reference/features-entitypermissions.md
+              - Fake Identity Provider: reference/features-identityprovider.md
+          - Presentation and Hosts:
+              - Host: reference/features-presentation.md
+              - Configuration: reference/features-presentation-configuration.md
+              - Logging: reference/features-presentation-logging.md
+              - Endpoints: reference/features-presentation-endpoints.md
+              - CLI: reference/features-cli.md
+              - MCP: reference/features-cli-mcp.md
+              - MCP Client Configuration: reference/features-cli-mcp-clients.md
+              - Dashboard: reference/features-presentation-dashboard.md
+              - Console Commands: reference/features-presentation-console-commands.md
+              - CORS Configuration: reference/features-presentation-cors.md
+              - Correlation IDs: reference/features-presentation-correlationid.md
+              - Exception Handling: reference/features-presentation-exception-handling.md
+              - AppState: reference/features-presentation-appstate.md
+          - Storage, Scheduling and Utilities:
+              - Startup Tasks: reference/features-startuptasks.md
+              - Jobs: reference/features-jobs.md
+              - Job Scheduling: reference/features-jobscheduling.md
+              - Blob Storage: reference/features-storage-blobs.md
+              - Document Storage: reference/features-storage-documents.md
+              - Storage Permalinks: reference/features-storage-permalinks.md
+              - FileStorage: reference/features-storage-files.md
+              - Storage Monitoring: reference/features-storage-monitoring.md
+              - Log Entries: reference/features-log-entries.md
+          - Testing and Test Utilities:
+              - Fake Authentication for Integration Tests: reference/testing-fake-authentication.md
+              - Testing Common XUnit: reference/testing-common-xunit.md
+      - Concepts:
+          - Why bITdevKit: why.md
+          - Architecture: architecture.md
+          - DDD Introduction: reference/introduction-ddd-guide.md
+      - Tooling:
+          - AI Agent Support: agent-support.md
+          - AI Agent Support Guide: agent-support-guide.md
+          - Developer Dashboards: developer-dashboards.md
+      - Package Map: packages.md
+      - Decision Guides:
+          - Decisions: decisions.md
+          - Messaging or Queueing: decisions-messaging-vs-queueing.md
+          - Repository or ActiveEntity: decisions-repository-vs-activeentity.md
+  - API: api/index.md
   - Examples: examples.md
-  # - Decisions:
-  #     - Overview: decisions.md
-  #     - Messaging vs Queueing: decisions-messaging-vs-queueing.md
-  #     - Repository vs ActiveEntity: decisions-repository-vs-activeentity.md
-  - Documentation:
-      - Overview: reference/index.md
-      - Common Infrastructure:
-          - Common Extensions: reference/common-extensions.md
-          - Common Utilities: reference/common-utilities.md
-          - Common Serialization: reference/common-serialization.md
-          - Common Options Builders: reference/common-options-builders.md
-          - Common Mapping: reference/common-mapping.md
-          - Common Caching: reference/common-caching.md
-          - Common Observability Tracing: reference/common-observability-tracing.md
-          - Metrics: reference/features-metrics.md
-          - Profiling: reference/features-profiling.md
-          - Utilities: reference/features-utilities.md
-      - Core Domain and Application:
-          - Domain: reference/features-domain.md
-          - Domain Events: reference/features-domain-events.md
-          - Domain Change History: reference/features-domain-change-history.md
-          - Domain Repositories: reference/features-domain-repositories.md
-          - Domain Specifications: reference/features-domain-specifications.md
-          - Active Entity: reference/features-domain-activeentity.md
-          - Domain Policies: reference/features-domain-policies.md
-          - Rules: reference/features-rules.md
-          - Results: reference/features-results.md
-          - Application Commands and Queries: reference/features-application-commands-queries.md
-          - Application Events: reference/features-application-events.md
-          - DataPorter: reference/features-application-dataporter.md
-          - Event Sourcing: reference/features-event-sourcing.md
-      - Execution, Messaging and Modularity:
-          - Requester and Notifier: reference/features-requester-notifier.md
-          - Messaging: reference/features-messaging.md
-          - Queueing: reference/features-queueing.md
-          - Broadcasting: reference/features-broadcasting.md
-          - Notifications: reference/features-notifications.md
-          - Modules: reference/features-modules.md
-          - Pipelines: reference/features-pipelines.md
-          - Orchestrations: reference/features-orchestrations.md
-          - Filtering: reference/features-filtering.md
-          - Extensions: reference/features-extensions.md
-      - Security and Access:
-          - Presentation Authentication: reference/features-presentation-authentication.md
-          - Entity Permissions: reference/features-entitypermissions.md
-          - Fake Identity Provider: reference/features-identityprovider.md
-      - Presentation and Hosts:
-          - Host: reference/features-presentation.md
-          - Configuration: reference/features-presentation-configuration.md
-          - Logging: reference/features-presentation-logging.md
-          - Endpoints: reference/features-presentation-endpoints.md
-          - CLI: reference/features-cli.md
-          - MCP: reference/features-cli-mcp.md
-          - MCP Client Configuration: reference/features-cli-mcp-clients.md
-          - Dashboard: reference/features-presentation-dashboard.md
-          - Console Commands: reference/features-presentation-console-commands.md
-          - CORS Configuration: reference/features-presentation-cors.md
-          - Correlation IDs: reference/features-presentation-correlationid.md
-          - Exception Handling: reference/features-presentation-exception-handling.md
-          - AppState: reference/features-presentation-appstate.md
-      - Storage, Scheduling and Utilities:
-          - Startup Tasks: reference/features-startuptasks.md
-          - Jobs: reference/features-jobs.md
-          - Job Scheduling: reference/features-jobscheduling.md
-          - Blob Storage: reference/features-storage-blobs.md
-          - Document Storage: reference/features-storage-documents.md
-          - Storage Permalinks: reference/features-storage-permalinks.md
-          - FileStorage: reference/features-storage-files.md
-          - Storage Monitoring: reference/features-storage-monitoring.md
-          - Log Entries: reference/features-log-entries.md
-      - Testing and Test Utilities:
-          - Fake Authentication for Integration Tests: reference/testing-fake-authentication.md
-          - Testing Common XUnit: reference/testing-common-xunit.md
 
 theme:
   name: material
@@ -103,9 +108,14 @@ theme:
   features:
     - navigation.instant
     - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.top
+    - toc.follow
     - search.highlight
     - search.share
+    - search.suggest
     - content.code.copy
     - content.tabs.link
   palette:
@@ -190,10 +200,6 @@ extra_javascript:
   - assets/javascripts/disable-keyboard-shortcuts.js
   - assets/javascripts/context7-widget.js
   - assets/javascripts/theme-picker.js
-
-extra_javascript:
-  - assets/javascripts/disable-keyboard-shortcuts.js
-  - assets/javascripts/context7-widget.js
 
 extra:
   social:
